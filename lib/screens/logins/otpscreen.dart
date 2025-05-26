@@ -105,7 +105,11 @@ class _OTPScreenState extends State<OTPScreen> {
                   selectedColor: const Color(0xFF869E23),
                   inactiveColor: Colors.grey,
                 ),
-                onChanged: (_) {},
+                onChanged: (value) {
+                   if (value.length == 6) {
+      _timer?.cancel(); // Stop timer on full OTP
+    }
+                },
               ),
 
               const SizedBox(height: 12),

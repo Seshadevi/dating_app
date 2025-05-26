@@ -6,7 +6,7 @@ class InterestsScreen extends StatefulWidget {
 }
 
 class _InterestsScreenState extends State<InterestsScreen> {
-  List<String> selectedInterests = ['Museums & Galleries', 'Museums & Galleries'];
+  List<String> selectedInterests = ['Museums & Galleries'];
   final List<String> allInterests = [
     'Tennis', 'Gigs', 'Dogs', 'Craft', 'Hiking Trips', 'Writing',
     'Photography', 'Museums & Galleries', 'Cat', 'Gardening',
@@ -34,128 +34,90 @@ class _InterestsScreenState extends State<InterestsScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Skip Button
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Text(
-                      'Skip',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.green.shade700,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Text(
+                        'Skip',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color:Color(0xFF869E23),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 12),
-                  // Title
-                  Text(
-                    'Choose 5 Things\nYou’re Really Into',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Proud foodie or big on\nbouldering? Add interests to your profile to help you match with people who love them too.',
-                    style: TextStyle(color: Colors.black87),
-                  ),
-                  SizedBox(height: 20),
-                  // Search bar
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: Color(0xFFEFF0D1),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
-                        )
-                      ],
+                    Text(
+                      'Proud foodie or big on\nbouldering? Add interests to your profile to help you match with people who love them too.',
+                      style: TextStyle(color: Colors.black87),
                     ),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'what are you into?',
-                        border: InputBorder.none,
+                    SizedBox(height: 20),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Color(0xFFEFF0D1),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 4,
+                            offset: Offset(0, 2),
+                          )
+                        ],
+                      ),
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: 'what are you into?',
+                          border: InputBorder.none,
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 12),
-                  // Selected Interests
-                  Wrap(
-                    spacing: 8,
-                    children: selectedInterests
-                        .map(
-                          (interest) => Chip(
-                            label: Text(
-                              interest,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.green.shade800,
-                          ),
-                        )
-                        .toList(),
-                  ),
-                  SizedBox(height: 12),
-                  Text(
-                    'You Might Like',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 12),
-                  // Bubble Interests
-                  Expanded(
-                    child: Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: allInterests.map((interest) {
-                        final isSelected = selectedInterests.contains(interest);
-                        return GestureDetector(
-                          onTap: () => toggleInterest(interest),
-                          child: Container(
-                            padding: EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: isSelected
-                                  ? LinearGradient(
-                                      colors: [Colors.green.shade600, Colors.black],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                    )
-                                  : LinearGradient(
-                                      colors: [Color(0xFFF3F7DA), Color(0xFFE6EBA4)],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                    ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 4,
-                                  offset: Offset(2, 2),
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Text(
+                    SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      children: selectedInterests
+                          .map(
+                            (interest) => Chip(
+                              label: Text(
                                 interest,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: isSelected ? Colors.white : Colors.black87,
-                                ),
+                                style: TextStyle(color: Colors.white),
                               ),
+                              backgroundColor:Color(0xFF869E23),
                             ),
-                          ),
-                        );
-                      }).toList(),
+                          )
+                          .toList(),
                     ),
-                  ),
-                  SizedBox(height: 8),
-                ],
+                    SizedBox(height: 12),
+                    Text(
+                      'You Might Like',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 12),
+                    Container(
+                      height: 400,
+                      child: Stack(
+                        children: [
+                          _buildBubble('Tennis', 30, 20),
+                          _buildBubble('Gigs', 100, 100),
+                          _buildBubble('Dogs', 200, 50),
+                          _buildBubble('Craft', 80, 180),
+                          _buildBubble('Hiking Trips', 180, 160),
+                          _buildBubble('Writing', 50, 270),
+                          _buildBubble('Photography', 160, 250),
+                          _buildBubble('Museums & Galleries', 240, 120),
+                          _buildBubble('Cat', 270, 30),
+                          _buildBubble('Gardening', 280, 200),
+                          _buildBubble('Caring', 20, 350),
+                          _buildBubble('Reading', 180, 330),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                  ],
+                ),
               ),
             ),
-            // Bottom selection count and arrow
             Positioned(
               bottom: 20,
               right: 20,
@@ -167,13 +129,62 @@ class _InterestsScreenState extends State<InterestsScreen> {
                   ),
                   SizedBox(height: 6),
                   CircleAvatar(
-                    backgroundColor: Colors.green.shade800,
+                    backgroundColor:Color(0xFF869E23), 
                     child: Icon(Icons.arrow_forward, color: Colors.white),
                   ),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBubble(String interest, double top, double left) {
+    final isSelected = selectedInterests.contains(interest);
+    return Positioned(
+      top: top,
+      left: left,
+      child: GestureDetector(
+        onTap: () => toggleInterest(interest),
+        child: Container(
+          width: 90,
+          height: 90,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: isSelected
+                ? LinearGradient(
+                    colors: [Color(0xFF869E23), Color(0xFF000000)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  )
+                : LinearGradient(
+                    colors: [Color(0xFFF3F7DA), Color(0xFFE6EBA4)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 4,
+                offset: Offset(2, 2),
+              ),
+            ],
+          ),
+          alignment: Alignment.center,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              interest,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                color: isSelected ? Colors.white : Colors.black87,
+              ),
+            ),
+          ),
         ),
       ),
     );

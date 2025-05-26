@@ -1,19 +1,12 @@
 import 'package:flutter/material.dart';
 
-class InterestSelectionScreen extends StatefulWidget {
+class LifestyleHabitsScreen extends StatefulWidget {
   @override
-  _InterestSelectionScreenState createState() => _InterestSelectionScreenState();
+  _LifestyleHabitsScreenState createState() => _LifestyleHabitsScreenState();
 }
 
-class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
-  final List<String> allInterests = [
-    'Tennis', 'Gigs', 'Dogs', 'Writing', 'Photography',
-    'Craft', 'Hiking Trips', 'Horror', 'Flexible',
-    'Museums & Galleries', 'Cat', 'Gardening',
-    'Caring', 'Reading', 'Fitness', 'Language'
-  ];
-
-  List<String> selectedInterests = ['Museums & Galleries'];
+class _LifestyleHabitsScreenState extends State<LifestyleHabitsScreen> {
+  List<String> selectedInterests = [];
 
   void toggleInterest(String interest) {
     setState(() {
@@ -32,143 +25,154 @@ class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Skip
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Text(
-                      'Skip',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.green.shade700,
-                      ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Skip button
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Text(
+                    'Skip',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.green.shade700,
                     ),
                   ),
-                  SizedBox(height: 12),
-                  // Title
-                  Text(
-                    'Choose 5 Things\nYou’re Really Into',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'proud foodie or big on bouldering? add interests to your profile to help you match with people who love them too.',
-                    style: TextStyle(color: Colors.black87),
-                  ),
-                  SizedBox(height: 20),
-                  // Search box
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'what are you into?',
-                      filled: true,
-                      fillColor: Color(0xFFF2F5D8),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 12),
-                  // Selected tags
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: selectedInterests
-                        .map((interest) => Chip(
-                              backgroundColor: Colors.green.shade800,
-                              label: Text(
-                                interest,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              deleteIcon: Icon(Icons.close, color: Colors.white),
-                              onDeleted: () => toggleInterest(interest),
-                            ))
-                        .toList(),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    'You Might Like',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 12),
-                  // Interests Bubbles
-                  Expanded(
-                    child: Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: allInterests.map((interest) {
-                        final isSelected = selectedInterests.contains(interest);
-                        return GestureDetector(
-                          onTap: () => toggleInterest(interest),
-                          child: Container(
-                            padding: EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: isSelected
-                                  ? LinearGradient(
-                                      colors: [Colors.green.shade800, Colors.black],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                    )
-                                  : LinearGradient(
-                                      colors: [Color(0xFFF3F7DA), Color(0xFFE6EBA4)],
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                    ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 4,
-                                  offset: Offset(2, 2),
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Text(
-                                interest + ' +',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: isSelected ? Colors.white : Colors.black87,
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Bottom selection count and arrow
-            Positioned(
-              bottom: 20,
-              right: 20,
-              child: Column(
-                children: [
-                  Text(
+                ),
+                // SizedBox(height: 16),
+
+                // // Title
+                // Text(
+                //   "Let’s Talk About Your\nLifestyle And Habits",
+                //   style: TextStyle(
+                //     fontSize: 20,
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                // ),
+                // SizedBox(height: 8),
+                Text(
+                  "Share as much about your habits as you’re comfortable with.",
+                  style: TextStyle(fontSize: 14, color: Colors.black87),
+                ),
+                // SizedBox(height: 16),
+
+                Text(
+                  'Drinking',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                // SizedBox(height: 16),
+
+                // Bubble cluster
+                BubbleCluster(
+                  selected: selectedInterests,
+                  onTap: toggleInterest,
+                ),
+
+                // SizedBox(height: 40),
+                Center(
+                  child: Text(
                     '${selectedInterests.length}/5 Selected',
                     style: TextStyle(fontWeight: FontWeight.w500),
                   ),
-                  SizedBox(height: 6),
-                  CircleAvatar(
-                    backgroundColor: Colors.green.shade800,
-                    child: Icon(Icons.arrow_forward, color: Colors.white),
+                ),
+                SizedBox(height: 10),
+
+                // Center(
+                //   child: CircleAvatar(
+                //     radius: 24,
+                //     backgroundColor: Colors.green.shade800,
+                //     child: Icon(Icons.arrow_forward, color: Colors.white),
+                //   ),
+                // ),
+                // SizedBox(height: 20),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class BubbleCluster extends StatelessWidget {
+  final List<String> selected;
+  final Function(String) onTap;
+
+  BubbleCluster({required this.selected, required this.onTap});
+
+  final List<Map<String, dynamic>> bubbleData = [
+    {'label': 'Ambition', 'top': 10.0, 'left': 20.0, 'size': 90.0},
+    {'label': 'Empathy', 'top': 50.0, 'left': 120.0, 'size': 70.0},
+    {'label': 'Humour', 'top': 20.0, 'left': 220.0, 'size': 80.0},
+    {'label': 'openness', 'top': 110.0, 'left': 90.0, 'size': 100.0},
+    {'label': 'leadership', 'top': 200.0, 'left': 10.0, 'size': 95.0},
+    {'label': 'unique', 'top': 200.0, 'left': 130.0, 'size': 75.0},
+    {'label': 'kindness', 'top': 60.0, 'left': 60.0, 'size': 65.0},
+    {'label': 'confidence', 'top': 80.0, 'left': 220.0, 'size': 70.0},
+    {'label': 'Friends first', 'top': 140.0, 'left': 210.0, 'size': 60.0},
+    {'label': 'Flexible', 'top': 230.0, 'left': 230.0, 'size': 60.0},
+    {'label': 'playfulness', 'top': 280.0, 'left': 60.0, 'size': 65.0},
+    {'label': 'sassiness', 'top': 280.0, 'left': 140.0, 'size': 65.0},
+    {'label': 'curiosity', 'top': 280.0, 'left': 220.0, 'size': 60.0},
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 390, // height of the bubble area
+      child: Stack(
+        children: bubbleData.map((bubble) {
+          final isSelected = selected.contains(bubble['label']);
+          return Positioned(
+            top: bubble['top'],
+            left: bubble['left'],
+            child: GestureDetector(
+              onTap: () => onTap(bubble['label']),
+              child: Container(
+                width: bubble['size'],
+                height: bubble['size'],
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: isSelected
+                      ? LinearGradient(
+
+                          colors: [Color(0xffB2D12E), Color(0xff000000)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                      : LinearGradient(
+                          colors: [Color(0xFFF3F7DA), Color(0xFFE6EBA4)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 10,
+                      offset: Offset(2, 2),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    '${bubble['label']} +',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected ? Colors.white : Colors.black87,
+                    ),
                   ),
-                ],
+                ),
               ),
             ),
-          ],
-        ),
+          );
+        }).toList(),
       ),
     );
   }

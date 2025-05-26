@@ -7,6 +7,10 @@ import '../screens/height_selection_screen.dart';
 import '../screens/choose_foodies.dart';
 import '../screens/valueSelection.dart';
 import '../screens/lifeStryle_habits.dart';
+import '../screens/familyPlaneScreen.dart';
+import '../screens/importantLife.dart';
+import '../screens/causes_Community.dart';
+import 'datePromtSelection.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -37,6 +41,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           _buildChooseFoodies(), 
           _buildChooseValues(),
           _buildLifestyleHabits(),
+          _buildFamilyScreen(),
+          _buildImportantLife(),
+          _buildcause(),
+          _buildDatePromt(),
         _buildPhotoUploadPage(),
         _buildPurposeSelectionPage(),
         _buildFinalInfoPage(),
@@ -66,11 +74,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       case 6:
         return "And What Are You\nHoping To Find?";
         case 7:
-        return "Choose Five Things You Are Really Into";
+        return "Now lets Talk About You";
         case 8:
-        return "Tell Us What You Value In A Person";
+        return "Choose Five Things You Are Really Into";
         case 9:
         return "Tell Us What You Value In A Person";
+        case 10:
+        return "Lets Talk About Your Hobits And LifeStyle ";
+        case 11:
+        return "Do You Have Kids  Or\nFamily Plans?";
+        case 12:
+        return "Whats's Important In Your Life?";
+         case 13:
+        return "How About Causes And Communities";
+         case 14:
+        return "What’s It Like To Date You?";
+        case 15:
+        return "TIme To Put A FAce To The Name";
       default:
         return "";
     }
@@ -125,7 +145,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   fontSize: 25.0,
                   letterSpacing: 0.38,
                   fontWeight: FontWeight.bold,
-                  height: 1.32,
+                  height: 0.00,
                 ),
               ),
             ),
@@ -292,7 +312,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return  ValuesSelectionScreen(); // You already built this as a full screen widget
   }
    Widget _buildLifestyleHabits() {
-    return  InterestSelectionScreen(); // You already built this as a full screen widget
+    return  LifestyleHabitsScreen(); // You already built this as a full screen widget
+  }
+  Widget _buildFamilyScreen() {
+    return  FamilyPlanScreen(); // You already built this as a full screen widget
+  }
+   Widget _buildImportantLife() {
+    return  ReligionSelectionScreen(); // You already built this as a full screen widget
+  }
+  Widget _buildcause() {
+    return CausesScreen(); // You already built this as a full screen widget
+  }
+  Widget _buildDatePromt() {
+    return DatePromptScreen(); // You already built this as a full screen widget
   }
 
 
@@ -354,15 +386,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget _buildPhotoUploadPage() {
     return _pageWrapper(
       children: [
-        const Text("Add At Least 4 Photos"),
+        const Text("Do You Want Add Atleast 4 Photos, Weather Its You With Your Pet,Eating Your Fav Food or In A Place You Most Love"),
         const SizedBox(height: 20),
         Wrap(
           spacing: 10,
           runSpacing: 10,
           children: List.generate(6, (index) {
             return Container(
-              width: 80,
-              height: 100,
+              width: 90,
+              height: 130,
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(10),
