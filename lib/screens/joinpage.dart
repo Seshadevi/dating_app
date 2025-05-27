@@ -23,25 +23,25 @@ class JoinPageScreen extends ConsumerWidget {
             // Floating Images
             Positioned.fill(
               child: Padding(
-                padding: const EdgeInsets.only(top: 40),
+                padding: const EdgeInsets.only(top: 20),
                 child: Stack(
                   children: [
                     // First Column (2 images, partially out on top)
-                    _profileImage("https://randomuser.me/api/portraits/women/1.jpg", -30, -40, 80, 130),
-                    _profileImage("https://randomuser.me/api/portraits/men/1.jpg", 120, -40, 80, 150),
+                    _profileImage("assets/Rectangle_47.png", -20, -10, 100, 150),
+                    _profileImage("assets/Rectangle_44.png", 120, -10, 80, 150),
 
                     // Second Column (3 images)
-                    _profileImage("https://randomuser.me/api/portraits/women/2.jpg", -90, 90, 90, 150),
-                    _profileImage("https://randomuser.me/api/portraits/men/2.jpg", 80, 90, 90, 150),
-                    _profileImage("https://randomuser.me/api/portraits/women/3.jpg", 240, 90, 90, 150),
+                    _profileImage("assets/Rectangle_49.png", -90, 90, 100, 250),
+                    _profileImage("assets/Rectangle_43.png", 80, 90, 90, 170),
+                    _profileImage("assets/Rectangle_50.png", 240, 90, 90, 170),
 
                     // Third Column (1 image)
-                    _profileImage("https://randomuser.me/api/portraits/men/3.jpg", 100, 200, 70, 160),
+                    _profileImage("assets/Rectangle_51.png", 100, 200, 70, 200),
 
                     // Fourth Column (3 images, last partially out on bottom)
-                    _profileImage("https://randomuser.me/api/portraits/women/4.jpg", -30, 295, 70, 140),
-                    _profileImage("https://randomuser.me/api/portraits/men/4.jpg", 120, 295, 70, 170),
-                    _profileImage("https://randomuser.me/api/portraits/women/5.jpg", 300, 295, 90, 170),
+                    _profileImage("assets/Rectangle_54.png", -10, 295, 70, 160),
+                    _profileImage("assets/Rectangle_52.png", 120, 295, 70, 190),
+                    _profileImage("assets/Rectangle_53.png", 300, 295, 90, 150),
 
                     // Heart Symbol
                     Positioned(
@@ -137,22 +137,24 @@ class JoinPageScreen extends ConsumerWidget {
         width: width,
         height: height,
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.white, width: 1),
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 5,
-              spreadRadius: 2,
-              offset: Offset(2, 2),
-            ),
-          ],
+          // border: Border.all(color: Colors.white, width: 1),
+          // borderRadius: BorderRadius.circular(16),
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: Colors.black.withOpacity(0.2),
+          //     blurRadius: 2,
+          //     // spreadRadius: 2,
+          //     offset: Offset(2, 2),
+          //   ),
+          // ],
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(14),
-          child: Image.network(
+          child: Image.asset(
             imageUrl,
             fit: BoxFit.cover,
+             width: 300,     // Set your desired width
+             height: 250,
           ),
         ),
       ),
