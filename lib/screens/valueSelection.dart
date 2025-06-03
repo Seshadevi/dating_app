@@ -74,10 +74,12 @@ class _ValuesSelectionScreenState extends State<ValuesSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Stack(
+    return 
+    // Scaffold(
+    //   backgroundColor: Colors.white,
+    //   body: SafeArea(
+    //     child: 
+        Stack(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -156,8 +158,8 @@ class _ValuesSelectionScreenState extends State<ValuesSelectionScreen> {
               ),
             ),
           ],
-        ),
-      ),
+        // ),
+      // ),
     );
   }
 }

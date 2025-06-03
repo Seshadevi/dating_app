@@ -26,9 +26,11 @@ class InrtoPartneroptionState extends State {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
+    return 
+    // Scaffold(
+    //   backgroundColor: Colors.white,
+    //   body:
+       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // SizedBox(height: screenHeight * 0.04),
@@ -226,7 +228,7 @@ class InrtoPartneroptionState extends State {
             ),
           ),
         ],
-      ),
+      // ),
     );
   }
 }

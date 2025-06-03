@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-
-
 class FamilyPlanScreen extends StatefulWidget {
   @override
   _FamilyPlanScreenState createState() => _FamilyPlanScreenState();
@@ -49,11 +47,11 @@ class _FamilyPlanScreenState extends State<FamilyPlanScreen> {
         ),
         child: Text(
           text,
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: isSelected ? Colors.white : Colors.black87,
           ),
-          textAlign: TextAlign.center,
         ),
       ),
     );
@@ -61,77 +59,73 @@ class _FamilyPlanScreenState extends State<FamilyPlanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      // appBar: AppBar(
-      //   backgroundColor: Colors.white,
-      //   elevation: 0,
-      //   leading: Icon(Icons.arrow_back, color: Colors.black),
-      //   actions: [
-      //     TextButton(
-      //       onPressed: () {},
-      //       child: Text("Skip", style: TextStyle(color: Colors.black)),
-      //     ),
-      //   ],
-      // ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: ListView(
-          children: [
-            // SizedBox(height: 10),
-            // Text(
-            //   "Do You Have Kids  Or\nFamily Plans?",
-            //   style: TextStyle(
-            //       fontSize: 22, fontWeight: FontWeight.bold, height: 1.3),
-            // ),
-            // SizedBox(height: 10),
-            Text(
-              "let’s get deeper. feel free to skip if you'd prefer not to say.",
-              style: TextStyle(color: Colors.grey[700]),
-            ),
-            SizedBox(height: 5),
-            Text("Have Kids", style: TextStyle(fontWeight: FontWeight.bold)),
-            // SizedBox(height: 5),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+    return Column(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: ListView(
               children: [
-                optionButton("Have Kids +"),
-                optionButton("Don’t Have\nKids ++"),
+                
+                
+                // SizedBox(height: 10),
+                Text(
+                  "Let’s get deeper. Feel free to skip if you'd prefer not to say.",
+                  style: TextStyle(color: Colors.grey[700]),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  "Have Kids",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    optionButton("Have Kids +"),
+                    optionButton("Don’t Have\nKids ++"),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Text(
+                  "Kids",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10),
+                Wrap(
+                  alignment: WrapAlignment.spaceAround,
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: [
+                    optionButton("Don’t Want\nKids +"),
+                    optionButton("Open To\nKids +"),
+                    optionButton("Want Kids +"),
+                    optionButton("Not\nSure +"),
+                  ],
+                ),
+                SizedBox(height: 80), // spacing for bottom bar
               ],
             ),
-            SizedBox(height: 10),
-            Text("Kids", style: TextStyle(fontWeight: FontWeight.bold)),
-            // SizedBox(height: 5),
-            Wrap(
-              alignment: WrapAlignment.spaceAround,
-              spacing: 10,
-              runSpacing: 10,
-              children: [
-                optionButton("Don’t Want\nKids +"),
-                optionButton("Open To\nKids +"),
-                optionButton("Want Kids +"),
-                optionButton("Not\nSure +"),
-              ],
-            ),
-            // SizedBox(height: 5),
-          ],
+          ),
         ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // Text("Skip", style: TextStyle(color: Colors.black)),
-            Text("${selected.length}/2 Selected"),
-            // CircleAvatar(
-            //   radius: 25,
-            //   backgroundColor: Colors.green.shade600,
-            //   child: Icon(Icons.arrow_forward, color: Colors.white),
-            // )
-          ],
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "${selected.length}/2 Selected",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              // CircleAvatar(
+              //   radius: 24,
+              //   backgroundColor: Colors.green.shade700,
+              //   child: Icon(Icons.arrow_forward, color: Colors.white),
+              // ),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }

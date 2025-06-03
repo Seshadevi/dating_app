@@ -11,6 +11,8 @@ import '../screens/familyPlaneScreen.dart';
 import '../screens/importantLife.dart';
 import '../screens/causes_Community.dart';
 import 'datePromtSelection.dart';
+import '../screens/openingMoveScreen.dart';
+import '../screens/addHeadlineScreen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -37,23 +39,34 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         _buildDateCategory(),
         _buildMeetSelection(),
         _buildPartnersSelections(),
-         _buildHeightSelection(),
-          _buildChooseFoodies(), 
-          _buildChooseValues(),
-          _buildLifestyleHabits(),
-          _buildFamilyScreen(),
-          _buildImportantLife(),
-          _buildcause(),
-          _buildDatePromt(),
+        _buildHeightSelection(),
+        _buildChooseFoodies(),
+        _buildChooseValues(),
+        _buildLifestyleHabits(),
+        _buildFamilyScreen(),
+        _buildImportantLife(),
+        _buildcause(),
+        _buildDatePromt(),
         _buildPhotoUploadPage(),
-        _buildPurposeSelectionPage(),
-        _buildFinalInfoPage(),
+        _buildOpeningMove(),
+        // _buildPurposeSelectionPage(),
+        // _buildFinalInfoPage(),
       ];
 
   void nextPage() {
     if (currentIndex < pages.length - 1) {
       _controller.nextPage(
-          duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      // ✅ Navigate to the next screen when the last page is reached
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                const AddHeadlineScreen()), // Replace with your target screen
+      );
     }
   }
 
@@ -73,24 +86,26 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         return "Who Would Like TO Meet?";
       case 6:
         return "And What Are You\nHoping To Find?";
-        case 7:
+      case 7:
         return "Now lets Talk About You";
-        case 8:
+      case 8:
         return "Choose Five Things You Are Really Into";
-        case 9:
+      case 9:
         return "Tell Us What You Value In A Person";
-        case 10:
+      case 10:
         return "Lets Talk About Your Hobits And LifeStyle ";
-        case 11:
-        return "Do You Have Kids  Or\nFamily Plans?";
-        case 12:
+      case 11:
+        return "Do You Have Kids Or\nFamily Plans?";
+      case 12:
         return "Whats's Important In Your Life?";
-         case 13:
+      case 13:
         return "How About Causes And Communities";
-         case 14:
+      case 14:
         return "What’s It Like To Date You?";
-        case 15:
+      case 15:
         return "TIme To Put A FAce To The Name";
+      case 16:
+        return "What will You Opening Move Be";
       default:
         return "";
     }
@@ -133,7 +148,58 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ],
             ),
           ),
+          // Back and Skip buttons
+Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+  child: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      // Back Button (disabled on first screen)
+      if (currentIndex >= 8 && currentIndex <= 14)
+        GestureDetector(
+          onTap: () {
+            if (currentIndex > 0) {
+              _controller.previousPage(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            }
+          },
+          child: const Text(
+            'Back',
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        )
+      else
+        const SizedBox(width: 50), // to align Skip properly
+
+      // Skip Button (only if not on last screen)
+      if (currentIndex >= 8 && currentIndex <= 14)
+        GestureDetector(
+          onTap: () {
+            _controller.jumpToPage(pages.length - 1);
+            setState(() {
+              currentIndex = pages.length - 1;
+            });
+          },
+          child: const Text(
+            'Skip',
+            style: TextStyle(
+              color: Colors.grey,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        )
+      else
+        const SizedBox(width: 50),
+    ],
+  ),
+),
           const SizedBox(height: 20),
+
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 2),
@@ -142,7 +208,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 textAlign: TextAlign.start,
                 style: const TextStyle(
                   fontFamily: 'Inter Tight',
-                  fontSize: 25.0,
+                  fontSize: 30.0,
                   letterSpacing: 0.38,
                   fontWeight: FontWeight.bold,
                   height: 0.00,
@@ -150,7 +216,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 1),
+          const SizedBox(height: 15),
           Expanded(
             child: PageView(
               controller: _controller,
@@ -162,9 +228,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           GestureDetector(
             onTap: nextPage,
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Icon(Icons.arrow_forward_ios,
-                  size: 40, color: primaryGradient.first),
+              padding: const EdgeInsets.only(bottom: 10),
+              child:  CircleAvatar(
+                radius: 24,
+                backgroundColor: const Color.fromARGB(255, 9, 144, 14),
+                child: Icon(Icons.arrow_forward_ios, color: Colors.white),
+              ),
             ),
           ),
         ],
@@ -289,44 +358,58 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Widget _buildMailPage() {
+    
     return const IntroMail(); // You already built this as a full screen widget
   }
 
   Widget _buildDateCategory() {
+    
     return const IntroDatecategory(); // You already built this as a full screen widget
   }
 
   Widget _buildMeetSelection() {
     return const IntroMeetselection(); // You already built this as a full screen widget
   }
-   Widget _buildPartnersSelections() {
+
+  Widget _buildPartnersSelections() {
     return const InrtoPartneroption(); // You already built this as a full screen widget
   }
+
   Widget _buildHeightSelection() {
     return const HeightSelectionScreen(); // You already built this as a full screen widget
   }
-   Widget _buildChooseFoodies() {
-    return  InterestsScreen(); // You already built this as a full screen widget
+
+  Widget _buildChooseFoodies() {
+    return InterestsScreen(); // You already built this as a full screen widget
   }
-   Widget _buildChooseValues() {
-    return  ValuesSelectionScreen(); // You already built this as a full screen widget
+
+  Widget _buildChooseValues() {
+    return ValuesSelectionScreen(); // You already built this as a full screen widget
   }
-   Widget _buildLifestyleHabits() {
-    return  LifestyleHabitsScreen(); // You already built this as a full screen widget
+
+  Widget _buildLifestyleHabits() {
+    return LifestyleHabitsScreen(); // You already built this as a full screen widget============
   }
+
   Widget _buildFamilyScreen() {
-    return  FamilyPlanScreen(); // You already built this as a full screen widget
+    return FamilyPlanScreen(); // You already built this as a full screen widget
   }
-   Widget _buildImportantLife() {
-    return  ReligionSelectionScreen(); // You already built this as a full screen widget
+
+  Widget _buildImportantLife() {
+    return ReligionSelectionScreen(); // You already built this as a full screen widget==============
   }
+
   Widget _buildcause() {
-    return CausesScreen(); // You already built this as a full screen widget
+    return CausesScreen(); // You already built this as a full screen widget==================
   }
+
   Widget _buildDatePromt() {
     return DatePromptScreen(); // You already built this as a full screen widget
   }
 
+  Widget _buildOpeningMove() {
+    return OpeningMoveScreen(); // You already built this as a full screen widget
+  }
 
   Widget _buildGenderSelectionPage() {
     return _pageWrapper(
@@ -386,7 +469,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget _buildPhotoUploadPage() {
     return _pageWrapper(
       children: [
-        const Text("Do You Want Add Atleast 4 Photos, Weather Its You With Your Pet,Eating Your Fav Food or In A Place You Most Love"),
+        const Text(
+            "Do You Want Add Atleast 4 Photos, Weather Its You With Your Pet,Eating Your Fav Food or In A Place You Most Love"),
         const SizedBox(height: 20),
         Wrap(
           spacing: 10,
@@ -407,42 +491,42 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  Widget _buildPurposeSelectionPage() {
-    return _pageWrapper(
-      children: [
-        const Text("Choose A Mode To Find Your People"),
-        const SizedBox(height: 20),
-        _radioOption("Date", isPurpose: true),
-        _radioOption("BFF", isPurpose: true),
-        _radioOption("Bizz", isPurpose: true),
-        const SizedBox(height: 20),
-        const Text("You'll Only Be Shown To People In The Same Mode As You."),
-      ],
-    );
-  }
+  // Widget _buildPurposeSelectionPage() {
+  //   return _pageWrapper(
+  //     children: [
+  //       const Text("Choose A Mode To Find Your People"),
+  //       const SizedBox(height: 20),
+  //       _radioOption("Date", isPurpose: true),
+  //       _radioOption("BFF", isPurpose: true),
+  //       _radioOption("Bizz", isPurpose: true),
+  //       const SizedBox(height: 20),
+  //       const Text("You'll Only Be Shown To People In The Same Mode As You."),
+  //     ],
+  //   );
+  // }
 
-  Widget _buildFinalInfoPage() {
-    return _pageWrapper(
-      children: [
-        const Text("BFF Will Help You Find New Friendships"),
-        const SizedBox(height: 30),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: primaryGradient.first,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-              padding: const EdgeInsets.symmetric(vertical: 16),
-            ),
-            onPressed: () {},
-            child: const Text("Got It",
-                style: TextStyle(color: Colors.white, fontSize: 16)),
-          ),
-        )
-      ],
-    );
-  }
+  // Widget _buildFinalInfoPage() {
+  //   return _pageWrapper(
+  //     children: [
+  //       const Text("BFF Will Help You Find New Friendships"),
+  //       const SizedBox(height: 30),
+  //       SizedBox(
+  //         width: double.infinity,
+  //         child: ElevatedButton(
+  //           style: ElevatedButton.styleFrom(
+  //             backgroundColor: primaryGradient.first,
+  //             shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(10)),
+  //             padding: const EdgeInsets.symmetric(vertical: 16),
+  //           ),
+  //           onPressed: () {},
+  //           child: const Text("Got It",
+  //               style: TextStyle(color: Colors.white, fontSize: 16)),
+  //         ),
+  //       )
+  //     ],
+  //   );
+  // }
 
   Widget _radioOption(String value, {required bool isPurpose}) {
     bool isSelected =

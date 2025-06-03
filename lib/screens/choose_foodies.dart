@@ -27,10 +27,12 @@ class _InterestsScreenState extends State<InterestsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Stack(
+    return 
+    // Scaffold(
+    //   backgroundColor: Colors.white,
+    //   body: SafeArea(
+    //     child: 
+        Stack(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -38,16 +40,16 @@ class _InterestsScreenState extends State<InterestsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Text(
-                        'Skip',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color:Color(0xFF869E23),
-                        ),
-                      ),
-                    ),
+                    // Align(
+                    //   alignment: Alignment.topRight,
+                    //   child: Text(
+                    //     'Skip',
+                    //     style: TextStyle(
+                    //       fontSize: 10,
+                    //       color:Color(0xFF869E23),
+                    //     ),
+                    //   ),
+                    // ),
                     Text(
                       'Proud foodie or big on\nbouldering? Add interests to your profile to help you match with people who love them too.',
                       style: TextStyle(color: Colors.black87),
@@ -127,17 +129,17 @@ class _InterestsScreenState extends State<InterestsScreen> {
                     '${selectedInterests.length}/5 Selected',
                     style: TextStyle(fontWeight: FontWeight.w500),
                   ),
-                  SizedBox(height: 6),
-                  CircleAvatar(
-                    backgroundColor:Color(0xFF869E23), 
-                    child: Icon(Icons.arrow_forward, color: Colors.white),
-                  ),
+                  // SizedBox(height: 6),
+                  // CircleAvatar(
+                  //   backgroundColor:Color(0xFF869E23), 
+                  //   child: Icon(Icons.arrow_forward, color: Colors.white),
+                  // ),
                 ],
               ),
             ),
           ],
-        ),
-      ),
+        // ),
+      // ),
     );
   }
 

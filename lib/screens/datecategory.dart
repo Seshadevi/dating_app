@@ -19,17 +19,19 @@ class IntroDatecategoryState extends State<IntroDatecategory> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
+    return 
+    // Scaffold(
+    //   backgroundColor: Colors.white,
+    //   body: SafeArea(
+    //     child: 
+        Column(
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: screenHeight * 0.05),
+                  // SizedBox(height: screenHeight * 0.05),
                   // Text(
                   //   "What Brings You To \nHeartSync?",
                   //   style: TextStyle(
@@ -115,8 +117,8 @@ class IntroDatecategoryState extends State<IntroDatecategory> {
               ),
             ),
           ],
-        ),
-      ),
+        // ),
+      // ),
     );
   }
 

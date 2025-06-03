@@ -22,26 +22,29 @@ class _LifestyleHabitsScreenState extends State<LifestyleHabitsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Padding(
+    return 
+    // Scaffold(
+    //   backgroundColor: Colors.white,
+    //   body: SafeArea(
+    //     child: 
+        Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: SingleChildScrollView(
-            child: Column(
+            child: 
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Skip button
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Text(
-                    'Skip',
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: Colors.green.shade700,
-                    ),
-                  ),
-                ),
+                // Align(
+                //   alignment: Alignment.topRight,
+                //   child: Text(
+                //     'Skip',
+                //     style: TextStyle(
+                //       fontSize: 10,
+                //       color: Colors.green.shade700,
+                //     ),
+                //   ),
+                // ),
                 // SizedBox(height: 16),
 
                 // // Title
@@ -55,9 +58,10 @@ class _LifestyleHabitsScreenState extends State<LifestyleHabitsScreen> {
                 // SizedBox(height: 8),
                 Text(
                   "Share as much about your habits as you’re comfortable with.",
-                  style: TextStyle(fontSize: 14, color: Colors.black87),
+                  style: TextStyle(fontSize: 14, color: Colors.black87,),
+                  textAlign: TextAlign.start,
                 ),
-                // SizedBox(height: 16),
+                SizedBox(height: 10),
 
                 Text(
                   'Drinking',
@@ -91,8 +95,8 @@ class _LifestyleHabitsScreenState extends State<LifestyleHabitsScreen> {
               ],
             ),
           ),
-        ),
-      ),
+        // ),
+      // ),
     );
   }
 }

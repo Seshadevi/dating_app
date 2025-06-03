@@ -20,16 +20,18 @@ class IntroMeetselectionState extends State<IntroMeetselection> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
+    return 
+    // Scaffold(
+    //   backgroundColor: Colors.white,
+    //   body: 
+      Column(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: screenHeight * 0.05),
+                // SizedBox(height: screenHeight * 0.05),
                 // Text(
                 //   "who would you like to meet?",
                 //   style: TextStyle(
@@ -117,7 +119,7 @@ class IntroMeetselectionState extends State<IntroMeetselection> {
             ),
           ),
         ],
-      ),
+      // ),
     );
   }
 
