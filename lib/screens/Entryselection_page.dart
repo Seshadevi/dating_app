@@ -2,22 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dating/screens/logins/loginscreen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SelectPage extends ConsumerWidget {
   const SelectPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Get screen dimensions using MediaQuery
     final screenSize = MediaQuery.of(context).size;
     final screenWidth = screenSize.width;
     final screenHeight = screenSize.height;
 
-    // Define responsive breakpoints
     final isSmallScreen = screenWidth < 375;
-    final isMediumScreen = screenWidth >= 375 && screenWidth < 768;
-    final isLargeScreen = screenWidth >= 768;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -34,16 +29,11 @@ class SelectPage extends ConsumerWidget {
     );
   }
 
-  /// **Image Section with Responsive Design**
+  /// Top Image Section
   Widget _buildImageSection(double screenWidth, double screenHeight, bool isSmallScreen) {
-    // Calculate responsive dimensions
-    final containerHeight = isSmallScreen
-        ? screenHeight * 0.55  // 55% of screen height for small screens
-        : screenHeight * 0.60; // 60% for larger screens
-
-    final mainImageWidth = screenWidth * 0.6; // 60% of screen width
-    final mainImageHeight = containerHeight * 0.7; // 70% of container height
-
+    final containerHeight = isSmallScreen ? screenHeight * 0.55 : screenHeight * 0.60;
+    final mainImageWidth = screenWidth * 0.6;
+    final mainImageHeight = containerHeight * 0.7;
     final smallImageSize = isSmallScreen ? 45.0 : 60.0;
 
     return Container(
@@ -51,10 +41,7 @@ class SelectPage extends ConsumerWidget {
       height: containerHeight,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            Color(0xffB2D12E),
-            Color(0xff000000),
-          ],
+          colors: [Color(0xffB2D12E), Color(0xff000000)],
           stops: [0.0, 1.0],
           begin: AlignmentDirectional(0.0, -1.0),
           end: AlignmentDirectional(0, 1.0),
@@ -62,14 +49,12 @@ class SelectPage extends ConsumerWidget {
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(40.0),
           bottomRight: Radius.circular(40.0),
-          topLeft: Radius.circular(0.0),
-          topRight: Radius.circular(0.0),
         ),
       ),
       child: Stack(
         children: [
           Align(
-            alignment: AlignmentDirectional(0.0, 0.0),
+            alignment: Alignment.center,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
               child: Image.asset(
@@ -109,9 +94,9 @@ class SelectPage extends ConsumerWidget {
     );
   }
 
-  /// **Buttons Section with Responsive Design**
+  /// Social Login Buttons
   Widget _buildButtons(BuildContext context, double screenWidth, bool isSmallScreen) {
-    final horizontalPadding = screenWidth * 0.08; // 8% of screen width
+    final horizontalPadding = screenWidth * 0.08;
     final buttonSpacing = isSmallScreen ? 10.0 : 12.0;
 
     return Padding(
@@ -124,11 +109,11 @@ class SelectPage extends ConsumerWidget {
             const Color(0xffDB4437),
             screenWidth,
             isSmallScreen,
-                () {
+            () {
               print("Google Login Clicked");
             },
-            image: Image.asset(
-              'assets/google.png',
+            image: SvgPicture.asset(
+              'assets/google_logo.svg',
               width: isSmallScreen ? 20 : 24,
               height: isSmallScreen ? 20 : 24,
             ),
@@ -140,7 +125,7 @@ class SelectPage extends ConsumerWidget {
             const Color(0xff4267B2),
             screenWidth,
             isSmallScreen,
-                () {
+            () {
               print("Facebook Login Clicked");
             },
             icon: Icons.facebook,
@@ -152,7 +137,7 @@ class SelectPage extends ConsumerWidget {
             const Color(0xff25D366),
             screenWidth,
             isSmallScreen,
-                () {
+            () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -166,18 +151,17 @@ class SelectPage extends ConsumerWidget {
     );
   }
 
-  /// **Responsive Social Button**
+  /// Social Button Generator
   Widget _buildSocialButton(
-      String text,
-      String? svgAsset,
-      Color accentColor,
-      double screenWidth,
-      bool isSmallScreen,
-      VoidCallback onPressed, {
-        IconData? icon,
-        Widget? image,
-      }) {
-
+    String text,
+    String? svgAsset,
+    Color accentColor,
+    double screenWidth,
+    bool isSmallScreen,
+    VoidCallback onPressed, {
+    IconData? icon,
+    Widget? image,
+  }) {
     final buttonHeight = isSmallScreen ? 50.0 : 56.0;
     final borderRadius = buttonHeight / 2;
     final fontSize = isSmallScreen ? 14.0 : 16.0;
@@ -209,13 +193,10 @@ class SelectPage extends ConsumerWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
           ),
-          padding: EdgeInsets.symmetric(
-            horizontal: screenWidth * 0.05, // 5% of screen width
-          ),
+          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
         ),
         child: Row(
           children: [
-            // Icon/Logo/Image
             if (image != null)
               image
             else if (svgAsset != null)
@@ -226,15 +207,12 @@ class SelectPage extends ConsumerWidget {
                 colorFilter: ColorFilter.mode(accentColor, BlendMode.srcIn),
               )
             else if (icon != null)
-                Icon(
-                  icon,
-                  color: accentColor,
-                  size: iconSize,
-                ),
-
-            SizedBox(width: screenWidth * 0.04), // 4% of screen width
-
-            // Text
+              Icon(
+                icon,
+                color: accentColor,
+                size: iconSize,
+              ),
+            SizedBox(width: screenWidth * 0.04),
             Expanded(
               child: Text(
                 text,
@@ -252,15 +230,15 @@ class SelectPage extends ConsumerWidget {
     );
   }
 
-  /// **Responsive Disclaimer Text**
+  /// Disclaimer
   Widget _buildDisclaimerText(double screenWidth) {
-    final horizontalPadding = screenWidth * 0.08; // 8% of screen width
+    final horizontalPadding = screenWidth * 0.08;
     final fontSize = screenWidth < 375 ? 11.0 : 12.0;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: Text(
-        "by signing up, you agree to our terms. see \n how we use your data in our privacy \n policy. we never post to facebook.",
+        "By signing up, you agree to our Terms. See \n how we use your data in our Privacy \n Policy. We never post to Facebook.",
         textAlign: TextAlign.center,
         maxLines: 3,
         style: TextStyle(
@@ -269,66 +247,5 @@ class SelectPage extends ConsumerWidget {
         ),
       ),
     );
-  }
-}
-
-// Alternative approach using LayoutBuilder for more precise control
-class SelectPageAlternative extends ConsumerWidget {
-  const SelectPageAlternative({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final screenWidth = constraints.maxWidth;
-          final screenHeight = constraints.maxHeight;
-
-          return Column(
-            children: [
-              _buildImageSection(screenWidth, screenHeight),
-              const Spacer(),
-              _buildButtons(context, screenWidth),
-              const SizedBox(height: 20),
-              _buildDisclaimerText(screenWidth),
-              const SizedBox(height: 20),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildImageSection(double screenWidth, double screenHeight) {
-    return Container(
-      width: double.infinity,
-      height: screenHeight * 0.6, // 60% of available height
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xffB2D12E), Color(0xff000000)],
-          stops: [0.0, 1.0],
-          begin: AlignmentDirectional(0.0, -1.0),
-          end: AlignmentDirectional(0, 1.0),
-        ),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(40.0),
-          bottomRight: Radius.circular(40.0),
-          topLeft: Radius.circular(0.0),
-          topRight: Radius.circular(0.0),
-        ),
-      ),
-      // Stack content here...
-    );
-  }
-
-  Widget _buildButtons(BuildContext context, double screenWidth) {
-    // Responsive button implementation
-    return Container(); // Placeholder
-  }
-
-  Widget _buildDisclaimerText(double screenWidth) {
-    // Responsive disclaimer implementation
-    return Container(); // Placeholder
   }
 }

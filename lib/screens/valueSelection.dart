@@ -86,16 +86,16 @@ class _ValuesSelectionScreenState extends State<ValuesSelectionScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Text(
-                      'Skip',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.green.shade700,
-                      ),
-                    ),
-                  ),
+                  // Align(
+                  //   alignment: Alignment.topRight,
+                  //   child: Text(
+                  //     'Skip',
+                  //     style: TextStyle(
+                  //       fontSize: 14,
+                  //       color: Colors.green.shade700,
+                  //     ),
+                  //   ),
+                  // ),
                   // SizedBox(height: 12),
                   // Text(
                   //   'Tell Us What You\nValue In A Person',
@@ -131,32 +131,32 @@ class _ValuesSelectionScreenState extends State<ValuesSelectionScreen> {
             _buildBubble('Trust Worthy', 850, 130),
             Positioned(
               bottom: 20,
-              right: 20,
+              left: 20,
               child: Column(
                 children: [
                   Text(
                     '${selectedQualities.length}/3 Selected',
                     style: TextStyle(fontWeight: FontWeight.w500),
                   ),
-                  SizedBox(height: 6),
-                  CircleAvatar(
-                    backgroundColor: Colors.green.shade800,
-                    child: Icon(Icons.arrow_forward, color: Colors.white),
-                  ),
+                  // SizedBox(height: 6),
+                  // CircleAvatar(
+                  //   backgroundColor: Colors.green.shade800,
+                  //   child: Icon(Icons.arrow_forward, color: Colors.white),
+                  // ),
                 ],
               ),
             ),
-            Positioned(
-              bottom: 20,
-              left: 20,
-              child: Text(
-                'Skip',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.black54,
-                ),
-              ),
-            ),
+            // Positioned(
+            //   bottom: 20,
+            //   left: 20,
+            //   child: Text(
+            //     'Skip',
+            //     style: TextStyle(
+            //       fontSize: 14,
+            //       color: Colors.black54,
+            //     ),
+            //   ),
+            // ),
           ],
         // ),
       // ),

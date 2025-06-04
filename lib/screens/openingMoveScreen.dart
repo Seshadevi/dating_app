@@ -43,9 +43,10 @@ class _OpeningMoveScreenState extends State<OpeningMoveScreen> {
       //     ),
       //   ),
       // ),
-      // body: Padding(
-      //   padding: const EdgeInsets.all(20),
-      //   child: 
+      // body: 
+      Padding(
+        padding: const EdgeInsets.all(20),
+        child: 
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -139,7 +140,7 @@ class _OpeningMoveScreenState extends State<OpeningMoveScreen> {
               ],
             ),
           ],
-        // ),
+        ),
       // ),
     );
   }

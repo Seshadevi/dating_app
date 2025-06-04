@@ -15,7 +15,8 @@ class PremiumPlusTab extends StatelessWidget {
         PlanData("3 Month", "155.48 INR/WK", "SAVE 50%", isSelected: true),
         PlanData("6 Month", "69.77 INR/WK", ""),
       ],
-      note: "Your Payment Account Will Be Charged 1,899.00 INR for 3 Months Heart Sync Premium.",
+      note:
+          "Your Payment Account Will Be Charged 1,899.00 INR for 3 Months Heart Sync Premium.",
       buttonText: "Get 3 Months 1,899 INR",
     );
   }

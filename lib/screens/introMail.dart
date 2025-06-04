@@ -100,8 +100,8 @@ class IntroMail extends StatelessWidget {
             ),
             SizedBox(height: 20),
             Positioned(
-              top: 200,
-              bottom: 3000,
+              top: 300,
+              bottom: 2500,
               child: Image.asset(
                 'assets/mail_frame.png',
                 fit: BoxFit.contain,

@@ -231,7 +231,7 @@ Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child:  CircleAvatar(
                 radius: 24,
-                backgroundColor: const Color.fromARGB(255, 9, 144, 14),
+                backgroundColor: Colors.green.shade700,
                 child: Icon(Icons.arrow_forward_ios, color: Colors.white),
               ),
             ),

@@ -1,3 +1,4 @@
+import 'package:dating/screens/profile_screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 
 class PlanData {
@@ -71,7 +72,9 @@ class SubscriptionContent extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ProfileScreen()));
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xFF869E23),
               padding: const EdgeInsets.symmetric(vertical: 10),

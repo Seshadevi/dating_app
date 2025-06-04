@@ -23,10 +23,7 @@ class _LifestyleHabitsScreenState extends State<LifestyleHabitsScreen> {
   @override
   Widget build(BuildContext context) {
     return 
-    // Scaffold(
-    //   backgroundColor: Colors.white,
-    //   body: SafeArea(
-    //     child: 
+   
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: SingleChildScrollView(
@@ -34,28 +31,7 @@ class _LifestyleHabitsScreenState extends State<LifestyleHabitsScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Skip button
-                // Align(
-                //   alignment: Alignment.topRight,
-                //   child: Text(
-                //     'Skip',
-                //     style: TextStyle(
-                //       fontSize: 10,
-                //       color: Colors.green.shade700,
-                //     ),
-                //   ),
-                // ),
-                // SizedBox(height: 16),
-
-                // // Title
-                // Text(
-                //   "Let’s Talk About Your\nLifestyle And Habits",
-                //   style: TextStyle(
-                //     fontSize: 20,
-                //     fontWeight: FontWeight.bold,
-                //   ),
-                // ),
-                // SizedBox(height: 8),
+               
                 Text(
                   "Share as much about your habits as you’re comfortable with.",
                   style: TextStyle(fontSize: 14, color: Colors.black87,),
@@ -84,14 +60,7 @@ class _LifestyleHabitsScreenState extends State<LifestyleHabitsScreen> {
                 ),
                 SizedBox(height: 10),
 
-                // Center(
-                //   child: CircleAvatar(
-                //     radius: 24,
-                //     backgroundColor: Colors.green.shade800,
-                //     child: Icon(Icons.arrow_forward, color: Colors.white),
-                //   ),
-                // ),
-                // SizedBox(height: 20),
+               
               ],
             ),
           ),
