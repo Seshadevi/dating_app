@@ -1,3 +1,4 @@
+import 'package:dating/screens/settings/settings_page.dart';
 import 'package:dating/screens/profile_screens/tabbar_content_widgets.dart';
 import 'package:flutter/material.dart';
 import '../profile_screens/profile_bottomNavigationbar.dart';
@@ -50,8 +51,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             value: 0.26,
                             strokeWidth: 3,
                             backgroundColor: Colors.grey[300],
-                            valueColor:
-                                const AlwaysStoppedAnimation<Color>(Colors.pink),
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                                Colors.pink),
                           ),
                         ),
                         const CircleAvatar(
@@ -95,7 +96,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: _CircleButton(
                               icon: Icons.settings,
                               label: 'SETTINGS',
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            SettingsScreen()));
+                              },
                             ),
                           ),
                           Positioned(
@@ -131,8 +138,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       const Text(
                         'Heart Sync Platinum',
-                        style:
-                            TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 4),
                       const Text(
@@ -187,15 +194,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // 🧭 TabBar Section - Visible after button click with button style tabs
               if (showTabBar) ...[
                 Container(
-                  margin:
-                       EdgeInsets.symmetric(vertical: 5, horizontal: 1),
+                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 1),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child:  TabBar(
+                  child: TabBar(
                     indicator: BoxDecoration(
-                      color:Color.fromARGB(255, 128, 154, 10),
+                      color: Color.fromARGB(255, 128, 154, 10),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     labelColor: Colors.white,

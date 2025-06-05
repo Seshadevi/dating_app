@@ -1,3 +1,6 @@
+import 'package:dating/screens/profile_screens/chat_pay_Screen.dart';
+import 'package:dating/screens/profile_screens/discover_screen.dart';
+import 'package:dating/screens/profile_screens/heartsync_screen.dart';
 import 'package:dating/screens/profile_screens/liked_Screen.dart';
 import 'package:dating/screens/profile_screens/profile_screen.dart';
 import 'package:flutter/material.dart';
@@ -24,17 +27,18 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
             context, MaterialPageRoute(builder: (context) => ProfileScreen()));
         break;
       case 1:
-        Navigator.pushNamed(context, '/people');
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => DiscoverScreen()));
         break;
       case 2:
-        Navigator.pushNamed(context, '/people');
+        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>MyHeartsyncPage()));
         break;
       case 3:
        Navigator.push(
             context, MaterialPageRoute(builder: (context) => LikedYouScreen()));
         break;
       case 4:
-        Navigator.pushNamed(context, '/chat');
+        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>MessagesScreen()));
         break;
     }
   }
