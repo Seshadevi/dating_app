@@ -1,4 +1,5 @@
 import 'package:dating/screens/feedback/feedback_screen.dart';
+import 'package:dating/screens/notifications/notifications.dart';
 import 'package:dating/screens/settings/videoAutoPlayScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -48,28 +49,28 @@ class SettingsScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Text('Change Your Location To Connect With People In Other Locations'),
             const SizedBox(height: 8),
-            GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => const VideoAutoplayScreen()),
-                            );
-                          },
-                          child: _simpleArrowTile("Video Autoplay Settings"),
-                        ),
-
-              GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => Feedbackpage()),
-                            );
-                          },
-           child: _simpleArrowTile("Notification Setting"),
-              ),
-            _simpleArrowTile("Payment Setting"),
-            _simpleArrowTile("Content And FAQ"),
-            _simpleArrowTile("Security And Privacy"),
+           
+            _simpleArrowTile("Video Autoplay Settings",(){
+             Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const VideoAutoplayScreen()),
+                        );
+                       }),
+           _simpleArrowTile("Notification Setting",(){
+            Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => NotificationsScreen()),
+                        );
+                       }),
+             
+            _simpleArrowTile("Payment Setting",(){
+               Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => Feedbackpage()),
+                        );
+            }),
+            _simpleArrowTile("Content And FAQ",(){}),
+            _simpleArrowTile("Security And Privacy",(){}),
             const SizedBox(height: 16),
             _button("Log Out",const Color.fromARGB(255, 59, 124, 18),Colors.white),
             const SizedBox(height: 10),
@@ -188,20 +189,23 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _simpleArrowTile(String title) {
-    return Container(
-      margin: const EdgeInsets.only(top: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color.fromARGB(255, 59, 124, 18)),
-      ),
-      child: Row(
-        children: [
-          Expanded(child: Text(title)),
-          const Icon(Icons.arrow_forward_ios, size: 20),
-        ],
+  Widget _simpleArrowTile(String title,VoidCallback onTap) {
+    return GestureDetector(
+      onTap:onTap,
+      child: Container(
+        margin: const EdgeInsets.only(top: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF5F5F5),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color.fromARGB(255, 59, 124, 18)),
+        ),
+        child: Row(
+          children: [
+            Expanded(child: Text(title)),
+            const Icon(Icons.arrow_forward_ios, size: 20),
+          ],
+        ),
       ),
     );
   }
