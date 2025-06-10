@@ -1,5 +1,8 @@
 import 'package:dating/screens/feedback/feedback_screen.dart';
 import 'package:dating/screens/notifications/notifications.dart';
+import 'package:dating/screens/settings/contactand_faq.dart';
+import 'package:dating/screens/settings/privacusetting_screen.dart';
+import 'package:dating/screens/settings/typesOfconnections.dart';
 import 'package:dating/screens/settings/videoAutoPlayScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +26,16 @@ class SettingsScreen extends StatelessWidget {
           children: [
             _greenButtonTile("Add Your Email", "Sign Up to Be Notified With Important Event Type Updates"),
             const SizedBox(height: 16),
-            _tileWithTextArrow("Type Of Connection", "Date"),
+            GestureDetector(
+              onTap: (){
+                Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const Typeofconnection()),
+                        );
+              },
+           
+           child:  _tileWithTextArrow("Type Of Connection", "Date"),
+            ),
             const SizedBox(height: 16),
             _tileWithSwitch("Date Mode",  true),
             const SizedBox(height: 8),
@@ -69,8 +81,19 @@ class SettingsScreen extends StatelessWidget {
                         MaterialPageRoute(builder: (_) => Feedbackpage()),
                         );
             }),
-            _simpleArrowTile("Content And FAQ",(){}),
-            _simpleArrowTile("Security And Privacy",(){}),
+            _simpleArrowTile("Content And FAQ",(){
+              Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => Contactandfaq()),
+                        );
+            }),
+            _simpleArrowTile("Security And Privacy",(){
+              Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => Privacysetting()),
+                        );
+              
+            }),
             const SizedBox(height: 16),
             _button("Log Out",const Color.fromARGB(255, 59, 124, 18),Colors.white),
             const SizedBox(height: 10),

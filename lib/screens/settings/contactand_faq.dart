@@ -1,3 +1,4 @@
+import 'package:dating/screens/settings/privacusetting_screen.dart';
 import 'package:flutter/material.dart';
 
 class Contactandfaq extends StatefulWidget {
@@ -33,50 +34,43 @@ class ContactandfaqState extends State<Contactandfaq> {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [           
-           // Way You Can Log In section
+          children: [
+            // Way You Can Log In section
             _buildMenuOption(
               title: 'FAQ',
-              onTap: () {
-             
-              },
+              onTap: () {},
             ),
-           
+
             const SizedBox(height: 10),
-            
+
             // Privacy Settings option
             _buildMenuOption(
               title: 'Contact US',
-              onTap: () {
-               
-              },
+              onTap: () {},
             ),
-             const SizedBox(height: 10),
-            
+            const SizedBox(height: 10),
+
             // Privacy Settings option
             _buildMenuOption(
               title: 'Terms Of Service',
-              onTap: () {
-                
-              },
+              onTap: () {},
             ),
-             const SizedBox(height: 20),
-            
+            const SizedBox(height: 20),
+
             // Privacy Settings option
             _buildMenuOption(
               title: 'Privacy Policy',
               onTap: () {
-               
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => Privacysetting()));
               },
             ),
-             const SizedBox(height: 20),
-            
+            const SizedBox(height: 20),
+
             // Privacy Settings option
             _buildMenuOption(
               title: 'Advertising',
-              onTap: () {
-                
-              },
+              onTap: () {},
             ),
           ],
         ),

@@ -1,3 +1,4 @@
+import 'package:dating/screens/settings/marketing_permissions_screen.dart';
 import 'package:flutter/material.dart';
 
 class Privacysetting extends StatefulWidget {
@@ -67,7 +68,7 @@ class _PrivacysettingState extends State<Privacysetting> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  
+
                   // Marketing Permission Section with Toggle
                   _buildPermissionCardWithToggle(
                     title: 'Marketing Permission',
@@ -79,16 +80,18 @@ class _PrivacysettingState extends State<Privacysetting> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  
-                  // Personalise Marketing Permission Section  
+
+                  // Personalise Marketing Permission Section
                   _buildMenuOption(
                     title: 'Personalise Marketing Permission',
                     onTap: () {
+                       Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => Marketingpartners()));
                       print('Personalise Marketing Permission tapped');
                     },
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Description text
                   Text(
                     'These Trackers Let Us And Our Marketing Partners Improve Marketing Campaigns On Other Apps And Websites.',
@@ -99,7 +102,7 @@ class _PrivacysettingState extends State<Privacysetting> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   // Strictly Necessary Permission Section with Toggle
                   _buildPermissionCardWithToggle(
                     title: 'Strictly Necessary Permission',
@@ -114,9 +117,9 @@ class _PrivacysettingState extends State<Privacysetting> {
                       print('View Strictly Necessary Permissions tapped');
                     },
                   ),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   // Bottom description
                   Text(
                     'These Trackers Are Needed For The App To Function So They Can\'t Be Switched Off. They Provide Essential Services Like Letting You Log In With Facebook.',
@@ -131,7 +134,7 @@ class _PrivacysettingState extends State<Privacysetting> {
               ),
             ),
           ),
-          
+
           // Bottom buttons
           Container(
             padding: const EdgeInsets.all(16.0),
@@ -160,7 +163,7 @@ class _PrivacysettingState extends State<Privacysetting> {
                       print('Accept pressed');
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isAccepted 
+                      backgroundColor: isAccepted
                           ? const Color(0xFF2E7D32) // Darker green when pressed
                           : const Color(0xFF4CAF50), // Normal green
                       foregroundColor: Colors.white,
@@ -191,17 +194,14 @@ class _PrivacysettingState extends State<Privacysetting> {
                       print('Reject All pressed');
                     },
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: isRejected 
-                          ? Colors.white 
-                          : Colors.black87,
-                      backgroundColor: isRejected 
-                          ? Colors.red[600] 
-                          : Colors.white,
+                      foregroundColor:
+                          isRejected ? Colors.white : Colors.black87,
+                      backgroundColor:
+                          isRejected ? Colors.red[600] : Colors.white,
                       side: BorderSide(
-                        color: isRejected 
-                            ? Colors.red[600]! 
-                            : Colors.grey[400]!
-                      ),
+                          color: isRejected
+                              ? Colors.red[600]!
+                              : Colors.grey[400]!),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -230,15 +230,15 @@ class _PrivacysettingState extends State<Privacysetting> {
     required ValueChanged<bool>? onChanged,
   }) {
     return Container(
-       width: double.infinity,
+      width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(25.0),
         border: Border.all(
-            color: const Color.fromARGB(255, 163, 181, 6),
-            width: 1,
-          ),
+          color: const Color.fromARGB(255, 163, 181, 6),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.1),
