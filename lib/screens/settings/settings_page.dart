@@ -1,5 +1,6 @@
 import 'package:dating/screens/feedback/feedback_screen.dart';
 import 'package:dating/screens/notifications/notifications.dart';
+import 'package:dating/screens/profile_screens/profile_screen.dart';
 import 'package:dating/screens/settings/contactand_faq.dart';
 import 'package:dating/screens/settings/privacusetting_screen.dart';
 import 'package:dating/screens/settings/typesOfconnections.dart';
@@ -18,7 +19,12 @@ class SettingsScreen extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context)=> ProfileScreen()));
+          }
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -95,9 +101,14 @@ class SettingsScreen extends StatelessWidget {
               
             }),
             const SizedBox(height: 16),
-            _button("Log Out",const Color.fromARGB(255, 59, 124, 18),Colors.white),
+            GestureDetector(
+              onTap: ()=> _showLogoutDialog(context),
+              child: _button("Log Out",const Color.fromARGB(255, 59, 124, 18),Colors.white),),
             const SizedBox(height: 10),
-            _button("Delete Account",  Color(0xffE9F1C4), Colors.black),
+              GestureDetector(
+              onTap: () => _showDeleteAccountDialog(context),
+              child: _button("Delete Account",  Color(0xffE9F1C4), Colors.black)
+            ),
             const SizedBox(height: 20),
             const Text("Ever Qupid", style: TextStyle(fontWeight: FontWeight.bold)),
             const Text("Version 6.4.0.0\nCreated With Love.", textAlign: TextAlign.center),
@@ -105,6 +116,230 @@ class SettingsScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+   void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 59, 124, 18),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 20),
+                const Text(
+                  "We'll Be Here If You Need Us Again",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  "You Can Use Any Of Your Linked Login Methods To Come Back Anytime",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.g_mobiledata,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Text(
+                      "Google\nKrish",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                Container(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Add new login method functionality
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white.withOpacity(0.2),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                    ),
+                    child: const Text("Add New Login Method"),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _performLogout(context);
+                  },
+                  child: const Text(
+                    "Log Out",
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showDeleteAccountDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 59, 124, 18),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 20),
+                const Text(
+                  "Ready To Say Good Bye?",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  "No Problem, But We'd Love To Know Why You're Leaving Us.",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                _feedbackButton("FOUND SOMEONE", () {
+                  // Handle found someone feedback
+                  _performDeleteAccount(context);
+                }),
+                const SizedBox(height: 12),
+                _feedbackButton("BILLING PROBLEMS", () {
+                  // Handle billing problems feedback
+                  _performDeleteAccount(context);
+                }),
+                const SizedBox(height: 12),
+                _feedbackButton("DIDN'T HAVE A GREAT EXPERIENCE", () {
+                  // Handle bad experience feedback
+                  _performDeleteAccount(context);
+                }),
+                const SizedBox(height: 12),
+                _feedbackButton("OTHER", () {
+                  // Handle other feedback
+                  _performDeleteAccount(context);
+                }),
+                const SizedBox(height: 12),
+                _feedbackButton("CANCEL", () {
+                  // Handle other feedback
+                  _performDeleteAccount(context);
+                }),
+                const SizedBox(height: 10),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _feedbackButton(String text, VoidCallback onPressed) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Container(       
+            child: TextButton(
+            onPressed: onPressed,
+            style: TextButton.styleFrom(
+            foregroundColor: Colors.white,               
+            ),
+            child: Text(text),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _performLogout(BuildContext context) {
+    // Close the dialog
+    Navigator.of(context).pop();
+    
+    // Add your actual logout logic here
+    // For example: clear user data, navigate to login screen, etc.
+    
+    // Example navigation to login screen:
+    // Navigator.of(context).pushAndRemoveUntil(
+    //   MaterialPageRoute(builder: (context) => LoginScreen()),
+    //   (Route<dynamic> route) => false,
+    // );
+    
+    // For now, just show a snackbar
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Logged out successfully')),
+    );
+  }
+
+  void _performDeleteAccount(BuildContext context) {
+    // Close the dialog
+    Navigator.of(context).pop();
+    
+    // Add your actual delete account logic here
+    // For example: delete user data, show confirmation, etc.
+    
+    // For now, just show a snackbar
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Account deletion initiated')),
     );
   }
 

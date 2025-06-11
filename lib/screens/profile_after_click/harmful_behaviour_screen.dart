@@ -1,3 +1,4 @@
+import 'package:dating/screens/profile_after_click/helpfull_resource.dart';
 import 'package:dating/screens/profile_after_click/irl_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,10 @@ class HarmfulBehaviorScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         title: const Text("Harmful Behavior", style: TextStyle(color: Colors.black)),
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -148,7 +152,7 @@ class HarmfulBehaviorScreen extends StatelessWidget {
         // Example navigation (can modify as needed)
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const BumbleToIrlScreen()),
+          MaterialPageRoute(builder: (context) => const HelpfulResourcesScreen()),
         );
       },
       style: ElevatedButton.styleFrom(

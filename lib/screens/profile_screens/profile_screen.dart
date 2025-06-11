@@ -1,6 +1,7 @@
 import 'package:dating/screens/profile_after_click/premium.dart';
 import 'package:dating/screens/settings/settings_page.dart';
 import 'package:dating/screens/profile_screens/tabbar_content_widgets.dart';
+import 'package:dating/widgets/profile_header_layout.dart';
 import 'package:flutter/material.dart';
 import '../profile_screens/profile_bottomNavigationbar.dart';
 
@@ -113,11 +114,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               label: 'Complete Profile',
                               hasDot: true,
                               onTap: () {
-                                //  Navigator.pushReplacement(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //         builder: (context) =>
-                                //             ()));
+                                 Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>ProfileHeaderLayout
+                                            ()));
                               },
                             ),
                           ),
@@ -128,11 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               icon: Icons.security,
                               label: 'SAFETY',
                               onTap: () {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            UpgradePremiumPage()));
+                               
                               },
                             ),
                           ),

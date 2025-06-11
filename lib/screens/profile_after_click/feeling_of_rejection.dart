@@ -1,4 +1,5 @@
 import 'package:dating/screens/profile_after_click/harmful_behaviour_screen.dart';
+import 'package:dating/screens/profile_after_click/helpfull_resource.dart';
 import 'package:flutter/material.dart';
 
 
@@ -15,7 +16,10 @@ class FeelingOfRejectionScreen extends StatelessWidget {
         elevation: 0,
         title: const Text('Feeling Of Rejection',
             style: TextStyle(color: Colors.black)),
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -60,7 +64,7 @@ class FeelingOfRejectionScreen extends StatelessWidget {
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HarmfulBehaviorScreen()));
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HelpfulResourcesScreen()));
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.black,

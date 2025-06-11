@@ -2,6 +2,9 @@ import 'package:dating/screens/notifications/expiring_matches_screen.dart';
 import 'package:dating/screens/notifications/new_admirers_screen.dart';
 import 'package:dating/screens/notifications/new_matches_screen.dart';
 import 'package:dating/screens/notifications/new_messagea_screen.dart';
+import 'package:dating/screens/notifications/researchandsurveys.dart';
+import 'package:dating/screens/notifications/the_good_stuff.dart';
+import 'package:dating/screens/notifications/top_profile_tips.dart';
 import 'package:flutter/material.dart';
 
 class NotificationsScreen extends StatelessWidget {
@@ -134,7 +137,12 @@ class NotificationsScreen extends StatelessWidget {
 
             // Section 3: Profile Notifications
             sectionTitle("Profile Notifications"),
-            capsuleButton("Top Profile Tips", () {}),
+            capsuleButton("Top Profile Tips", () {
+              Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => TopProfileTips()),
+                        );
+            }),
             descriptionText(
               "Turning off this notification means you will not be notified of tips and tricks for maximising your Heart Sync experience.",
             ),
@@ -142,8 +150,18 @@ class NotificationsScreen extends StatelessWidget {
             // Section 4: Other Notifications
             sectionTitle("Other Notifications"),
             capsuleButton("Heart Events", () {}),
-            capsuleButton("The Good Stuff", () {}),
-            capsuleButton("Research And Surveys", () {}),
+            capsuleButton("The Good Stuff", () {
+               Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => TheGoodStuff()),
+                        );
+            }),
+            capsuleButton("Research And Surveys", () {
+               Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => Researchandsurveys()),
+                        );
+            }),
             descriptionText(
               "Turning off this notification means you will not be notified of special Heart Sync events held in your area.",
             ),

@@ -12,7 +12,10 @@ class BumbleToIrlScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         title: const Text("Bumble To IRL", style: TextStyle(color: Colors.black)),
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

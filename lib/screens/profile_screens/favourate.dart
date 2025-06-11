@@ -114,7 +114,7 @@ class ProfileCard extends StatelessWidget {
               Align(
                   alignment: Alignment.bottomCenter,
                   child: Image.asset(
-                    'assets/images/Heart.png',
+                    'assets/Red_Heart.png',
                     height: 50,
                     width: 50,
                   ))

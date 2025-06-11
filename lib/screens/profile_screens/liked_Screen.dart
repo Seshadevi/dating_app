@@ -1,3 +1,4 @@
+import 'package:dating/screens/profile_screens/favourate.dart';
 import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
 import 'package:flutter/material.dart';
 
@@ -59,6 +60,7 @@ class LikedYouScreen extends StatelessWidget {
               child: TextButton(
                 onPressed: () {
                   // Add your action here
+                  Navigator.push(context, MaterialPageRoute(builder:(context) => FavoritesScreen(),));
                 },
                 child: const Text(
                   "Try A Spotlight",

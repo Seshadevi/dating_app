@@ -1,4 +1,5 @@
 import 'package:dating/screens/profile_after_click/feeling_of_rejection.dart';
+import 'package:dating/screens/profile_after_click/helpfull_resource.dart';
 import 'package:flutter/material.dart';
 
 class MentalExhaustionScreen extends StatelessWidget {
@@ -15,7 +16,10 @@ class MentalExhaustionScreen extends StatelessWidget {
           'Mental Exhaustion',
           style: TextStyle(color: Colors.black),
         ),
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -63,7 +67,7 @@ class MentalExhaustionScreen extends StatelessWidget {
                 Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => FeelingOfRejectionScreen()));
+                        builder: (context) => HelpfulResourcesScreen()));
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.black,
