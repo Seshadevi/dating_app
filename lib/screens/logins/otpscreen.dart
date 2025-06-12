@@ -4,7 +4,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import '../location_screen.dart';
 
 class OTPScreen extends StatefulWidget {
-  const OTPScreen({super.key});
+  const OTPScreen({super.key, required String phoneNumber});
 
   @override
   State<OTPScreen> createState() => _OTPScreenState();

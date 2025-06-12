@@ -17,45 +17,12 @@ class GenderNotifier extends StateNotifier<GenderModel> {
     final loadingState = ref.read(loadingProvider.notifier);
     try {
       loadingState.state = true;
-      // Retrieve the token from SharedPreferences
+     
       print('get gender');
 
       
-    // ✅ Get token directly from loginProvider model
-    final currentUser = ref.read(loginProvider);
-    final token = currentUser.data?.first.accessToken;
-
-    if (token == null || token.isEmpty) {
-      throw Exception("Access token is missing. Please log in again.");
-    }
-    
-      print('Retrieved Token from gender: $token');
-      // Initialize RetryClient for handling retries
-      final client = RetryClient(
-        http.Client(),
-        retries: 3, // Retry up to 3 times
-        when: (response) =>
-            response.statusCode == 401 || response.statusCode == 400,
-        onRetry: (req, res, retryCount) async {
-          if (retryCount == 0 &&
-              (res?.statusCode == 401 || res?.statusCode == 400)) {
-            String? newAccessToken =
-                await ref.read(loginProvider.notifier).restoreAccessToken();
-              if (newAccessToken != null && newAccessToken.isNotEmpty) {
-                req.headers['Authorization'] = 'Bearer $newAccessToken';
-                print("New token applied: $newAccessToken");
-              } else {
-                print("Failed to retrieve new access token.");
-              }
-          }
-        },
-      );
-      final response = await client.get(
-        Uri.parse(Dgapi.gender),
-        headers: {
-          "Authorization": "Bearer $token",
-        },
-      );
+    final response = await http.get(
+        Uri.parse(Dgapi.gender));
       final responseBody = response.body;
       print('Get gender Status Code: ${response.statusCode}');
       print('Get gender Response Body: $responseBody');
