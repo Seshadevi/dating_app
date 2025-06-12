@@ -141,7 +141,7 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
             child: Row(
               children: [
                 Text(
-                  '32% Complete',
+                  '20% Complete',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,

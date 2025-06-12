@@ -1,5 +1,14 @@
 import "package:flutter/material.dart";
-class ProfileStrengthDetailScreen extends StatelessWidget {
+
+
+class ProfileStrengthDetailScreen extends StatefulWidget {
+  const ProfileStrengthDetailScreen({Key? key}) : super(key: key);
+
+  @override
+  State<ProfileStrengthDetailScreen> createState() => _ProfileStrengthDetailScreenState();
+}
+
+class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -8,10 +17,10 @@ class ProfileStrengthDetailScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
+        title: const Text(
           'Profile Strength',
           style: TextStyle(
             color: Colors.black,
@@ -21,119 +30,273 @@ class ProfileStrengthDetailScreen extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Progress indicator
-            Container(
-              padding: EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Color(0xFFFFF0F5),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Color(0xFFFFB6C1), width: 1),
-              ),
-              child: Column(
-                children: [
-                  CircularProgressIndicator(
-                    value: 0.32,
-                    backgroundColor: Colors.grey[300],
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.pink),
-                    strokeWidth: 8,
+            // Profile circle with percentage
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(
+                  width: 120,
+                  height: 120,
+                  child: CircularProgressIndicator(
+                    value: 0.2,
+                    strokeWidth: 6,
+                    backgroundColor: Colors.grey[200],
+                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.cyan),
                   ),
-                  SizedBox(height: 16),
-                  Text(
-                    '32% Complete',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      image: const DecorationImage(
+                        image: NetworkImage('https://via.placeholder.com/100x100/FF8C42/FFFFFF?text=User'),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Complete your profile to get more matches',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
+                ),
+                Positioned(
+                  bottom: 0,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.cyan,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    textAlign: TextAlign.center,
+                    child: const Text(
+                      '20%',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            SizedBox(height: 24),
-            Text(
-              'What\'s Missing',
+            const SizedBox(height: 30),
+            
+            // Title and subtitle
+            const Text(
+              'Build Your Profile With Your Favorites',
               style: TextStyle(
                 fontSize: 20,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
                 color: Colors.black,
               ),
+              textAlign: TextAlign.center,
             ),
-            SizedBox(height: 16),
-            _buildMissingItem('Add more photos', '4 more photos needed'),
-            _buildMissingItem('Complete your bio', 'Write something about yourself'),
-            _buildMissingItem('Add interests', 'Show what you love'),
-            _buildMissingItem('Get verified', 'Increase your credibility'),
-            _buildMissingItem('Add prompts', 'Show your personality'),
+            const SizedBox(height: 8),
+            const Text(
+              'It\'s Quick To Set Up And Will Boost Your Chances Of Matching',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 30),
+            
+            // Profile cards grid
+            GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              crossAxisSpacing: 15,
+              mainAxisSpacing: 15,
+              childAspectRatio: 1.1,
+              children: [
+                _buildProfileCard(
+                  icon: Icons.person_outline,
+                  title: 'Bio',
+                  subtitle: 'Not Written',
+                  isCompleted: false,
+                  iconColor: Colors.blue,
+                ),
+                _buildProfileCard(
+                  icon: Icons.verified_user_outlined,
+                  title: 'Get Verified',
+                  subtitle: 'Not Verified',
+                  isCompleted: false,
+                  iconColor: Colors.blue,
+                ),
+                _buildProfileCard(
+                  icon: Icons.person,
+                  title: 'Basic Info',
+                  subtitle: '1 Of 5 Added',
+                  isCompleted: false,
+                  iconColor: Colors.red,
+                ),
+                _buildProfileCard(
+                  icon: Icons.info_outline,
+                  title: 'More About You',
+                  subtitle: '3 Of 9 Added',
+                  isCompleted: false,
+                  iconColor: Colors.orange,
+                  hasMoreInfo: true,
+                ),
+                _buildProfileCard(
+                  icon: Icons.photo_library_outlined,
+                  title: 'Photos',
+                  subtitle: '1 Of 4 Added',
+                  isCompleted: false,
+                  iconColor: Colors.green,
+                ),
+                _buildProfileCard(
+                  icon: Icons.chat_bubble_outline,
+                  title: 'Prompts',
+                  subtitle: '3 Of 9 Added',
+                  isCompleted: false,
+                  iconColor: Colors.blue,
+                ),
+              ],
+            ),
+            const SizedBox(height: 15),
+            
+            // Interests card (single width)
+            _buildSingleProfileCard(
+              icon: Icons.interests_outlined,
+              title: 'Interests',
+              subtitle: '0 Of 5 Added',
+              isCompleted: false,
+              iconColor: Colors.teal,
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildMissingItem(String title, String subtitle) {
+  Widget _buildProfileCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required bool isCompleted,
+    required Color iconColor,
+    bool hasMoreInfo = false,
+  }) {
     return Container(
-      margin: EdgeInsets.only(bottom: 12),
-      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        border: Border.all(
+          color: isCompleted ? Colors.green : Colors.yellow[700]!,
+          width: 2,
+        ),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!, width: 1),
+        color: Colors.white,
       ),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: Colors.yellow[100],
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.warning_amber_rounded,
-              color: Colors.orange,
-              size: 24,
-            ),
-          ),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Stack(
               children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
-                  ),
+                Icon(
+                  icon,
+                  size: 40,
+                  color: iconColor,
                 ),
-                SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
+                if (hasMoreInfo)
+                  Positioned(
+                    right: -5,
+                    top: -5,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: Colors.orange,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text(
+                        'MORE INFO',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 8,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
               ],
             ),
-          ),
-          Icon(Icons.arrow_forward_ios, color: Colors.grey[400], size: 16),
-        ],
+            const SizedBox(height: 12),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              subtitle,
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSingleProfileCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required bool isCompleted,
+    required Color iconColor,
+  }) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: isCompleted ? Colors.green : Colors.yellow[700]!,
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 40,
+              color: iconColor,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              subtitle,
+              style: const TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
