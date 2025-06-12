@@ -1,13 +1,20 @@
+import 'package:dating/provider/googe_sign_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dating/screens/logins/loginscreen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class SelectPage extends ConsumerWidget {
+class SelectPage extends ConsumerStatefulWidget {
   const SelectPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SelectPage> createState() => _SelectPageState();
+}
+
+class _SelectPageState extends ConsumerState<SelectPage> {
+  
+  @override
+  Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final screenWidth = screenSize.width;
     final screenHeight = screenSize.height;
@@ -109,9 +116,23 @@ class SelectPage extends ConsumerWidget {
             const Color(0xffDB4437),
             screenWidth,
             isSmallScreen,
-            () {
-              print("Google Login Clicked");
-            },
+            ()  async {
+                final controller = ref.read(googleSignInControllerProvider);
+                final userCredential = await controller.signInWithGoogle();
+
+                if (userCredential != null) {
+                  
+                  // Navigate to home or show success
+                  print("Signed in as: ${userCredential.user?.email}");
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Welcome ${userCredential.user?.email}!")),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Google Sign-In failed")),
+                  );
+                }
+              },
             image: SvgPicture.asset(
               'assets/google_logo.svg',
               width: isSmallScreen ? 20 : 24,

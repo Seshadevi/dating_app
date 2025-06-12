@@ -1,17 +1,23 @@
+import 'package:dating/provider/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:dating/screens/logins/otpscreen.dart';
 
-class LoginScreen extends StatefulWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dating/provider/loginProvider.dart';
+
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  String phoneNumber = '';
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  late String phoneNumber = '';
   final TextEditingController controller = TextEditingController();
+
+  // Remove the initState and listener completely
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(width: 6),
                         Expanded(
                           child: Text(
-                            "We Never Share This With Anyone And It Won’t Be On Your Profile.",
+                            "We Never Share This With Anyone And It Won't Be On Your Profile.",
                             style: TextStyle(fontSize: 12, color: Colors.grey),
                           ),
                         ),
@@ -87,23 +93,14 @@ class _LoginScreenState extends State<LoginScreen> {
             right: 0,
             child: Center(
               child: GestureDetector(
-                // onTap: () {
-                //   if (phoneNumber.isNotEmpty) {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(builder: (_) => const OTPScreen()),
-                //     );
-                //   }
-                // },
                 onTap: () {
-  if (phoneNumber.isNotEmpty) {
-    showDialog(
-      context: context,
-      builder: (_) => _buildVerifyDialog(context, phoneNumber),
-    );
-  }
-},
-
+                  if (phoneNumber.isNotEmpty) {
+                    showDialog(
+                      context: context,
+                      builder: (_) => _buildVerifyDialog(context, phoneNumber),
+                    );
+                  }
+                },
                 child: Container(
                   padding: const EdgeInsets.all(22),
                   decoration: const BoxDecoration(
@@ -114,8 +111,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       end: Alignment.bottomRight,
                     ),
                   ),
-                  child: const Icon(Icons.arrow_forward_ios
-, color: Colors.white, size: 28),
+                  child: const Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.white,
+                    size: 28,
+                  ),
                 ),
               ),
             ),
@@ -124,71 +124,77 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-  Widget _buildVerifyDialog(BuildContext context, String number) {
-  return Dialog(
-    backgroundColor: Colors.transparent,
-    insetPadding: const EdgeInsets.symmetric(horizontal: 30),
-    child: Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFB6E11D), Color(0xFF2B2B2B)],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text(
-            "We Need To Verify Your Number",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 10),
-          Text(
-            "We Need To Make Sure That $number\nIs Your Number",
-            style: const TextStyle(
-              color: Colors.white70,
-              fontSize: 14,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text(
-                  "CANCEL",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close dialog
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const OTPScreen()),
-                  );
-                },
-                child: const Text(
-                  "OK",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    ),
-  );
-}
 
+  Widget _buildVerifyDialog(BuildContext context, String number) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 30),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFFB6E11D), Color(0xFF2B2B2B)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              "We Need To Verify Your Number",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              "We Need To Make Sure That $number\nIs Your Number",
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 14,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text(
+                    "CANCEL",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    Navigator.pop(context); // Close the dialog first
+                    // Call the function to trigger OTP and handle navigation here
+                    bool success = await ref.read(loginProvider.notifier).verifyPhoneNumber(phoneNumber, ref);
+                    if (success) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => OTPScreen(phoneNumber: phoneNumber),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text(
+                    "OK",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

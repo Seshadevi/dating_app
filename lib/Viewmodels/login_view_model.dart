@@ -62,7 +62,7 @@ class LoginViewModel extends ChangeNotifier {
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const OTPScreen()));
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => OTPScreen(phoneNumber: phoneNumber)));
                   },
                   child: const Text("OK", style: TextStyle(color: Colors.white)),
                 ),
