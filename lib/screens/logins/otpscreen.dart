@@ -1,16 +1,21 @@
 import 'dart:async';
+import 'package:dating/provider/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import '../location_screen.dart';
 
-class OTPScreen extends StatefulWidget {
-  const OTPScreen({super.key});
+class OTPScreen extends ConsumerStatefulWidget {
+  final String phoneNumber;
+
+  const OTPScreen({super.key, required this.phoneNumber});
 
   @override
-  State<OTPScreen> createState() => _OTPScreenState();
+  ConsumerState<OTPScreen> createState() => _OTPScreenState();
 }
 
-class _OTPScreenState extends State<OTPScreen> {
+class _OTPScreenState extends ConsumerState<OTPScreen> {
   TextEditingController otpController = TextEditingController();
   int _start = 25;
   Timer? _timer;
@@ -25,7 +30,7 @@ class _OTPScreenState extends State<OTPScreen> {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_start == 0) {
         timer.cancel();
-        _showOptionsPopup(); // Show popup when timer finishes
+        _showOptionsPopup();
       } else {
         setState(() {
           _start--;
@@ -41,6 +46,37 @@ class _OTPScreenState extends State<OTPScreen> {
     super.dispose();
   }
 
+  Future<void> verifyOTP(String otp) async {
+    final verificationId = ref.read(verificationIdProvider);
+    if (verificationId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Verification ID not found.")),
+      );
+      return;
+    }
+
+    try {
+      final credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: otp,
+      );
+
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      if (userCredential.user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const LocationScreen()),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Verification failed: ${e.toString()}")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,29 +87,20 @@ class _OTPScreenState extends State<OTPScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// Back Button
               IconButton(
                 icon: const Icon(Icons.arrow_back_ios, size: 20),
                 onPressed: () => Navigator.pop(context),
               ),
-
               const SizedBox(height: 10),
-
-              /// Title
               const Text(
-                "Veryfy Your Number",
+                "Verify Your Number",
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-
-              /// Description
-              const Text(
-                "Enter The Code We've Sent By\nText To +918667238534.",
-                style: TextStyle(fontSize: 18),
+              Text(
+                "Enter the code we've sent to ${widget.phoneNumber}",
+                style: const TextStyle(fontSize: 18),
               ),
-              const SizedBox(height: 4),
-
-              /// Change Number link
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 style: TextButton.styleFrom(padding: EdgeInsets.zero),
@@ -86,10 +113,7 @@ class _OTPScreenState extends State<OTPScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 20),
-
-              /// Code field
               PinCodeTextField(
                 appContext: context,
                 length: 6,
@@ -105,16 +129,9 @@ class _OTPScreenState extends State<OTPScreen> {
                   selectedColor: const Color(0xFF869E23),
                   inactiveColor: Colors.grey,
                 ),
-                onChanged: (value) {
-                   if (value.length == 6) {
-      _timer?.cancel(); // Stop timer on full OTP
-    }
-                },
+                onChanged: (value) {},
               ),
-
               const SizedBox(height: 12),
-
-              /// Timer and Arrow Button
               Row(
                 children: [
                   Text(
@@ -122,15 +139,17 @@ class _OTPScreenState extends State<OTPScreen> {
                     style: const TextStyle(fontSize: 13, color: Colors.grey),
                   ),
                   const Spacer(),
-
-                  /// Arrow icon that navigates to another page
                   GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LocationScreen()),
-                      );
+                    onTap: () async {
+                      final otp = otpController.text.trim();
+                      if (otp.length == 6) {
+                        _timer?.cancel();
+                        await verifyOTP(otp);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Enter 6-digit OTP")),
+                        );
+                      }
                     },
                     child: Container(
                       decoration: const BoxDecoration(
@@ -151,7 +170,6 @@ class _OTPScreenState extends State<OTPScreen> {
     );
   }
 
-  /// Bottom popup after timer ends or can be called manually
   void _showOptionsPopup() {
     showModalBottomSheet(
       context: context,
@@ -180,32 +198,15 @@ class _OTPScreenState extends State<OTPScreen> {
               }),
               _popupOption("Change Number", () {
                 Navigator.pop(context);
-                Navigator.pop(context); // Go back to phone input
+                Navigator.pop(context);
               }),
               _popupOption("Get A Phone Call Instead", () {
                 Navigator.pop(context);
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //       builder: (context) => const PhoneCallPage()),
-                // );
               }),
               _popupOption("Use Google Instead", () {
                 Navigator.pop(context);
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //       builder: (context) => const GoogleLoginPage()),
-                // );
               }),
-              _popupOption("Use Facebook Instead", () {
-                // Navigator.pop(context);
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //       builder: (context) => const FacebookLoginPage()),
-                // );
-              }),
+              _popupOption("Use Facebook Instead", () {}),
             ],
           ),
         );
@@ -225,6 +226,3 @@ class _OTPScreenState extends State<OTPScreen> {
     );
   }
 }
-
-
-
