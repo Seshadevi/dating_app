@@ -1,3 +1,4 @@
+import 'package:dating/provider/logout_notitifier.dart';
 import 'package:dating/screens/feedback/feedback_screen.dart';
 import 'package:dating/screens/notifications/notifications.dart';
 import 'package:dating/screens/profile_screens/profile_screen.dart';
@@ -6,10 +7,16 @@ import 'package:dating/screens/settings/privacusetting_screen.dart';
 import 'package:dating/screens/settings/typesOfconnections.dart';
 import 'package:dating/screens/settings/videoAutoPlayScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
+  @override
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -315,16 +322,7 @@ class SettingsScreen extends StatelessWidget {
     // Close the dialog
     Navigator.of(context).pop();
     
-    // Add your actual logout logic here
-    // For example: clear user data, navigate to login screen, etc.
-    
-    // Example navigation to login screen:
-    // Navigator.of(context).pushAndRemoveUntil(
-    //   MaterialPageRoute(builder: (context) => LoginScreen()),
-    //   (Route<dynamic> route) => false,
-    // );
-    
-    // For now, just show a snackbar
+    ref.read(logoutProvider.notifier).logout(context);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Logged out successfully')),
     );

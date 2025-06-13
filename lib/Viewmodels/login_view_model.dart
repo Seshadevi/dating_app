@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dating/screens/logins/otpscreen.dart';
 
-final loginViewModelProvider =
-    ChangeNotifierProvider((ref) => LoginViewModel());
+final loginViewModelProvider =ChangeNotifierProvider((ref) => LoginViewModel());
 
 class LoginViewModel extends ChangeNotifier {
   String phoneNumber = '';

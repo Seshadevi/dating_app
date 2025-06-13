@@ -3,6 +3,7 @@ class Dgapi {
   static const String baseUrl = "http://97.74.93.26:6100";
 
   static const String login = "$baseUrl/user/login";
+  static const String userExisting ="$baseUrl/user/userExistance";
   static const String lookingFor ="$baseUrl/user/lookingFor";
   static const String modes ="$baseUrl/user/mode";
   static const String termsAndConditions ="$baseUrl/user/termsAndConditions";
@@ -14,6 +15,6 @@ class Dgapi {
   static const String defaultMessages ="$baseUrl/user/defaultMessages";
   static const String qualities ="$baseUrl/user/qualities";
   static const String refreshToken = "$baseUrl/auth/refresh-token";
-
+   
   
 } 

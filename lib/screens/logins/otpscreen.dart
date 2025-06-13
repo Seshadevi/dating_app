@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:dating/provider/firebase_auth.dart';
+import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/screens/profile_screens/profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,35 +49,50 @@ class _OTPScreenState extends ConsumerState<OTPScreen> {
   }
 
   Future<void> verifyOTP(String otp) async {
-    final verificationId = ref.read(verificationIdProvider);
-    if (verificationId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Verification ID not found.")),
-      );
-      return;
-    }
-
-    try {
-      final credential = PhoneAuthProvider.credential(
-        verificationId: verificationId,
-        smsCode: otp,
-      );
-
-      final userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
-
-      if (userCredential.user != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const LocationScreen()),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Verification failed: ${e.toString()}")),
-      );
-    }
+  final verificationId = ref.read(verificationIdProvider);
+  if (verificationId == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Verification ID not found.")),
+    );
+    return;
   }
+
+  try {
+    final credential = PhoneAuthProvider.credential(
+      verificationId: verificationId,
+      smsCode: otp,
+    );
+
+    final userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+
+    if (userCredential.user != null) {
+      final phoneNumber = userCredential.user!.phoneNumber ?? "";
+      final statusCode = await ref.read(loginProvider.notifier).sendPhoneNumberAndRoleToAPI(phoneNumber);
+
+      if (statusCode == 200 || statusCode == 201) {
+        Navigator.push(context,MaterialPageRoute(builder: (context) => ProfileScreen())); // or your home screen
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Welcome $phoneNumber!")),
+        );
+      } else if (statusCode == 400) {
+        Navigator.push(context,MaterialPageRoute(builder: (context) => LocationScreen())); // or back to location for signup
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Invalid mobile number. Please try again.")),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Server error ($statusCode). Please try again later.")),
+        );
+        // Stay on current screen
+      }
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Verification failed: ${e.toString()}")),
+    );
+  }
+}
 
   @override
   Widget build(BuildContext context) {

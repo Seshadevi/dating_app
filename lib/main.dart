@@ -1,12 +1,13 @@
 import 'package:dating/firebase_options.dart';
+import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/screens/logins/loginscreen.dart';
+import 'package:dating/screens/profile_screens/profile_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'; // ✅ Add this
 // import 'Views/auth/join_page.dart'; // or the correct path to your starting screen
 // import 'screens/joinpage.dart';
 import 'package:dating/screens/joinpage.dart';
-
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,8 +28,32 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home:JoinPageScreen(), 
-      // JoinPageScreen(), // ✅ or whatever your first screen is
+      home: Consumer(builder: (context, ref, child) {
+       
+        // / Attempt auto-login if refresh token is not available
+            return FutureBuilder<bool>(
+              future: ref.read(loginProvider.notifier).tryAutoLogin(), // Attempt auto-login
+              builder: (context, snapshot) {
+               
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // While waiting for auto-login to finish, show loading indicator
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasData &&snapshot.data == true) {
+                  // If auto-login is successful and refresh token is available, go to Dashboard
+                  return const ProfileScreen();
+                } else {
+                  // If auto-login fails or no token, redirect to LoginScreen
+                  return JoinPageScreen();
+                }
+              },
+            );
+        
+      }),
+      routes: {
+         "loginscreen": (context) => LoginScreen(),
+      },
     );
   }
 }

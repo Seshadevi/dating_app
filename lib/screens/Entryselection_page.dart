@@ -1,4 +1,7 @@
 import 'package:dating/provider/googe_sign_provider.dart';
+import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/screens/location_screen.dart';
+import 'package:dating/screens/profile_screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dating/screens/logins/loginscreen.dart';
@@ -116,23 +119,37 @@ class _SelectPageState extends ConsumerState<SelectPage> {
             const Color(0xffDB4437),
             screenWidth,
             isSmallScreen,
-            ()  async {
-                final controller = ref.read(googleSignInControllerProvider);
-                final userCredential = await controller.signInWithGoogle();
+            () async {
+              final controller = ref.read(googleSignInControllerProvider);
+              final userCredential = await controller.signInWithGoogle();
 
-                if (userCredential != null) {
-                  
-                  // Navigate to home or show success
-                  print("Signed in as: ${userCredential.user?.email}");
+              if (userCredential != null && userCredential.user?.email != null) {
+                final email = userCredential.user!.email!;
+                final statusCode = await ref.read(loginProvider.notifier).sendemailToAPI(email);
+
+                if (statusCode == 200 || statusCode == 201) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Welcome ${userCredential.user?.email}!")),
+                    SnackBar(content: Text("Welcome $email!")),
                   );
+                 Navigator.push(context,MaterialPageRoute(builder: (context) => ProfileScreen()));
+                } else if (statusCode == 400) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Invalid user.Please signup.")),
+                  );
+                 Navigator.push(context,MaterialPageRoute(builder: (context) => LocationScreen()));
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Google Sign-In failed")),
+                    SnackBar(content: Text("Server error ($statusCode). Please try again later.")),
                   );
+                  // stay on the same screen
                 }
-              },
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Google Sign-In failed")),
+                );
+              }
+            },
+
             image: SvgPicture.asset(
               'assets/google_logo.svg',
               width: isSmallScreen ? 20 : 24,

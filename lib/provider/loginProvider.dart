@@ -16,6 +16,62 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
   final Ref ref;
   PhoneAuthNotifier(this.ref) : super(UserModel.initial());
 
+
+ Future<bool> tryAutoLogin() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  // Check if the 'userData' key exists in SharedPreferences
+  if (!prefs.containsKey('userData')) {
+    print('No user data found. tryAutoLogin is set to false.');
+    return false;
+  }
+
+  try {
+    // Retrieve and decode the user data from SharedPreferences
+    final extractedData = json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
+    print("Extracted data from SharedPreferences: $extractedData");
+
+    // Validate that all necessary keys exist in the extracted data
+    if (extractedData.containsKey('statusCode') &&
+        extractedData.containsKey('success') &&
+        extractedData.containsKey('messages') &&
+        extractedData.containsKey('data')) {
+      
+      // Map the JSON data to the UserModel
+      final userModel = UserModel.fromJson(extractedData);
+      print("User Model from SharedPreferences: $userModel");
+
+      // Validate nested data structure
+      if (userModel.data != null && userModel.data!.isNotEmpty) {
+        final firstData = userModel.data![0]; // Access the first element in the list
+        if (firstData.user == null || firstData.accessToken == null) {
+          print('Invalid user data structure inside SharedPreferences.');
+          return false;
+        }
+      }
+
+      // Update the state with the decoded user data
+      state = state.copyWith(
+        statusCode: userModel.statusCode,
+        success: userModel.success,
+        messages: userModel.messages,
+        data: userModel.data,
+      );
+
+      print('User ID from auto-login: ${state.data?[0].user?.id}'); // Accessing User ID from the first Data object
+      return true;
+    } else {
+      print('Necessary fields are missing in SharedPreferences.');
+      return false;
+    }
+  } catch (e, stackTrace) {
+    // Log the error for debugging purposes
+    print('Error while parsing user data: $e');
+    print(stackTrace);
+    return false;
+  }
+}
+
   Future<bool> verifyPhoneNumber(String phoneNumber, WidgetRef ref) async {
     print('Phone number: $phoneNumber');
     final auth = ref.read(firebaseAuthProvider);
@@ -68,118 +124,152 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
     }
   }
 
-  Future<void> signInWithPhoneNumber(String smsCode, WidgetRef ref) async {
-    final auth = ref.read(firebaseAuthProvider);
-    final loader = ref.read(loadingProvider.notifier);
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    String? verificationid = pref.getString('verificationid');
+  // Future<void> signInWithPhoneNumber(String smsCode, WidgetRef ref) async {
+  //   final auth = ref.read(firebaseAuthProvider);
+  //   final loader = ref.read(loadingProvider.notifier);
+  //   SharedPreferences pref = await SharedPreferences.getInstance();
+  //   String? verificationid = pref.getString('verificationid');
 
-    if (verificationid == null || verificationid.isEmpty) {
-      print("No verification ID found.");
-      return;
-    }
+  //   if (verificationid == null || verificationid.isEmpty) {
+  //     print("No verification ID found.");
+  //     return;
+  //   }
 
-    try {
-      loader.state = true;
-      AuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verificationid,
-        smsCode: smsCode,
-      );
+  //   try {
+  //     loader.state = true;
+  //     AuthCredential credential = PhoneAuthProvider.credential(
+  //       verificationId: verificationid,
+  //       smsCode: smsCode,
+  //     );
 
-      UserCredential userCredential =
-          await auth.signInWithCredential(credential);
+  //     UserCredential userCredential =
+  //         await auth.signInWithCredential(credential);
 
-      if (userCredential.user != null) {
-        print("Phone verification successful.");
-        String? firebaseToken = await userCredential.user?.getIdToken();
-        if (firebaseToken != null) {
-          await pref.setString('firebaseToken', firebaseToken);
-        }
+  //     if (userCredential.user != null) {
+  //       print("Phone verification successful.");
+  //       String? firebaseToken = await userCredential.user?.getIdToken();
+  //       if (firebaseToken != null) {
+  //         await pref.setString('firebaseToken', firebaseToken);
+  //       }
 
-        await sendPhoneNumberAndRoleToAPI(
-          phoneNumber: userCredential.user!.phoneNumber!,
-        );
+  //       await sendPhoneNumberAndRoleToAPI(
+  //         phoneNumber: userCredential.user!.phoneNumber!,
+  //       );
 
-        await ref.read(loginProvider.notifier).tryAutoLogin();
-      } else {
-        print("UserCredential is null.");
-      }
-    } catch (e) {
-      print("Error during sign-in with phone: $e");
-    } finally {
-      loader.state = false;
-    }
-  }
+  //       await ref.read(loginProvider.notifier).tryAutoLogin();
+  //     } else {
+  //       print("UserCredential is null.");
+  //     }
+  //   } catch (e) {
+  //     print("Error during sign-in with phone: $e");
+  //   } finally {
+  //     loader.state = false;
+  //   }
+  // }
 
-  Future<void> sendPhoneNumberAndRoleToAPI({
-    required String phoneNumber,
-  }) async {
-    const String apiUrl = Dgapi.login;
-    final prefs = await SharedPreferences.getInstance();
-    print('Sending phone number to API: $phoneNumber');
+ Future<int> sendPhoneNumberAndRoleToAPI(String phoneNumber) async {
+  const String apiUrl = Dgapi.userExisting;
+  final prefs = await SharedPreferences.getInstance();
+  print('Sending phone number to API: $phoneNumber');
 
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: {
-          "Content-Type": "application/json",
-          // Replace this with actual token retrieval logic if needed
-          "Authorization": "Bearer ${prefs.getString('firebaseToken') ?? ''}",
-        },
-        body: json.encode({"mobile": phoneNumber}),
-      );
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: json.encode({"mobile": phoneNumber}),
+    );
 
-      print("API Response: ${response.body}");
+    print("API Response: ${response.body}");
 
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        var userDetails = json.decode(response.body);
-        if (userDetails != null && userDetails['data'] != null) {
-          final userModel = UserModel.fromJson(userDetails);
-          state = userModel;
-
-          final userData = json.encode(userDetails);
-          await prefs.setString('userData', userData);
-
-          print('User data saved in SharedPreferences.');
-        } else {
-          print("API response missing expected data.");
-        }
-      } else {
-        print("API Error: ${response.statusCode}");
-        print("Response: ${response.body}");
-      }
-    } catch (e) {
-      print("Exception during API call: $e");
-    }
-  }
-
-  Future<bool> tryAutoLogin() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    if (!prefs.containsKey('userData')) {
-      print('No user data found in SharedPreferences.');
-      return false;
-    }
-
-    try {
-      final extractedData =
-          json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
-
-      final userModel = UserModel.fromJson(extractedData);
-
-      if (userModel.data != null && userModel.data!.isNotEmpty) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final userDetails = json.decode(response.body);
+      if (userDetails != null && userDetails['data'] != null) {
+        final userModel = UserModel.fromJson(userDetails);
         state = userModel;
-       // print('Auto-login successful for user: ${state.data![0].user?.sId}');
-        return true;
+
+        final userData = json.encode(userDetails);
+        await prefs.setString('userData', userData);
+        print('User data saved in SharedPreferences.');
+        return response.statusCode; // success
       } else {
-        print("Invalid user data structure.");
-        return false;
+        return 400; // invalid/missing data
       }
-    } catch (e) {
-      print('Error parsing user data: $e');
-      return false;
+    } else {
+      print("API Error: ${response.statusCode}");
+      return response.statusCode; // forward status for handling
     }
+  } catch (e) {
+    print("Exception during API call: $e");
+    return 500; // server or network error
   }
+}
+
+  Future<int> sendemailToAPI(String email
+  ) async {
+  const String apiUrl = Dgapi.userExisting;
+  final prefs = await SharedPreferences.getInstance();
+  print('Sending email to API: $email');
+
+  try {
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      body: json.encode({"email": email}),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    print("API Response: ${response.body}");
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final userDetails = json.decode(response.body);
+      if (userDetails != null && userDetails['data'] != null) {
+        final userModel = UserModel.fromJson(userDetails);
+        state = userModel;
+
+        final userData = json.encode(userDetails);
+        await prefs.setString('userData', userData);
+
+        return response.statusCode; // 200 or 201
+      } else {
+        return 400; // malformed data, treat like bad request
+      }
+    } else {
+      return response.statusCode; // 400 or 500 etc.
+    }
+  } catch (e) {
+    print("Exception: $e");
+    return 500; // fallback for exception
+  }
+}
+
+  // Future<bool> tryAutoLogin() async {
+  //   final prefs = await SharedPreferences.getInstance();
+
+  //   if (!prefs.containsKey('userData')) {
+  //     print('No user data found in SharedPreferences.');
+  //     return false;
+  //   }
+
+  //   try {
+  //     final extractedData =
+  //         json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
+
+  //     final userModel = UserModel.fromJson(extractedData);
+
+  //     if (userModel.data != null && userModel.data!.isNotEmpty) {
+  //       state = userModel;
+  //      // print('Auto-login successful for user: ${state.data![0].user?.sId}');
+  //       return true;
+  //     } else {
+  //       print("Invalid user data structure.");
+  //       return false;
+  //     }
+  //   } catch (e) {
+  //     print('Error parsing user data: $e');
+  //     return false;
+  //   }
+  // }
 
   Future<String> restoreAccessToken() async {
     const url = Dgapi.refreshToken;
