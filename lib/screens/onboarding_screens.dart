@@ -15,7 +15,10 @@ import '../screens/openingMoveScreen.dart';
 import '../screens/addHeadlineScreen.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+  final double latitude;
+  final double longitude;
+  const OnboardingScreen(
+      {super.key, required this.latitude, required this.longitude});
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -23,6 +26,18 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _controller = PageController();
+  String userName = '';
+  String dateOfBirth = ''; // in format MM/DD/YYYY
+
+  String _month = '';
+  String _day = '';
+  String _year = '';
+  String userEmail = '';
+  String selectedGenderMode = '';
+
+
+
+
   int currentIndex = 0;
   String selectedGender = "";
   String selectedPurpose = "";
@@ -70,6 +85,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
+  
+
   String _getPageTitle(int index) {
     switch (index) {
       case 0:
@@ -110,9 +127,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         return "";
     }
   }
+  @override
+  void initState() {
+    super.initState();
+    print(
+        "Latitude::::::: ${widget.latitude}, Longitude::::::: ${widget.longitude}");
+    print('username..........$userName');
+    print('date of birth...........$dateOfBirth');
+    print('gender selected.........$selectedGender');
+    print('showgender..............$showGenderOnProfile');
+    print('userEmail...........$userEmail');
+    print('selectedGenderMode..........$selectedGenderMode');
+    print('');
+    
+
+  }
 
   @override
   Widget build(BuildContext context) {
+    // print('logitude..........$longitude');
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -149,56 +182,54 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
           // Back and Skip buttons
-Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      // SizedBox(height: 40,),
-      // Back Button (disabled on first screen)
-      if (currentIndex >= 1 && currentIndex <= 14)
-        GestureDetector(
-          onTap: () {
-            if (currentIndex > 0) {
-              _controller.previousPage(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
-            }
-          },
-          child:  Icon(
-              Icons.arrow_back_ios,
-              // arrow_forward_ios
-              color: Colors.black,
-              size: 30,
-            )
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // SizedBox(height: 40,),
+                // Back Button (disabled on first screen)
+                if (currentIndex >= 1 && currentIndex <= 14)
+                  GestureDetector(
+                      onTap: () {
+                        if (currentIndex > 0) {
+                          _controller.previousPage(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                      },
+                      child: Icon(
+                        Icons.arrow_back_ios,
+                        // arrow_forward_ios
+                        color: Colors.black,
+                        size: 30,
+                      ))
+                else
+                  const SizedBox(width: 50), // to align Skip properly
 
-        )
-      else
-        const SizedBox(width: 50), // to align Skip properly
-
-      // Skip Button (only if not on last screen)
-      if (currentIndex >= 8 && currentIndex <= 14)
-        GestureDetector(
-          onTap: () {
-            _controller.jumpToPage(pages.length - 1);
-            setState(() {
-              currentIndex = pages.length - 1;
-            });
-          },
-          child: const Text(
-            'Skip',
-            style: TextStyle(
-              color: Colors.grey,
-              fontWeight: FontWeight.w500,
+                // Skip Button (only if not on last screen)
+                if (currentIndex >= 8 && currentIndex <= 14)
+                  GestureDetector(
+                    onTap: () {
+                      _controller.jumpToPage(pages.length - 1);
+                      setState(() {
+                        currentIndex = pages.length - 1;
+                      });
+                    },
+                    child: const Text(
+                      'Skip',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  )
+                else
+                  const SizedBox(width: 50),
+              ],
             ),
           ),
-        )
-      else
-        const SizedBox(width: 50),
-    ],
-  ),
-),
           // const SizedBox(height: 20),
 
           Center(
@@ -230,7 +261,7 @@ Padding(
             onTap: nextPage,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 10),
-              child:  CircleAvatar(
+              child: CircleAvatar(
                 radius: 24,
                 backgroundColor: Colors.green.shade700,
                 child: Icon(Icons.arrow_forward_ios, color: Colors.white),
@@ -278,7 +309,15 @@ Padding(
         _pageWrapper(
           children: [
             const SizedBox(height: 40),
-            _styledInput(label: "Your First Name", hint: "Enter your name"),
+            _styledInput(
+              label: "Your First Name",
+              hint: "Enter your name",
+              onChanged: (value) {
+                setState(() {
+                  userName = value;
+                });
+              },
+            ),
             const SizedBox(height: 40),
             const Text(
               "Your Birthday",
@@ -287,11 +326,26 @@ Padding(
             const SizedBox(height: 10),
             Row(
               children: [
-                _birthdayInput("Month"),
+                _birthdayInput("Month", (value) {
+                  setState(() {
+                    _month = value;
+                    dateOfBirth = '$_month/$_day/$_year';
+                  });
+                }),
                 const SizedBox(width: 10),
-                _birthdayInput("Day"),
+                _birthdayInput("Day", (value) {
+                  setState(() {
+                    _day = value;
+                    dateOfBirth = '$_month/$_day/$_year';
+                  });
+                }),
                 const SizedBox(width: 10),
-                _birthdayInput("Year"),
+                _birthdayInput("Year", (value) {
+                  setState(() {
+                    _year = value;
+                    dateOfBirth = '$_month/$_day/$_year';
+                  });
+                }),
               ],
             ),
             const SizedBox(height: 20),
@@ -359,14 +413,21 @@ Padding(
   }
 
   Widget _buildMailPage() {
-    
     return const IntroMail(); // You already built this as a full screen widget
   }
 
   Widget _buildDateCategory() {
-    
-    return const IntroDatecategory(); // You already built this as a full screen widget
-  }
+  return IntroDatecategory(
+    email: userEmail,
+    onSelectionComplete: (selectedGender, email) {
+      setState(() {
+        selectedGenderMode = selectedGender;
+        userEmail = email;
+      });
+    },
+  );
+}
+
 
   Widget _buildMeetSelection() {
     return const IntroMeetselection(); // You already built this as a full screen widget
@@ -492,7 +553,6 @@ Padding(
     );
   }
 
-
   Widget _radioOption(String value, {required bool isPurpose}) {
     bool isSelected =
         isPurpose ? selectedPurpose == value : selectedGender == value;
@@ -541,29 +601,35 @@ Padding(
     );
   }
 
-  Widget _styledInput({required String label, required String hint}) {
+  Widget _styledInput({
+    required String label,
+    required String hint,
+    required ValueChanged<String> onChanged,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label),
         const SizedBox(height: 8),
         TextField(
+          onChanged: onChanged, // ⬅️ capture name
           decoration: InputDecoration(
             hintText: hint,
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
             filled: true,
-            fillColor: Color(0xffE9F1C4),
+            fillColor: const Color(0xffE9F1C4),
           ),
-        )
+        ),
       ],
     );
   }
 
-  Widget _birthdayInput(String hint) {
+  Widget _birthdayInput(String hint, ValueChanged<String> onChanged) {
     return Expanded(
       child: TextField(
+        onChanged: onChanged,
         textAlign: TextAlign.center,
         decoration: InputDecoration(
           hintText: hint,
@@ -572,9 +638,8 @@ Padding(
             borderSide: const BorderSide(color: Color(0xff92AB26)),
           ),
           contentPadding: const EdgeInsets.symmetric(vertical: 14),
-          filled: true, // Enables the background color
-          fillColor: Color(0xffE9F1C4),
-          // Set your desired background color here
+          filled: true,
+          fillColor: const Color(0xffE9F1C4),
         ),
       ),
     );
