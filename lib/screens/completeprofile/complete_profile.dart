@@ -1,4 +1,8 @@
-
+import 'package:dating/screens/About_section/city_screen.dart';
+import 'package:dating/screens/About_section/education_screen.dart';
+import 'package:dating/screens/About_section/gender_screen.dart';
+import 'package:dating/screens/About_section/hometown_screen.dart';
+import 'package:dating/screens/About_section/occupation_screen.dart';
 import 'package:dating/screens/completeprofile/id_verification_screen.dart';
 import 'package:dating/screens/completeprofile/intrest_screen.dart';
 import 'package:dating/screens/completeprofile/lifeBadgesScreen.dart';
@@ -12,7 +16,8 @@ class BumbleDateProfileScreen extends StatefulWidget {
   const BumbleDateProfileScreen({super.key});
 
   @override
-  _BumbleDateProfileScreenState createState() => _BumbleDateProfileScreenState();
+  _BumbleDateProfileScreenState createState() =>
+      _BumbleDateProfileScreenState();
 }
 
 class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
@@ -50,47 +55,47 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
             // Profile Strength Section
             _buildProfileStrengthSection(),
             SizedBox(height: 24),
-            
+
             // Photos and Videos Section
             _buildPhotosVideosSection(),
             SizedBox(height: 24),
-            
+
             // Get Verified Section
             _buildGetVerifiedSection(),
             SizedBox(height: 24),
-            
+
             // My Life Section
             _buildMyLifeSection(context),
             SizedBox(height: 24),
-            
+
             // Interests Section
             _buildInterestsSection(),
             SizedBox(height: 24),
-            
+
             // Prompts Section
             _buildPromptsSection(context),
             SizedBox(height: 24),
-            
+
             // Bio Section
             _buildBioSection(),
-             SizedBox(height: 24),
+            SizedBox(height: 24),
 
             // About You Section
             _buildAboutYouSection(),
             SizedBox(height: 24),
-            
+
             // More About You Section
             _buildMoreAboutYouSection(),
             SizedBox(height: 24),
-            
+
             // Pronouns Section
             _buildPronounsSection(),
             SizedBox(height: 24),
-            
+
             // Languages Section
             _buildLanguagesSection(),
             SizedBox(height: 24),
-            
+
             // Connected Accounts Section
             _buildConnectedAccountsSection(),
             SizedBox(height: 24),
@@ -122,39 +127,40 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
               ),
             );
           },
-          child:Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF869E23), Color(0xFF000000)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          padding: EdgeInsets.all(2), // This simulates the border thickness
           child: Container(
-            padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Color.fromARGB(255, 247, 245, 247),
-              borderRadius: BorderRadius.circular(14), // Slightly smaller for inner container
+              gradient: LinearGradient(
+                colors: [Color(0xFF869E23), Color(0xFF000000)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              borderRadius: BorderRadius.circular(16),
             ),
-            child: Row(
-              children: [
-                Text(
-                  '20% Complete',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black,
+            padding: EdgeInsets.all(2), // This simulates the border thickness
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 247, 245, 247),
+                borderRadius: BorderRadius.circular(
+                    14), // Slightly smaller for inner container
+              ),
+              child: Row(
+                children: [
+                  Text(
+                    '20% Complete',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-                Spacer(),
-                Icon(Icons.arrow_forward_ios, color: Colors.grey[600], size: 16),
-              ],
+                  Spacer(),
+                  Icon(Icons.arrow_forward_ios,
+                      color: Colors.grey[600], size: 16),
+                ],
+              ),
             ),
           ),
-        ),
-
         ),
       ],
     );
@@ -206,68 +212,66 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
 
   Widget _buildPhotoSlot({required int index}) {
     bool hasImage = selectedImages[index] != null;
-    
+
     return GestureDetector(
       onTap: () => _showImageSourceDialog(index),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-     child: Container(
-  decoration: BoxDecoration(
-    gradient: LinearGradient(
-      colors: [Color(0xFF869E23), Color(0xFF000000)],
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-    ),
-    borderRadius: BorderRadius.circular(12),
-  ),
-  padding: EdgeInsets.all(2), // Thickness of gradient border
-  child: Container(
-    decoration: BoxDecoration(
-      color: hasImage ? Colors.grey[200] : Colors.white,
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: hasImage
-        ? Stack(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.file(
-                  selectedImages[index]!,
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              Positioned(
-                top: 8,
-                right: 8,
-                child: Container(
-                  width: 24,
-                  height: 24,
-                  decoration: const BoxDecoration(
-                    color: Colors.green,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.check,
-                    color: Colors.white,
-                    size: 16,
-                  ),
-                ),
-              ),
-            ],
-          )
-        : Center(
-            child: Icon(
-              Icons.add,
-              size: 30,
-              color: Colors.grey[400],
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF869E23), Color(0xFF000000)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
+            borderRadius: BorderRadius.circular(12),
           ),
-  ),
-),
-
-
+          padding: EdgeInsets.all(2), // Thickness of gradient border
+          child: Container(
+            decoration: BoxDecoration(
+              color: hasImage ? Colors.grey[200] : Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: hasImage
+                ? Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.file(
+                          selectedImages[index]!,
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Container(
+                          width: 24,
+                          height: 24,
+                          decoration: const BoxDecoration(
+                            color: Colors.green,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.check,
+                            color: Colors.white,
+                            size: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : Center(
+                    child: Icon(
+                      Icons.add,
+                      size: 30,
+                      color: Colors.grey[400],
+                    ),
+                  ),
+          ),
+        ),
       ),
     );
   }
@@ -298,7 +302,8 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
               if (selectedImages[index] != null)
                 ListTile(
                   leading: Icon(Icons.delete, color: Colors.red),
-                  title: Text('Remove Photo', style: TextStyle(color: Colors.red)),
+                  title:
+                      Text('Remove Photo', style: TextStyle(color: Colors.red)),
                   onTap: () {
                     Navigator.pop(context);
                     setState(() {
@@ -342,7 +347,8 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
         padding: EdgeInsets.symmetric(vertical: 12),
         child: Row(
           children: [
-            Icon(Icons.verified_user_outlined, color: Colors.grey[600], size: 20),
+            Icon(Icons.verified_user_outlined,
+                color: Colors.grey[600], size: 20),
             SizedBox(width: 12),
             Expanded(
               child: Text(
@@ -375,40 +381,39 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
     );
   }
 
- Widget _buildMyLifeSection(BuildContext context) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'My Life',
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          color: Colors.black,
+  Widget _buildMyLifeSection(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'My Life',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
+          ),
         ),
-      ),
-      const SizedBox(height: 8),
-      Text(
-        'Show How You Are In Life With Your Friends',
-        style: TextStyle(
-          fontSize: 14,
-          color: Colors.grey[600],
+        const SizedBox(height: 8),
+        Text(
+          'Show How You Are In Life With Your Friends',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[600],
+          ),
         ),
-      ),
-      const SizedBox(height: 16),
-      _buildSectionButton(
-        'Add Life Badges',
-         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const LifeBadgesScreen()),
-          );
-        },
-      ),
-    ],
-  );
-}
-
+        const SizedBox(height: 16),
+        _buildSectionButton(
+          'Add Life Badges',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const LifeBadgesScreen()),
+            );
+          },
+        ),
+      ],
+    );
+  }
 
   Widget _buildInterestsSection() {
     return Column(
@@ -431,84 +436,86 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
           ),
         ),
         SizedBox(height: 16),
-        _buildSectionButton('Add Interest Badges', onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const IntrestScreen()),
-          );
-        },),
+        _buildSectionButton(
+          'Add Interest Badges',
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const IntrestScreen()),
+            );
+          },
+        ),
       ],
     );
   }
 
   Widget _buildPromptsSection(BuildContext context) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'Prompts',
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          color: Colors.black,
-        ),
-      ),
-      const SizedBox(height: 8),
-      Text(
-        'I like To Personality Stand Out From The Crowd',
-        style: TextStyle(
-          fontSize: 14,
-          color: Colors.grey[600],
-        ),
-      ),
-      const SizedBox(height: 16),
-      GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const PromptSelectionScreen()),
-          );
-        },
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.grey[300]!),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Prompts',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
           ),
-          child: Row(
-            children: [
-              const Expanded(
-                child: Text(
-                  'Add a prompt',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'I like To Personality Stand Out From The Crowd',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[600],
+          ),
+        ),
+        const SizedBox(height: 16),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const PromptSelectionScreen()),
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: Colors.grey[300]!),
+            ),
+            child: Row(
+              children: [
+                const Expanded(
+                  child: Text(
+                    'Add a prompt',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                width: 24,
-                height: 24,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.black,
-                ),
-                child: const Icon(
-                  Icons.add,
-                  size: 16,
-                  color: Colors.white,
-                ),
-              )
-            ],
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black,
+                  ),
+                  child: const Icon(
+                    Icons.add,
+                    size: 16,
+                    color: Colors.white,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
-      ),
-    ],
-  );
-}
-
+      ],
+    );
+  }
 
   Widget _buildBioSection() {
     return Column(
@@ -552,37 +559,36 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
     );
   }
 
-
   Widget _buildSectionButton(String text, {VoidCallback? onTap}) {
-  return GestureDetector(
-    onTap: onTap,
-    child: Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[300]!, width: 1),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.black,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey[300]!, width: 1),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                text,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
               ),
             ),
-          ),
-          Icon(Icons.arrow_forward_ios, color: Colors.grey[400], size: 16),
-        ],
+            Icon(Icons.arrow_forward_ios, color: Colors.grey[400], size: 16),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-Widget _buildAboutYouSection() {
+  Widget _buildAboutYouSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -595,11 +601,28 @@ Widget _buildAboutYouSection() {
           ),
         ),
         SizedBox(height: 16),
-        _buildProfileItem(Icons.work_outline, 'Work', 'Add', onTap: () {}),
-        _buildProfileItem(Icons.school_outlined, 'Education', 'Add', onTap: () {}),
-        _buildProfileItem(Icons.person_outline, 'Gender', selectedGender, onTap: _showGenderDialog),
-        _buildProfileItem(Icons.location_on_outlined, 'Location', 'Add', onTap: () {}),
-        _buildProfileItem(Icons.home_outlined, 'Hometown', 'Add', onTap: () {}),
+        _buildProfileItem(Icons.work_outline, 'Work', 'Add', onTap: () {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => OccupationScreen()));
+        }),
+        _buildProfileItem(Icons.school_outlined, 'Education', 'Add', onTap: () {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => EducationScreen()));
+        }),
+        _buildProfileItem(Icons.person_outline, 'Gender', selectedGender,
+            onTap: () {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => UpdateGenderScreen()));
+        }),
+        _buildProfileItem(Icons.location_on_outlined, 'Location', 'Add',
+            onTap: () {
+               Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => FindCityScreen()));
+            }),
+        _buildProfileItem(Icons.home_outlined, 'Hometown', 'Add', onTap: () {
+           Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => HomeTownSelectionScreen()));
+        }),
       ],
     );
   }
@@ -626,14 +649,20 @@ Widget _buildAboutYouSection() {
         ),
         SizedBox(height: 16),
         _buildProfileItem(Icons.search, 'Looking For', 'Add', onTap: () {}),
-        _buildProfileItem(Icons.favorite_border, 'Relationship', 'Add', onTap: () {}),
+        _buildProfileItem(Icons.favorite_border, 'Relationship', 'Add',
+            onTap: () {}),
         _buildProfileItem(Icons.child_care, 'Have A Kids', 'Add', onTap: () {}),
-        _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', 'Add', onTap: () {}),
-        _buildProfileItem(Icons.local_drink_outlined, 'Drinking', 'Add', onTap: () {}),
-        _buildProfileItem(Icons.fitness_center_outlined, 'Exercise', 'Add', onTap: () {}),
-        _buildProfileItem(Icons.location_city_outlined, 'New To Area', 'Add', onTap: () {}),
+        _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', 'Add',
+            onTap: () {}),
+        _buildProfileItem(Icons.local_drink_outlined, 'Drinking', 'Add',
+            onTap: () {}),
+        _buildProfileItem(Icons.fitness_center_outlined, 'Exercise', 'Add',
+            onTap: () {}),
+        _buildProfileItem(Icons.location_city_outlined, 'New To Area', 'Add',
+            onTap: () {}),
         _buildProfileItem(Icons.star_border, 'Star Sign', 'Add', onTap: () {}),
-        _buildProfileItem(Icons.place_outlined, 'Religion', 'Add', onTap: () {}),
+        _buildProfileItem(Icons.place_outlined, 'Religion', 'Add',
+            onTap: () {}),
       ],
     );
   }
@@ -790,7 +819,8 @@ Widget _buildAboutYouSection() {
                       ),
                     ),
                   ),
-                  Icon(Icons.arrow_forward_ios, color: Colors.grey[400], size: 16),
+                  Icon(Icons.arrow_forward_ios,
+                      color: Colors.grey[400], size: 16),
                 ],
               ),
               SizedBox(height: 16),
@@ -829,7 +859,8 @@ Widget _buildAboutYouSection() {
     );
   }
 
-  Widget _buildProfileItem(IconData icon, String title, String value, {VoidCallback? onTap}) {
+  Widget _buildProfileItem(IconData icon, String title, String value,
+      {VoidCallback? onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -858,7 +889,8 @@ Widget _buildAboutYouSection() {
               style: TextStyle(
                 fontSize: 16,
                 color: value == 'Add' ? Colors.grey[500] : Colors.black,
-                fontWeight: value == 'Add' ? FontWeight.normal : FontWeight.w500,
+                fontWeight:
+                    value == 'Add' ? FontWeight.normal : FontWeight.w500,
               ),
             ),
             SizedBox(width: 8),
@@ -915,9 +947,6 @@ extension BumbleDateProfileScreenExtension on _BumbleDateProfileScreenState {
     // );
   }
 }
-
-
-
 
 // Profile Strength Detail Screen
 

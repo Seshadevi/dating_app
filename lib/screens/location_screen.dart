@@ -6,37 +6,40 @@ class LocationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Stack(
           children: [
-            // Main content
+            /// Main Content
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: EdgeInsets.symmetric(horizontal: width * 0.06),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 200), // Space for the top-right icon
+                  SizedBox(height: height * 0.22),
 
                   /// Title
-                  const Text(
+                  Text(
                     "Now, Can We Get Your\nLocation?",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 28,
+                      fontSize: height * 0.035,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: height * 0.02),
 
                   /// Description
-                  const Text(
+                  Text(
                     "We need it so we can show you\nall the great people nearby (or far away)",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: height * 0.022,
                       color: Colors.black54,
                       height: 1.5,
                     ),
@@ -47,15 +50,13 @@ class LocationScreen extends StatelessWidget {
                   /// Set Location Services Button
                   SizedBox(
                     width: double.infinity,
-                    height: 50,
+                    height: height * 0.065,
                     child: ElevatedButton(
                       onPressed: () {
-                        // Replace `viewModel` with actual state management solution
-                        // final viewModel = LocationViewModel();
-                        // showFakeLocationPopup(context, viewModel);
-                         Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => AllowNotification()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const AllowNotification()),
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.zero,
@@ -74,13 +75,12 @@ class LocationScreen extends StatelessWidget {
                           ),
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: const Text(
+                        child: Center(
+                          child: Text(
                             "Set Location Services",
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 16,
+                              fontSize: height * 0.022,
                             ),
                           ),
                         ),
@@ -88,47 +88,42 @@ class LocationScreen extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: height * 0.02),
 
                   /// Not Now
                   TextButton(
                     onPressed: () {
-                      // // Skip location setting
-                      //  Navigator.push(
-                      //       context,
-                      //       MaterialPageRoute(builder: (context) => OnboardingScreen()),
-                      //       //  MaterialPageRoute(builder: (context) => OnboardingScreen()),
-                      //     );
+                      // Navigation for skipping
                     },
-                    child: const Text(
+                    child: Text(
                       "Not Now",
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: height * 0.018,
                         color: Colors.black,
                       ),
                     ),
                   ),
 
-                  const SizedBox(height: 30),
+                  SizedBox(height: height * 0.03),
                 ],
               ),
             ),
 
-            // Positioned circular icon at top-right
+            /// Positioned circular image at top-right
             Positioned(
-              top: 20,
+              top: height * 0.02,
               right: 0,
               child: Container(
-                height: 150,
-                width: 150,
+                height: height * 0.18,
+                width: height * 0.18,
                 decoration: const BoxDecoration(
                   color: Color(0xFFF0F0F0),
                   shape: BoxShape.circle,
                 ),
                 child: Image.asset(
-                  'assets/allow_location.png', // Replace with your actual image path
-                  height: 100,
-                  width: 100,
+                  'assets/allow_location.png', // Make sure this asset exists
+                  height: height * 0.12,
+                  width: height * 0.12,
                   fit: BoxFit.contain,
                 ),
               ),
@@ -140,50 +135,65 @@ class LocationScreen extends StatelessWidget {
   }
 
   void showFakeLocationPopup(BuildContext context, LocationViewModel viewModel) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+
     showDialog(
       context: context,
       builder: (_) => Dialog(
         backgroundColor: const Color(0xFFE9F3C6),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+          padding: EdgeInsets.symmetric(
+            vertical: height * 0.03,
+            horizontal: width * 0.05,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.location_on, size: 28, color: Colors.black),
-              const SizedBox(height: 16),
-              const Text(
+              Icon(Icons.location_on, size: height * 0.04, color: Colors.black),
+              SizedBox(height: height * 0.02),
+              Text(
                 "Allow Heart Sync To\nAccess This Device’s Location?",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: height * 0.022,
                   color: Colors.black87,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: height * 0.025),
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                   viewModel.onLocationOptionSelected("While Using The App");
                 },
-                child: const Text("While Using The App"),
+                child: Text(
+                  "While Using The App",
+                  style: TextStyle(fontSize: height * 0.02),
+                ),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                   viewModel.onLocationOptionSelected("Only This Time");
                 },
-                child: const Text("Only This Time"),
+                child: Text(
+                  "Only This Time",
+                  style: TextStyle(fontSize: height * 0.02),
+                ),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                   viewModel.onLocationOptionSelected("Don’t Allow");
                 },
-                child: const Text(
+                child: Text(
                   "Don’t Allow",
-                  style: TextStyle(color: Colors.redAccent),
+                  style: TextStyle(
+                    fontSize: height * 0.02,
+                    color: Colors.redAccent,
+                  ),
                 ),
               ),
             ],
@@ -195,9 +205,7 @@ class LocationScreen extends StatelessWidget {
 }
 
 class LocationViewModel {
-  // Placeholder for your view model methods
   void onLocationOptionSelected(String option) {
     print('Location option selected: $option');
-    // Handle the location permission logic here
   }
 }

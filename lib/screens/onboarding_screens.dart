@@ -154,8 +154,9 @@ Padding(
   child: Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
+      // SizedBox(height: 40,),
       // Back Button (disabled on first screen)
-      if (currentIndex >= 8 && currentIndex <= 14)
+      if (currentIndex >= 1 && currentIndex <= 14)
         GestureDetector(
           onTap: () {
             if (currentIndex > 0) {
@@ -165,13 +166,13 @@ Padding(
               );
             }
           },
-          child: const Text(
-            'Back',
-            style: TextStyle(
+          child:  Icon(
+              Icons.arrow_back_ios,
+              // arrow_forward_ios
               color: Colors.black,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+              size: 30,
+            )
+
         )
       else
         const SizedBox(width: 50), // to align Skip properly
@@ -198,7 +199,7 @@ Padding(
     ],
   ),
 ),
-          const SizedBox(height: 20),
+          // const SizedBox(height: 20),
 
           Center(
             child: Padding(
@@ -384,7 +385,7 @@ Padding(
   }
 
   Widget _buildChooseValues() {
-    return ValuesSelectionScreen(); // You already built this as a full screen widget
+    return ValuesSelectionScreen(); // You already built this as a full screen widget==============
   }
 
   Widget _buildLifestyleHabits() {
@@ -396,7 +397,7 @@ Padding(
   }
 
   Widget _buildImportantLife() {
-    return ReligionSelectionScreen(); // You already built this as a full screen widget==============
+    return ReligionSelectorWidget(); // You already built this as a full screen widget==============
   }
 
   Widget _buildcause() {
@@ -491,42 +492,6 @@ Padding(
     );
   }
 
-  // Widget _buildPurposeSelectionPage() {
-  //   return _pageWrapper(
-  //     children: [
-  //       const Text("Choose A Mode To Find Your People"),
-  //       const SizedBox(height: 20),
-  //       _radioOption("Date", isPurpose: true),
-  //       _radioOption("BFF", isPurpose: true),
-  //       _radioOption("Bizz", isPurpose: true),
-  //       const SizedBox(height: 20),
-  //       const Text("You'll Only Be Shown To People In The Same Mode As You."),
-  //     ],
-  //   );
-  // }
-
-  // Widget _buildFinalInfoPage() {
-  //   return _pageWrapper(
-  //     children: [
-  //       const Text("BFF Will Help You Find New Friendships"),
-  //       const SizedBox(height: 30),
-  //       SizedBox(
-  //         width: double.infinity,
-  //         child: ElevatedButton(
-  //           style: ElevatedButton.styleFrom(
-  //             backgroundColor: primaryGradient.first,
-  //             shape: RoundedRectangleBorder(
-  //                 borderRadius: BorderRadius.circular(10)),
-  //             padding: const EdgeInsets.symmetric(vertical: 16),
-  //           ),
-  //           onPressed: () {},
-  //           child: const Text("Got It",
-  //               style: TextStyle(color: Colors.white, fontSize: 16)),
-  //         ),
-  //       )
-  //     ],
-  //   );
-  // }
 
   Widget _radioOption(String value, {required bool isPurpose}) {
     bool isSelected =

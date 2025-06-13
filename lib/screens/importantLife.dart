@@ -1,71 +1,72 @@
 import 'package:flutter/material.dart';
 
-class ReligionSelectionScreen extends StatefulWidget {
+class ReligionSelectorWidget extends StatefulWidget {
+  const ReligionSelectorWidget({super.key});
+
   @override
-  _ReligionSelectionScreenState createState() => _ReligionSelectionScreenState();
+  State<ReligionSelectorWidget> createState() =>
+      _ReligionSelectorWidgetState();
 }
 
-class _ReligionSelectionScreenState extends State<ReligionSelectionScreen> {
-  final List<_BubbleData> bubbleData = [
-    _BubbleData("Agnostic", 20, 10),
-    _BubbleData("Atheist", 160, 20),
-    _BubbleData("Buddhist", 280, 40),
-    _BubbleData("Hindu", 30, 130),
-    _BubbleData("Christian", 160, 140),
-    _BubbleData("Catholic", 280, 150),
-    _BubbleData("Jewish", 70, 250),
-    _BubbleData("Jain", 200, 240),
-    _BubbleData("Marmon", 320, 260),
-    _BubbleData("Sikh", 100, 360),
-    _BubbleData("Muslim", 230, 360),
-    _BubbleData("Spiritual", 30, 470),
-    _BubbleData("Latter-day Saint", 160, 470),
-    _BubbleData("Zoroastrian", 290, 470),
-  ];
+class _ReligionSelectorWidgetState extends State<ReligionSelectorWidget> {
+  final List<String> selectedReligions = [];
 
-  final Set<String> selectedReligions = {};
-
-  void toggleSelection(String religion) {
+  void toggleSelection(String label) {
     setState(() {
-      if (selectedReligions.contains(religion)) {
-        selectedReligions.remove(religion);
+      if (selectedReligions.contains(label)) {
+        selectedReligions.remove(label);
       } else {
-        selectedReligions.add(religion);
+        if (selectedReligions.length < 4) {
+          selectedReligions.add(label);
+        }
       }
     });
   }
 
-  Widget buildBubble(String label, bool selected) {
-    return GestureDetector(
-      onTap: () => toggleSelection(label),
-      child: Container(
-        padding: const EdgeInsets.all(28), // Increased size
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: selected
-              ? const LinearGradient(
-                  colors: [Color(0xFF4A6823), Color(0xFFB9D83F)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-              : LinearGradient(
-                  colors: [Colors.grey.shade200, const Color.fromARGB(255, 217, 233, 187)],
-                ),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 6,
-              offset: Offset(4, 4),
-            )
-          ],
-        ),
-        child: Text(
-          "$label +",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: selected ? Colors.white : Colors.black87,
-            fontSize: 15, // Bigger font
+  Widget _buildBubble(String text, double top, double left,
+      {double width = 85, double height = 85}) {
+    final isSelected = selectedReligions.contains(text);
+    return Positioned(
+      top: top,
+      left: left,
+      child: GestureDetector(
+        onTap: () => toggleSelection(text),
+        child: Container(
+          width: width,
+          height: height,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: isSelected
+                ? const LinearGradient(
+                    colors: [Color(0xFF869E23), Color(0xFF000000)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  )
+                : const LinearGradient(
+                    colors: [Color(0xFFF3F7DA), Color(0xFFE6EBA4)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 4,
+                offset: Offset(2, 2),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Text(
+              '$text +',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: text.length > 10 ? 10 : 11,
+                fontWeight: FontWeight.bold,
+                color: isSelected ? Colors.white : Colors.black87,
+              ),
+            ),
           ),
         ),
       ),
@@ -74,67 +75,93 @@ class _ReligionSelectionScreenState extends State<ReligionSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: const Icon(Icons.arrow_back, color: Colors.black),
-        actions: [
-          TextButton(
-            onPressed: () {},
-            child: const Text("Skip", style: TextStyle(color: Colors.black)),
-          ),
-        ],
-      ),
-      body: Stack(
+    return 
+    // Scaffold(
+    //   backgroundColor: Colors.white,
+    //   body: 
+      Stack(
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+          // Header
+          const Positioned(
+            top: 4,
+            left: 20,
+            right: 20,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "you can answer or leave blank,\ndepending on what what matters most to you.",
-                  style: TextStyle(color: Colors.grey),
+                  'you can answer or leave blank,\ndepending on what matters most to you.',
+                  style: TextStyle(color: Colors.black54, fontSize: 14),
                 ),
                 SizedBox(height: 10),
-                Text("Religion", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22)),
+                Text(
+                  'Religion',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                ),
               ],
             ),
           ),
-          Positioned.fill(
-            top: 120,
-            child: Stack(
-              children: bubbleData.map((b) {
-                bool isSelected = selectedReligions.contains(b.label);
-                return Positioned(
-                  left: b.left,
-                  top: b.top,
-                  child: buildBubble(b.label, isSelected),
-                );
-              }).toList(),
+
+          /// Religion Bubbles with Custom Positions
+          _buildBubble('Hindu', 120, 10, width: 90, height: 90),
+          _buildBubble('Muslim', 120, 110, width: 85, height: 85),
+          _buildBubble('Christian', 100, 200, width: 95, height: 95),
+
+          _buildBubble('Sikh', 160, 290, width: 85, height: 80),
+          _buildBubble('Jain', 200, 170, width: 95, height: 85),
+          _buildBubble('Buddhist', 200, 60, width: 100, height: 100),
+
+          _buildBubble('Spiritual', 290, 10, width: 90, height: 90),
+          _buildBubble('Atheist', 280, 140, width: 85, height: 85),
+          _buildBubble('Agnostic', 250, 250, width: 120, height: 100),
+
+          _buildBubble('Other', 370, 90, width: 100, height: 100),
+          _buildBubble('Other', 380, 220, width: 120, height: 120),
+
+          // Bottom Bar
+          Positioned(
+            bottom: 0,
+            left: 20,
+            right: 20,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // const Text(
+                //   'Skip',
+                //   style: TextStyle(
+                //     fontSize: 16,
+                //     color: Colors.black54,
+                //     fontWeight: FontWeight.w500,
+                //   ),
+                // ),
+                Row(
+                  children: [
+                    Text(
+                      '${selectedReligions.length}/4 Selected',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    // CircleAvatar(
+                    //   radius: 20,
+                    //   backgroundColor: Colors.green.shade700,
+                    //   child: IconButton(
+                    //     icon: const Icon(Icons.arrow_forward_ios,
+                    //         color: Colors.white, size: 20),
+                    //     onPressed: () {
+                    //       // Handle navigation
+                    //     },
+                    //   ),
+                    // ),
+                  ],
+                ),
+              ],
             ),
           ),
         ],
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 60.0, vertical: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("${selectedReligions.length}/4 Selected"),
-          ],
-        ),
-      ),
-    );
+      );
+    // );
   }
-}
-
-class _BubbleData {
-  final String label;
-  final double left;
-  final double top;
-
-  _BubbleData(this.label, this.left, this.top);
 }

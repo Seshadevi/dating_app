@@ -6,147 +6,149 @@ class LifestyleHabitsScreen extends StatefulWidget {
 }
 
 class _LifestyleHabitsScreenState extends State<LifestyleHabitsScreen> {
-  List<String> selectedInterests = [];
+  final List<String> selectedHabits = ['Drinking', 'Fitness Freak'];
 
-  void toggleInterest(String interest) {
+  void toggleSelection(String habit) {
     setState(() {
-      if (selectedInterests.contains(interest)) {
-        selectedInterests.remove(interest);
+      if (selectedHabits.contains(habit)) {
+        selectedHabits.remove(habit);
       } else {
-        if (selectedInterests.length < 5) {
-          selectedInterests.add(interest);
+        if (selectedHabits.length < 5) {
+          selectedHabits.add(habit);
         }
       }
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return 
-   
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: SingleChildScrollView(
-            child: 
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-               
-                Text(
-                  "Share as much about your habits as you’re comfortable with.",
-                  style: TextStyle(fontSize: 14, color: Colors.black87,),
-                  textAlign: TextAlign.start,
-                ),
-                SizedBox(height: 10),
-
-                Text(
-                  'Drinking',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-                // SizedBox(height: 16),
-
-                // Bubble cluster
-                BubbleCluster(
-                  selected: selectedInterests,
-                  onTap: toggleInterest,
-                ),
-
-                // SizedBox(height: 40),
-                Center(
-                  child: Text(
-                    '${selectedInterests.length}/5 Selected',
-                    style: TextStyle(fontWeight: FontWeight.w500),
+  Widget _buildBubble(String text, double top, double left,
+      {double? width, double? height}) {
+    final isSelected = selectedHabits.contains(text);
+    return Positioned(
+      top: top,
+      left: left,
+      child: GestureDetector(
+        onTap: () => toggleSelection(text),
+        child: Container(
+          width: width ?? 80,
+          height: height ?? 80,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: isSelected
+                ? LinearGradient(
+                    colors: [Color(0xFF869E23), Color(0xFF000000)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  )
+                : LinearGradient(
+                    colors: [Color(0xFFF3F7DA), Color(0xFFE6EBA4)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
-                ),
-                SizedBox(height: 10),
-
-               
-              ],
-            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 4,
+                offset: Offset(2, 2),
+              ),
+            ],
           ),
-        // ),
-      // ),
-    );
-  }
-}
-
-class BubbleCluster extends StatelessWidget {
-  final List<String> selected;
-  final Function(String) onTap;
-
-  BubbleCluster({required this.selected, required this.onTap});
-
-  final List<Map<String, dynamic>> bubbleData = [
-    {'label': 'Ambition', 'top': 10.0, 'left': 20.0, 'size': 90.0},
-    {'label': 'Empathy', 'top': 50.0, 'left': 120.0, 'size': 70.0},
-    {'label': 'Humour', 'top': 20.0, 'left': 220.0, 'size': 80.0},
-    {'label': 'openness', 'top': 110.0, 'left': 90.0, 'size': 100.0},
-    {'label': 'leadership', 'top': 200.0, 'left': 10.0, 'size': 95.0},
-    {'label': 'unique', 'top': 200.0, 'left': 130.0, 'size': 75.0},
-    {'label': 'kindness', 'top': 60.0, 'left': 60.0, 'size': 65.0},
-    {'label': 'confidence', 'top': 80.0, 'left': 220.0, 'size': 70.0},
-    {'label': 'Friends first', 'top': 140.0, 'left': 210.0, 'size': 60.0},
-    {'label': 'Flexible', 'top': 230.0, 'left': 230.0, 'size': 60.0},
-    {'label': 'playfulness', 'top': 280.0, 'left': 60.0, 'size': 65.0},
-    {'label': 'sassiness', 'top': 280.0, 'left': 140.0, 'size': 65.0},
-    {'label': 'curiosity', 'top': 280.0, 'left': 220.0, 'size': 60.0},
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 390, // height of the bubble area
-      child: Stack(
-        children: bubbleData.map((bubble) {
-          final isSelected = selected.contains(bubble['label']);
-          return Positioned(
-            top: bubble['top'],
-            left: bubble['left'],
-            child: GestureDetector(
-              onTap: () => onTap(bubble['label']),
-              child: Container(
-                width: bubble['size'],
-                height: bubble['size'],
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: isSelected
-                      ? LinearGradient(
-
-                          colors: [Color(0xffB2D12E), Color(0xff000000)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        )
-                      : LinearGradient(
-                          colors: [Color(0xFFF3F7DA), Color(0xFFE6EBA4)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 10,
-                      offset: Offset(2, 2),
-                    ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    '${bubble['label']} +',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: isSelected ? Colors.white : Colors.black87,
-                    ),
-                  ),
-                ),
+          child: Padding(
+            padding: EdgeInsets.all(8),
+            child: Text(
+              text + ' +',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: text.length > 10 ? 10 : 11,
+                fontWeight: FontWeight.bold,
+                color: isSelected ? Colors.white : Colors.black87,
               ),
             ),
-          );
-        }).toList(),
+          ),
+        ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return
+       
+        Stack(
+      children: [
+        // Header
+        Positioned(
+          top: 1,
+          left: 20,
+          right: 20,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Share as much about your habits as you’re comfortable with.',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.black87,
+                ),
+              ),
+              SizedBox(height: 5),
+              Text(
+                'Drinking',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // EXACT bubble layout from reference
+        _buildBubble('Drinking', 120, 10, width: 90, height: 90),
+        _buildBubble('Smoking', 120, 110, width: 85, height: 85),
+        _buildBubble('Marijuana', 100, 200, width: 95, height: 95),
+
+        _buildBubble('Partying', 160, 290, width: 85, height: 80),
+        _buildBubble('Eating Out', 200, 170, width: 95, height: 85),
+        _buildBubble('Late Sleeper', 200, 60, width: 100, height: 100),
+
+        _buildBubble('Fitness Freak', 290, 10, width: 95, height: 95),
+        _buildBubble('Spiritual', 280, 140, width: 80, height: 80),
+        _buildBubble('Mindfulness', 210, 250, width: 130, height: 200),
+
+        _buildBubble('Early Riser', 380, 280, width: 75, height: 75),
+        _buildBubble('Homebody', 350, 180, width: 90, height: 90),
+        _buildBubble('Adventurer', 350, 90, width: 75, height: 75),
+
+        _buildBubble('Pet Lover', 430, 110, width: 85, height: 85),
+        _buildBubble('Workaholic', 400, 10, width: 90, height: 90),
+
+        // Bottom bar
+        Positioned(
+          bottom: 1,
+          left: 20,
+          right: 20,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+             
+              Row(
+                children: [
+                  Text(
+                    '${selectedHabits.length}/5 Selected',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+   
   }
 }
