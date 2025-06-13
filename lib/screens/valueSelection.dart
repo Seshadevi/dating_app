@@ -26,7 +26,7 @@ class _ValuesSelectionScreenState extends State<ValuesSelectionScreen> {
     });
   }
 
-  Widget _buildBubble(String text, double top, double left) {
+  Widget _buildBubble(String text, double top, double left, {double? width, double? height}) {
     final isSelected = selectedQualities.contains(text);
     return Positioned(
       top: top,
@@ -34,8 +34,8 @@ class _ValuesSelectionScreenState extends State<ValuesSelectionScreen> {
       child: GestureDetector(
         onTap: () => toggleSelection(text),
         child: Container(
-          width: 100,
-          height: 100,
+          width: width ?? 80,
+          height: height ?? 80,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
@@ -58,13 +58,16 @@ class _ValuesSelectionScreenState extends State<ValuesSelectionScreen> {
               ),
             ],
           ),
-          child: Text(
-            text + ' +',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: isSelected ? Colors.white : Colors.black87,
+          child: Padding(
+            padding: EdgeInsets.all(8),
+            child: Text(
+              text + ' +',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: text.length > 8 ? 10 : 11,
+                fontWeight: FontWeight.bold,
+                color: isSelected ? Colors.white : Colors.black87,
+              ),
             ),
           ),
         ),
@@ -74,92 +77,105 @@ class _ValuesSelectionScreenState extends State<ValuesSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return 
-    // Scaffold(
-    //   backgroundColor: Colors.white,
-    //   body: SafeArea(
-    //     child: 
-        Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Align(
-                  //   alignment: Alignment.topRight,
-                  //   child: Text(
-                  //     'Skip',
-                  //     style: TextStyle(
-                  //       fontSize: 14,
-                  //       color: Colors.green.shade700,
-                  //     ),
-                  //   ),
-                  // ),
-                  // SizedBox(height: 12),
-                  // Text(
-                  //   'Tell Us What You\nValue In A Person',
-                  //   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                  // ),
-                  // SizedBox(height: 10),
-                  Text(
-                    'which qualities speak to your soul? choose 3 that would make a connection that much stronger.',
-                    style: TextStyle(color: Colors.black87),
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    return Container(
+      color: Colors.white,
+      child: Stack(
+        children: [
+          // Header content
+          Positioned(
+            top: 0,
+            left: 20,
+            right: 20,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'which qualities speak to your soul? choose 3 that would make a connection that much stronger.',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 14,
                   ),
-                  SizedBox(height: 20),
-                  Text(
-                    'Their Qualities',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  'Their Qualities',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
-                  SizedBox(height: 12),
-                ],
-              ),
+                ),
+              ],
             ),
-            _buildBubble('Ambition', 180, 20),
-            _buildBubble('Empathy', 300, 60),
-            _buildBubble('Humour', 250, 150),
-            _buildBubble('Kindness', 180, 230),
-            _buildBubble('Openness', 350, 20),
-            _buildBubble('Confidence', 450, 100),
-            _buildBubble('Leadership', 400, 220),
-            _buildBubble('Unique', 550, 50),
-            _buildBubble('Friends first', 520, 180),
-            _buildBubble('Flexible', 620, 120),
-            _buildBubble('Playfulness', 650, 250),
-            _buildBubble('Sassiness', 750, 60),
-            _buildBubble('Curiosity', 780, 200),
-            _buildBubble('Trust Worthy', 850, 130),
-            Positioned(
-              bottom: 20,
-              left: 20,
-              child: Column(
-                children: [
-                  Text(
-                    '${selectedQualities.length}/3 Selected',
-                    style: TextStyle(fontWeight: FontWeight.w500),
-                  ),
-                  // SizedBox(height: 6),
-                  // CircleAvatar(
-                  //   backgroundColor: Colors.green.shade800,
-                  //   child: Icon(Icons.arrow_forward, color: Colors.white),
-                  // ),
-                ],
-              ),
+          ),
+          
+          
+          _buildBubble('Ambition', 120, 10, width: 90, height: 90),
+          _buildBubble('Empathy', 120, 110, width: 85, height: 85),
+          _buildBubble('Humour', 100, 200, width: 95, height: 95),
+          
+          _buildBubble('Kindness', 160, 290, width: 85, height: 80),
+          _buildBubble('Confidence', 200, 170, width: 95, height: 85),
+          _buildBubble('Openness', 200, 60, width: 100, height: 100),
+          
+          _buildBubble('Leadership', 290, 10, width: 90, height: 90),
+          _buildBubble('Unique', 280, 140, width: 75, height: 75),
+          _buildBubble('Friends first', 210, 250, width: 130, height: 200),
+          
+          _buildBubble('Flexible', 380, 280, width: 70, height: 70),
+          _buildBubble('Playfulness', 350, 180, width: 80, height: 80),
+          _buildBubble('Sassiness', 350, 90, width: 75, height: 75),
+          
+          _buildBubble('Curiosity', 430, 110, width: 85, height: 85),
+          _buildBubble('Trust Worthy', 400, 10, width: 90, height: 90),
+          SizedBox(height: 250,),
+          // Bottom section with counter and skip
+          Positioned(
+            bottom: 5,
+            left: 20,
+            right: 20,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Text(
+                //   'Skip',
+                //   style: TextStyle(
+                //     fontSize: 16,
+                //     color: Colors.black54,
+                //     fontWeight: FontWeight.w500,
+                //   ),
+                // ),
+                Row(
+                  children: [
+                    Text(
+                      '${selectedQualities.length}/3 Selected',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                      ),
+                    ),
+                    // SizedBox(width: 10),
+                    // CircleAvatar(
+                    //   radius: 20,
+                    //   backgroundColor: Colors.green.shade700,
+                    //   child: IconButton(icon:Icon(
+                    //     Icons.arrow_forward_ios,
+                    //     color: Colors.white,
+                    //     size: 20,),
+                    //      onPressed: () { 
+
+                    //      },
+                    //   ),
+                    // ),
+                  ],
+                ),
+              ],
             ),
-            // Positioned(
-            //   bottom: 20,
-            //   left: 20,
-            //   child: Text(
-            //     'Skip',
-            //     style: TextStyle(
-            //       fontSize: 14,
-            //       color: Colors.black54,
-            //     ),
-            //   ),
-            // ),
-          ],
-        // ),
-      // ),
+          ),
+        ],
+      ),
     );
   }
 }

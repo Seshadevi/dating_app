@@ -18,13 +18,13 @@ class _FamilyPlanScreenState extends State<FamilyPlanScreen> {
     });
   }
 
-  Widget optionButton(String text) {
+  Widget optionButton(String text, double size, double fontSize) {
     bool isSelected = selected.contains(text);
     return GestureDetector(
       onTap: () => toggleSelect(text),
       child: Container(
-        width: 130,
-        height: 130,
+        width: size,
+        height: size,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           gradient: isSelected
@@ -45,12 +45,16 @@ class _FamilyPlanScreenState extends State<FamilyPlanScreen> {
             ),
           ],
         ),
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: isSelected ? Colors.white : Colors.black87,
+        child: Padding(
+          padding: EdgeInsets.all(size * 0.07),
+          child: Text(
+            text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              color: isSelected ? Colors.white : Colors.black87,
+            ),
           ),
         ),
       ),
@@ -59,73 +63,98 @@ class _FamilyPlanScreenState extends State<FamilyPlanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: ListView(
-              children: [
-                
-                
-                // SizedBox(height: 10),
-                Text(
-                  "Let’s get deeper. Feel free to skip if you'd prefer not to say.",
-                  style: TextStyle(color: Colors.grey[700]),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  "Have Kids",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+    final screen = MediaQuery.of(context).size;
+    final bubbleSize = screen.width * 0.3;
+    final bubbleFont = screen.width * 0.035;
+
+    return 
+    // Scaffold(
+    //   backgroundColor: Colors.white,
+    //   body: SafeArea(
+    //     child: 
+        Column(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: screen.width * 0.05),
+                child: ListView(
                   children: [
-                    optionButton("Have Kids +"),
-                    optionButton("Don’t Have\nKids ++"),
+                    // SizedBox(height: screen.height * 0.02),
+                    Text(
+                      "Let’s get deeper. Feel free to skip if you'd prefer not to say.",
+                      style: TextStyle(
+                        color: Colors.grey[700],
+                        fontSize: screen.width * 0.035,
+                      ),
+                    ),
+                    // SizedBox(height: screen.height * 0.015),
+                    Text(
+                      "Have Kids",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: screen.width * 0.045,
+                      ),
+                    ),
+                    // SizedBox(height: screen.height * 0.015),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        optionButton("Have Kids +", bubbleSize, bubbleFont),
+                        optionButton("Don’t Have\nKids ++", bubbleSize, bubbleFont),
+                      ],
+                    ),
+                    SizedBox(height: screen.height * 0.03),
+                    Text(
+                      "Kids",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: screen.width * 0.045,
+                      ),
+                    ),
+                    // SizedBox(height: screen.height * 0.015),
+                    Wrap(
+                      alignment: WrapAlignment.spaceAround,
+                      spacing: screen.width * 0.02,
+                      runSpacing: screen.height * 0.015,
+                      children: [
+                        optionButton("Don’t Want\nKids +", bubbleSize, bubbleFont),
+                        optionButton("Open To\nKids +", bubbleSize, bubbleFont),
+                        optionButton("Want Kids +", bubbleSize, bubbleFont),
+                        optionButton("Not\nSure +", bubbleSize, bubbleFont),
+                      ],
+                    ),
+                    // SizedBox(height: screen.height * 0.1),
                   ],
                 ),
-                SizedBox(height: 20),
-                Text(
-                  "Kids",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 10),
-                Wrap(
-                  alignment: WrapAlignment.spaceAround,
-                  spacing: 10,
-                  runSpacing: 10,
-                  children: [
-                    optionButton("Don’t Want\nKids +"),
-                    optionButton("Open To\nKids +"),
-                    optionButton("Want Kids +"),
-                    optionButton("Not\nSure +"),
-                  ],
-                ),
-                SizedBox(height: 80), // spacing for bottom bar
-              ],
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "${selected.length}/2 Selected",
-                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              // CircleAvatar(
-              //   radius: 24,
-              //   backgroundColor: Colors.green.shade700,
-              //   child: Icon(Icons.arrow_forward, color: Colors.white),
-              // ),
-            ],
-          ),
-        ),
-      ],
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: screen.width * 0.05,
+                vertical: screen.height * 0.015,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "${selected.length}/2 Selected",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: screen.width * 0.04,
+                    ),
+                  ),
+                  // Optional next arrow
+                  // CircleAvatar(
+                  //   radius: screen.width * 0.06,
+                  //   backgroundColor: Colors.green.shade700,
+                  //   child: Icon(Icons.arrow_forward, color: Colors.white),
+                  // ),
+                ],
+              ),
+            ),
+          ],
+        // ),
+      // ),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:dating/screens/tab_bar/tabScreen.dart';
 import 'package:flutter/material.dart';
 import '../screens/glitchScreen.dart';
 
@@ -79,7 +80,8 @@ class FriendOnboardingScreen extends StatelessWidget {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => GlitchScreen(),
+                            builder: (context) => 
+                            SubscriptionTabScreen(),
                           ),
                         );
                       },
