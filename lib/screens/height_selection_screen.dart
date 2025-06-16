@@ -1,7 +1,26 @@
 import 'package:flutter/material.dart';
 
 class HeightSelectionScreen extends StatefulWidget {
-  const HeightSelectionScreen({Key? key}) : super(key: key);
+  final String email;
+  final double latitude;
+  final double longitude;
+  final String userName;
+  final String dateOfBirth;
+  final String selectedGender;
+  final bool showGenderOnProfile;
+  final showMode;
+  final String? gendermode;
+  final Set<int>? selectionOptionIds;
+  const HeightSelectionScreen( {super.key,required this.email,
+      required this.latitude,
+      required this.longitude,
+      required this.userName,
+      required this.dateOfBirth,
+      required this.selectedGender,
+      required this.showGenderOnProfile,
+      this.showMode,
+       this.gendermode,
+       this.selectionOptionIds});
 
   @override
   State<HeightSelectionScreen> createState() => _HeightSelectionScreenState();
@@ -15,9 +34,9 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     return
-    //  Scaffold(
-    //   backgroundColor: Colors.white,
-    //   body: 
+     Scaffold(
+      backgroundColor: Colors.white,
+      body: 
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -101,7 +120,7 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
           // ),
           // const SizedBox(height: 20),
         ],
-      // ),
+      ),
     );
   }
 }

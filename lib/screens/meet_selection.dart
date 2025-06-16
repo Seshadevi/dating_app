@@ -55,7 +55,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
           Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: LinearProgressIndicator(
-                  value: 5 / 16,
+                  value: 6 / 16,
                   backgroundColor: Colors.grey[300],
                   valueColor: const AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 147, 179, 3)),
                 ),
