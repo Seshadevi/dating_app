@@ -55,7 +55,7 @@ var selectedMode;
 
   List<Widget> get pages => [
         _buildIntroPage(context),
-        _buildGenderSelectionPage(context),
+        _buildGenderSelectionPage(),
         _buildGenderDisplayPage(),
         _buildMailPage(),
         // _buildDateCategory(),
@@ -104,10 +104,10 @@ var selectedMode;
         return "Want To Show Your Gender On Your Profile";
       case 3:
         return "Can We Get Email?";
-      case 4:
-        return "What Brings You Here?";
-      case 5:
-        return "Who Would Like TO Meet?";
+      // case 4:
+      //   return "What Brings You Here?";
+      // case 5:
+      //   return "Who Would Like TO Meet?";
       // case 6:
       //   return "And What Are You\nHoping To Find?";
       // case 7:
@@ -506,32 +506,32 @@ var selectedMode;
 }
 
 
- Widget _buildDateCategory() {
-  return IntroDatecategory(
-    email: userEmail,                    // From a text field
-    latitude: widget.latitude,                      // From constructor param
-    longitude: widget.longitude,                    // From constructor param
-    userName: userName,                      // From constructor param
-    dateOfBirth: dateOfBirth,                // From constructor param
-    selectedGender: selectedGender,          // From constructor param
-    showGenderOnProfile: showGenderOnProfile // From constructor param
-  );
-}
+//  Widget _buildDateCategory() {
+//   return IntroDatecategory(
+//     email: userEmail,                    // From a text field
+//     latitude: widget.latitude,                      // From constructor param
+//     longitude: widget.longitude,                    // From constructor param
+//     userName: userName,                      // From constructor param
+//     dateOfBirth: dateOfBirth,                // From constructor param
+//     selectedGender: selectedGender,          // From constructor param
+//     showGenderOnProfile: showGenderOnProfile // From constructor param
+//   );
+// }
 
 
 
-  Widget _buildMeetSelection() {
-    return IntroMeetselection(
-                                    email:userEmail ,
-                                    latitude: widget.latitude,
-                                    longitude: widget.longitude,
-                                    userName: userName,
-                                    dateOfBirth: dateOfBirth,
-                                    selectedGender: selectedGender,
-                                    showGenderOnProfile:showGenderOnProfile,
-                                    showMode:selectedMode
-    ); // You already built this as a full screen widget
-  }
+  // Widget _buildMeetSelection() {
+  //   return IntroMeetselection(
+  //                                   email:userEmail ,
+  //                                   latitude: widget.latitude,
+  //                                   longitude: widget.longitude,
+  //                                   userName: userName,
+  //                                   dateOfBirth: dateOfBirth,
+  //                                   selectedGender: selectedGender,
+  //                                   showGenderOnProfile:showGenderOnProfile,
+  //                                   showMode:selectedMode
+  //   ); // You already built this as a full screen widget
+  // }
 
   // Widget _buildPartnersSelections() {
   //   return const InrtoPartneroption(); // You already built this as a full screen widget
@@ -573,7 +573,7 @@ var selectedMode;
   //   return OpeningMoveScreen(); // You already built this as a full screen widget
   // }
 
-  Widget _buildGenderSelectionPage(BuildContext context) {
+  Widget _buildGenderSelectionPage() {
      final screenWidth = MediaQuery.of(context).size.width;
     return _pageWrapper(
       children: [

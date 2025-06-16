@@ -1,3 +1,4 @@
+import 'package:dating/screens/introPage_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../screens/onboarding_screens.dart'; // Update this import as per your project structure
@@ -20,7 +21,7 @@ class AllowNotification extends StatelessWidget {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => OnboardingScreen(
+          builder: (_) => IntroPageScreen(
             latitude: latitude,
             longitude: longitude,
           ),
@@ -116,7 +117,7 @@ class AllowNotification extends StatelessWidget {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => OnboardingScreen(
+                    builder: (_) => IntroPageScreen(
                       latitude: 0.0,
                       longitude: 0.0,
                     ),
