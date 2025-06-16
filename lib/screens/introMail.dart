@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
-import '../screens/datecategory.dart'; // Make sure this exists
+import 'mode_screen.dart';
 
 class IntroMail extends StatefulWidget {
-  const IntroMail({super.key});
+  final double latitude;
+  final double longitude;
+  final String userName;
+  final String dateOfBirth;
+  final String selectedGender;
+  final bool showGenderOnProfile;
+
+  const IntroMail({
+    super.key,
+    required this.latitude,
+    required this.longitude,
+    required this.userName,
+    required this.dateOfBirth,
+    required this.selectedGender,
+    required this.showGenderOnProfile,
+  });
 
   @override
   State<IntroMail> createState() => _IntroMailState();
@@ -10,7 +25,7 @@ class IntroMail extends StatefulWidget {
 
 class _IntroMailState extends State<IntroMail> {
   final TextEditingController emailController = TextEditingController();
-  final _formKey = GlobalKey<FormState>(); // For validation
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -60,18 +75,9 @@ class _IntroMailState extends State<IntroMail> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const Text(
-                      'Skip',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontFamily: 'poppins',
-                        fontSize: 16.0,
-                        letterSpacing: 1.28,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                   
                     Material(
                       elevation: 10,
                       borderRadius: BorderRadius.circular(50),
@@ -95,7 +101,13 @@ class _IntroMailState extends State<IntroMail> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => IntroDatecategory(
-                                    email: emailController.text, onSelectionComplete: (String selectedGender, String email) {  },
+                                    email: emailController.text,
+                                    latitude: widget.latitude,
+                                    longitude: widget.longitude,
+                                    userName: widget.userName,
+                                    dateOfBirth: widget.dateOfBirth,
+                                    selectedGender: widget.selectedGender,
+                                    showGenderOnProfile: widget.showGenderOnProfile,
                                   ),
                                 ),
                               );
@@ -107,14 +119,24 @@ class _IntroMailState extends State<IntroMail> {
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Image.asset(
-                  'assets/mail_frame.png',
-                  fit: BoxFit.contain,
+              const SizedBox(height: 160),
+              SizedBox(
+            height: 150, // or any height you need
+            child: Stack(
+              children: [
+                Positioned(
+                  left: 0,
+                  bottom: 0,
+                  child: Image.asset(
+                    'assets/mail_frame.png',
+                    fit: BoxFit.contain,
+                  ),
                 ),
-              ),
+              ],
+            ),
+          ),
+
+
             ],
           ),
         ),
@@ -140,8 +162,7 @@ class _IntroMailState extends State<IntroMail> {
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter an email';
-            } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                .hasMatch(value)) {
+            } else if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
               return 'Enter a valid email';
             }
             return null;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../screens/introMail.dart';
-import '../screens/datecategory.dart';
+import 'mode_screen.dart';
 import '../screens/meet_selection.dart';
 import '../screens/partners_selections.dart';
 import '../screens/height_selection_screen.dart';
@@ -14,17 +15,19 @@ import 'datePromtSelection.dart';
 import '../screens/openingMoveScreen.dart';
 import '../screens/addHeadlineScreen.dart';
 
-class OnboardingScreen extends StatefulWidget {
+class OnboardingScreen extends ConsumerStatefulWidget{
   final double latitude;
   final double longitude;
   const OnboardingScreen(
       {super.key, required this.latitude, required this.longitude});
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
+ 
+
   final PageController _controller = PageController();
   String userName = '';
   String dateOfBirth = ''; // in format MM/DD/YYYY
@@ -42,13 +45,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   String selectedGender = "";
   String selectedPurpose = "";
   bool showGenderOnProfile = true;
+  
+ 
+  
+var selectedMode;
 
   List<Color> get primaryGradient =>
       [const Color(0xFF869E23), const Color(0xFF000000)];
 
   List<Widget> get pages => [
         _buildIntroPage(context),
-        _buildGenderSelectionPage(),
+        _buildGenderSelectionPage(context),
         _buildGenderDisplayPage(),
         _buildMailPage(),
         _buildDateCategory(),
@@ -257,107 +264,146 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               children: pages,
             ),
           ),
-          GestureDetector(
-            onTap: nextPage,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: CircleAvatar(
-                radius: 24,
-                backgroundColor: Colors.green.shade700,
-                child: Icon(Icons.arrow_forward_ios, color: Colors.white),
-              ),
-            ),
-          ),
+          // GestureDetector(
+          //   onTap: nextPage,
+          //   child: Padding(
+          //     padding: const EdgeInsets.only(bottom: 10),
+          //     child: CircleAvatar(
+          //       radius: 24,
+          //       backgroundColor: Colors.green.shade700,
+          //       child: Icon(Icons.arrow_forward_ios, color: Colors.white),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
   }
 
-  Widget _buildIntroPage(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+ Widget _buildIntroPage(BuildContext context) {
+  final screenWidth = MediaQuery.of(context).size.width;
 
-    return Stack(
-      children: [
-        // === Positioned Background Images ===
-        Positioned(
-          left: -50,
-          top: 300,
-          child: Image.asset(
-            'assets/CornerEllipse.png',
-            width: screenWidth * 0.4,
-          ),
+  return Stack(
+    children: [
+      // 🎨 Your background decorations
+      Positioned(
+        left: -50,
+        top: 300,
+        child: Image.asset(
+          'assets/CornerEllipse.png',
+          width: screenWidth * 0.4,
         ),
-        Positioned(
-          left: screenWidth * 0.075,
-          top: screenWidth * 0.96,
-          child: Image.asset(
-            'assets/Ellipse_439.png',
-            width: screenWidth * 0.25,
-          ),
+      ),
+      Positioned(
+        left: screenWidth * 0.075,
+        top: screenWidth * 0.96,
+        child: Image.asset(
+          'assets/Ellipse_439.png',
+          width: screenWidth * 0.25,
         ),
-        Positioned(
-          top: screenWidth * 1.05,
-          right: screenWidth * 0.05,
-          child: Image.asset(
-            'assets/balloons.png',
-            width: screenWidth * 0.4,
-          ),
+      ),
+      Positioned(
+        top: screenWidth * 1.05,
+        right: screenWidth * 0.05,
+        child: Image.asset(
+          'assets/balloons.png',
+          width: screenWidth * 0.4,
         ),
+      ),
 
-        // === Main content on top of the images ===
-        _pageWrapper(
-          children: [
-            const SizedBox(height: 40),
-            _styledInput(
-              label: "Your First Name",
-              hint: "Enter your name",
-              onChanged: (value) {
-                setState(() {
-                  userName = value;
-                });
-              },
-            ),
-            const SizedBox(height: 40),
-            const Text(
-              "Your Birthday",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                _birthdayInput("Month", (value) {
-                  setState(() {
-                    _month = value;
-                    dateOfBirth = '$_month/$_day/$_year';
-                  });
-                }),
-                const SizedBox(width: 10),
-                _birthdayInput("Day", (value) {
-                  setState(() {
-                    _day = value;
-                    dateOfBirth = '$_month/$_day/$_year';
-                  });
-                }),
-                const SizedBox(width: 10),
-                _birthdayInput("Year", (value) {
-                  setState(() {
-                    _year = value;
-                    dateOfBirth = '$_month/$_day/$_year';
-                  });
-                }),
-              ],
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              "It’s Never Too Early To Count Down",
-              style: TextStyle(fontSize: 12, color: Colors.grey),
-            ),
-          ],
+      // 🧾 Foreground content with form
+      Positioned.fill(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 40),
+              _styledInput(
+                label: "Your First Name",
+                hint: "Enter your name",
+                onChanged: (value) {
+                  setState(() => userName = value);
+                },
+              ),
+              const SizedBox(height: 40),
+              const Text("Your Birthday", style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(child: _birthdayInput("Month", (value) {
+                    setState(() {
+                      _month = value;
+                      dateOfBirth = '$_month/$_day/$_year';
+                    });
+                  })),
+                  const SizedBox(width: 10),
+                  Expanded(child: _birthdayInput("Day", (value) {
+                    setState(() {
+                      _day = value;
+                      dateOfBirth = '$_month/$_day/$_year';
+                    });
+                  })),
+                  const SizedBox(width: 10),
+                  Expanded(child: _birthdayInput("Year", (value) {
+                    setState(() {
+                      _year = value;
+                      dateOfBirth = '$_month/$_day/$_year';
+                    });
+                  })),
+                ],
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                "It’s Never Too Early To Count Down",
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+              const SizedBox(height: 120), // give some space so button won't overlap
+            ],
+          ),
         ),
-      ],
-    );
-  }
+      ),
+
+      // ✅ NEXT BUTTON HERE
+      Positioned(
+        bottom: 24,
+        right: 24,
+        child: Align(
+          alignment: Alignment.bottomRight,
+          child: Material(
+            elevation: 10,
+            borderRadius: BorderRadius.circular(50),
+            child: Container(
+              width: screenWidth * 0.125,
+              height: screenWidth * 0.125,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xffB2D12E), Color(0xff000000)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+                onPressed: () {
+                  if (userName.isNotEmpty && _month.isNotEmpty && _day.isNotEmpty && _year.isNotEmpty) {
+                    nextPage(); // ⬅ from parent class
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Please fill in all fields")),
+                    );
+                  }
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
 
   Widget _buildGenderDisplayPage() {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -408,29 +454,83 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ],
         ),
+        SizedBox(height: 120,),
+        Positioned(
+        bottom: 24,
+        right: 24,
+        child: Align(
+          alignment: Alignment.bottomRight,
+          child: Material(
+            elevation: 10,
+            borderRadius: BorderRadius.circular(50),
+            child: Container(
+              width: screenWidth * 0.125,
+              height: screenWidth * 0.125,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xffB2D12E), Color(0xff000000)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: IconButton(
+                icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+                onPressed: () {
+                  if (userName.isNotEmpty && _month.isNotEmpty && _day.isNotEmpty && _year.isNotEmpty) {
+                    nextPage(); // ⬅ from parent class
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Please fill in all fields")),
+                    );
+                  }
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
       ],
     );
   }
 
-  Widget _buildMailPage() {
-    return const IntroMail(); // You already built this as a full screen widget
-  }
-
-  Widget _buildDateCategory() {
-  return IntroDatecategory(
-    email: userEmail,
-    onSelectionComplete: (selectedGender, email) {
-      setState(() {
-        selectedGenderMode = selectedGender;
-        userEmail = email;
-      });
-    },
+ Widget _buildMailPage() {
+  return IntroMail(
+    latitude: widget.latitude,
+    longitude: widget.longitude,
+    userName: userName,
+    dateOfBirth: dateOfBirth,
+    selectedGender: selectedGender,
+    showGenderOnProfile: showGenderOnProfile,
   );
 }
 
 
+ Widget _buildDateCategory() {
+  return IntroDatecategory(
+    email: userEmail,                    // From a text field
+    latitude: widget.latitude,                      // From constructor param
+    longitude: widget.longitude,                    // From constructor param
+    userName: userName,                      // From constructor param
+    dateOfBirth: dateOfBirth,                // From constructor param
+    selectedGender: selectedGender,          // From constructor param
+    showGenderOnProfile: showGenderOnProfile // From constructor param
+  );
+}
+
+
+
   Widget _buildMeetSelection() {
-    return const IntroMeetselection(); // You already built this as a full screen widget
+    return IntroMeetselection(
+                                    email:userEmail ,
+                                    latitude: widget.latitude,
+                                    longitude: widget.longitude,
+                                    userName: userName,
+                                    dateOfBirth: dateOfBirth,
+                                    selectedGender: selectedGender,
+                                    showGenderOnProfile:showGenderOnProfile,
+                                    showMode:selectedMode
+    ); // You already built this as a full screen widget
   }
 
   Widget _buildPartnersSelections() {
@@ -473,7 +573,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return OpeningMoveScreen(); // You already built this as a full screen widget
   }
 
-  Widget _buildGenderSelectionPage() {
+  Widget _buildGenderSelectionPage(BuildContext context) {
+     final screenWidth = MediaQuery.of(context).size.width;
     return _pageWrapper(
       children: [
         const SizedBox(height: 10),
@@ -518,10 +619,53 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
+                    
                   ],
                 ),
               ),
             ),
+            SizedBox(height: 120,),
+             // ✅ NEXT BUTTON HERE
+
+      // Stack(
+        // children: [
+          Positioned(
+          bottom: 24,
+          right: 24,
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: Material(
+              elevation: 10,
+              borderRadius: BorderRadius.circular(50),
+              child: Container(
+                width: screenWidth * 0.125,
+                height: screenWidth * 0.125,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color.fromARGB(255, 99, 118, 3), Color(0xff000000)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+                  onPressed: () {
+                    if (userName.isNotEmpty && _month.isNotEmpty && _day.isNotEmpty && _year.isNotEmpty) {
+                      nextPage(); // ⬅ from parent class
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Please fill in all fields")),
+                      );
+                    }
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+        // ]
+      // ),
           ],
         ),
       ],

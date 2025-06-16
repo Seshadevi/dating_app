@@ -1,71 +1,112 @@
+import 'package:dating/provider/signupprocessProviders/genderProvider.dart';
+import 'package:dating/screens/partners_selections.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../model/signupprocessmodels/genderModel.dart';
+// import '../../provider/signupproviders/gender_provider.dart'; // adjust your import if needed
 
-// import 'intro_mail.dart';
-// import 'intro_partneroption.dart';
+class IntroMeetselection extends ConsumerStatefulWidget {
+  final String email;
+  final double latitude;
+  final double longitude;
+  final String userName;
+  final String dateOfBirth;
+  final String selectedGender;
+  final bool showGenderOnProfile;
+  final  showMode;
 
-class IntroMeetselection extends StatefulWidget {
-  const IntroMeetselection({super.key});
+  const IntroMeetselection({
+    super.key,
+    required this.email,
+    required this.latitude,
+    required this.longitude,
+    required this.userName,
+    required this.dateOfBirth,
+    required this.selectedGender,
+    required this.showGenderOnProfile,
+    required this.showMode,
+  });
 
   @override
-  State<IntroMeetselection> createState() => IntroMeetselectionState();
+  ConsumerState<IntroMeetselection> createState() => _IntroMeetselectionState();
 }
 
-class IntroMeetselectionState extends State<IntroMeetselection> {
-  // final scaffoldKey = GlobalKey<ScaffoldState>();
-  String? selectedGender;
-  bool isOpenToEveryone = false; // Added toggle state
+class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
+  String? selectedMode;
+  bool isOpenToEveryone = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch genders when widget loads
+    Future.microtask(() => ref.read(genderProvider.notifier).getGender());
+  }
 
   @override
   Widget build(BuildContext context) {
+    final genderState = ref.watch(genderProvider);
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    return 
-    // Scaffold(
-    //   backgroundColor: Colors.white,
-    //   body: 
-      Column(
+    return Scaffold(
+      body: Column(
         children: [
+          const SizedBox(height: 40),
+          Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: LinearProgressIndicator(
+                  value: 5 / 16,
+                  backgroundColor: Colors.grey[300],
+                  valueColor: const AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 147, 179, 3)),
+                ),
+              ),
+              const SizedBox(height: 15),
+              // Back button and title
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    const SizedBox(width: 8),
+                    const Text(
+                      "Who Would Like TO Meet?",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // SizedBox(height: screenHeight * 0.05),
-                // Text(
-                //   "who would you like to meet?",
-                //   style: TextStyle(
-                //     fontFamily: 'Inter',
-                //     fontSize: 30.0,
-                //     fontWeight: FontWeight.bold,
-                //   ),
-                // ),
-                // SizedBox(height: screenHeight * 0.025),
                 Text(
                   "you can choose more than one answer and change it any time.",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 18.0,
                     fontWeight: FontWeight.w300,
                     height: 1.3,
                   ),
                 ),
-                // SizedBox(height: screenHeight * 0.04),
-
-                // Toggle switch for "I'm open to dating everyone"
+                const SizedBox(height: 10),
+      
                 _buildToggleOption(),
-                // SizedBox(height: screenHeight * 0.025),
-
-                // Gender Radio Buttons
-                _buildGenderOption("Woman", Color(0xffE9F1C4)),
-                SizedBox(height: screenHeight * 0.025),
-                _buildGenderOption("Man", Color(0xffE9F1C4)),
-                SizedBox(height: screenHeight * 0.025),
-                _buildGenderOption("Nonbinary", Color(0xffE9F1C4)),
-
-                // Bottom note
-                SizedBox(height: screenHeight * 0.075),
-
+      
+                if (genderState.data != null)
+                  ...genderState.data!.map((gender) =>
+                    _buildGenderOption(gender)
+                  ),
+      
+                const SizedBox(height: 10),
+      
                 Row(
                   children: [
                     Icon(
@@ -73,8 +114,8 @@ class IntroMeetselectionState extends State<IntroMeetselection> {
                       color: Colors.grey[600],
                       size: 24,
                     ),
-                    SizedBox(width: 12),
-                    Text(
+                    const SizedBox(width: 12),
+                    const Text(
                       "You'll Only Be Shown To People In The \nSame Mode As You.",
                       style: TextStyle(
                         fontSize: 10.0,
@@ -85,74 +126,52 @@ class IntroMeetselectionState extends State<IntroMeetselection> {
                     ),
                   ],
                 ),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.end,
-                //   children: [
-                //     Container(
-                //       width: screenWidth * 0.125,
-                //       height: screenWidth * 0.125,
-                //       decoration: BoxDecoration(
-                //           gradient: LinearGradient(
-                //             colors: [
-                //               Color(0xffB2D12E),
-                //               Color(0xff000000),
-                //             ],
-                //             stops: [0.0, 1.0],
-                //             begin: AlignmentDirectional(0.0, -1.0),
-                //             end: AlignmentDirectional(0, 1.0),
-                //           ),
-                //           borderRadius: BorderRadius.circular(50)),
-                //       child: IconButton(
-                //           color: Colors.white,
-                //           onPressed: () {
-                //             Navigator.push(
-                //                 context,
-                //                 MaterialPageRoute(
-                //                     builder: (context) =>
-                //                         InrtoPartneroption()));
-                //           },
-                //           icon: Icon(Icons.arrow_forward_ios)),
-                //     ),
-                //   ],
-                // ),
+                // const SizedBox(height: 10),
               ],
             ),
           ),
-        ],
-      // ),
-    );
-  }
-
-  // New toggle widget for "I'm open to dating everyone"
-  Widget _buildToggleOption() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Switch(
-            value: isOpenToEveryone,
-            onChanged: (value) {
-              setState(() {
-                isOpenToEveryone = value;
-                // If open to everyone, clear specific gender selection
-                if (value) {
-                  selectedGender = null;
-                }
-              });
-            },
-            activeTrackColor: Color(0xffB2D12E),
-            activeColor: Colors.white,
-            inactiveTrackColor: Color(0xFFD3D3D3),
-            inactiveThumbColor: Colors.white,
-          ),
-          Text(
-            "i'm open to dating everyone",
-            style: TextStyle(
-              fontFamily: 'Inter',
-              fontSize: 15,
-              fontWeight: FontWeight.w400,
-              color: Color.fromARGB(255, 60, 60, 60),
+      
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Material(
+              elevation: 10,
+              borderRadius: BorderRadius.circular(50),
+              child: Container(
+                width: screenWidth * 0.125,
+                height: screenWidth * 0.125,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xffB2D12E), Color(0xff000000)],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+                  onPressed: () {
+                    if (selectedMode != null || isOpenToEveryone) {
+                      print("✅ Proceeding with:");
+                      print("Email: ${widget.email}");
+                      print("Lat: ${widget.latitude}, Long: ${widget.longitude}");
+                      print("Username: ${widget.userName}");
+                      print("DOB: ${widget.dateOfBirth}");
+                      print("Gender: ${widget.selectedGender}");
+                      print("Show Gender: ${widget.showGenderOnProfile}");
+                      print("Selected Mode: ${widget.showMode.value} (ID: ${widget.showMode.id})");
+                      print("Selected Looking For: ${isOpenToEveryone ? "Everyone" : selectedMode}");
+                      print("email............${widget.email}");
+      
+                      // Navigator.push(...) your next screen here
+                      Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> InrtoPartneroption()));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Please select a gender preference"))
+                      );
+                    }
+                  },
+                ),
+              ),
             ),
           ),
         ],
@@ -160,82 +179,105 @@ class IntroMeetselectionState extends State<IntroMeetselection> {
     );
   }
 
-  Widget _buildGenderOption(String gender, Color defaultBackgroundColor) {
-    bool isSelected = selectedGender == gender;
-
-    // Text color changes to white when selected
-    Color textColor =
-        isSelected ? Colors.white : Color.fromARGB(255, 90, 118, 81);
+  /// Gender Option Builder
+  Widget _buildGenderOption(Data gender) {
+    final isSelected = selectedMode == gender.value;
 
     return InkWell(
       onTap: () {
-        // Only allow selection if not open to everyone
         if (!isOpenToEveryone) {
           setState(() {
-            selectedGender = gender;
+            selectedMode = gender.value;
           });
         }
       },
       child: Opacity(
-        // Make options look disabled when "open to everyone" is selected
         opacity: isOpenToEveryone ? 0.5 : 1.0,
         child: Container(
-          width: double.infinity,
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           height: 70,
           decoration: BoxDecoration(
-              color:
-                  isSelected ? const Color(0xff92AB26) : defaultBackgroundColor,
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(
-                  width: 2,
-                  color: isSelected ? Color(0xffE9F1C4) : Colors.transparent)),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  gender,
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 22,
-                    color: textColor,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: isSelected
-                          ? Colors.white
-                          : Color.fromARGB(255, 90, 118, 81),
-                      width: 2,
-                    ),
-                    color: isSelected
-                        ? Color.fromARGB(255, 90, 118, 81)
-                        : Colors.transparent,
-                  ),
-                  child: isSelected
-                      ? Center(
-                          child: Container(
-                            width: 12,
-                            height: 12,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                            ),
-                          ),
-                        )
-                      : null,
-                ),
-              ],
+            color: isSelected ? const Color(0xff92AB26) : const Color(0xffE9F1C4),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              width: 2,
+              color: isSelected ? const Color(0xffE9F1C4) : Colors.transparent,
             ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                gender.value ?? '',
+                style: TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 22,
+                  color: isSelected ? Colors.white : const Color(0xFF5A7651),
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: isSelected ? Colors.white : const Color(0xFF5A7651),
+                    width: 2,
+                  ),
+                  color: isSelected ? const Color(0xFF5A7651) : Colors.transparent,
+                ),
+                child: isSelected
+                    ? Center(
+                        child: Container(
+                          width: 12,
+                          height: 12,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    : null,
+              ),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  /// Toggle Switch
+  Widget _buildToggleOption() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Switch(
+          value: isOpenToEveryone,
+          onChanged: (value) {
+            setState(() {
+              isOpenToEveryone = value;
+              if (value) {
+                selectedMode = null;
+              }
+            });
+          },
+          activeTrackColor: const Color(0xffB2D12E),
+          activeColor: Colors.white,
+          inactiveTrackColor: const Color(0xFFD3D3D3),
+          inactiveThumbColor: Colors.white,
+        ),
+        const Text(
+          "i'm open to dating everyone",
+          style: TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+            color: Color.fromARGB(255, 60, 60, 60),
+          ),
+        ),
+      ],
     );
   }
 }
