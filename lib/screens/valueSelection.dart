@@ -1,15 +1,53 @@
 import 'package:flutter/material.dart';
 
 class ValuesSelectionScreen extends StatefulWidget {
+  final String email;
+  final double latitude;
+  final double longitude;
+  final String userName;
+  final String dateOfBirth;
+  final String selectedGender;
+  final bool showGenderOnProfile;
+  final showMode;
+  final String? gendermode;
+   final List<String> selectedIntersts;
+
+  final dynamic selectedHeight;
+  final dynamic selectionOptionIds;
+  const ValuesSelectionScreen(
+      {super.key, 
+      required this.email,
+      required this.latitude,
+      required this.longitude,
+      required this.userName,
+      required this.dateOfBirth,
+      required this.selectedGender,
+      required this.showGenderOnProfile,
+      this.showMode,
+      this.gendermode,
+      this.selectedHeight,
+      this.selectionOptionIds,
+       required this.selectedIntersts});
   @override
   _ValuesSelectionScreenState createState() => _ValuesSelectionScreenState();
 }
 
 class _ValuesSelectionScreenState extends State<ValuesSelectionScreen> {
   final List<String> allQualities = [
-    'Ambition', 'Empathy', 'Humour', 'Kindness', 'Openness', 'Confidence',
-    'Leadership', 'Unique', 'Friends first', 'Flexible', 'Playfulness',
-    'Sassiness', 'Curiosity', 'Trust Worthy'
+    'Ambition',
+    'Empathy',
+    'Humour',
+    'Kindness',
+    'Openness',
+    'Confidence',
+    'Leadership',
+    'Unique',
+    'Friends first',
+    'Flexible',
+    'Playfulness',
+    'Sassiness',
+    'Curiosity',
+    'Trust Worthy'
   ];
 
   List<String> selectedQualities = ['Openness', 'Leadership', 'Ambition'];
@@ -26,7 +64,8 @@ class _ValuesSelectionScreenState extends State<ValuesSelectionScreen> {
     });
   }
 
-  Widget _buildBubble(String text, double top, double left, {double? width, double? height}) {
+  Widget _buildBubble(String text, double top, double left,
+      {double? width, double? height}) {
     final isSelected = selectedQualities.contains(text);
     return Positioned(
       top: top,
@@ -110,27 +149,28 @@ class _ValuesSelectionScreenState extends State<ValuesSelectionScreen> {
               ],
             ),
           ),
-          
-          
+
           _buildBubble('Ambition', 120, 10, width: 90, height: 90),
           _buildBubble('Empathy', 120, 110, width: 85, height: 85),
           _buildBubble('Humour', 100, 200, width: 95, height: 95),
-          
+
           _buildBubble('Kindness', 160, 290, width: 85, height: 80),
           _buildBubble('Confidence', 200, 170, width: 95, height: 85),
           _buildBubble('Openness', 200, 60, width: 100, height: 100),
-          
+
           _buildBubble('Leadership', 290, 10, width: 90, height: 90),
           _buildBubble('Unique', 280, 140, width: 75, height: 75),
           _buildBubble('Friends first', 210, 250, width: 130, height: 200),
-          
+
           _buildBubble('Flexible', 380, 280, width: 70, height: 70),
           _buildBubble('Playfulness', 350, 180, width: 80, height: 80),
           _buildBubble('Sassiness', 350, 90, width: 75, height: 75),
-          
+
           _buildBubble('Curiosity', 430, 110, width: 85, height: 85),
           _buildBubble('Trust Worthy', 400, 10, width: 90, height: 90),
-          SizedBox(height: 250,),
+          SizedBox(
+            height: 250,
+          ),
           // Bottom section with counter and skip
           Positioned(
             bottom: 5,
@@ -164,7 +204,7 @@ class _ValuesSelectionScreenState extends State<ValuesSelectionScreen> {
                     //     Icons.arrow_forward_ios,
                     //     color: Colors.white,
                     //     size: 20,),
-                    //      onPressed: () { 
+                    //      onPressed: () {
 
                     //      },
                     //   ),
