@@ -60,17 +60,17 @@ var selectedMode;
         _buildMailPage(),
         _buildDateCategory(),
         _buildMeetSelection(),
-        _buildPartnersSelections(),
-        _buildHeightSelection(),
-        _buildChooseFoodies(),
-        _buildChooseValues(),
-        _buildLifestyleHabits(),
-        _buildFamilyScreen(),
-        _buildImportantLife(),
-        _buildcause(),
-        _buildDatePromt(),
-        _buildPhotoUploadPage(),
-        _buildOpeningMove(),
+        // _buildPartnersSelections(),
+        // _buildHeightSelection(),
+        // _buildChooseFoodies(),
+        // _buildChooseValues(),
+        // _buildLifestyleHabits(),
+        // _buildFamilyScreen(),
+        // _buildImportantLife(),
+        // _buildcause(),
+        // _buildDatePromt(),
+        // _buildPhotoUploadPage(),
+        // _buildOpeningMove(),
         // _buildPurposeSelectionPage(),
         // _buildFinalInfoPage(),
       ];
@@ -108,28 +108,28 @@ var selectedMode;
         return "What Brings You Here?";
       case 5:
         return "Who Would Like TO Meet?";
-      case 6:
-        return "And What Are You\nHoping To Find?";
-      case 7:
-        return "Now lets Talk About You";
-      case 8:
-        return "Choose Five Things You Are Really Into";
-      case 9:
-        return "Tell Us What You Value In A Person";
-      case 10:
-        return "Lets Talk About Your Hobits And LifeStyle ";
-      case 11:
-        return "Do You Have Kids Or\nFamily Plans?";
-      case 12:
-        return "Whats's Important In Your Life?";
-      case 13:
-        return "How About Causes And Communities";
-      case 14:
-        return "What’s It Like To Date You?";
-      case 15:
-        return "TIme To Put A FAce To The Name";
-      case 16:
-        return "What will You Opening Move Be";
+      // case 6:
+      //   return "And What Are You\nHoping To Find?";
+      // case 7:
+      //   return "Now lets Talk About You";
+      // case 8:
+      //   return "Choose Five Things You Are Really Into";
+      // case 9:
+      //   return "Tell Us What You Value In A Person";
+      // case 10:
+      //   return "Lets Talk About Your Hobits And LifeStyle ";
+      // case 11:
+      //   return "Do You Have Kids Or\nFamily Plans?";
+      // case 12:
+      //   return "Whats's Important In Your Life?";
+      // case 13:
+      //   return "How About Causes And Communities";
+      // case 14:
+      //   return "What’s It Like To Date You?";
+      // case 15:
+      //   return "TIme To Put A FAce To The Name";
+      // case 16:
+      //   return "What will You Opening Move Be";
       default:
         return "";
     }
@@ -533,45 +533,45 @@ var selectedMode;
     ); // You already built this as a full screen widget
   }
 
-  Widget _buildPartnersSelections() {
-    return const InrtoPartneroption(); // You already built this as a full screen widget
-  }
+  // Widget _buildPartnersSelections() {
+  //   return const InrtoPartneroption(); // You already built this as a full screen widget
+  // }
 
-  Widget _buildHeightSelection() {
-    return const HeightSelectionScreen(); // You already built this as a full screen widget
-  }
+  // Widget _buildHeightSelection() {
+  //   return const HeightSelectionScreen(); // You already built this as a full screen widget
+  // }
 
-  Widget _buildChooseFoodies() {
-    return InterestsScreen(); // You already built this as a full screen widget
-  }
+  // Widget _buildChooseFoodies() {
+  //   return InterestsScreen(); // You already built this as a full screen widget
+  // }
 
-  Widget _buildChooseValues() {
-    return ValuesSelectionScreen(); // You already built this as a full screen widget==============
-  }
+  // Widget _buildChooseValues() {
+  //   return ValuesSelectionScreen(); // You already built this as a full screen widget==============
+  // }
 
-  Widget _buildLifestyleHabits() {
-    return LifestyleHabitsScreen(); // You already built this as a full screen widget============
-  }
+  // Widget _buildLifestyleHabits() {
+  //   return LifestyleHabitsScreen(); // You already built this as a full screen widget============
+  // }
 
-  Widget _buildFamilyScreen() {
-    return FamilyPlanScreen(); // You already built this as a full screen widget
-  }
+  // Widget _buildFamilyScreen() {
+  //   return FamilyPlanScreen(); // You already built this as a full screen widget
+  // }
 
-  Widget _buildImportantLife() {
-    return ReligionSelectorWidget(); // You already built this as a full screen widget==============
-  }
+  // Widget _buildImportantLife() {
+  //   return ReligionSelectorWidget(); // You already built this as a full screen widget==============
+  // }
 
-  Widget _buildcause() {
-    return CausesScreen(); // You already built this as a full screen widget==================
-  }
+  // Widget _buildcause() {
+  //   return CausesScreen(); // You already built this as a full screen widget==================
+  // }
 
-  Widget _buildDatePromt() {
-    return DatePromptScreen(); // You already built this as a full screen widget
-  }
+  // Widget _buildDatePromt() {
+  //   return DatePromptScreen(); // You already built this as a full screen widget
+  // }
 
-  Widget _buildOpeningMove() {
-    return OpeningMoveScreen(); // You already built this as a full screen widget
-  }
+  // Widget _buildOpeningMove() {
+  //   return OpeningMoveScreen(); // You already built this as a full screen widget
+  // }
 
   Widget _buildGenderSelectionPage(BuildContext context) {
      final screenWidth = MediaQuery.of(context).size.width;

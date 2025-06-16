@@ -163,7 +163,18 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
                       print("email............${widget.email}");
       
                       // Navigator.push(...) your next screen here
-                      Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> InrtoPartneroption()));
+                      Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> InrtoPartneroption(
+                         email: widget.email,
+                                  latitude: widget.latitude,
+                                  longitude: widget.longitude,
+                                  userName: widget.userName,
+                                  dateOfBirth: widget.dateOfBirth,
+                                  selectedGender: widget.selectedGender,
+                                  showGenderOnProfile: widget.showGenderOnProfile,
+                                  showMode: widget.showMode,
+                                  gendermode:selectedMode
+
+                      )));
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text("Please select a gender preference"))
