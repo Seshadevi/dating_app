@@ -1,3 +1,4 @@
+import 'package:dating/screens/importantLife.dart';
 import 'package:flutter/material.dart';
 
 class FamilyPlanScreen extends StatefulWidget {
@@ -12,7 +13,7 @@ class FamilyPlanScreen extends StatefulWidget {
   final String? gendermode;
   final dynamic selectionOptionIds;
   final dynamic selectedHeight;
-  final List<String> selectedintrests;
+  final List<int> selectedInterestIds;
   final List<int> selectedqualitiesIDs;
   final List<int>  selectedhabbits;
 
@@ -29,7 +30,7 @@ class FamilyPlanScreen extends StatefulWidget {
     this.gendermode,
     this.selectionOptionIds,
     this.selectedHeight,
-    required this.selectedintrests,
+    required this.selectedInterestIds,
     required this.selectedqualitiesIDs,
     required this.selectedhabbits
   });
@@ -175,12 +176,52 @@ class _FamilyPlanScreenState extends State<FamilyPlanScreen> {
                       fontSize: screen.width * 0.04,
                     ),
                   ),
-                  // Optional next arrow
-                  // CircleAvatar(
-                  //   radius: screen.width * 0.06,
-                  //   backgroundColor: Colors.green.shade700,
-                  //   child: Icon(Icons.arrow_forward, color: Colors.white),
-                  // ),
+                  const SizedBox(width: 10),
+                        Material(
+                          elevation: 10,
+                          borderRadius: BorderRadius.circular(50),
+                          child: Container(
+                            width: screen.width * 0.125,
+                            height: screen.width * 0.125,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(colors: [Color(0xffB2D12E), Color(0xff000000)]),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+                              onPressed: () {
+                                if (selected .isNotEmpty) {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ReligionSelectorWidget(
+                                         email: widget.email,
+                                      latitude: widget.latitude,
+                                      longitude: widget.longitude,
+                                      userName: widget.userName,
+                                      dateOfBirth: widget.dateOfBirth,
+                                      selectedGender: widget.selectedGender,
+                                      showGenderOnProfile: widget.showGenderOnProfile,
+                                      showMode: widget.showMode,
+                                      gendermode: widget.gendermode,
+                                      selectionOptionIds: widget.selectionOptionIds,
+                                      selectedHeight: widget.selectedHeight,
+                                      selectedInterestIds: widget.selectedInterestIds,
+                                      selectedqualitiesIDs: widget.selectedqualitiesIDs,
+                                      selectedhabbits: widget.selectedhabbits,
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text("Please select at least one interest")),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                  
                 ],
               ),
             ),

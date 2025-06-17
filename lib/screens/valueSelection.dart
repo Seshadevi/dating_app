@@ -18,7 +18,7 @@ class ValuesSelectionScreen extends ConsumerStatefulWidget {
   final bool showGenderOnProfile;
   final showMode;
   final String? gendermode;
-  final List<String> selectedIntersts;
+  final List<int> selectedInterestIds;
   final dynamic selectedHeight;
   final dynamic selectionOptionIds;
 
@@ -35,7 +35,8 @@ class ValuesSelectionScreen extends ConsumerStatefulWidget {
     this.gendermode,
     this.selectedHeight,
     this.selectionOptionIds,
-    required this.selectedIntersts,
+    // required this.selectedIntersts, 
+    required this.selectedInterestIds,
   });
 
   @override
@@ -363,7 +364,7 @@ class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
                                         print("Show Gender: ${widget.showGenderOnProfile}");
                                         print("Selected Mode: ${widget.showMode.value} (ID: ${widget.showMode.id})");
                                         print("Selected options: ${widget.selectionOptionIds}");
-                                        print("selected intrests:${widget.selectedIntersts}");
+                                        print("selected intrests:${widget.selectedInterestIds}");
                                         print('Selected qualities IDs: $selectedQualitiesIds');
                                       
                           
@@ -380,8 +381,9 @@ class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
                                           gendermode:widget.gendermode,
                                           selectionOptionIds:widget.selectionOptionIds,
                                           selectedHeight:widget.selectedHeight ,
-                                          selectedintrests:widget.selectedIntersts,
-                                          selectedqualitiesIDs:selectedQualitiesIds
+                                          selectedInterestIds:widget.selectedInterestIds,
+                                          selectedqualitiesIDs:selectedQualitiesIds,
+                                        
                     
                               )));
                             } else {

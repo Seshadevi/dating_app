@@ -18,7 +18,7 @@ class LifestyleHabitsScreen extends ConsumerStatefulWidget {
   final String? gendermode;
   final dynamic selectionOptionIds;
   final dynamic selectedHeight;
-  final List<String> selectedintrests;
+  final List<int> selectedInterestIds;
   final List<int> selectedqualitiesIDs;
 
   const LifestyleHabitsScreen({
@@ -34,7 +34,7 @@ class LifestyleHabitsScreen extends ConsumerStatefulWidget {
     this.gendermode,
     this.selectionOptionIds,
     this.selectedHeight,
-    required this.selectedintrests,
+    required this.selectedInterestIds,
     required this.selectedqualitiesIDs
   });
 
@@ -364,7 +364,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
                                 print("Show Gender: ${widget.showGenderOnProfile}");
                                 print("Selected Mode: ${widget.showMode.value} (ID: ${widget.showMode.id})");
                                 print("Selected options: ${widget.selectionOptionIds}");
-                                print("selected intrests:${widget.selectedintrests}");
+                                print("selected intrests:${widget.selectedInterestIds}");
                                 print('Selected qualities IDs: ${widget.selectedqualitiesIDs}');
                                 print("selected habbits:$selectedHabitIds");
 
@@ -383,7 +383,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
                                       gendermode: widget.gendermode,
                                       selectionOptionIds: widget.selectionOptionIds,
                                       selectedHeight: widget.selectedHeight,
-                                      selectedintrests: widget.selectedintrests,
+                                      selectedInterestIds: widget.selectedInterestIds,
                                       selectedqualitiesIDs: widget.selectedqualitiesIDs,
                                       selectedhabbits: selectedHabitIds,
                                     ),

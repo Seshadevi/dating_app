@@ -38,14 +38,17 @@ class InterestsScreen extends ConsumerStatefulWidget {
 
 class _InterestsScreenState extends ConsumerState<InterestsScreen> {
   List<String> selectedInterests = [];
+  List<int> selectedInterestIds = [];
 
-  void toggleInterest(String interest) {
+  void toggleInterest(String interest, int id) {
     setState(() {
       if (selectedInterests.contains(interest)) {
         selectedInterests.remove(interest);
+        selectedInterestIds.remove(id);
       } else {
         if (selectedInterests.length < 5) {
           selectedInterests.add(interest);
+          selectedInterestIds.add(id);
         }
       }
     });
@@ -132,7 +135,8 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                                 gendermode: widget.gendermode,
                                 selectedHeight: widget.selectedHeight,
                                 selectionOptionIds: widget.selectionOptionIds,
-                                selectedIntersts: selectedInterests,
+                                // selectedIntersts: selectedInterests,
+                                selectedInterestIds: selectedInterestIds,
                               ),
                             ),
                           ),
@@ -163,17 +167,29 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                     ),
                     const SizedBox(height: 10),
 
-                    // ✅ Selected interests chips
+                    // Selected interests
                     if (selectedInterests.isNotEmpty)
-                      Wrap(
-                        spacing: 8.0,
-                        runSpacing: 4.0,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: selectedInterests.map((interest) {
-                          return Chip(
-                            label: Text(interest),
-                            deleteIcon: const Icon(Icons.close),
-                            onDeleted: () => toggleInterest(interest),
-                            backgroundColor: Colors.lightGreen.shade100,
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Chip(
+                                  label: Text(interest),
+                                  deleteIcon: const Icon(Icons.close),
+                                  onDeleted: () {
+                                    final index = selectedInterests.indexOf(interest);
+                                    if (index != -1) {
+                                      toggleInterest(interest, selectedInterestIds[index]);
+                                    }
+                                  },
+                                  backgroundColor: Colors.lightGreen.shade100,
+                                ),
+                              ],
+                            ),
                           );
                         }).toList(),
                       ),
@@ -194,7 +210,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                               top: pos.dy,
                               left: pos.dx,
                               child: GestureDetector(
-                                onTap: () => toggleInterest(item.interests ?? ''),
+                                onTap: () => toggleInterest(item.interests ?? '', item.id ?? 0),
                                 child: Container(
                                   width: 100,
                                   height: 100,
@@ -252,7 +268,8 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                                         gendermode: widget.gendermode,
                                         selectedHeight: widget.selectedHeight,
                                         selectionOptionIds: widget.selectionOptionIds,
-                                        selectedIntersts: selectedInterests,
+                                        // selectedIntersts: selectedInterests,
+                                        selectedInterestIds: selectedInterestIds,
                                       ),
                                     ),
                                   );
