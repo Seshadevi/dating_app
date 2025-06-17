@@ -1,6 +1,38 @@
 import 'package:flutter/material.dart';
 
 class FamilyPlanScreen extends StatefulWidget {
+   final String email;
+  final double latitude;
+  final double longitude;
+  final String userName;
+  final String dateOfBirth;
+  final String selectedGender;
+  final bool showGenderOnProfile;
+  final showMode;
+  final String? gendermode;
+  final dynamic selectionOptionIds;
+  final dynamic selectedHeight;
+  final List<String> selectedintrests;
+  final List<int> selectedqualitiesIDs;
+  final List<int>  selectedhabbits;
+
+  const FamilyPlanScreen({
+    super.key,
+    required this.email,
+    required this.latitude,
+    required this.longitude,
+    required this.userName,
+    required this.dateOfBirth,
+    required this.selectedGender,
+    required this.showGenderOnProfile,
+    this.showMode,
+    this.gendermode,
+    this.selectionOptionIds,
+    this.selectedHeight,
+    required this.selectedintrests,
+    required this.selectedqualitiesIDs,
+    required this.selectedhabbits
+  });
   @override
   _FamilyPlanScreenState createState() => _FamilyPlanScreenState();
 }
@@ -68,10 +100,10 @@ class _FamilyPlanScreenState extends State<FamilyPlanScreen> {
     final bubbleFont = screen.width * 0.035;
 
     return 
-    // Scaffold(
-    //   backgroundColor: Colors.white,
-    //   body: SafeArea(
-    //     child: 
+    Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: 
         Column(
           children: [
             Expanded(
@@ -153,8 +185,8 @@ class _FamilyPlanScreenState extends State<FamilyPlanScreen> {
               ),
             ),
           ],
-        // ),
-      // ),
+        ),
+      ),
     );
   }
 }
