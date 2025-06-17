@@ -14,25 +14,27 @@ class ReligionSelectorWidget extends StatefulWidget {
   final dynamic selectedHeight;
   final List<int> selectedInterestIds;
   final List<int> selectedqualitiesIDs;
-  final List<int>  selectedhabbits;
-  const ReligionSelectorWidget({super.key, required this.email,
-    required this.latitude,
-    required this.longitude,
-    required this.userName,
-    required this.dateOfBirth,
-    required this.selectedGender,
-    required this.showGenderOnProfile,
-    this.showMode,
-    this.gendermode,
-    this.selectionOptionIds,
-    this.selectedHeight,
-    required this.selectedInterestIds,
-    required this.selectedqualitiesIDs,
-    required this.selectedhabbits});
+  final List<int> selectedhabbits;
+  final List<int> selectedKidsIds;
+  const ReligionSelectorWidget(
+      {super.key,
+      required this.email,
+      required this.latitude,
+      required this.longitude,
+      required this.userName,
+      required this.dateOfBirth,
+      required this.selectedGender,
+      required this.showGenderOnProfile,
+      this.showMode,
+      this.gendermode,
+      this.selectionOptionIds,
+      this.selectedHeight,
+      required this.selectedInterestIds,
+      required this.selectedqualitiesIDs,
+      required this.selectedhabbits, required this.selectedKidsIds});
 
   @override
-  State<ReligionSelectorWidget> createState() =>
-      _ReligionSelectorWidgetState();
+  State<ReligionSelectorWidget> createState() => _ReligionSelectorWidgetState();
 }
 
 class _ReligionSelectorWidgetState extends State<ReligionSelectorWidget> {
@@ -102,93 +104,93 @@ class _ReligionSelectorWidgetState extends State<ReligionSelectorWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return 
-    // Scaffold(
-    //   backgroundColor: Colors.white,
-    //   body: 
-      Stack(
-        children: [
-          // Header
-          const Positioned(
-            top: 4,
-            left: 20,
-            right: 20,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'you can answer or leave blank,\ndepending on what matters most to you.',
-                  style: TextStyle(color: Colors.black54, fontSize: 14),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  'Religion',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                ),
-              ],
-            ),
+    return
+        // Scaffold(
+        //   backgroundColor: Colors.white,
+        //   body:
+        Stack(
+      children: [
+        // Header
+        const Positioned(
+          top: 4,
+          left: 20,
+          right: 20,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'you can answer or leave blank,\ndepending on what matters most to you.',
+                style: TextStyle(color: Colors.black54, fontSize: 14),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Religion',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+            ],
           ),
+        ),
 
-          /// Religion Bubbles with Custom Positions
-          _buildBubble('Hindu', 120, 10, width: 90, height: 90),
-          _buildBubble('Muslim', 120, 110, width: 85, height: 85),
-          _buildBubble('Christian', 100, 200, width: 95, height: 95),
+        /// Religion Bubbles with Custom Positions
+        _buildBubble('Hindu', 120, 10, width: 90, height: 90),
+        _buildBubble('Muslim', 120, 110, width: 85, height: 85),
+        _buildBubble('Christian', 100, 200, width: 95, height: 95),
 
-          _buildBubble('Sikh', 160, 290, width: 85, height: 80),
-          _buildBubble('Jain', 200, 170, width: 95, height: 85),
-          _buildBubble('Buddhist', 200, 60, width: 100, height: 100),
+        _buildBubble('Sikh', 160, 290, width: 85, height: 80),
+        _buildBubble('Jain', 200, 170, width: 95, height: 85),
+        _buildBubble('Buddhist', 200, 60, width: 100, height: 100),
 
-          _buildBubble('Spiritual', 290, 10, width: 90, height: 90),
-          _buildBubble('Atheist', 280, 140, width: 85, height: 85),
-          _buildBubble('Agnostic', 250, 250, width: 120, height: 100),
+        _buildBubble('Spiritual', 290, 10, width: 90, height: 90),
+        _buildBubble('Atheist', 280, 140, width: 85, height: 85),
+        _buildBubble('Agnostic', 250, 250, width: 120, height: 100),
 
-          _buildBubble('Other', 370, 90, width: 100, height: 100),
-          _buildBubble('Other', 380, 220, width: 120, height: 120),
+        _buildBubble('Other', 370, 90, width: 100, height: 100),
+        _buildBubble('Other', 380, 220, width: 120, height: 120),
 
-          // Bottom Bar
-          Positioned(
-            bottom: 0,
-            left: 20,
-            right: 20,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // const Text(
-                //   'Skip',
-                //   style: TextStyle(
-                //     fontSize: 16,
-                //     color: Colors.black54,
-                //     fontWeight: FontWeight.w500,
-                //   ),
-                // ),
-                Row(
-                  children: [
-                    Text(
-                      '${selectedReligions.length}/4 Selected',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                      ),
+        // Bottom Bar
+        Positioned(
+          bottom: 0,
+          left: 20,
+          right: 20,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // const Text(
+              //   'Skip',
+              //   style: TextStyle(
+              //     fontSize: 16,
+              //     color: Colors.black54,
+              //     fontWeight: FontWeight.w500,
+              //   ),
+              // ),
+              Row(
+                children: [
+                  Text(
+                    '${selectedReligions.length}/4 Selected',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
                     ),
-                    const SizedBox(width: 10),
-                    // CircleAvatar(
-                    //   radius: 20,
-                    //   backgroundColor: Colors.green.shade700,
-                    //   child: IconButton(
-                    //     icon: const Icon(Icons.arrow_forward_ios,
-                    //         color: Colors.white, size: 20),
-                    //     onPressed: () {
-                    //       // Handle navigation
-                    //     },
-                    //   ),
-                    // ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                  const SizedBox(width: 10),
+                  // CircleAvatar(
+                  //   radius: 20,
+                  //   backgroundColor: Colors.green.shade700,
+                  //   child: IconButton(
+                  //     icon: const Icon(Icons.arrow_forward_ios,
+                  //         color: Colors.white, size: 20),
+                  //     onPressed: () {
+                  //       // Handle navigation
+                  //     },
+                  //   ),
+                  // ),
+                ],
+              ),
+            ],
           ),
-        ],
-      );
+        ),
+      ],
+    );
     // );
   }
 }

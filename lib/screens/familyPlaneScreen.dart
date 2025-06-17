@@ -1,8 +1,11 @@
+import 'package:dating/provider/signupprocessProviders/kidsProvider.dart';
 import 'package:dating/screens/importantLife.dart';
+import 'package:dating/screens/lifeStryle_habits.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FamilyPlanScreen extends StatefulWidget {
-   final String email;
+class FamilyPlanScreen extends ConsumerStatefulWidget {
+  final String email;
   final double latitude;
   final double longitude;
   final String userName;
@@ -15,7 +18,7 @@ class FamilyPlanScreen extends StatefulWidget {
   final dynamic selectedHeight;
   final List<int> selectedInterestIds;
   final List<int> selectedqualitiesIDs;
-  final List<int>  selectedhabbits;
+  final List<int> selectedhabbits;
 
   const FamilyPlanScreen({
     super.key,
@@ -32,45 +35,52 @@ class FamilyPlanScreen extends StatefulWidget {
     this.selectedHeight,
     required this.selectedInterestIds,
     required this.selectedqualitiesIDs,
-    required this.selectedhabbits
+    required this.selectedhabbits,
   });
+
   @override
-  _FamilyPlanScreenState createState() => _FamilyPlanScreenState();
+  ConsumerState<FamilyPlanScreen> createState() => _FamilyPlanScreenState();
 }
 
-class _FamilyPlanScreenState extends State<FamilyPlanScreen> {
-  Set<String> selected = {};
+class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
+  Set<int> selectedKidsIds = {};
 
-  void toggleSelect(String option) {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(kidsProvider.notifier).getKids());
+  }
+
+  void toggleSelect(int id) {
     setState(() {
-      if (selected.contains(option)) {
-        selected.remove(option);
+      if (selectedKidsIds.contains(id)) {
+        selectedKidsIds.remove(id);
       } else {
-        selected.add(option);
+        selectedKidsIds.add(id);
       }
     });
   }
 
-  Widget optionButton(String text, double size, double fontSize) {
-    bool isSelected = selected.contains(text);
+  Widget optionButton(String text, int id, double size, double fontSize) {
+    bool isSelected = selectedKidsIds.contains(id);
     return GestureDetector(
-      onTap: () => toggleSelect(text),
+      onTap: () => toggleSelect(id),
       child: Container(
         width: size,
         height: size,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           gradient: isSelected
-              ? LinearGradient(
+              ? const LinearGradient(
                   colors: [Color(0xFF869E23), Color(0xFF000000)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 )
-              : LinearGradient(
+              : const LinearGradient(
                   colors: [Color(0xFFF3F7DA), Color(0xFFE6EBA4)],
                 ),
           shape: BoxShape.circle,
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
               color: Colors.black26,
               blurRadius: 10,
@@ -99,20 +109,90 @@ class _FamilyPlanScreenState extends State<FamilyPlanScreen> {
     final screen = MediaQuery.of(context).size;
     final bubbleSize = screen.width * 0.3;
     final bubbleFont = screen.width * 0.035;
+    final kidsState = ref.watch(kidsProvider);
 
-    return 
-    Scaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: 
-        Column(
+        child: Column(
           children: [
             Expanded(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: screen.width * 0.05),
                 child: ListView(
                   children: [
-                    // SizedBox(height: screen.height * 0.02),
+                    LinearProgressIndicator(
+                      value: 11 / 16,
+                      backgroundColor: Colors.grey[300],
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                          Color.fromARGB(255, 147, 179, 3)),
+                    ),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back_ios),
+                          onPressed: () => Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LifestyleHabitsScreen(
+                                email: widget.email,
+                                latitude: widget.latitude,
+                                longitude: widget.longitude,
+                                userName: widget.userName,
+                                dateOfBirth: widget.dateOfBirth,
+                                selectedGender: widget.selectedGender,
+                                showGenderOnProfile: widget.showGenderOnProfile,
+                                showMode: widget.showMode,
+                                gendermode: widget.gendermode,
+                                selectionOptionIds: widget.selectionOptionIds,
+                                selectedHeight: widget.selectedHeight,
+                                selectedInterestIds: widget.selectedInterestIds,
+                                selectedqualitiesIDs:
+                                    widget.selectedqualitiesIDs,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReligionSelectorWidget(
+                                email: widget.email,
+                                latitude: widget.latitude,
+                                longitude: widget.longitude,
+                                userName: widget.userName,
+                                dateOfBirth: widget.dateOfBirth,
+                                selectedGender: widget.selectedGender,
+                                showGenderOnProfile: widget.showGenderOnProfile,
+                                showMode: widget.showMode,
+                                gendermode: widget.gendermode,
+                                selectionOptionIds: widget.selectionOptionIds,
+                                selectedHeight: widget.selectedHeight,
+                                selectedInterestIds: widget.selectedInterestIds,
+                                selectedqualitiesIDs:
+                                    widget.selectedqualitiesIDs,
+                                selectedhabbits: widget.selectedhabbits,
+                                selectedKidsIds: selectedKidsIds.toList(),
+                              ),
+                            ),
+                          ),
+                          child: const Text('Skip',
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w500)),
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      "Do You Have Kids Or\nFamily Plans?",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Poppins'),
+                    ),
                     Text(
                       "Let’s get deeper. Feel free to skip if you'd prefer not to say.",
                       style: TextStyle(
@@ -120,7 +200,6 @@ class _FamilyPlanScreenState extends State<FamilyPlanScreen> {
                         fontSize: screen.width * 0.035,
                       ),
                     ),
-                    // SizedBox(height: screen.height * 0.015),
                     Text(
                       "Have Kids",
                       style: TextStyle(
@@ -128,12 +207,12 @@ class _FamilyPlanScreenState extends State<FamilyPlanScreen> {
                         fontSize: screen.width * 0.045,
                       ),
                     ),
-                    // SizedBox(height: screen.height * 0.015),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        optionButton("Have Kids +", bubbleSize, bubbleFont),
-                        optionButton("Don’t Have\nKids ++", bubbleSize, bubbleFont),
+                        optionButton("Have Kids +", -1, bubbleSize, bubbleFont),
+                        optionButton(
+                            "Don’t Have\nKids ++", -2, bubbleSize, bubbleFont),
                       ],
                     ),
                     SizedBox(height: screen.height * 0.03),
@@ -144,19 +223,23 @@ class _FamilyPlanScreenState extends State<FamilyPlanScreen> {
                         fontSize: screen.width * 0.045,
                       ),
                     ),
-                    // SizedBox(height: screen.height * 0.015),
-                    Wrap(
-                      alignment: WrapAlignment.spaceAround,
-                      spacing: screen.width * 0.02,
-                      runSpacing: screen.height * 0.015,
-                      children: [
-                        optionButton("Don’t Want\nKids +", bubbleSize, bubbleFont),
-                        optionButton("Open To\nKids +", bubbleSize, bubbleFont),
-                        optionButton("Want Kids +", bubbleSize, bubbleFont),
-                        optionButton("Not\nSure +", bubbleSize, bubbleFont),
-                      ],
-                    ),
-                    // SizedBox(height: screen.height * 0.1),
+                    if (kidsState.data == null || kidsState.data!.isEmpty)
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20),
+                          child: CircularProgressIndicator(),
+                        ),
+                      )
+                    else
+                      Wrap(
+                        alignment: WrapAlignment.spaceAround,
+                        spacing: screen.width * 0.02,
+                        runSpacing: screen.height * 0.015,
+                        children: kidsState.data!.map((kid) {
+                          return optionButton(kid.kids ?? '', kid.id ?? 0,
+                              bubbleSize, bubbleFont);
+                        }).toList(),
+                      ),
                   ],
                 ),
               ),
@@ -170,58 +253,66 @@ class _FamilyPlanScreenState extends State<FamilyPlanScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "${selected.length}/2 Selected",
+                    "${selectedKidsIds.length} Selected",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: screen.width * 0.04,
                     ),
                   ),
                   const SizedBox(width: 10),
-                        Material(
-                          elevation: 10,
-                          borderRadius: BorderRadius.circular(50),
-                          child: Container(
-                            width: screen.width * 0.125,
-                            height: screen.width * 0.125,
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(colors: [Color(0xffB2D12E), Color(0xff000000)]),
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: IconButton(
-                              icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
-                              onPressed: () {
-                                if (selected .isNotEmpty) {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ReligionSelectorWidget(
-                                         email: widget.email,
-                                      latitude: widget.latitude,
-                                      longitude: widget.longitude,
-                                      userName: widget.userName,
-                                      dateOfBirth: widget.dateOfBirth,
-                                      selectedGender: widget.selectedGender,
-                                      showGenderOnProfile: widget.showGenderOnProfile,
-                                      showMode: widget.showMode,
-                                      gendermode: widget.gendermode,
-                                      selectionOptionIds: widget.selectionOptionIds,
-                                      selectedHeight: widget.selectedHeight,
-                                      selectedInterestIds: widget.selectedInterestIds,
-                                      selectedqualitiesIDs: widget.selectedqualitiesIDs,
-                                      selectedhabbits: widget.selectedhabbits,
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("Please select at least one interest")),
-                                  );
-                                }
-                              },
-                            ),
-                          ),
+                  Material(
+                    elevation: 10,
+                    borderRadius: BorderRadius.circular(50),
+                    child: Container(
+                      width: screen.width * 0.125,
+                      height: screen.width * 0.125,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xffB2D12E), Color(0xff000000)],
                         ),
-                  
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.arrow_forward_ios,
+                            color: Colors.white),
+                        onPressed: () {
+                          if (selectedKidsIds.isNotEmpty) {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ReligionSelectorWidget(
+                                  email: widget.email,
+                                  latitude: widget.latitude,
+                                  longitude: widget.longitude,
+                                  userName: widget.userName,
+                                  dateOfBirth: widget.dateOfBirth,
+                                  selectedGender: widget.selectedGender,
+                                  showGenderOnProfile:
+                                      widget.showGenderOnProfile,
+                                  showMode: widget.showMode,
+                                  gendermode: widget.gendermode,
+                                  selectionOptionIds: widget.selectionOptionIds,
+                                  selectedHeight: widget.selectedHeight,
+                                  selectedInterestIds:
+                                      widget.selectedInterestIds,
+                                  selectedqualitiesIDs:
+                                      widget.selectedqualitiesIDs,
+                                  selectedhabbits: widget.selectedhabbits,
+                                  selectedKidsIds: selectedKidsIds.toList(),
+                                ),
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text(
+                                      "Please select at least one option")),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
