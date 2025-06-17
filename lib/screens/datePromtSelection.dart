@@ -1,3 +1,5 @@
+import 'package:dating/screens/causes_Community.dart';
+import 'package:dating/screens/face_screen.dart';
 import 'package:flutter/material.dart';
 
 class DatePromptScreen extends StatelessWidget {
@@ -8,7 +10,7 @@ class DatePromptScreen extends StatelessWidget {
   final String dateOfBirth;
   final String selectedGender;
   final bool showGenderOnProfile;
-  final showMode;
+  final dynamic showMode;
   final String? gendermode;
   final dynamic selectionOptionIds;
   final dynamic selectedHeight;
@@ -19,7 +21,8 @@ class DatePromptScreen extends StatelessWidget {
   final List<int> selectedreligions;
   final List<int> selectedcauses;
 
-   DatePromptScreen({super.key,
+  DatePromptScreen({
+    super.key,
     required this.email,
     required this.latitude,
     required this.longitude,
@@ -36,63 +39,167 @@ class DatePromptScreen extends StatelessWidget {
     required this.selectedhabbits,
     required this.selectedkids,
     required this.selectedreligions,
-    required this.selectedcauses
-    });
+    required this.selectedcauses,
+  });
+
   final List<String> prompts = [
-    "First Prompt",
-    "Second Prompt",
-    "Third Prompt",
+    "Write Your Own Opening Move Prompt",
+    "Window Seat Or Aisle? Convince Me Either Way ……",
+    "The Key To My Heart Is ……",
   ];
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding:  const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          
-          Text(
-            "A Joy, Obviously, But Go Ahead\nAnd Answer In Your Own Words.",
-            style: TextStyle(
-              color: Colors.grey[700],
-              height: 1.4,fontSize: 19
-            ),
+    final screen = MediaQuery.of(context).size;
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Progress bar
+              LinearProgressIndicator(
+                value: 7 / 16,
+                backgroundColor: Colors.grey[300],
+                valueColor: const AlwaysStoppedAnimation<Color>(
+                  Color.fromARGB(255, 147, 179, 3),
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              // Top row: Back button and Skip
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios),
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CausesScreen(
+                            email: email,
+                            latitude: latitude,
+                            longitude: longitude,
+                            userName: userName,
+                            dateOfBirth: dateOfBirth,
+                            selectedGender: selectedGender,
+                            showGenderOnProfile: showGenderOnProfile,
+                            showMode: showMode,
+                            gendermode: gendermode,
+                            selectionOptionIds: selectionOptionIds,
+                            selectedHeight: selectedHeight,
+                            selectedInterestIds: selectedInterestIds,
+                            selectedqualitiesIDs: selectedqualitiesIDs,
+                            selectedhabbits: selectedhabbits,
+                            selectedkids: selectedkids,
+                            selectedreligions: selectedreligions,
+                            // selectedcauses: selectedcauses,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const Spacer(),
+                  const Text(
+                    'Skip',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Title
+              const Text(
+                "Choose Five Things\nYou Are Really Into",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Poppins',
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              // Subtitle
+              Text(
+                "A Joy, Obviously, But Go Ahead\nAnd Answer In Your Own Words.",
+                style: TextStyle(
+                  color: Colors.grey[700],
+                  height: 1.4,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Prompt List
+              Expanded(
+                child: ListView.builder(
+                  itemCount: prompts.length,
+                  itemBuilder: (context, index) =>
+                      _buildPromptTile(prompts[index]),
+                ),
+              ),
+
+              // Bottom Row
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("0/3 Selected"),
+                    Row(
+                      children: [
+                        // Decorative Forward Arrow Button (Disabled logic for now)
+                        Material(
+                          elevation: 6,
+                          borderRadius: BorderRadius.circular(50),
+                          child: Container(
+                            width: screen.width * 0.125,
+                            height: screen.width * 0.125,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xffB2D12E), Color(0xff000000)],
+                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.arrow_forward_ios,
+                                  color: Colors.white),
+                              onPressed: () {
+                                // TODO: Implement next screen logic
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PhotoUploadScreen()));
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 20),
-      
-          // Prompt List
-          ...prompts.map((prompt) => _buildPromptTile(prompt)).toList(),
-      
-          Spacer(),
-      
-          // Bottom Row
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("0/3 Selected"),
-                // CircleAvatar(
-                //   radius: 24,
-                //   backgroundColor: Colors.green.shade700,
-                //   child: Icon(Icons.arrow_forward, color: Colors.white),
-                // ),
-              ],
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
 
   Widget _buildPromptTile(String label) {
     return Container(
-      margin: EdgeInsets.only(bottom: 16),
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           colors: [Color(0xFF869E23), Color(0xFF000000)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -101,19 +208,21 @@ class DatePromptScreen extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+          Flexible(
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(50),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Colors.black26,
                   offset: Offset(0, 2),
@@ -121,7 +230,7 @@ class DatePromptScreen extends StatelessWidget {
                 )
               ],
             ),
-            child: Text(
+            child: const Text(
               "Add",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
