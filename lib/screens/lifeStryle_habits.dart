@@ -322,7 +322,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
                     Row(
                       children: [
                         Text(
-                          '${selectedhabbits.length}/4 Selected',
+                          '${selectedhabbits.length}/5 Selected',
                           style: const TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
@@ -336,14 +336,14 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
                           height: 40,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: selectedhabbits.length == 4
+                            gradient: selectedhabbits.length == 5
                                 ? const LinearGradient(
                                     colors: [Color(0xFF869E23), Color(0xFF000000)],
                                     begin: Alignment.topCenter,
                                     end: Alignment.bottomCenter,
                                   )
                                 : null,
-                            color: selectedhabbits.length != 4
+                            color: selectedhabbits.length != 5
                                 ? Colors.grey.shade400
                                 : null,
                           ),
@@ -354,7 +354,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
                               size: 20,
                             ),
                             onPressed: () {
-                              if (selectedhabbits.length == 4) {
+                              if (selectedhabbits.length == 5) {
                                 print("✅ Proceeding with:");
                                 print("Email: ${widget.email}");
                                 print("Lat: ${widget.latitude}, Long: ${widget.longitude}");

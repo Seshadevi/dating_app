@@ -1,6 +1,41 @@
 import 'package:flutter/material.dart';
 
 class DatePromptScreen extends StatelessWidget {
+  final String email;
+  final double latitude;
+  final double longitude;
+  final String userName;
+  final String dateOfBirth;
+  final String selectedGender;
+  final bool showGenderOnProfile;
+  final showMode;
+  final String? gendermode;
+  final dynamic selectionOptionIds;
+  final dynamic selectedHeight;
+  final List<int> selectedInterestIds;
+  final List<int> selectedqualitiesIDs;
+  final List<int> selectedhabbits;
+  final List<int> selectedreligions;
+  final List<int> selectedcauses;
+
+   DatePromptScreen({super.key,
+    required this.email,
+    required this.latitude,
+    required this.longitude,
+    required this.userName,
+    required this.dateOfBirth,
+    required this.selectedGender,
+    required this.showGenderOnProfile,
+    this.showMode,
+    this.gendermode,
+    this.selectionOptionIds,
+    this.selectedHeight,
+    required this.selectedInterestIds,
+    required this.selectedqualitiesIDs,
+    required this.selectedhabbits,
+    required this.selectedreligions,
+    required this.selectedcauses
+    });
   final List<String> prompts = [
     "First Prompt",
     "Second Prompt",
