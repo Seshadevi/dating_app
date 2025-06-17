@@ -31,148 +31,149 @@ class _IntroMailState extends State<IntroMail> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: SingleChildScrollView(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-               // 🔵 Progress Bar
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: LinearProgressIndicator(
-                      value: 3/ 16,
-                      backgroundColor: Colors.grey[300],
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                        Color.fromARGB(255, 147, 179, 3),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-
-                  // 🔙 Back button and title
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back_ios),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                        const SizedBox(width: 8),
-                        const Text(
-                          "Oh Hey! Let's Start\nWith An Intro",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Poppins',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  "We'll Use This To Recover Your \nAccount ASAP If You Can't Log In.",
-                  style: TextStyle(
-                    fontFamily: 'poppins',
-                    fontSize: 15.0,
-                    letterSpacing: 1.08,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  'Your Email',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontFamily: 'poppins',
-                    fontSize: 20.0,
-                    letterSpacing: 1.28,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: _buildTextField(width: double.infinity),
-              ),
-              const SizedBox(height: 50),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                   
-                    Material(
-                      elevation: 10,
-                      borderRadius: BorderRadius.circular(50),
-                      child: Container(
-                        width: screenWidth * 0.125,
-                        height: screenWidth * 0.125,
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xffB2D12E), Color(0xff000000)],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: IconButton(
-                          color: Colors.white,
-                          icon: const Icon(Icons.arrow_forward_ios),
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => IntroDatecategory(
-                                    email: emailController.text,
-                                    latitude: widget.latitude,
-                                    longitude: widget.longitude,
-                                    userName: widget.userName,
-                                    dateOfBirth: widget.dateOfBirth,
-                                    selectedGender: widget.selectedGender,
-                                    showGenderOnProfile: widget.showGenderOnProfile,
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 160),
-              SizedBox(
-            height: 150, // or any height you need
-            child: Stack(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Positioned(
-                  left: 0,
-                  bottom: 0,
-                  child: Image.asset(
-                    'assets/mail_frame.png',
-                    fit: BoxFit.contain,
+                 const SizedBox(height: 35),
+                // 🔵 Progress Bar
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: LinearProgressIndicator(
+                    value: 3 / 16,
+                    backgroundColor: Colors.grey[300],
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      Color.fromARGB(255, 147, 179, 3),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+
+                // 🔙 Back button and title
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_ios),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text(
+                        "Oh Hey! Let's Start\nWith An Intro",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Poppins',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    "We'll Use This To Recover Your \nAccount ASAP If You Can't Log In.",
+                    style: TextStyle(
+                      fontFamily: 'poppins',
+                      fontSize: 15.0,
+                      letterSpacing: 1.08,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    'Your Email',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'poppins',
+                      fontSize: 20.0,
+                      letterSpacing: 1.28,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _buildTextField(width: double.infinity),
+                ),
+                const SizedBox(height: 50),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Material(
+                        elevation: 10,
+                        borderRadius: BorderRadius.circular(50),
+                        child: Container(
+                          width: screenWidth * 0.125,
+                          height: screenWidth * 0.125,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xffB2D12E), Color(0xff000000)],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: IconButton(
+                            color: Colors.white,
+                            icon: const Icon(Icons.arrow_forward_ios),
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => IntroDatecategory(
+                                      email: emailController.text,
+                                      latitude: widget.latitude,
+                                      longitude: widget.longitude,
+                                      userName: widget.userName,
+                                      dateOfBirth: widget.dateOfBirth,
+                                      selectedGender: widget.selectedGender,
+                                      showGenderOnProfile: widget.showGenderOnProfile,
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 160),
+                SizedBox(
+                  height: 150, // or any height you need
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        left: 0,
+                        bottom: 0,
+                        child: Image.asset(
+                          'assets/mail_frame.png',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ),
-
-
-            ],
           ),
         ),
       ),

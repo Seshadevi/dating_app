@@ -1,13 +1,19 @@
-import 'package:dating/screens/gender_display_screen.dart';
 import 'package:flutter/material.dart';
+import 'gender_display_screen.dart';
 
 class GenderSelectionScreen extends StatefulWidget {
-   final double latitude;
+  final double latitude;
   final double longitude;
-   final String userName;
-  
-   final String dateOfBirth;
-  const GenderSelectionScreen({super.key, required this.latitude, required this.longitude, required this.userName, required this.dateOfBirth});
+  final String userName;
+  final String dateOfBirth;
+
+  const GenderSelectionScreen({
+    super.key,
+    required this.latitude,
+    required this.longitude,
+    required this.userName,
+    required this.dateOfBirth,
+  });
 
   @override
   State<GenderSelectionScreen> createState() => _GenderSelectionScreenState();
@@ -15,17 +21,54 @@ class GenderSelectionScreen extends StatefulWidget {
 
 class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
   String selectedGender = '';
-  
 
-  Widget _radioOption(String label) {
-    return RadioListTile<String>(
-      title: Text(label),
-      value: label,
-      groupValue: selectedGender,
-      activeColor: Colors.black,
-      onChanged: (value) {
-        setState(() => selectedGender = value!);
+  Widget _buildGenderOption(String label) {
+    final bool isSelected = selectedGender == label;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedGender = label;
+        });
       },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+        decoration: BoxDecoration(
+          gradient: isSelected
+              ? const LinearGradient(
+                  colors: [Color(0xff000000), Color(0xffB2D12E)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : const LinearGradient(
+                  colors: [Color(0xffE9F1C4), Color(0xffE9F1C4)],
+                ),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? Colors.black : Colors.grey.shade300,
+            width: 1.5,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected ? Colors.white : Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Poppins',
+              ),
+            ),
+            Icon(
+              isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
+              color: isSelected ? Colors.white : Colors.grey,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -39,98 +82,80 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 40),
-
-                  // 🔵 Progress Bar
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: LinearProgressIndicator(
-                      value: 2 / 16,
-                      backgroundColor: Colors.grey[300],
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                        Color.fromARGB(255, 147, 179, 3),
-                      ),
+                  IconButton(
+                              icon: const Icon(Icons.arrow_back_ios,),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                  // Progress bar
+                  LinearProgressIndicator(
+                    value: 2 / 16,
+                    backgroundColor: Colors.grey[300],
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      Color.fromARGB(255, 147, 179, 3),
                     ),
                   ),
-                  const SizedBox(height: 15),
-
-                  // 🔙 Back button and title
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back_ios),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                        const SizedBox(width: 8),
-                        const Text(
-                          "Oh Hey! Let's Start\nWith An Intro",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Poppins',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 10),
+                  // const SizedBox(height: 24),
 
                   const Text(
-                    "Pick The Gender That Best Describes You.",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    "Sai Is A Great Name",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Poppins',
+                    ),
                   ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    "We Love That You're Here. Pick\nThe Gender That Best Describes\nYou, Then Add More About It If\nYou Like.",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontFamily: 'Inter',
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+                  const Text(
+                    "Which Gender Best Describes You?",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Poppins',
+                    ),
+                  ),
+                  const SizedBox(height: 24),
 
-                  const SizedBox(height: 20),
+                  // Gender options
+                  _buildGenderOption("Woman"),
+                  _buildGenderOption("Man"),
+                  _buildGenderOption("Nonbinary"),
 
-                  // 🧑 Gender options
-                  _radioOption("Woman"),
-                  _radioOption("Man"),
-                  _radioOption("Nonbinary"),
+                  const SizedBox(height: 12),
 
-                  const SizedBox(height: 10),
-
-                  // ℹ️ Info block
+                  // Info section
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.grey.shade400),
-                        ),
-                        child: Center(
-                          child: Icon(
-                            Icons.info_outline,
-                            color: Colors.grey.shade500,
-                            size: 24,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
+                      const Icon(Icons.info_outline, size: 18, color: Colors.grey),
+                      const SizedBox(width: 8),
                       Expanded(
                         child: RichText(
                           text: TextSpan(
-                            style: TextStyle(
+                            style: const TextStyle(
+                              fontSize: 13,
                               fontFamily: 'Inter',
-                              fontSize: 14,
-                              color: Colors.grey.shade700,
+                              color: Colors.grey,
                             ),
                             children: [
                               const TextSpan(text: "You Can Always Update This Later. "),
                               TextSpan(
-                                text: "A Note About Gender On HeartSync.",
+                                text: "A Note About Gender On Bumble.",
                                 style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey.shade700,
+                                  decoration: TextDecoration.underline,
                                 ),
                               ),
                             ],
@@ -139,13 +164,12 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                       ),
                     ],
                   ),
-
-                  const Spacer(), // Push everything up
+                  const Spacer(),
                 ],
               ),
             ),
 
-            // ✅ Next Button (FAB style)
+            // Next FAB button
             Align(
               alignment: Alignment.bottomRight,
               child: Padding(
@@ -168,15 +192,18 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                       icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
                       onPressed: () {
                         if (selectedGender.isNotEmpty) {
-                          // Navigate to next screen
-                          
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => GenderDisplayScreen(
-                             latitude:widget.latitude,
-                              longitude: widget.longitude,
-                              userName:widget. userName,
-                              dateOfBirth: widget.dateOfBirth,
-                              selectedGender: selectedGender,
-                          )));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => GenderDisplayScreen(
+                                latitude: widget.latitude,
+                                longitude: widget.longitude,
+                                userName: widget.userName,
+                                dateOfBirth: widget.dateOfBirth,
+                                selectedGender: selectedGender,
+                              ),
+                            ),
+                          );
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text("Please select a gender")),

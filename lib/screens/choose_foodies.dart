@@ -87,34 +87,68 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
               child: Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: screen.width * 0.05,
-                  vertical: screen.height * 0.015,
+                  vertical: screen.height * 0.010,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 40),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: LinearProgressIndicator(
+                    // const SizedBox(height: 15),
+                   Row(
+                     children: [
+                     IconButton(
+                              icon: const Icon(Icons.arrow_back_ios,),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                            SizedBox(width: 230),
+                            GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ValuesSelectionScreen(
+                    email: widget.email,
+                                          latitude: widget.latitude,
+                                          longitude: widget.longitude,
+                                          userName: widget.userName,
+                                          dateOfBirth: widget.dateOfBirth,
+                                          selectedGender: widget.selectedGender,
+                                          showGenderOnProfile: widget.showGenderOnProfile,
+                                          showMode: widget.showMode,
+                                          gendermode: widget.gendermode,
+                                          selectedHeight: widget.selectedHeight,
+                                          selectionOptionIds:widget.selectionOptionIds,
+                                          selectedIntersts: selectedInterests,
+                  )),
+                );
+
+                                    },
+                    child: const Text(
+                      'Skip',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  )
+                     ]
+
+                   ),
+                    
+                    // const SizedBox(height: 15),
+                    
+                      LinearProgressIndicator(
                         value: 7 / 16,
                         backgroundColor: Colors.grey[300],
                         valueColor: const AlwaysStoppedAnimation<Color>(
                           Color.fromARGB(255, 147, 179, 3),
                         ),
                       ),
-                    ),
                     const SizedBox(height: 15),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(
+                       Row(
                         children: [
-                          IconButton(
-                            icon: const Icon(Icons.arrow_back_ios),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                          const SizedBox(width: 8),
+                          
+                          const SizedBox(width: 5),
                           const Text(
-                            "Now lets Talk About You",
+                            "Choose Five Things\nYou Are Really Into",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -123,10 +157,10 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                           ),
                         ],
                       ),
-                    ),
+                    
                     SizedBox(height: screen.height * 0.02),
                     Text(
-                      'Proud foodie or big on\nbouldering? Add interests to your profile to help you match with people who love them too.',
+                      'Proud foodie or big on bouldering?\n Add interests to your profile to help you match with people who love them too.',
                       style: TextStyle(
                         color: Colors.black87,
                         fontSize: screen.width * 0.04,
