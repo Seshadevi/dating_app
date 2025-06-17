@@ -21,6 +21,7 @@ class CausesScreen extends ConsumerStatefulWidget {
   final List<int> selectedqualitiesIDs;
   final List<int> selectedhabbits;
   final List<int> selectedreligions;
+  final List<int> selectedkids;
 
    const CausesScreen({super.key,
     required this.email,
@@ -37,7 +38,8 @@ class CausesScreen extends ConsumerStatefulWidget {
     required this.selectedInterestIds,
     required this.selectedqualitiesIDs,
     required this.selectedhabbits,
-    required this.selectedreligions
+    required this.selectedreligions,
+    required this.selectedkids
     });
 
   @override
@@ -351,7 +353,7 @@ final List<String> selectedcauses = [];
                                         print("selected intrests:${widget.selectedInterestIds}");
                                         print('Selected qualities IDs: ${widget.selectedqualitiesIDs}');
                                         print("selected habbits:${widget.selectedhabbits}");
-                                        print("selected kids");
+                                        print("selected kids:${widget.selectedkids}");
                                         print("selected religion:${widget.selectedreligions}");
                                         print("selected causes:$selectedcausesIds");
 
@@ -372,6 +374,7 @@ final List<String> selectedcauses = [];
                                           selectedInterestIds:widget.selectedInterestIds,
                                           selectedqualitiesIDs:widget.selectedqualitiesIDs,
                                           selectedhabbits: widget.selectedhabbits,
+                                          selectedkids:widget.selectedkids,
                                           selectedreligions:widget.selectedreligions,
                                           selectedcauses:selectedcausesIds
                     

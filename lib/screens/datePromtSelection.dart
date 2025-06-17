@@ -15,6 +15,7 @@ class DatePromptScreen extends StatelessWidget {
   final List<int> selectedInterestIds;
   final List<int> selectedqualitiesIDs;
   final List<int> selectedhabbits;
+  final List<int> selectedkids;
   final List<int> selectedreligions;
   final List<int> selectedcauses;
 
@@ -33,6 +34,7 @@ class DatePromptScreen extends StatelessWidget {
     required this.selectedInterestIds,
     required this.selectedqualitiesIDs,
     required this.selectedhabbits,
+    required this.selectedkids,
     required this.selectedreligions,
     required this.selectedcauses
     });

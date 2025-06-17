@@ -172,7 +172,7 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
                                 selectedHeight: widget.selectedHeight,
                                 selectedInterestIds: widget.selectedInterestIds,
                                 selectedqualitiesIDs:
-                                    widget.selectedqualitiesIDs,
+                                widget.selectedqualitiesIDs,
                                 selectedhabbits: widget.selectedhabbits,
                                 selectedKidsIds: selectedKidsIds.toList(),
                               ),

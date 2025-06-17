@@ -20,7 +20,7 @@ class ReligionSelectorWidget extends ConsumerStatefulWidget {
   final List<int> selectedInterestIds;
   final List<int> selectedqualitiesIDs;
   final List<int>  selectedhabbits;
-
+  final List<int> selectedKidsIds;
   const ReligionSelectorWidget({super.key,
     required this.email,
     required this.latitude,
@@ -35,7 +35,7 @@ class ReligionSelectorWidget extends ConsumerStatefulWidget {
     this.selectedHeight,
     required this.selectedInterestIds,
     required this.selectedqualitiesIDs,
-    required this.selectedhabbits});
+    required this.selectedhabbits, required this.selectedKidsIds});
 
   @override
   ConsumerState<ReligionSelectorWidget> createState() =>
@@ -348,7 +348,7 @@ class _ReligionSelectorWidgetState extends ConsumerState<ReligionSelectorWidget>
                                         print("selected intrests:${widget.selectedInterestIds}");
                                         print('Selected qualities IDs: ${widget.selectedqualitiesIDs}');
                                         print("selected habbits:${widget.selectedhabbits}");
-                                        print("selected kids");
+                                        print("selected kids:${widget.selectedKidsIds}");
                                         print("selected religion:$selectedReligionIds");
                           
                                    // Navigator.push(...) your next screen here
@@ -367,6 +367,7 @@ class _ReligionSelectorWidgetState extends ConsumerState<ReligionSelectorWidget>
                                           selectedInterestIds:widget.selectedInterestIds,
                                           selectedqualitiesIDs:widget.selectedqualitiesIDs,
                                           selectedhabbits: widget.selectedhabbits,
+                                          selectedkids:widget.selectedKidsIds,
                                           selectedreligions:selectedReligionIds
                     
                               )));
