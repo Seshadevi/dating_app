@@ -1,4 +1,5 @@
 import 'package:dating/provider/signupprocessProviders/genderProvider.dart';
+import 'package:dating/screens/mode_screen.dart';
 import 'package:dating/screens/partners_selections.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,7 +52,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
     return Scaffold(
       body: Column(
         children: [
-          const SizedBox(height: 40),
+          const SizedBox(height: 20),
           Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: LinearProgressIndicator(
@@ -68,7 +69,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.arrow_back_ios),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>IntroDatecategory(email: widget.email, latitude: widget.latitude, longitude: widget.longitude, userName: widget.userName, dateOfBirth: widget.dateOfBirth, selectedGender: widget.selectedGender, showGenderOnProfile: widget.showGenderOnProfile))),
                     ),
                     const SizedBox(width: 8),
                     const Text(

@@ -2,6 +2,7 @@
 
 import 'package:dating/provider/signupprocessProviders/lookingProvider.dart';
 import 'package:dating/screens/height_selection_screen.dart';
+import 'package:dating/screens/meet_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -67,23 +68,25 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 40),
-          Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: LinearProgressIndicator(
+          // Padding(
+          //       padding: const EdgeInsets.symmetric(horizontal: 16),
+          //       child: 
+                LinearProgressIndicator(
                   value: 7 / 16,
                   backgroundColor: Colors.grey[300],
                   valueColor: const AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 147, 179, 3)),
                 ),
-              ),
+              // ),
               const SizedBox(height: 15),
               // Back button and title
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: 
+                Row(
                   children: [
                     IconButton(
                       icon: const Icon(Icons.arrow_back_ios),
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>IntroMeetselection(email: widget.email, latitude: widget.latitude, longitude: widget.longitude, userName: widget.userName, dateOfBirth: widget.dateOfBirth, selectedGender: widget.selectedGender, showGenderOnProfile: widget.showGenderOnProfile, showMode: widget.showMode))),
                     ),
                     const SizedBox(width: 8),
                     const Text(
@@ -151,8 +154,9 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
           // Options list with padding
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: lookingData.isEmpty
+              padding: const EdgeInsets.symmetric(horizontal: 40.0),
+              child:
+               lookingData.isEmpty
                 ? Center(child: CircularProgressIndicator())
                 :ListView.builder(
                 physics: BouncingScrollPhysics(),
@@ -345,9 +349,7 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                         );
                       }
                     },
-                    // onPressed: () => {
-                    //    Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> HeightSelectionScreen()))
-                    // },
+                   
                   ),
                 ),
               ),

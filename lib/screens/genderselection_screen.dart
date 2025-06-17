@@ -82,14 +82,11 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 1),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  IconButton(
-                              icon: const Icon(Icons.arrow_back_ios,),
-                              onPressed: () => Navigator.pop(context),
-                            ),
+                 
                   // Progress bar
                   LinearProgressIndicator(
                     value: 2 / 16,
@@ -99,7 +96,12 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                     ),
                   ),
                   // const SizedBox(height: 24),
-
+                   Row(
+                    children: [
+                       IconButton(
+                              icon: const Icon(Icons.arrow_back_ios,),
+                              onPressed: () => Navigator.pop(context),
+                            ),
                   const Text(
                     "Sai Is A Great Name",
                     style: TextStyle(
@@ -108,6 +110,8 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                       fontFamily: 'Poppins',
                     ),
                   ),
+                    ]
+                   ),
                   const SizedBox(height: 12),
                   const Text(
                     "We Love That You're Here. Pick\nThe Gender That Best Describes\nYou, Then Add More About It If\nYou Like.",

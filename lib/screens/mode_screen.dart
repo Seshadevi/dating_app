@@ -1,3 +1,4 @@
+import 'package:dating/screens/introMail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dating/provider/signupprocessProviders/modeProvider.dart';
@@ -51,7 +52,7 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
         children: [
           Column(
             children: [
-              const SizedBox(height: 50),
+              const SizedBox(height: 30),
               // Progress bar
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -61,7 +62,7 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
                   valueColor: const AlwaysStoppedAnimation<Color>(Color(0xffB2D12E)),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               // Back button and title
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -69,7 +70,16 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.arrow_back_ios),
-                      onPressed: () => Navigator.pop(context),
+                      iconSize: 30,
+                      onPressed: () => Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>IntroMail(
+                        
+                                      latitude: widget.latitude,
+                                      longitude: widget.longitude,
+                                      userName: widget.userName,
+                                      dateOfBirth: widget.dateOfBirth,
+                                      selectedGender: widget.selectedGender,
+                                      showGenderOnProfile: widget.showGenderOnProfile,
+                      ))),
                     ),
                     const SizedBox(width: 8),
                     const Text(

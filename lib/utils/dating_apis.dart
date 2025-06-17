@@ -15,6 +15,7 @@ class Dgapi {
   static const String defaultMessages ="$baseUrl/user/defaultMessages";
   static const String qualities ="$baseUrl/user/qualities";
   static const String refreshToken = "$baseUrl/auth/refresh-token";
+  static const String interests = "$baseUrl/user/getAllInterests";
    
   
 } 

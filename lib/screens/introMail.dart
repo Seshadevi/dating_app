@@ -47,7 +47,7 @@ class _IntroMailState extends State<IntroMail> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: LinearProgressIndicator(
-                    value: 3 / 16,
+                    value: 5 / 16,
                     backgroundColor: Colors.grey[300],
                     valueColor: const AlwaysStoppedAnimation<Color>(
                       Color.fromARGB(255, 147, 179, 3),
@@ -65,11 +65,11 @@ class _IntroMailState extends State<IntroMail> {
                         icon: const Icon(Icons.arrow_back_ios),
                         onPressed: () => Navigator.pop(context),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 12),
                       const Text(
                         "Oh Hey! Let's Start\nWith An Intro",
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Poppins',
                         ),
@@ -79,7 +79,7 @@ class _IntroMailState extends State<IntroMail> {
                 ),
 
                 const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
                     "We'll Use This To Recover Your \nAccount ASAP If You Can't Log In.",
                     style: TextStyle(

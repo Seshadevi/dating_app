@@ -1,5 +1,6 @@
 import 'package:dating/screens/genderselection_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class IntroPageScreen extends StatefulWidget {
   final double latitude;
@@ -38,7 +39,7 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
     );
   }
 
-  Widget _birthdayInput(String hint, Function(String) onChanged) {
+  Widget _birthdayInput(String hint, int maxLength, Function(String) onChanged) {
     return TextField(
       decoration: InputDecoration(
         hintText: hint,
@@ -46,6 +47,10 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
         contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
       ),
       keyboardType: TextInputType.number,
+      inputFormatters: [
+        LengthLimitingTextInputFormatter(maxLength),
+        FilteringTextInputFormatter.digitsOnly,
+      ],
       onChanged: onChanged,
     );
   }
@@ -59,10 +64,10 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // 🎨 Background Decorations
+          // Background Decorations
           Positioned(
             left: -50,
-            top: 300,
+            top: 400,
             child: Image.asset(
               'assets/CornerEllipse.png',
               width: screenWidth * 0.4,
@@ -70,14 +75,14 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
           ),
           Positioned(
             left: screenWidth * 0.075,
-            top: screenWidth * 0.96,
+            top: screenWidth * 1.3,
             child: Image.asset(
               'assets/Ellipse_439.png',
               width: screenWidth * 0.25,
             ),
           ),
           Positioned(
-            top: screenWidth * 1.05,
+            top: screenWidth * 1.35,
             right: screenWidth * 0.05,
             child: Image.asset(
               'assets/balloons.png',
@@ -85,53 +90,42 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
             ),
           ),
 
-          // 🧾 Foreground Form Content
+          // Foreground Content
           Positioned.fill(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 40),
-
-                  // 🔵 Progress Bar
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: LinearProgressIndicator(
-                      value: 1 / 16,
-                      backgroundColor: Colors.grey[300],
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                        Color.fromARGB(255, 147, 179, 3),
+                  const SizedBox(height: 20),
+                  LinearProgressIndicator(
+                    value: 1 / 16,
+                    backgroundColor: Colors.grey[300],
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      Color.fromARGB(255, 147, 179, 3),
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_ios),
+                        iconSize: 30,
+                        onPressed: () => Navigator.pop(context),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-
-                  // 🔙 Back Button + Title
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back_ios),
-                          onPressed: () => Navigator.pop(context),
+                      const SizedBox(width: 12),
+                      const Text(
+                        "Oh Hey! Let's Start\nWith An Intro",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Poppins',
                         ),
-                        const SizedBox(width: 8),
-                        const Text(
-                          "Oh Hey! Let's Start\nWith An Intro",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Poppins',
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-
                   const SizedBox(height: 30),
 
-                  // 👤 Name Input
+                  // Name Input
                   _styledInput(
                     label: "Your First Name",
                     hint: "Enter your name",
@@ -142,13 +136,13 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
 
                   const SizedBox(height: 40),
 
-                  // 🎂 Birthday Inputs
+                  // Birthday Inputs
                   const Text("Your Birthday", style: TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 10),
                   Row(
                     children: [
                       Expanded(
-                        child: _birthdayInput("Month", (value) {
+                        child: _birthdayInput("Month", 2, (value) {
                           setState(() {
                             _month = value;
                             dateOfBirth = '$_month/$_day/$_year';
@@ -157,7 +151,7 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: _birthdayInput("Day", (value) {
+                        child: _birthdayInput("Day", 2, (value) {
                           setState(() {
                             _day = value;
                             dateOfBirth = '$_month/$_day/$_year';
@@ -166,7 +160,7 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: _birthdayInput("Year", (value) {
+                        child: _birthdayInput("Year", 4, (value) {
                           setState(() {
                             _year = value;
                             dateOfBirth = '$_month/$_day/$_year';
@@ -177,20 +171,18 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                   ),
 
                   const SizedBox(height: 20),
-
-                  // 🕒 Info Text
                   const Text(
                     "It’s Never Too Early To Count Down",
                     style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
 
-                  const SizedBox(height: 120), // Space for FAB button
+                  const SizedBox(height: 120),
                 ],
               ),
             ),
           ),
 
-          // ✅ Next Button (FAB style)
+          // FAB Button
           Align(
             alignment: Alignment.bottomRight,
             child: Padding(
@@ -216,13 +208,17 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                           _month.isNotEmpty &&
                           _day.isNotEmpty &&
                           _year.isNotEmpty) {
-                        // Example navigation
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => GenderSelectionScreen(
-                          latitude:widget.latitude,
-                         longitude: widget.longitude,
-                         userName: userName,
-                         dateOfBirth: dateOfBirth,
-                        )));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => GenderSelectionScreen(
+                              latitude: widget.latitude,
+                              longitude: widget.longitude,
+                              userName: userName,
+                              dateOfBirth: dateOfBirth,
+                            ),
+                          ),
+                        );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text("Please fill in all fields")),

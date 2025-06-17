@@ -1,4 +1,6 @@
+import 'package:dating/provider/signupprocessProviders/choosr_foodies_provider.dart';
 import 'package:dating/screens/valueSelection.dart';
+import 'package:dating/screens/height_selection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,16 +12,13 @@ class InterestsScreen extends ConsumerStatefulWidget {
   final String dateOfBirth;
   final String selectedGender;
   final bool showGenderOnProfile;
-  final showMode;
+  final dynamic showMode;
   final String? gendermode;
- 
   final dynamic selectedHeight;
   final dynamic selectionOptionIds;
-   
-  
 
-  const InterestsScreen( {
-    Key? key,
+  const InterestsScreen({
+    super.key,
     required this.email,
     required this.latitude,
     required this.longitude,
@@ -29,36 +28,16 @@ class InterestsScreen extends ConsumerStatefulWidget {
     required this.showGenderOnProfile,
     this.showMode,
     this.gendermode,
-   required this.selectedHeight,
-   this.selectionOptionIds,
-     
-  }) : super(key: key);
+    required this.selectedHeight,
+    this.selectionOptionIds,
+  });
 
   @override
   ConsumerState<InterestsScreen> createState() => _InterestsScreenState();
 }
 
 class _InterestsScreenState extends ConsumerState<InterestsScreen> {
-  List<String> selectedInterests = ['Museums & Galleries'];
-
-  final List<String> allInterests = [
-    'Tennis +',
-    'Gigs +',
-    'Dogs +',
-    'Craft +',
-    'Hicking Trips +',
-    'writing +',
-    'photography +',
-    'museums & galleries +',
-    'cat +',
-    'horror +',
-    'flexible +',
-    'caring +',
-    'reading +',
-    'fitness +',
-    'Gardening +',
-    'language +'
-  ];
+  List<String> selectedInterests = [];
 
   void toggleInterest(String interest) {
     setState(() {
@@ -72,11 +51,33 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
     });
   }
 
+  List<Offset> generateDynamicPositions(int count) {
+    List<Offset> positions = [];
+    double startX = 20;
+    double startY = 20;
+    double gapX = 110;
+    double gapY = 110;
+
+    for (int i = 0; i < count; i++) {
+      double x = startX + (i % 3) * gapX + (i.isEven ? 10 : -10);
+      double y = startY + (i ~/ 3) * gapY + ((i % 3 == 0) ? 20 : 0);
+      positions.add(Offset(x, y));
+    }
+    return positions;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(interestsProvider.notifier).getInterests());
+  }
+
   @override
   Widget build(BuildContext context) {
     final screen = MediaQuery.of(context).size;
-    final screenWidth = screen.width;
-    final screenHeight = screen.height;
+    final interestsModel = ref.watch(interestsProvider);
+    final interestsList = interestsModel.data ?? [];
+    final positions = generateDynamicPositions(interestsList.length);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -85,307 +86,191 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
           children: [
             SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: screen.width * 0.05,
-                  vertical: screen.height * 0.010,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // const SizedBox(height: 15),
-                   Row(
-                     children: [
-                     IconButton(
-                              icon: const Icon(Icons.arrow_back_ios,),
-                              onPressed: () => Navigator.pop(context),
-                            ),
-                            SizedBox(width: 230),
-                            GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ValuesSelectionScreen(
-                    email: widget.email,
-                                          latitude: widget.latitude,
-                                          longitude: widget.longitude,
-                                          userName: widget.userName,
-                                          dateOfBirth: widget.dateOfBirth,
-                                          selectedGender: widget.selectedGender,
-                                          showGenderOnProfile: widget.showGenderOnProfile,
-                                          showMode: widget.showMode,
-                                          gendermode: widget.gendermode,
-                                          selectedHeight: widget.selectedHeight,
-                                          selectionOptionIds:widget.selectionOptionIds,
-                                          selectedIntersts: selectedInterests,
-                  )),
-                );
-
-                                    },
-                    child: const Text(
-                      'Skip',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    LinearProgressIndicator(
+                      value: 7 / 16,
+                      backgroundColor: Colors.grey[300],
+                      valueColor: const AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 147, 179, 3)),
                     ),
-                  )
-                     ]
-
-                   ),
-                    
-                    // const SizedBox(height: 15),
-                    
-                      LinearProgressIndicator(
-                        value: 7 / 16,
-                        backgroundColor: Colors.grey[300],
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                          Color.fromARGB(255, 147, 179, 3),
-                        ),
-                      ),
-                    const SizedBox(height: 15),
-                       Row(
-                        children: [
-                          
-                          const SizedBox(width: 5),
-                          const Text(
-                            "Choose Five Things\nYou Are Really Into",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Poppins',
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back_ios),
+                          onPressed: () => Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HeightSelectionScreen(
+                                email: widget.email,
+                                latitude: widget.latitude,
+                                longitude: widget.longitude,
+                                userName: widget.userName,
+                                dateOfBirth: widget.dateOfBirth,
+                                selectedGender: widget.selectedGender,
+                                showGenderOnProfile: widget.showGenderOnProfile,
+                                selectionOptionIds: widget.selectionOptionIds,
+                              ),
                             ),
                           ),
-                        ],
-                      ),
-                    
-                    SizedBox(height: screen.height * 0.02),
-                    Text(
-                      'Proud foodie or big on bouldering?\n Add interests to your profile to help you match with people who love them too.',
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontSize: screen.width * 0.04,
-                      ),
+                        ),
+                        const Spacer(),
+                        GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ValuesSelectionScreen(
+                                email: widget.email,
+                                latitude: widget.latitude,
+                                longitude: widget.longitude,
+                                userName: widget.userName,
+                                dateOfBirth: widget.dateOfBirth,
+                                selectedGender: widget.selectedGender,
+                                showGenderOnProfile: widget.showGenderOnProfile,
+                                showMode: widget.showMode,
+                                gendermode: widget.gendermode,
+                                selectedHeight: widget.selectedHeight,
+                                selectionOptionIds: widget.selectionOptionIds,
+                                selectedIntersts: selectedInterests,
+                              ),
+                            ),
+                          ),
+                          child: const Text('Skip', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500)),
+                        )
+                      ],
                     ),
-                    SizedBox(height: screen.height * 0.025),
+                    const SizedBox(height: 10),
+                    const Text(
+                      "Choose Five Things\nYou Are Really Into",
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'Poppins'),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Proud foodie or big on bouldering?\nAdd interests to your profile to help you match with people who love them too.',
+                      style: TextStyle(color: Colors.black87, fontSize: screen.width * 0.04),
+                    ),
+                    const SizedBox(height: 20),
                     Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: screen.width * 0.04),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
                         color: const Color(0xFFEFF0D1),
                         borderRadius: BorderRadius.circular(20),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 4,
-                            offset: Offset(0, 2),
-                          )
-                        ],
                       ),
                       child: const TextField(
-                        decoration: InputDecoration(
-                          hintText: 'What are you into?',
-                          border: InputBorder.none,
-                        ),
+                        decoration: InputDecoration(hintText: 'What are you into?', border: InputBorder.none),
                       ),
                     ),
-                    SizedBox(height: screen.height * 0.015),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: selectedInterests
-                          .map((interest) => Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 4.0),
+                    const SizedBox(height: 10),
+
+                    // ✅ Selected interests chips
+                    if (selectedInterests.isNotEmpty)
+                      Wrap(
+                        spacing: 8.0,
+                        runSpacing: 4.0,
+                        children: selectedInterests.map((interest) {
+                          return Chip(
+                            label: Text(interest),
+                            deleteIcon: const Icon(Icons.close),
+                            onDeleted: () => toggleInterest(interest),
+                            backgroundColor: Colors.lightGreen.shade100,
+                          );
+                        }).toList(),
+                      ),
+
+                    const SizedBox(height: 20),
+                    if (interestsList.isEmpty)
+                      const Center(child: Text("No interests found."))
+                    else
+                      SizedBox(
+                        height: screen.height * 0.7,
+                        child: Stack(
+                          children: List.generate(interestsList.length, (index) {
+                            final item = interestsList[index];
+                            final isSelected = selectedInterests.contains(item.interests);
+                            final pos = positions[index];
+
+                            return Positioned(
+                              top: pos.dy,
+                              left: pos.dx,
+                              child: GestureDetector(
+                                onTap: () => toggleInterest(item.interests ?? ''),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 10),
+                                  width: 100,
+                                  height: 100,
+                                  alignment: Alignment.center,
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF496700),
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.black45,
-                                        blurRadius: 4,
-                                        offset: Offset(0, 4),
-                                      )
-                                    ],
+                                    shape: BoxShape.circle,
+                                    gradient: isSelected
+                                        ? const LinearGradient(colors: [Color(0xFF869E23), Color(0xFF000000)])
+                                        : const LinearGradient(colors: [Color(0xFFF3F7DA), Color(0xFFE6EBA4)]),
+                                    boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
                                   ),
                                   child: Text(
-                                    interest,
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                                ),
-                              ))
-                          .toList(),
-                    ),
-                    SizedBox(height: screen.height * 0.02),
-                    Text(
-                      'You Might Like',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: screen.width * 0.045,
-                      ),
-                    ),
-                    SizedBox(
-                      height: screen.height * 0.6,
-                      child: Stack(
-                        children: List.generate(allInterests.length, (index) {
-                          final interest = allInterests[index];
-                          final isSelected =
-                              selectedInterests.contains(interest);
-
-                          final positions = [
-                            const Offset(20, 10),
-                            const Offset(130, 0),
-                            const Offset(240, 20),
-                            const Offset(50, 110),
-                            const Offset(160, 100),
-                            const Offset(20, 200),
-                            const Offset(130, 190),
-                            const Offset(240, 210),
-                            const Offset(60, 290),
-                            const Offset(170, 280),
-                            const Offset(20, 370),
-                            const Offset(130, 360),
-                            const Offset(240, 370),
-                            const Offset(50, 450),
-                            const Offset(160, 460),
-                            const Offset(90, 540)
-                          ];
-
-                          final Offset pos = index < positions.length
-                              ? positions[index]
-                              : Offset(0, index * 60);
-
-                          return Positioned(
-                            top: pos.dy,
-                            left: pos.dx,
-                            child: GestureDetector(
-                              onTap: () => toggleInterest(interest),
-                              child: Container(
-                                width: 100,
-                                height: 100,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  gradient: isSelected
-                                      ? const LinearGradient(
-                                          colors: [
-                                            Color(0xFF869E23),
-                                            Color(0xFF000000)
-                                          ],
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
-                                        )
-                                      : const LinearGradient(
-                                          colors: [
-                                            Color(0xFFF3F7DA),
-                                            Color(0xFFE6EBA4)
-                                          ],
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
-                                        ),
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Colors.black12,
-                                      blurRadius: 4,
-                                      offset: Offset(2, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Text(
-                                  interest,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold,
-                                    color: isSelected
-                                        ? Colors.white
-                                        : Colors.black87,
+                                    item.interests ?? '',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: isSelected ? Colors.white : Colors.black87),
                                   ),
                                 ),
                               ),
-                            ),
-                          );
-                        }),
+                            );
+                          }),
+                        ),
                       ),
-                    ),
-                    SizedBox(height: screen.height * 0.02),
+                    const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(
-                          '${selectedInterests.length}/5 Selected',
-                          style: const TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Material(
-                            elevation: 10,
-                            borderRadius: BorderRadius.circular(50),
-                            child: Container(
-                              width: screenWidth * 0.125,
-                              height: screenWidth * 0.125,
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [Color(0xffB2D12E), Color(0xff000000)],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                ),
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                              child: IconButton(
-                                icon: const Icon(Icons.arrow_forward_ios,
-                                    color: Colors.white),
-                                onPressed: () {
-                                  if (selectedInterests.isNotEmpty) {
-                                    print("✅ Proceeding with:");
-                                    print("Email: ${widget.email}");
-                                    print("Lat: ${widget.latitude}, Long: ${widget.longitude}");
-                                    print("Username: ${widget.userName}");
-                                    print("DOB: ${widget.dateOfBirth}");
-                                    print("Gender: ${widget.selectedGender}");
-                                    print("Show Gender: ${widget.showGenderOnProfile}");
-                                    print("Selected Mode: ${widget.showMode?.value} (ID: ${widget.showMode?.id})");
-                                    print("Selected Looking For: ${widget.gendermode}");
-                                    print("Selected Interests: $selectedInterests");
-
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ValuesSelectionScreen(
-                                          email: widget.email,
-                                          latitude: widget.latitude,
-                                          longitude: widget.longitude,
-                                          userName: widget.userName,
-                                          dateOfBirth: widget.dateOfBirth,
-                                          selectedGender: widget.selectedGender,
-                                          showGenderOnProfile: widget.showGenderOnProfile,
-                                          showMode: widget.showMode,
-                                          gendermode: widget.gendermode,
-                                          selectedHeight: widget.selectedHeight,
-                                          selectionOptionIds:widget.selectionOptionIds,
-                                          selectedIntersts: selectedInterests,
-                                          
-                                        ),
+                        Text('${selectedInterests.length}/5 Selected', style: const TextStyle(fontWeight: FontWeight.w500)),
+                        const SizedBox(width: 10),
+                        Material(
+                          elevation: 10,
+                          borderRadius: BorderRadius.circular(50),
+                          child: Container(
+                            width: screen.width * 0.125,
+                            height: screen.width * 0.125,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(colors: [Color(0xffB2D12E), Color(0xff000000)]),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: IconButton(
+                              icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+                              onPressed: () {
+                                if (selectedInterests.isNotEmpty) {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ValuesSelectionScreen(
+                                        email: widget.email,
+                                        latitude: widget.latitude,
+                                        longitude: widget.longitude,
+                                        userName: widget.userName,
+                                        dateOfBirth: widget.dateOfBirth,
+                                        selectedGender: widget.selectedGender,
+                                        showGenderOnProfile: widget.showGenderOnProfile,
+                                        showMode: widget.showMode,
+                                        gendermode: widget.gendermode,
+                                        selectedHeight: widget.selectedHeight,
+                                        selectionOptionIds: widget.selectionOptionIds,
+                                        selectedIntersts: selectedInterests,
                                       ),
-                                    );
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text("Please select at least one interest")),
-                                    );
-                                  }
-                                },
-                              ),
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text("Please select at least one interest")),
+                                  );
+                                }
+                              },
                             ),
                           ),
                         ),
                       ],
-                    ),
+                    )
                   ],
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),

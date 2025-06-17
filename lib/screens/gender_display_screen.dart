@@ -53,42 +53,45 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // const Spacer(flex: 2),
-                const SizedBox(height: 40),
+                const SizedBox(height: 10),
 
                   // 🔵 Progress Bar
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: LinearProgressIndicator(
-                      value: 3/ 16,
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 16),
+                  //   child: 
+                    LinearProgressIndicator(
+                      value: 4/ 16,
                       backgroundColor: Colors.grey[300],
                       valueColor: const AlwaysStoppedAnimation<Color>(
                         Color.fromARGB(255, 147, 179, 3),
                       ),
                     ),
-                  ),
+                  // ),
                   const SizedBox(height: 15),
 
                   // 🔙 Back button and title
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 16),
+                  //   child:
+                     Row(
                       children: [
                         IconButton(
                           icon: const Icon(Icons.arrow_back_ios),
+                          iconSize: 30,
                           onPressed: () => Navigator.pop(context),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 12),
                         const Text(
                           "Oh Hey! Let's Start\nWith An Intro",
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 24,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Poppins',
                           ),
                         ),
                       ],
                     ),
-                  ),
+                  // ),
 
                 const Text(
                   "It’s Totally Up To You Whether\nYou Feel Comfortable Sharing\nThis.",
