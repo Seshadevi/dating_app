@@ -14,16 +14,24 @@ class _BeKindScreenState extends State<BeKindScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screen = MediaQuery.of(context).size;
+    final double padding = screen.width * 0.05;
+    final double titleFontSize = screen.width * 0.055;
+    final double bodyFontSize = screen.width * 0.037;
+    final double buttonFontSize = screen.width * 0.043;
+    final double checkboxFontSize = screen.width * 0.036;
+
     bool termsAndCondition = isChecked;
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Ever Qupid',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.black,
+            fontSize: screen.width * 0.045,
           ),
         ),
         backgroundColor: Colors.white,
@@ -33,31 +41,31 @@ class _BeKindScreenState extends State<BeKindScreen> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: padding),
           child: SingleChildScrollView(
             child: Column(
               children: [
-                const SizedBox(height: 10),
-                const CircleAvatar(
-                  radius: 100,
-                  backgroundImage: AssetImage('assets/acceptImage.png'),
+                SizedBox(height: screen.height * 0.015),
+                CircleAvatar(
+                  radius: screen.width * 0.25,
+                  backgroundImage: const AssetImage('assets/acceptImage.png'),
                 ),
-                const SizedBox(height: 20),
-                const Text(
+                SizedBox(height: screen.height * 0.025),
+                Text(
                   "It’s Cool To Be Kind",
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: titleFontSize,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.start,
                 ),
-                const SizedBox(height: 16),
-                const Text(
+                SizedBox(height: screen.height * 0.02),
+                Text(
                   "We're All About Equality In Relationships. Here, We Hold People Accountable For The Way They Treat Each Other.\n\n"
                   "We Ask Everyone On Heart Sync To Be Kind And Respectful, So Every Person Can Have A Great Experience.\n\n"
                   "By Using Heart Sync, You’re Agreeing To Adhere To Our Values As Well As Our ",
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: bodyFontSize,
                     height: 1.5,
                   ),
                   textAlign: TextAlign.start,
@@ -68,37 +76,39 @@ class _BeKindScreenState extends State<BeKindScreen> {
                       showTerms = !showTerms;
                     });
                   },
-                  child: const Text(
+                  child: Text(
                     "Guidelines.",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       decoration: TextDecoration.underline,
                       color: Colors.blue,
+                      fontSize: bodyFontSize,
                     ),
                   ),
                 ),
+
                 if (showTerms) ...[
-                  const SizedBox(height: 16),
-                  const Text(
+                  SizedBox(height: screen.height * 0.02),
+                  Text(
                     "Please read and accept the following terms before continuing:",
-                    style: TextStyle(fontSize: 14),
+                    style: TextStyle(fontSize: bodyFontSize),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: screen.height * 0.015),
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: EdgeInsets.all(screen.width * 0.04),
                     decoration: BoxDecoration(
-                      color: Color(0xFFF0F0F0),
+                      color: const Color(0xFFF0F0F0),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Text(
+                    child: Text(
                       "• Treat everyone with kindness and respect.\n"
                       "• Avoid hate speech, harassment, or discrimination.\n"
                       "• Follow community guidelines and be honest.\n"
                       "• Violations may lead to account suspension or removal.",
-                      style: TextStyle(fontSize: 14, height: 1.5),
+                      style: TextStyle(fontSize: bodyFontSize, height: 1.5),
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: screen.height * 0.015),
                   Row(
                     children: [
                       Checkbox(
@@ -109,20 +119,22 @@ class _BeKindScreenState extends State<BeKindScreen> {
                           });
                         },
                       ),
-                      const Expanded(
+                      Expanded(
                         child: Text(
                           "I have read and agree to the terms and conditions.",
-                          style: TextStyle(fontSize: 14),
+                          style: TextStyle(fontSize: checkboxFontSize),
                         ),
                       ),
                     ],
                   ),
                 ],
-                // const Spacer(),
+
+                SizedBox(height: screen.height * 0.05),
+
+                // I Accept Button
                 GestureDetector(
                   onTap: isChecked
                       ? () {
-                          print('terms and conditions.....$termsAndCondition');
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -137,7 +149,7 @@ class _BeKindScreenState extends State<BeKindScreen> {
                     opacity: isChecked ? 1.0 : 0.4,
                     child: Container(
                       width: double.infinity,
-                      height: 50,
+                      height: screen.height * 0.065,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [Color(0xFF869E23), Color(0xFF000000)],
@@ -147,18 +159,19 @@ class _BeKindScreenState extends State<BeKindScreen> {
                         borderRadius: BorderRadius.circular(30),
                       ),
                       alignment: Alignment.center,
-                      child: const Text(
+                      child: Text(
                         "I Accept",
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
-                          fontSize: 16,
+                          fontSize: buttonFontSize,
                         ),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+
+                SizedBox(height: screen.height * 0.04),
               ],
             ),
           ),

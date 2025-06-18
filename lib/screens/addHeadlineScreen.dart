@@ -25,7 +25,6 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      // drawer: Drawer(),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -100,34 +99,39 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                   ),
                 ),
                 SizedBox(height: screen.height * 0.04),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      showHeadlineInput = true;
-                    });
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    height: screen.height * 0.06,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF869E23), Color(0xFF000000)],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
+
+                if (finalHeadline == null) ...[
+                  // FULL WIDTH "Add Headline" before anything is set
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        showHeadlineInput = true;
+                      });
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      height: screen.height * 0.06,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF869E23), Color(0xFF000000)],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Add Headline",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: screen.width * 0.042,
-                        fontWeight: FontWeight.w600,
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Add Headline",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: screen.width * 0.042,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
-                ),
+                ],
+
                 if (showHeadlineInput) ...[
                   SizedBox(height: verticalSpacing),
                   TextField(
@@ -146,11 +150,10 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                           finalHeadline = _headlineController.text.trim();
                           showHeadlineInput = false;
                         });
-                        // Navigate or use finalHeadline where needed
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 89, 172,164),
+                      backgroundColor: const Color.fromARGB(255, 89, 172, 164),
                       padding: EdgeInsets.symmetric(
                         vertical: screen.height * 0.015,
                         horizontal: screen.width * 0.2,
@@ -162,20 +165,54 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                     ),
                   ),
                 ],
+
                 if (finalHeadline != null) ...[
                   SizedBox(height: screen.height * 0.03),
                   Text(
-                    "Your headline has been set to:\n“$finalHeadline”",
+                    "Your headline has been set to:\n\n“$finalHeadline”",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: bodyFontSize,
                       fontStyle: FontStyle.italic,
-                      color:Color(0xffB2D12E),
+                      color: Color.fromARGB(255, 7, 159, 124),
                     ),
                   ),
-                  SizedBox(height: screen.height * 0.02),
-                  ElevatedButton(
-                    onPressed: () {
+                  SizedBox(height: screen.height * 0.025),
+
+                  // Edit Headline Button (half width)
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        showHeadlineInput = true;
+                      });
+                    },
+                    child: Container(
+                      width: screen.width * 0.5,
+                      height: screen.height * 0.06,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF869E23), Color(0xFF000000)],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Edit Headline",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: screen.width * 0.042,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: screen.height * 0.025),
+
+                  // NEXT Button (same green style)
+                  GestureDetector(
+                    onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -183,12 +220,29 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                         ),
                       );
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xffB2D12E),
+                    child: Container(
+                      width: screen.width * 0.5,
+                      height: screen.height * 0.06,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF869E23), Color(0xFF000000)],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Next",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: screen.width * 0.042,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
-                    child: const Text("Next"),
-                  )
-                ]
+                  ),
+                ],
               ],
             ),
           ),

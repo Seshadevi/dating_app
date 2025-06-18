@@ -76,9 +76,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.arrow_back_ios),
-                    onPressed: () {
-                      Navigator.pop(context); // You can customize this
-                    },
+                    onPressed: () => Navigator.pop(context),
                   ),
                   const Spacer(),
                   GestureDetector(
@@ -139,31 +137,37 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
                 }),
               ),
               const SizedBox(height: 20),
-              Row(
+
+              /// Changed section starts here
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.camera_alt, color: Colors.green),
-                  const SizedBox(width: 8),
-                  const Text(
+                  Icon(Icons.camera_alt, color: Colors.green, size: 20),
+                  SizedBox(width: 8),
+                  Text(
                     "Want To Make Sure You Really Shine?",
                     style: TextStyle(fontSize: 12),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      // Go to photo tips
-                    },
-                    child: const Text(
-                      "Check Out Our Photo Tips",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
                 ],
               ),
-              const SizedBox(height: 24),
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    // Go to photo tips
+                  },
+                  child: const Text(
+                    "Check Out Our Photo Tips",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ),
+              /// Changed section ends here
+
+              const SizedBox(height: 14),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -197,8 +201,8 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text(
-                                    "Please upload at least 4 photos."),
+                                content:
+                                    Text("Please upload at least 4 photos."),
                               ),
                             );
                           }
