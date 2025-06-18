@@ -4,14 +4,55 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PhotoUploadScreen extends StatefulWidget {
-  const PhotoUploadScreen({super.key});
+
+  final String email;
+  final double latitude;
+  final double longitude;
+  final String userName;
+  final String dateOfBirth;
+  final String selectedGender;
+  final bool showGenderOnProfile;
+  final dynamic showMode;
+  final String? gendermode;
+  final List<int> selectionOptionIds;
+  final dynamic selectedHeight;
+  final List<int> selectedInterestIds;
+  final List<int> selectedqualitiesIDs;
+  final List<int> selectedhabbits;
+  final List<int> selectedkids;
+  final List<int> selectedreligions;
+  final List<int> selectedcauses;
+  final List<String> seletedprompts;
+
+  const PhotoUploadScreen(
+    {
+    super.key,
+    required this.email,
+    required this.latitude,
+    required this.longitude,
+    required this.userName,
+    required this.dateOfBirth,
+    required this.selectedGender,
+    required this.showGenderOnProfile,
+    this.showMode,
+    this.gendermode,
+    required this.selectionOptionIds,
+    this.selectedHeight,
+    required this.selectedInterestIds,
+    required this.selectedqualitiesIDs,
+    required this.selectedhabbits,
+    required this.selectedkids,
+    required this.selectedreligions,
+    required this.selectedcauses,
+    required this.seletedprompts
+    });
 
   @override
   State<PhotoUploadScreen> createState() => _PhotoUploadScreenState();
 }
 
 class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
-  final List<File?> _selectedImages = List.filled(6, null);
+  final List<File?> selectedImages = List.filled(6, null);
 
   Future<void> _pickImage(int index) async {
     final picker = ImagePicker();
@@ -22,7 +63,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
 
     if (pickedImage != null) {
       setState(() {
-        _selectedImages[index] = File(pickedImage.path);
+        selectedImages[index] = File(pickedImage.path);
       });
     }
   }
@@ -55,7 +96,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
   @override
   Widget build(BuildContext context) {
     final screen = MediaQuery.of(context).size;
-    int imageCount = _selectedImages.where((img) => img != null).length;
+    int imageCount = selectedImages.where((img) => img != null).length;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -123,11 +164,11 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
                           width: 2,
                         ),
                       ),
-                      child: _selectedImages[index] != null
+                      child: selectedImages[index] != null
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: Image.file(
-                                _selectedImages[index]!,
+                                selectedImages[index]!,
                                 fit: BoxFit.cover,
                               ),
                             )
@@ -195,7 +236,27 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const OpeningMoveScreen(),
+                                builder: (context) => OpeningMoveScreen(
+                                                email: widget.email,
+                                                latitude: widget.latitude,
+                                                longitude: widget.longitude,
+                                                userName: widget.userName,
+                                                dateOfBirth: widget.dateOfBirth,
+                                                selectedGender: widget.selectedGender,
+                                                showGenderOnProfile: widget.showGenderOnProfile,
+                                                showMode: widget.showMode,
+                                                gendermode:widget.gendermode,
+                                                selectionOptionIds:widget.selectionOptionIds,
+                                                selectedHeight:widget.selectedHeight ,
+                                                selectedInterestIds:widget.selectedInterestIds,
+                                                selectedqualitiesIDs:widget.selectedqualitiesIDs,
+                                                selectedhabbits: widget.selectedhabbits,
+                                                selectedkids:widget.selectedkids,
+                                                selectedreligions:widget.selectedreligions,
+                                                selectedcauses:widget.selectedcauses,
+                                                seletedprompts:widget.seletedprompts,
+                                                choosedimages:selectedImages
+                                ),
                               ),
                             );
                           } else {

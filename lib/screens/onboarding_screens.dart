@@ -83,12 +83,12 @@ var selectedMode;
       );
     } else {
       // ✅ Navigate to the next screen when the last page is reached
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                const AddHeadlineScreen()), // Replace with your target screen
-      );
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(
+      //       builder: (context) =>
+      //           const AddHeadlineScreen()), // Replace with your target screen
+      // );
     }
   }
 

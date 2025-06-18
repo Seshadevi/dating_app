@@ -243,33 +243,123 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
   }
 }
 
-  // Future<bool> tryAutoLogin() async {
-  //   final prefs = await SharedPreferences.getInstance();
+Future<int> signupuserApi({
+  required String email,
+  required double latitude,
+  required double longitude,
+  required String userName,
+  required String dateOfBirth,
+  required String selectedGender,
+  required bool showGenderOnProfile,
+  dynamic showMode,
+  String? gendermode,
+  required List<int> selectionOptionIds,
+  dynamic selectedHeight,
+  required List<int> selectedInterestIds,
+  required List<int> selectedqualitiesIDs,
+  required List<int> selectedhabbits,
+  required List<int> selectedkids,
+  required List<int> selectedreligions,
+  required List<int> selectedcauses,
+  required List<String> seletedprompts,
+  required List<File?> choosedimages,
+  required List<int> defaultmessages,
+  required String? finalheadline,
+  required bool termsAndCondition,
+}) async {
+  const String apiUrl = Dgapi.login;
+  final prefs = await SharedPreferences.getInstance();
+    print("✅ Proceeding with:");
+    print("Email: $email");
+    print("Lat: $latitude, Long: $longitude");
+    print("Username: $userName");
+    print("DOB: $dateOfBirth");
+    print("Gender: $selectedGender");
+    print("Show Gender: $showGenderOnProfile");
+    print("Selected Mode: ${showMode.value} (ID: ${showMode.id}");
+    print("genderget:$gendermode");
+    print("Selected options: $selectionOptionIds");
+                                                
+  
+    print("selected height:$selectedHeight");
+    print("selected intrests:$selectedInterestIds");
+    print('Selected qualities IDs: $selectedqualitiesIDs');
+    print("selected habbits:$selectedhabbits");
+    print("selected kids:$selectedkids");
+    print("selected religion:$selectedreligions");
+    print("selected causes:$selectedcauses");
+    print("selected prompts:$seletedprompts");
+    print("selected images:${choosedimages.length}");
+    print("selected images:$choosedimages");
+    print("selected default messages:$defaultmessages");
+    print("selected finalHealine:$finalheadline");
+    print("selected prompts:$termsAndCondition");
+                                               
 
-  //   if (!prefs.containsKey('userData')) {
-  //     print('No user data found in SharedPreferences.');
-  //     return false;
-  //   }
+  try {
 
-  //   try {
-  //     final extractedData =
-  //         json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
+    var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
 
-  //     final userModel = UserModel.fromJson(extractedData);
+    // Add simple fields
+    request.fields['email'] = email;
+    request.fields['latitude'] = latitude.toString();
+    request.fields['longitude'] = longitude.toString();
+    request.fields['firstName'] = userName;
+    request.fields['dob'] = dateOfBirth;
+    request.fields['role']="user";
+    request.fields['gender'] = selectedGender;
+    request.fields['showOnProfile'] = showGenderOnProfile.toString();
+    request.fields['mode'] = showMode.toString();
+    request.fields['gender_mode'] = gendermode ?? '';
+    request.fields['height'] = selectedHeight?.toString() ?? '';
+    request.fields['headLine'] = finalheadline ?? '';
+    request.fields['termsAndConditions'] = termsAndCondition.toString();
 
-  //     if (userModel.data != null && userModel.data!.isNotEmpty) {
-  //       state = userModel;
-  //      // print('Auto-login successful for user: ${state.data![0].user?.sId}');
-  //       return true;
-  //     } else {
-  //       print("Invalid user data structure.");
-  //       return false;
-  //     }
-  //   } catch (e) {
-  //     print('Error parsing user data: $e');
-  //     return false;
-  //   }
-  // }
+    // Add list fields (convert to JSON string or comma-separated)
+    request.fields['selection_options'] = selectionOptionIds.join(',');
+    request.fields['interest_ids'] = selectedInterestIds.join(',');
+    request.fields['qualities'] = selectedqualitiesIDs.join(',');
+    request.fields['drinking'] = selectedhabbits.join(',');
+    request.fields['kids'] = selectedkids.join(',');
+    request.fields['religions'] = selectedreligions.join(',');
+    request.fields['causesAndCommunities'] = selectedcauses.join(',');
+    request.fields['prompts'] = seletedprompts.join(',');
+    request.fields['defaultMessages'] = defaultmessages.join(',');
+
+    // Add image files
+    for (int i = 0; i < choosedimages.length; i++) {
+      final image = choosedimages[i];
+      if (image != null && await image.exists()) {
+        final multipartFile = await http.MultipartFile.fromPath(
+          'profilePic[$i]', // e.g., images[0], images[1]
+          image.path,
+        );
+        request.files.add(multipartFile);
+      }
+    }
+
+    // Send the request
+    final response = await request.send();
+
+    // Check response
+    final responseBody = await response.stream.bytesToString();
+    print("Signup Response: $responseBody");
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      // Save data if needed
+      await prefs.setBool("isSignedUp", true);
+      return response.statusCode;
+    } else {
+      print("Signup failed with status: ${response.statusCode}");
+      return response.statusCode;
+    }
+  } catch (e) {
+    print("Exception during signup: $e");
+    return 500;
+  }
+}
+
+
 
   Future<String> restoreAccessToken() async {
     const url = Dgapi.refreshToken;

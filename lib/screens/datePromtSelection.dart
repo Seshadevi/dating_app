@@ -167,19 +167,62 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
                             child: IconButton(
                               icon: const Icon(Icons.arrow_forward_ios,
                                   color: Colors.white),
-                              onPressed: () => { 
-                                if(selectedPrompts.length >= 2){
+                              onPressed: () {
+                                      if(selectedPrompts.length >= 2){
+                                              
+                                                print("✅ Proceeding with:");
+                                                print("Email: ${widget.email}");
+                                                print("Lat: ${widget.latitude}, Long: ${widget.longitude}");
+                                                print("Username: ${widget.userName}");
+                                                print("DOB: ${widget.dateOfBirth}");
+                                                print("Gender: ${widget.selectedGender}");
+                                                print("Show Gender: ${widget.showGenderOnProfile}");
+                                                print("Selected Mode: ${widget.showMode.value} (ID: ${widget.showMode.id})");
+                                                print("Selected options: ${widget.selectionOptionIds}");
+                                                List<int> selectedOptions = List<int>.from(widget.selectionOptionIds);
+                                                print("Selected options as List<int>: $selectedOptions");
+                                                print("selected height:${widget.selectedHeight}");
+                                                print("selected intrests:${widget.selectedInterestIds}");
+                                                print('Selected qualities IDs: ${widget.selectedqualitiesIDs}');
+                                                print("selected habbits:${widget.selectedhabbits}");
+                                                print("selected kids:${widget.selectedkids}");
+                                                print("selected religion:${widget.selectedreligions}");
+                                                print("selected causes:${widget.selectedcauses}");
+                                                print("selected prompts:$selectedPrompts");
+                                                print("selected prompts convert list:${selectedPrompts.values.toList()}");
+
+
                                       Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => PhotoUploadScreen(),
+                                            builder: (context) => PhotoUploadScreen(
+                                                
+                                                email: widget.email,
+                                                latitude: widget.latitude,
+                                                longitude: widget.longitude,
+                                                userName: widget.userName,
+                                                dateOfBirth: widget.dateOfBirth,
+                                                selectedGender: widget.selectedGender,
+                                                showGenderOnProfile: widget.showGenderOnProfile,
+                                                showMode: widget.showMode,
+                                                gendermode:widget.gendermode,
+                                                selectionOptionIds:List<int>.from(widget.selectionOptionIds),
+                                                selectedHeight:widget.selectedHeight ,
+                                                selectedInterestIds:widget.selectedInterestIds,
+                                                selectedqualitiesIDs:widget.selectedqualitiesIDs,
+                                                selectedhabbits: widget.selectedhabbits,
+                                                selectedkids:widget.selectedkids,
+                                                selectedreligions:widget.selectedreligions,
+                                                selectedcauses:widget.selectedcauses,
+                                                seletedprompts:selectedPrompts.values.toList()
+                                            ),
                                           ),
-                                        )
+                                        );
                                 }
                                 else{
                                     ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text("Please add 2 prompts")),
-                                )
+                                );
                                 }
                               }
                                                       

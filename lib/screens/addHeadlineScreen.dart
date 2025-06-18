@@ -1,8 +1,51 @@
+import 'dart:io';
+
 import 'package:dating/screens/beKindScreen.dart';
 import 'package:flutter/material.dart';
 
 class AddHeadlineScreen extends StatefulWidget {
-  const AddHeadlineScreen({super.key});
+
+  final String email;
+  final double latitude;
+  final double longitude;
+  final String userName;
+  final String dateOfBirth;
+  final String selectedGender;
+  final bool showGenderOnProfile;
+  final dynamic showMode;
+  final String? gendermode;
+  final List<int> selectionOptionIds;
+  final dynamic selectedHeight;
+  final List<int> selectedInterestIds;
+  final List<int> selectedqualitiesIDs;
+  final List<int> selectedhabbits;
+  final List<int> selectedkids;
+  final List<int> selectedreligions;
+  final List<int> selectedcauses;
+  final List<String> seletedprompts;
+  final List<File?> choosedimages;
+  final List<int> defaultmessages;
+
+  const AddHeadlineScreen({super.key,required this.email,
+    required this.latitude,
+    required this.longitude,
+    required this.userName,
+    required this.dateOfBirth,
+    required this.selectedGender,
+    required this.showGenderOnProfile,
+    this.showMode,
+    this.gendermode,
+    required this.selectionOptionIds,
+    this.selectedHeight,
+    required this.selectedInterestIds,
+    required this.selectedqualitiesIDs,
+    required this.selectedhabbits,
+    required this.selectedkids,
+    required this.selectedreligions,
+    required this.selectedcauses,
+    required this.seletedprompts,
+    required this.choosedimages,
+    required this.defaultmessages});
 
   @override
   State<AddHeadlineScreen> createState() => _AddHeadlineScreenState();
@@ -216,7 +259,29 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const BeKindScreen(),
+                          builder: (context) => BeKindScreen(
+                                                email: widget.email,
+                                                latitude: widget.latitude,
+                                                longitude: widget.longitude,
+                                                userName: widget.userName,
+                                                dateOfBirth: widget.dateOfBirth,
+                                                selectedGender: widget.selectedGender,
+                                                showGenderOnProfile: widget.showGenderOnProfile,
+                                                showMode: widget.showMode,
+                                                gendermode:widget.gendermode,
+                                                selectionOptionIds:widget.selectionOptionIds,
+                                                selectedHeight:widget.selectedHeight ,
+                                                selectedInterestIds:widget.selectedInterestIds,
+                                                selectedqualitiesIDs:widget.selectedqualitiesIDs,
+                                                selectedhabbits: widget.selectedhabbits,
+                                                selectedkids:widget.selectedkids,
+                                                selectedreligions:widget.selectedreligions,
+                                                selectedcauses:widget.selectedcauses,
+                                                seletedprompts:widget.seletedprompts,
+                                                choosedimages:widget.choosedimages,
+                                                defaultmessages:widget.defaultmessages,
+                                                finalheadline:finalHeadline
+                          ),
                         ),
                       );
                     },
