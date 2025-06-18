@@ -1,80 +1,67 @@
-import 'package:dating/screens/profile_screens/chat_pay_Screen.dart';
-import 'package:dating/screens/profile_screens/discover_screen.dart';
-import 'package:dating/screens/profile_screens/heartsync_screen.dart';
-import 'package:dating/screens/profile_screens/liked_Screen.dart';
-import 'package:dating/screens/profile_screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 
-class CustomBottomNavigationBar extends StatefulWidget {
-  const CustomBottomNavigationBar({Key? key}) : super(key: key);
+class CustomBottomNavigationBar extends StatelessWidget {
+  final int currentIndex;
 
-  @override
-  State<CustomBottomNavigationBar> createState() =>
-      _CustomBottomNavigationBarState();
-}
+  const CustomBottomNavigationBar({Key? key, required this.currentIndex})
+      : super(key: key);
 
-class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
-  int _currentIndex = 0;
-
-  void _onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+  void _onTabTapped(BuildContext context, int index) {
+    if (index == currentIndex) return;
 
     switch (index) {
       case 0:
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => ProfileScreen()));
+        Navigator.pushReplacementNamed(context, 'profilescreen');
         break;
       case 1:
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => DiscoverScreen()));
+        Navigator.pushReplacementNamed(context, 'discoverscreen');
         break;
       case 2:
-        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>MyHeartsyncPage()));
+        Navigator.pushReplacementNamed(context, 'myheartsyncpage');
         break;
       case 3:
-       Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LikedYouScreen()));
+        Navigator.pushReplacementNamed(context, 'likedyouscreen');
         break;
       case 4:
-        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>MessagesScreen()));
+        Navigator.pushReplacementNamed(context, 'messagescreen');
         break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: _currentIndex,
-      onTap: _onTabTapped,
-      backgroundColor: Colors.white,
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.contact_emergency),
-          label: '',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.bolt),
-          label: '',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.people),
-          label: '',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.favorite_border),
-          label: '',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.chat_bubble_outline),
-          label: '',
-        ),
-      ],
-      selectedItemColor: Colors.green,
-      unselectedItemColor: Colors.grey,
-      showSelectedLabels: false,
-      showUnselectedLabels: false,
+    return Container(
+      height: 60,
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(color: Colors.black12, blurRadius: 6),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildNavItem(context, 0, 'assets/campusnav.png', 64, 84),
+          _buildNavItem(context, 1, 'assets/profilenav.png', 64, 84),
+          _buildNavItem(context, 2, 'assets/peoplesnav.png', 40, 40),
+          _buildNavItem(context, 3, 'assets/heartnav.png', 40, 40),
+          _buildNavItem(context, 4, 'assets/chatnav.png', 40, 40),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNavItem(BuildContext context, int index, String assetPath, double width, double height) {
+    final isSelected = index == currentIndex;
+    return GestureDetector(
+      onTap: () => _onTabTapped(context, index),
+      child: Image.asset(
+        assetPath,
+        width: width,
+        height: height,
+        color: isSelected ? Color.fromARGB(255, 16, 20, 2) : null, // Optional tint for selected
+      ),
     );
   }
 }

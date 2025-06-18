@@ -169,7 +169,7 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                 if (finalHeadline != null) ...[
                   SizedBox(height: screen.height * 0.03),
                   Text(
-                    "Your headline has been set to:\n\n“$finalHeadline”",
+                    "Your headline :\n\n“$finalHeadline”",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: bodyFontSize,

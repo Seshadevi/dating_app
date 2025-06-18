@@ -203,7 +203,7 @@ class MessagesScreen extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: const CustomBottomNavigationBar(),
+      bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 4,),
     );
   }
 }

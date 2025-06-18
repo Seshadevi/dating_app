@@ -265,7 +265,7 @@ class _MyHomePageState extends State<MyHeartsyncPage> {
           ),
         ),
       ),
-      bottomNavigationBar: const CustomBottomNavigationBar(),
+      bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 2),
     );
   }
 

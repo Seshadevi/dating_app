@@ -1,6 +1,10 @@
 import 'package:dating/firebase_options.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/screens/logins/loginscreen.dart';
+import 'package:dating/screens/profile_screens/chat_pay_Screen.dart';
+import 'package:dating/screens/profile_screens/discover_screen.dart';
+import 'package:dating/screens/profile_screens/heartsync_screen.dart';
+import 'package:dating/screens/profile_screens/liked_Screen.dart';
 import 'package:dating/screens/profile_screens/profile_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +57,15 @@ class MyApp extends StatelessWidget {
       }),
       routes: {
          "loginscreen": (context) => LoginScreen(),
+         "profilescreen": (context) =>ProfileScreen(),
+   
+        "discoverscreen": (context) =>const DiscoverScreen(),
+    
+        "myheartsyncpage": (context) =>const MyHeartsyncPage(),
+    
+        "likedyouscreen": (context) =>const LikedYouScreen(),
+   
+        "messagescreen": (context) =>MessagesScreen(),
       },
     );
   }
