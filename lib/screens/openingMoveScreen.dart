@@ -36,7 +36,7 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
           children: [
             SizedBox(height: 30,),
             LinearProgressIndicator(
-                value: 15/ 16,
+                value: 18/ 18,
                 backgroundColor: Colors.grey[300],
                 valueColor: const AlwaysStoppedAnimation<Color>(
                     Color(0xffB2D12E)),

@@ -52,16 +52,17 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
     return Scaffold(
       body: Column(
         children: [
-          const SizedBox(height: 20),
+          const SizedBox(height: 40),
           Padding(
+                 
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: LinearProgressIndicator(
-                  value: 6 / 16,
+                  value: 7 / 18,
                   backgroundColor: Colors.grey[300],
                   valueColor: const AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 147, 179, 3)),
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 5),
               // Back button and title
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -134,54 +135,57 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
       
           Align(
             alignment: Alignment.bottomRight,
-            child: Material(
-              elevation: 10,
-              borderRadius: BorderRadius.circular(50),
-              child: Container(
-                width: screenWidth * 0.125,
-                height: screenWidth * 0.125,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xffB2D12E), Color(0xff000000)],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 24, bottom: 24),
+              child: Material(
+                elevation: 10,
+                borderRadius: BorderRadius.circular(50),
+                child: Container(
+                  width: screenWidth * 0.125,
+                  height: screenWidth * 0.125,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xffB2D12E), Color(0xff000000)],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    borderRadius: BorderRadius.circular(50),
                   ),
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
-                  onPressed: () {
-                    if (selectedMode != null || isOpenToEveryone) {
-                      print("✅ Proceeding with:");
-                      print("Email: ${widget.email}");
-                      print("Lat: ${widget.latitude}, Long: ${widget.longitude}");
-                      print("Username: ${widget.userName}");
-                      print("DOB: ${widget.dateOfBirth}");
-                      print("Gender: ${widget.selectedGender}");
-                      print("Show Gender: ${widget.showGenderOnProfile}");
-                      print("Selected Mode: ${widget.showMode.value} (ID: ${widget.showMode.id})");
-                      print("Selected Looking For: ${isOpenToEveryone ? "Everyone" : selectedMode}");
-                      print("email............${widget.email}");
-      
-                      // Navigator.push(...) your next screen here
-                      Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> InrtoPartneroption(
-                         email: widget.email,
-                                  latitude: widget.latitude,
-                                  longitude: widget.longitude,
-                                  userName: widget.userName,
-                                  dateOfBirth: widget.dateOfBirth,
-                                  selectedGender: widget.selectedGender,
-                                  showGenderOnProfile: widget.showGenderOnProfile,
-                                  showMode: widget.showMode,
-                                  gendermode:selectedMode
-
-                      )));
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Please select a gender preference"))
-                      );
-                    }
-                  },
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+                    onPressed: () {
+                      if (selectedMode != null || isOpenToEveryone) {
+                        print("✅ Proceeding with:");
+                        print("Email: ${widget.email}");
+                        print("Lat: ${widget.latitude}, Long: ${widget.longitude}");
+                        print("Username: ${widget.userName}");
+                        print("DOB: ${widget.dateOfBirth}");
+                        print("Gender: ${widget.selectedGender}");
+                        print("Show Gender: ${widget.showGenderOnProfile}");
+                        print("Selected Mode: ${widget.showMode.value} (ID: ${widget.showMode.id})");
+                        print("Selected Looking For: ${isOpenToEveryone ? "Everyone" : selectedMode}");
+                        print("email............${widget.email}");
+                    
+                        // Navigator.push(...) your next screen here
+                        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> InrtoPartneroption(
+                           email: widget.email,
+                                    latitude: widget.latitude,
+                                    longitude: widget.longitude,
+                                    userName: widget.userName,
+                                    dateOfBirth: widget.dateOfBirth,
+                                    selectedGender: widget.selectedGender,
+                                    showGenderOnProfile: widget.showGenderOnProfile,
+                                    showMode: widget.showMode,
+                                    gendermode:selectedMode
+              
+                        )));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Please select a gender preference"))
+                        );
+                      }
+                    },
+                  ),
                 ),
               ),
             ),

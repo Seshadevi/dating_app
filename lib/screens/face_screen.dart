@@ -66,7 +66,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               LinearProgressIndicator(
-                value: 7 / 16,
+                value: 17 / 18,
                 backgroundColor: Colors.grey[300],
                 valueColor: const AlwaysStoppedAnimation<Color>(
                     Color.fromARGB(255, 147, 179, 3)),

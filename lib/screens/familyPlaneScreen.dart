@@ -122,7 +122,7 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
                 child: ListView(
                   children: [
                     LinearProgressIndicator(
-                      value: 11 / 16,
+                      value: 13 / 18,
                       backgroundColor: Colors.grey[300],
                       valueColor: const AlwaysStoppedAnimation<Color>(
                           Color.fromARGB(255, 147, 179, 3)),

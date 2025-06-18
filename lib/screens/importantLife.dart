@@ -196,7 +196,7 @@ class _ReligionSelectorWidgetState extends ConsumerState<ReligionSelectorWidget>
                 children: [
                   // Progress indicator
                   LinearProgressIndicator(
-                    value: 12 / 16,
+                    value: 14 / 18,
                     backgroundColor: Colors.grey[300],
                     valueColor: const AlwaysStoppedAnimation<Color>(
                         Color.fromARGB(255, 147, 179, 3)),
@@ -227,10 +227,10 @@ class _ReligionSelectorWidgetState extends ConsumerState<ReligionSelectorWidget>
                   
                   // Description
                   const Text(
-                    'you can answer or leave blank\n depanding on what matters\n most of you.',
+                    'you can answer or leave blank depanding \n on what matters most of you.',
                     style: TextStyle(
                       color: Colors.black87,
-                      fontSize: 14,
+                      fontSize: 15,
                     ),
                   ),
                 ],

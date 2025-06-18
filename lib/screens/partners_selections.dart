@@ -72,7 +72,7 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
           //       padding: const EdgeInsets.symmetric(horizontal: 16),
           //       child: 
                 LinearProgressIndicator(
-                  value: 7 / 16,
+                  value: 8 / 18,
                   backgroundColor: Colors.grey[300],
                   valueColor: const AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 147, 179, 3)),
                 ),

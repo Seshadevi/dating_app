@@ -52,17 +52,17 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
         children: [
           Column(
             children: [
-              const SizedBox(height: 30),
+              const SizedBox(height: 40),
               // Progress bar
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: LinearProgressIndicator(
-                  value: 5 / 16,
+                  value: 6 / 18,
                   backgroundColor: Colors.grey[300],
                   valueColor: const AlwaysStoppedAnimation<Color>(Color(0xffB2D12E)),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 3),
               // Back button and title
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),

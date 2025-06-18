@@ -215,7 +215,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
                 children: [
                   // Progress indicator
                   LinearProgressIndicator(
-                    value: 10 / 16,
+                    value: 12 / 18,
                     backgroundColor: Colors.grey[300],
                     valueColor: const AlwaysStoppedAnimation<Color>(
                         Color.fromARGB(255, 147, 179, 3)),
@@ -391,7 +391,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
                                 );
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text("Please select 4 options")),
+                                  const SnackBar(content: Text("Please select 5 options")),
                                 );
                               }
                             },

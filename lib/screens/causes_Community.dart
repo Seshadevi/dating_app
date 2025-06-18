@@ -201,7 +201,7 @@ final List<String> selectedcauses = [];
                 children: [
                   // Progress indicator
                   LinearProgressIndicator(
-                    value: 12 / 16,
+                    value: 15 / 18,
                     backgroundColor: Colors.grey[300],
                     valueColor: const AlwaysStoppedAnimation<Color>(
                         Color.fromARGB(255, 147, 179, 3)),
@@ -232,7 +232,7 @@ final List<String> selectedcauses = [];
                   
                   // Description
                   const Text(
-                    'choose up to 3 options close\n to your heart.',
+                    'choose up to 3 options close to your heart.',
                     style: TextStyle(
                       color: Colors.black87,
                       fontSize: 14,

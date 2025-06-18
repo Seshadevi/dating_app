@@ -89,7 +89,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                  
                   // Progress bar
                   LinearProgressIndicator(
-                    value: 2 / 16,
+                    value: 2 / 18,
                     backgroundColor: Colors.grey[300],
                     valueColor: const AlwaysStoppedAnimation<Color>(
                       Color.fromARGB(255, 147, 179, 3),

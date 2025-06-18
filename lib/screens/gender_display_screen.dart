@@ -60,7 +60,7 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
                   //   padding: const EdgeInsets.symmetric(horizontal: 16),
                   //   child: 
                     LinearProgressIndicator(
-                      value: 4/ 16,
+                      value: 4/ 18,
                       backgroundColor: Colors.grey[300],
                       valueColor: const AlwaysStoppedAnimation<Color>(
                         Color.fromARGB(255, 147, 179, 3),

@@ -216,7 +216,7 @@ class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
                 children: [
                   // Progress indicator
                   LinearProgressIndicator(
-                    value: 9 / 16,
+                    value: 11 / 18,
                     backgroundColor: Colors.grey[300],
                     valueColor: const AlwaysStoppedAnimation<Color>(
                         Color.fromARGB(255, 147, 179, 3)),

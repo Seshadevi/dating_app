@@ -50,7 +50,7 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: LinearProgressIndicator(
-              value: 9 / 16,
+              value: 9 / 18,
               backgroundColor: Colors.grey[300],
               valueColor: const AlwaysStoppedAnimation<Color>(
                   Color.fromARGB(255, 147, 179, 3)),
@@ -130,42 +130,45 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
           ),
           Align(
             alignment: Alignment.bottomRight,
-            child: Material(
-              elevation: 10,
-              borderRadius: BorderRadius.circular(50),
-              child: Container(
-                width: screenWidth * 0.125,
-                height: screenWidth * 0.125,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xffB2D12E), Color(0xff000000)],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 24, bottom: 24),
+              child: Material(
+                elevation: 10,
+                borderRadius: BorderRadius.circular(50),
+                child: Container(
+                  width: screenWidth * 0.125,
+                  height: screenWidth * 0.125,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xffB2D12E), Color(0xff000000)],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    borderRadius: BorderRadius.circular(50),
                   ),
-                  borderRadius: BorderRadius.circular(50),
-                ),
-                child: IconButton(
-                  icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => InterestsScreen(
-                          email: widget.email,
-                          latitude: widget.latitude,
-                          longitude: widget.longitude,
-                          userName: widget.userName,
-                          dateOfBirth: widget.dateOfBirth,
-                          selectedGender: widget.selectedGender,
-                          showGenderOnProfile: widget.showGenderOnProfile,
-                          showMode: widget.showMode,
-                          gendermode: widget.gendermode,
-                          selectedHeight: _selectedHeight,
-                          selectionOptionIds: widget.selectionOptionIds,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => InterestsScreen(
+                            email: widget.email,
+                            latitude: widget.latitude,
+                            longitude: widget.longitude,
+                            userName: widget.userName,
+                            dateOfBirth: widget.dateOfBirth,
+                            selectedGender: widget.selectedGender,
+                            showGenderOnProfile: widget.showGenderOnProfile,
+                            showMode: widget.showMode,
+                            gendermode: widget.gendermode,
+                            selectedHeight: _selectedHeight,
+                            selectionOptionIds: widget.selectionOptionIds,
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
             ),

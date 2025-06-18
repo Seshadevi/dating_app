@@ -94,7 +94,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     LinearProgressIndicator(
-                      value: 7 / 16,
+                      value: 10 / 18,
                       backgroundColor: Colors.grey[300],
                       valueColor: const AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 147, 179, 3)),
                     ),
