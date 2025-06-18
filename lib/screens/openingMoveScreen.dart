@@ -34,11 +34,12 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 30,),
             LinearProgressIndicator(
                 value: 15/ 16,
                 backgroundColor: Colors.grey[300],
                 valueColor: const AlwaysStoppedAnimation<Color>(
-                    Color.fromARGB(255, 147, 179, 3)),
+                    Color(0xffB2D12E)),
               ),
               // const SizedBox(height: 16),
               Row(
@@ -108,7 +109,7 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
                           color: const Color(0xFFF0F8E7),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: isSelected ? Colors.green : Colors.transparent,
+                            color: isSelected ? Color(0xffB2D12E): Colors.transparent,
                             width: 1.5,
                           ),
                         ),
@@ -126,7 +127,7 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
                             ),
                             Icon(
                               isSelected ? Icons.check_circle : Icons.circle_outlined,
-                              color: isSelected ? Colors.green : Colors.grey.shade700,
+                              color: isSelected ? Color(0xffB2D12E) : Colors.grey.shade700,
                             ),
                           ],
                         ),

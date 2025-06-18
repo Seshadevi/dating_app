@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import '../screens/glitchScreen.dart';
 
 class FriendOnboardingScreen extends StatelessWidget {
-  const FriendOnboardingScreen({Key? key}) : super(key: key);
+  final bool termsAndCondition;
+  const FriendOnboardingScreen({
+    Key? key, 
+    required this.termsAndCondition})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +16,7 @@ class FriendOnboardingScreen extends StatelessWidget {
       body: SafeArea(
         child: Stack(
           children: [
-             Positioned(
+            Positioned(
               top: 90,
               left: -10, // Adjust this to move it to the left
               child: SizedBox(
@@ -25,21 +29,20 @@ class FriendOnboardingScreen extends StatelessWidget {
             ),
             // Positioned image
             Stack(
-  children: [
-    Positioned(
-      top: 10,
-      left: -10,
-      child: SizedBox(
-        height: 350,
-        child: Image.asset(
-          'assets/women.png',
-          fit: BoxFit.contain,
-        ),
-      ),
-    ),
-  ],
-),
-
+              children: [
+                Positioned(
+                  top: 10,
+                  left: -10,
+                  child: SizedBox(
+                    height: 350,
+                    child: Image.asset(
+                      'assets/women.png',
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+              ],
+            ),
 
             // Main content
             Column(
@@ -71,7 +74,8 @@ class FriendOnboardingScreen extends StatelessWidget {
                 ),
                 const Spacer(),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                   child: SizedBox(
                     width: double.infinity,
                     height: 48,
@@ -80,8 +84,7 @@ class FriendOnboardingScreen extends StatelessWidget {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => 
-                            SubscriptionTabScreen(),
+                            builder: (context) => SubscriptionTabScreen(),
                           ),
                         );
                       },

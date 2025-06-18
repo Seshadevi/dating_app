@@ -25,7 +25,7 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      drawer: Drawer(),
+      // drawer: Drawer(),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -150,7 +150,7 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
+                      backgroundColor: const Color.fromARGB(255, 89, 172,164),
                       padding: EdgeInsets.symmetric(
                         vertical: screen.height * 0.015,
                         horizontal: screen.width * 0.2,
@@ -170,7 +170,7 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                     style: TextStyle(
                       fontSize: bodyFontSize,
                       fontStyle: FontStyle.italic,
-                      color: Colors.green.shade700,
+                      color:Color(0xffB2D12E),
                     ),
                   ),
                   SizedBox(height: screen.height * 0.02),
@@ -184,7 +184,7 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
+                      backgroundColor: Color(0xffB2D12E),
                     ),
                     child: const Text("Next"),
                   )
