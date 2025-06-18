@@ -35,11 +35,11 @@ class IntroMeetselection extends ConsumerStatefulWidget {
 class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
   String? selectedMode;
   bool isOpenToEveryone = false;
+  List<String> selectedGenderIds = [];
 
   @override
   void initState() {
     super.initState();
-    // Fetch genders when widget loads
     Future.microtask(() => ref.read(genderProvider.notifier).getGender());
   }
 
@@ -47,51 +47,21 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
   Widget build(BuildContext context) {
     final genderState = ref.watch(genderProvider);
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: Column(
         children: [
           const SizedBox(height: 40),
-          Padding(
-                 
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: LinearProgressIndicator(
-                  value: 7 / 18,
-                  backgroundColor: Colors.grey[300],
-                  valueColor: const AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 147, 179, 3)),
-                ),
-              ),
-              const SizedBox(height: 5),
-              // Back button and title
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back_ios),
-                      onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>IntroDatecategory(email: widget.email, latitude: widget.latitude, longitude: widget.longitude, userName: widget.userName, dateOfBirth: widget.dateOfBirth, selectedGender: widget.selectedGender, showGenderOnProfile: widget.showGenderOnProfile))),
-                    ),
-                    const SizedBox(width: 8),
-                    const Text(
-                      "Who Would Like TO Meet?",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Poppins',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+          _buildProgressBar(),
+          _buildHeader(context),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   "you can choose more than one answer and change it any time.",
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 18.0,
                     fontWeight: FontWeight.w300,
@@ -99,95 +69,66 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
                   ),
                 ),
                 const SizedBox(height: 10),
-      
-                _buildToggleOption(),
-      
+                _buildToggleOption(genderState),
+                const SizedBox(height: 10),
                 if (genderState.data != null)
                   ...genderState.data!.map((gender) =>
                     _buildGenderOption(gender)
                   ),
-      
                 const SizedBox(height: 10),
-      
-                Row(
-                  children: [
-                    Icon(
-                      Icons.remove_red_eye_outlined,
-                      color: Colors.grey[600],
-                      size: 24,
-                    ),
-                    const SizedBox(width: 12),
-                    const Text(
-                      "You'll Only Be Shown To People In The \nSame Mode As You.",
-                      style: TextStyle(
-                        fontSize: 10.0,
-                        fontWeight: FontWeight.w300,
-                        letterSpacing: 0.3,
-                        height: 1.3,
-                      ),
-                    ),
-                  ],
-                ),
-                // const SizedBox(height: 10),
+                _buildVisibilityNote(),
               ],
             ),
           ),
-      
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 24, bottom: 24),
-              child: Material(
-                elevation: 10,
-                borderRadius: BorderRadius.circular(50),
-                child: Container(
-                  width: screenWidth * 0.125,
-                  height: screenWidth * 0.125,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xffB2D12E), Color(0xff000000)],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
-                    onPressed: () {
-                      if (selectedMode != null || isOpenToEveryone) {
-                        print("✅ Proceeding with:");
-                        print("Email: ${widget.email}");
-                        print("Lat: ${widget.latitude}, Long: ${widget.longitude}");
-                        print("Username: ${widget.userName}");
-                        print("DOB: ${widget.dateOfBirth}");
-                        print("Gender: ${widget.selectedGender}");
-                        print("Show Gender: ${widget.showGenderOnProfile}");
-                        print("Selected Mode: ${widget.showMode.value} (ID: ${widget.showMode.id})");
-                        print("Selected Looking For: ${isOpenToEveryone ? "Everyone" : selectedMode}");
-                        print("email............${widget.email}");
-                    
-                        // Navigator.push(...) your next screen here
-                        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> InrtoPartneroption(
-                           email: widget.email,
-                                    latitude: widget.latitude,
-                                    longitude: widget.longitude,
-                                    userName: widget.userName,
-                                    dateOfBirth: widget.dateOfBirth,
-                                    selectedGender: widget.selectedGender,
-                                    showGenderOnProfile: widget.showGenderOnProfile,
-                                    showMode: widget.showMode,
-                                    gendermode:selectedMode
-              
-                        )));
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Please select a gender preference"))
-                        );
-                      }
-                    },
+          _buildNextButton(screenWidth, genderState),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProgressBar() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: LinearProgressIndicator(
+        value: 7 / 18,
+        backgroundColor: Colors.grey[300],
+        valueColor: const AlwaysStoppedAnimation<Color>(
+            Color.fromARGB(255, 147, 179, 3)),
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => IntroDatecategory(
+                    email: widget.email,
+                    latitude: widget.latitude,
+                    longitude: widget.longitude,
+                    userName: widget.userName,
+                    dateOfBirth: widget.dateOfBirth,
+                    selectedGender: widget.selectedGender,
+                    showGenderOnProfile: widget.showGenderOnProfile,
                   ),
                 ),
-              ),
+              );
+            },
+          ),
+          const SizedBox(width: 8),
+          const Text(
+            "Who Would Like TO Meet?",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Poppins',
             ),
           ),
         ],
@@ -195,18 +136,60 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
     );
   }
 
-  /// Gender Option Builder
+  Widget _buildToggleOption(genderState) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Switch(
+          value: isOpenToEveryone,
+          onChanged: (value) {
+            setState(() {
+              isOpenToEveryone = value;
+              if (value) {
+                selectedGenderIds.clear();
+                selectedMode = null;
+                // Add all gender IDs from API
+                if (genderState.data != null) {
+                  selectedGenderIds = genderState.data!.map((e) => e.id.toString()).toList();
+                }
+              } else {
+                selectedGenderIds.clear(); // reset on turning off toggle
+              }
+            });
+          },
+          activeTrackColor: const Color(0xffB2D12E),
+          activeColor: Colors.white,
+          inactiveTrackColor: const Color(0xFFD3D3D3),
+          inactiveThumbColor: Colors.white,
+        ),
+        const Text(
+          "I'm open to dating everyone",
+          style: TextStyle(
+            fontFamily: 'Inter',
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+            color: Color.fromARGB(255, 60, 60, 60),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildGenderOption(Data gender) {
-    final isSelected = selectedMode == gender.value;
+    final isSelected = selectedGenderIds.contains(gender.id.toString());
 
     return InkWell(
-      onTap: () {
-        if (!isOpenToEveryone) {
-          setState(() {
-            selectedMode = gender.value;
-          });
-        }
-      },
+      onTap: isOpenToEveryone
+          ? null
+          : () {
+              setState(() {
+                if (isSelected) {
+                  selectedGenderIds.remove(gender.id.toString());
+                } else {
+                  selectedGenderIds.add(gender.id.toString());
+                }
+              });
+            },
       child: Opacity(
         opacity: isOpenToEveryone ? 0.5 : 1.0,
         child: Container(
@@ -264,36 +247,74 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
     );
   }
 
-  /// Toggle Switch
-  Widget _buildToggleOption() {
+  Widget _buildVisibilityNote() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Switch(
-          value: isOpenToEveryone,
-          onChanged: (value) {
-            setState(() {
-              isOpenToEveryone = value;
-              if (value) {
-                selectedMode = null;
-              }
-            });
-          },
-          activeTrackColor: const Color(0xffB2D12E),
-          activeColor: Colors.white,
-          inactiveTrackColor: const Color(0xFFD3D3D3),
-          inactiveThumbColor: Colors.white,
-        ),
+        Icon(Icons.remove_red_eye_outlined, color: Colors.grey[600], size: 24),
+        const SizedBox(width: 12),
         const Text(
-          "i'm open to dating everyone",
+          "You'll Only Be Shown To People In The \nSame Mode As You.",
           style: TextStyle(
-            fontFamily: 'Inter',
-            fontSize: 15,
-            fontWeight: FontWeight.w400,
-            color: Color.fromARGB(255, 60, 60, 60),
+            fontSize: 10.0,
+            fontWeight: FontWeight.w300,
+            letterSpacing: 0.3,
+            height: 1.3,
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildNextButton(double screenWidth, genderState) {
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: Padding(
+        padding: const EdgeInsets.only(right: 24, bottom: 24),
+        child: Material(
+          elevation: 10,
+          borderRadius: BorderRadius.circular(50),
+          child: Container(
+            width: screenWidth * 0.125,
+            height: screenWidth * 0.125,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xffB2D12E), Color(0xff000000)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              borderRadius: BorderRadius.circular(50),
+            ),
+            child: IconButton(
+              icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+              onPressed: () {
+                if (selectedGenderIds.isNotEmpty) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => InrtoPartneroption(
+                        email: widget.email,
+                        latitude: widget.latitude,
+                        longitude: widget.longitude,
+                        userName: widget.userName,
+                        dateOfBirth: widget.dateOfBirth,
+                        selectedGender: widget.selectedGender,
+                        showGenderOnProfile: widget.showGenderOnProfile,
+                        showMode: widget.showMode,
+                        gendermode: selectedGenderIds,
+                        // selectedGenderIds: selectedGenderIds, // send list here
+                      ),
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Please select at least one gender preference")),
+                  );
+                }
+              },
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

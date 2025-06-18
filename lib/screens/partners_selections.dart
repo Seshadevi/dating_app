@@ -17,7 +17,7 @@ class InrtoPartneroption extends ConsumerStatefulWidget {
   final String selectedGender;
   final bool showGenderOnProfile;
   final showMode;
-  final String? gendermode;
+  final List<String> gendermode;
   const InrtoPartneroption(
     {super.key,
      required this.email,
@@ -28,7 +28,7 @@ class InrtoPartneroption extends ConsumerStatefulWidget {
       required this.selectedGender,
       required this.showGenderOnProfile,
       this.showMode,
-       this.gendermode
+        required this.gendermode
     });
 
   @override
@@ -339,7 +339,7 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                                     selectedGender: widget.selectedGender,
                                     showGenderOnProfile: widget.showGenderOnProfile,
                                     showMode: widget.showMode,
-                                    gendermode:widget.gendermode,
+                                    selectedGenderIds:widget.gendermode,
                                     selectionOptionIds:selectedOptionIds
               
                         )));

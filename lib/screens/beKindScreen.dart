@@ -13,7 +13,7 @@ class BeKindScreen extends StatefulWidget {
   final String selectedGender;
   final bool showGenderOnProfile;
   final dynamic showMode;
-  final String? gendermode;
+  final List<String> selectedGenderIds;
   final List<int> selectionOptionIds;
   final dynamic selectedHeight;
   final List<int> selectedInterestIds;
@@ -36,7 +36,7 @@ class BeKindScreen extends StatefulWidget {
     required this.selectedGender,
     required this.showGenderOnProfile,
     this.showMode,
-    this.gendermode,
+    required this.selectedGenderIds,
     required this.selectionOptionIds,
     this.selectedHeight,
     required this.selectedInterestIds,
@@ -194,7 +194,7 @@ class _BeKindScreenState extends State<BeKindScreen> {
                                                 selectedGender: widget.selectedGender,
                                                 showGenderOnProfile: widget.showGenderOnProfile,
                                                 showMode: widget.showMode,
-                                                gendermode:widget.gendermode,
+                                               selectedGenderIds:widget.selectedGenderIds,
                                                 selectionOptionIds:widget.selectionOptionIds,
                                                 selectedHeight:widget.selectedHeight ,
                                                 selectedInterestIds:widget.selectedInterestIds,

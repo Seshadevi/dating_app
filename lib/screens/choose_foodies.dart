@@ -15,7 +15,7 @@ class InterestsScreen extends ConsumerStatefulWidget {
   final String selectedGender;
   final bool showGenderOnProfile;
   final dynamic showMode;
-  final String? gendermode;
+  final List<String> selectedGenderIds;
   final dynamic selectedHeight;
   final dynamic selectionOptionIds;
 
@@ -29,7 +29,7 @@ class InterestsScreen extends ConsumerStatefulWidget {
     required this.selectedGender,
     required this.showGenderOnProfile,
     this.showMode,
-    this.gendermode,
+    required this.selectedGenderIds,
     required this.selectedHeight,
     this.selectionOptionIds,
   });
@@ -376,7 +376,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                                         selectedGender: widget.selectedGender,
                                         showGenderOnProfile: widget.showGenderOnProfile,
                                         showMode: widget.showMode,
-                                        gendermode: widget.gendermode,
+                                        gendermode: widget.selectedGenderIds,
                                         selectedHeight: widget.selectedHeight,
                                         selectionOptionIds: widget.selectionOptionIds,
                                         selectedInterestIds: selectedInterestIds,

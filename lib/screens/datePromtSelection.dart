@@ -12,7 +12,7 @@ class DatePromptScreen extends StatefulWidget {
   final String selectedGender;
   final bool showGenderOnProfile;
   final dynamic showMode;
-  final String? gendermode;
+  final List<String> selectedGenderIds;
   final dynamic selectionOptionIds;
   final dynamic selectedHeight;
   final List<int> selectedInterestIds;
@@ -32,7 +32,7 @@ class DatePromptScreen extends StatefulWidget {
     required this.selectedGender,
     required this.showGenderOnProfile,
     this.showMode,
-    this.gendermode,
+    required this.selectedGenderIds,
     this.selectionOptionIds,
     this.selectedHeight,
     required this.selectedInterestIds,
@@ -205,7 +205,7 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
                                                 selectedGender: widget.selectedGender,
                                                 showGenderOnProfile: widget.showGenderOnProfile,
                                                 showMode: widget.showMode,
-                                                gendermode:widget.gendermode,
+                                                selectedGenderIds:widget.selectedGenderIds,
                                                 selectionOptionIds:List<int>.from(widget.selectionOptionIds),
                                                 selectedHeight:widget.selectedHeight ,
                                                 selectedInterestIds:widget.selectedInterestIds,

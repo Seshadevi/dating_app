@@ -16,7 +16,7 @@ class FriendOnboardingScreen extends ConsumerStatefulWidget {
   final String selectedGender;
   final bool showGenderOnProfile;
   final dynamic showMode;
-  final String? gendermode;
+  final List<String> selectedGenderIds;
   final List<int> selectionOptionIds;
   final dynamic selectedHeight;
   final List<int> selectedInterestIds;
@@ -40,7 +40,7 @@ class FriendOnboardingScreen extends ConsumerStatefulWidget {
     required this.selectedGender,
     required this.showGenderOnProfile,
     this.showMode,
-    this.gendermode,
+    required this.selectedGenderIds,
     required this.selectionOptionIds,
     this.selectedHeight,
     required this.selectedInterestIds,
@@ -141,7 +141,7 @@ class _FriendOnboardingScreenState extends ConsumerState<FriendOnboardingScreen>
                               selectedGender: widget.selectedGender,
                               showGenderOnProfile: widget.showGenderOnProfile,
                               showMode: widget.showMode,
-                              gendermode: widget.gendermode,
+                              selectedGenderIds: widget.selectedGenderIds,
                               selectionOptionIds: widget.selectionOptionIds,
                               selectedHeight: widget.selectedHeight,
                               selectedInterestIds: widget.selectedInterestIds,

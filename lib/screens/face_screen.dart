@@ -13,7 +13,7 @@ class PhotoUploadScreen extends StatefulWidget {
   final String selectedGender;
   final bool showGenderOnProfile;
   final dynamic showMode;
-  final String? gendermode;
+  final List<String> selectedGenderIds;
   final List<int> selectionOptionIds;
   final dynamic selectedHeight;
   final List<int> selectedInterestIds;
@@ -35,7 +35,7 @@ class PhotoUploadScreen extends StatefulWidget {
     required this.selectedGender,
     required this.showGenderOnProfile,
     this.showMode,
-    this.gendermode,
+    required this.selectedGenderIds,
     required this.selectionOptionIds,
     this.selectedHeight,
     required this.selectedInterestIds,
@@ -44,7 +44,8 @@ class PhotoUploadScreen extends StatefulWidget {
     required this.selectedkids,
     required this.selectedreligions,
     required this.selectedcauses,
-    required this.seletedprompts
+    required this.seletedprompts, 
+    // required List<String> gendermode
     });
 
   @override
@@ -245,7 +246,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
                                                 selectedGender: widget.selectedGender,
                                                 showGenderOnProfile: widget.showGenderOnProfile,
                                                 showMode: widget.showMode,
-                                                gendermode:widget.gendermode,
+                                                selectedGenderIds:widget.selectedGenderIds,
                                                 selectionOptionIds:widget.selectionOptionIds,
                                                 selectedHeight:widget.selectedHeight ,
                                                 selectedInterestIds:widget.selectedInterestIds,

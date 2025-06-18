@@ -17,7 +17,7 @@ class ValuesSelectionScreen extends ConsumerStatefulWidget {
   final String selectedGender;
   final bool showGenderOnProfile;
   final showMode;
-  final String? gendermode;
+  final List<String> gendermode;
   final List<int> selectedInterestIds;
   final dynamic selectedHeight;
   final dynamic selectionOptionIds;
@@ -32,7 +32,7 @@ class ValuesSelectionScreen extends ConsumerStatefulWidget {
     required this.selectedGender,
     required this.showGenderOnProfile,
     this.showMode,
-    this.gendermode,
+    required this.gendermode,
     this.selectedHeight,
     this.selectionOptionIds,
     // required this.selectedIntersts, 

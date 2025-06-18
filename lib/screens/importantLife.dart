@@ -14,7 +14,7 @@ class ReligionSelectorWidget extends ConsumerStatefulWidget {
   final String selectedGender;
   final bool showGenderOnProfile;
   final showMode;
-  final String? gendermode;
+  final List<String> gendermode;
   final dynamic selectionOptionIds;
   final dynamic selectedHeight;
   final List<int> selectedInterestIds;
@@ -30,7 +30,7 @@ class ReligionSelectorWidget extends ConsumerStatefulWidget {
     required this.selectedGender,
     required this.showGenderOnProfile,
     this.showMode,
-    this.gendermode,
+    required this.gendermode,
     this.selectionOptionIds,
     this.selectedHeight,
     required this.selectedInterestIds,

@@ -11,7 +11,7 @@ class HeightSelectionScreen extends StatefulWidget {
   final String selectedGender;
   final bool showGenderOnProfile;
   final showMode;
-  final String? gendermode;
+  final List<String> selectedGenderIds;
   final Set<int> selectionOptionIds;
 
   const HeightSelectionScreen({
@@ -24,7 +24,7 @@ class HeightSelectionScreen extends StatefulWidget {
     required this.selectedGender,
     required this.showGenderOnProfile,
     this.showMode,
-    this.gendermode,
+    required this.selectedGenderIds,
     required this.selectionOptionIds,
   }) : super(key: key);
 
@@ -74,6 +74,7 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
                         dateOfBirth: widget.dateOfBirth,
                         selectedGender: widget.selectedGender,
                         showGenderOnProfile: widget.showGenderOnProfile,
+                        gendermode: widget.selectedGenderIds,
                       ),
                     ),
                   ),
@@ -161,7 +162,7 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
                             selectedGender: widget.selectedGender,
                             showGenderOnProfile: widget.showGenderOnProfile,
                             showMode: widget.showMode,
-                            gendermode: widget.gendermode,
+                            selectedGenderIds: widget.selectedGenderIds,
                             selectedHeight: _selectedHeight,
                             selectionOptionIds: widget.selectionOptionIds,
                           ),

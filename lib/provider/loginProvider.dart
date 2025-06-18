@@ -252,7 +252,7 @@ Future<int> signupuserApi({
   required String selectedGender,
   required bool showGenderOnProfile,
   dynamic showMode,
-  String? gendermode,
+  required List<String> selectedGenderIds,
   required List<int> selectionOptionIds,
   dynamic selectedHeight,
   required List<int> selectedInterestIds,
@@ -265,7 +265,8 @@ Future<int> signupuserApi({
   required List<File?> choosedimages,
   required List<int> defaultmessages,
   required String? finalheadline,
-  required bool termsAndCondition,
+  required bool termsAndCondition, 
+  // required List<String> gendermode,
 }) async {
   const String apiUrl = Dgapi.login;
   final prefs = await SharedPreferences.getInstance();
@@ -277,7 +278,7 @@ Future<int> signupuserApi({
     print("Gender: $selectedGender");
     print("Show Gender: $showGenderOnProfile");
     print("Selected Mode: ${showMode.value} (ID: ${showMode.id}");
-    print("genderget:$gendermode");
+    print("genderget:$selectedGenderIds");
     print("Selected options: $selectionOptionIds");
                                                 
   
@@ -310,7 +311,7 @@ Future<int> signupuserApi({
     request.fields['gender'] = selectedGender;
     request.fields['showOnProfile'] = showGenderOnProfile.toString();
     request.fields['mode'] = showMode.toString();
-    request.fields['gender_mode'] = gendermode ?? '';
+    request.fields['gender_mode'] = selectedGenderIds as String;
     request.fields['height'] = selectedHeight?.toString() ?? '';
     request.fields['headLine'] = finalheadline ?? '';
     request.fields['termsAndConditions'] = termsAndCondition.toString();

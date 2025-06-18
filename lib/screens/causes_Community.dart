@@ -14,7 +14,7 @@ class CausesScreen extends ConsumerStatefulWidget {
   final String selectedGender;
   final bool showGenderOnProfile;
   final showMode;
-  final String? gendermode;
+  final List<String> gendermode;
   final dynamic selectionOptionIds;
   final dynamic selectedHeight;
   final List<int> selectedInterestIds;
@@ -32,7 +32,7 @@ class CausesScreen extends ConsumerStatefulWidget {
     required this.selectedGender,
     required this.showGenderOnProfile,
     this.showMode,
-    this.gendermode,
+    required this.gendermode,
     this.selectionOptionIds,
     this.selectedHeight,
     required this.selectedInterestIds,
@@ -368,7 +368,7 @@ final List<String> selectedcauses = [];
                                           selectedGender: widget.selectedGender,
                                           showGenderOnProfile: widget.showGenderOnProfile,
                                           showMode: widget.showMode,
-                                          gendermode:widget.gendermode,
+                                          selectedGenderIds:widget.gendermode,
                                           selectionOptionIds:widget.selectionOptionIds,
                                           selectedHeight:widget.selectedHeight ,
                                           selectedInterestIds:widget.selectedInterestIds,
