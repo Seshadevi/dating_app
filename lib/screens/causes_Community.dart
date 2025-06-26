@@ -6,41 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../model/signupprocessmodels/causesModel.dart';
 
 class CausesScreen extends ConsumerStatefulWidget {
-  final String email;
-  final double latitude;
-  final double longitude;
-  final String userName;
-  final String dateOfBirth;
-  final String selectedGender;
-  final bool showGenderOnProfile;
-  final showMode;
-  final List<String> gendermode;
-  final dynamic selectionOptionIds;
-  final dynamic selectedHeight;
-  final List<int> selectedInterestIds;
-  final List<int> selectedqualitiesIDs;
-  final List<int> selectedhabbits;
-  final List<int> selectedreligions;
-  final List<int> selectedkids;
+  
 
-   const CausesScreen({super.key,
-    required this.email,
-    required this.latitude,
-    required this.longitude,
-    required this.userName,
-    required this.dateOfBirth,
-    required this.selectedGender,
-    required this.showGenderOnProfile,
-    this.showMode,
-    required this.gendermode,
-    this.selectionOptionIds,
-    this.selectedHeight,
-    required this.selectedInterestIds,
-    required this.selectedqualitiesIDs,
-    required this.selectedhabbits,
-    required this.selectedreligions,
-    required this.selectedkids
-    });
+   const CausesScreen({super.key});
 
   @override
   _CausesScreenState createState() => _CausesScreenState();
@@ -50,6 +18,56 @@ class _CausesScreenState extends ConsumerState<CausesScreen> {
   
 final List<String> selectedcauses = [];
   List<int> selectedcausesIds = [];
+
+   String? email;
+   String? mobile;
+   double? latitude;
+   double? longitude;
+   String? dateofbirth;
+   String? userName;
+   String? selectedgender;
+   bool? showonprofile;
+   int? modeid;
+   String? modename;
+   List<String>? selectedGenderIds;
+   List<int>? selectedoptionIds;
+   int? selectedheight;
+   List<int>? selectedinterestsIds;
+   List<int>? selectedQualitiesIds;
+   List<int>? selectedHabitIds;
+   List<int>? selectedKidsIds;
+   List<int>? selectedReligionIds;
+
+    @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null ) { // Prevent overwriting selected products
+      setState(() {
+          email= args['email'] ??'';
+          mobile = args['mobile'] ?? '';
+          latitude = args['latitude'] ?? 0.0;
+          longitude = args['longitude'] ?? 0.0;
+          dateofbirth = args['dateofbirth'] ?? '';
+          userName = args['userName'] ?? '';
+          selectedgender = args['selectgender'] ?? '';
+          showonprofile = args['showonprofile'] ?? true;
+          modeid=args['modeid'] ?? 0;
+          modename =args['modename'] ?? '';
+          selectedGenderIds=args['selectedGenderIds'] ?? [];
+          selectedoptionIds=args['selectedoptionIds'] ?? [];
+          selectedheight=args['selectedheight'] ?? 154;
+          selectedinterestsIds=args['selectedinterestIds'] ?? [];
+          selectedQualitiesIds=args['selectedQualitiesIds'] ?? [];
+          selectedHabitIds=args['selectedHabbits'] ?? [];
+          selectedKidsIds=args['selectedKidsIds'] ?? [];
+          selectedReligionIds=args['selectedReligionIds'] ?? [];
+          selectedcausesIds=args['selectedCausesIds'] ?? [];
+      });
+    }
+  }
+
 
     @override
   void initState() {
@@ -213,7 +231,32 @@ final List<String> selectedcauses = [];
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_back_ios),
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () {
+                           Navigator.pushNamed(
+                                    context,
+                                    '/religionScreen',
+                                    arguments: {
+                                      'latitude': latitude,
+                                      'longitude': longitude,
+                                      'dateofbirth':dateofbirth,
+                                      'userName':userName,
+                                      'selectgender':selectedgender,
+                                      "showonprofile":showonprofile,
+                                      "modeid":modeid,
+                                      "modename":modename,
+                                      "selectedGenderIds":selectedGenderIds,
+                                      "selectedoptionIds":selectedoptionIds,
+                                      "selectedheight":selectedheight,
+                                      "selectedinterestIds":selectedinterestsIds,
+                                      "selectedQualitiesIds":selectedQualitiesIds,
+                                      "selectedHabbits":selectedHabitIds,
+                                      "selectedKidsIds":selectedKidsIds,
+                                      "selectedReligionIds":selectedReligionIds,
+                                      'email':email,
+                                      'mobile':mobile
+                                    },
+                                );
+                        },
                       ),
                       const SizedBox(width: 8),
                       const Expanded(
@@ -294,7 +337,30 @@ final List<String> selectedcauses = [];
                   children: [
                     TextButton(
                       onPressed: () {
-                        // Handle skip action
+                         Navigator.pushNamed(
+                                    context,
+                                    '/promptsScreen',
+                                    arguments: {
+                                      'latitude': latitude,
+                                      'longitude': longitude,
+                                      'dateofbirth':dateofbirth,
+                                      'userName':userName,
+                                      'selectgender':selectedgender,
+                                      "showonprofile":showonprofile,
+                                      "modeid":modeid,
+                                      "modename":modename,
+                                      "selectedGenderIds":selectedGenderIds,
+                                      "selectedoptionIds":selectedoptionIds,
+                                      "selectedheight":selectedheight,
+                                      "selectedinterestIds":selectedinterestsIds,
+                                      "selectedQualitiesIds":selectedQualitiesIds,
+                                      "selectedHabbits":selectedHabitIds,
+                                      "selectedKidsIds":selectedKidsIds,
+                                      "selectedReligionIds":selectedReligionIds,
+                                      'email':email,
+                                      'mobile':mobile
+                                    },
+                                );
                       },
                       child: const Text(
                         'Skip',
@@ -340,45 +406,33 @@ final List<String> selectedcauses = [];
                             ),
                             onPressed: () {
                                 if (selectedcauses.length == 4) {
-                                        print("✅ Proceeding with:");
-                                        print("Email: ${widget.email}");
-                                        print("Lat: ${widget.latitude}, Long: ${widget.longitude}");
-                                        print("Username: ${widget.userName}");
-                                        print("DOB: ${widget.dateOfBirth}");
-                                        print("Gender: ${widget.selectedGender}");
-                                        print("Show Gender: ${widget.showGenderOnProfile}");
-                                        print("Selected Mode: ${widget.showMode.value} (ID: ${widget.showMode.id})");
-                                        print("Selected options: ${widget.selectionOptionIds}");
-                                        print("selected height:${widget.selectedHeight}");
-                                        print("selected intrests:${widget.selectedInterestIds}");
-                                        print('Selected qualities IDs: ${widget.selectedqualitiesIDs}');
-                                        print("selected habbits:${widget.selectedhabbits}");
-                                        print("selected kids:${widget.selectedkids}");
-                                        print("selected religion:${widget.selectedreligions}");
-                                        print("selected causes:$selectedcausesIds");
-
+                                        
                           
-                                   // Navigator.push(...) your next screen here
-                                    Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> DatePromptScreen(
-                                          email: widget.email,
-                                          latitude: widget.latitude,
-                                          longitude: widget.longitude,
-                                          userName: widget.userName,
-                                          dateOfBirth: widget.dateOfBirth,
-                                          selectedGender: widget.selectedGender,
-                                          showGenderOnProfile: widget.showGenderOnProfile,
-                                          showMode: widget.showMode,
-                                          selectedGenderIds:widget.gendermode,
-                                          selectionOptionIds:widget.selectionOptionIds,
-                                          selectedHeight:widget.selectedHeight ,
-                                          selectedInterestIds:widget.selectedInterestIds,
-                                          selectedqualitiesIDs:widget.selectedqualitiesIDs,
-                                          selectedhabbits: widget.selectedhabbits,
-                                          selectedkids:widget.selectedkids,
-                                          selectedreligions:widget.selectedreligions,
-                                          selectedcauses:selectedcausesIds
-                    
-                              )));
+                                   Navigator.pushNamed(
+                                    context,
+                                    '/promptsScreen',
+                                    arguments: {
+                                      'latitude': latitude,
+                                      'longitude': longitude,
+                                      'dateofbirth':dateofbirth,
+                                      'userName':userName,
+                                      'selectgender':selectedgender,
+                                      "showonprofile":showonprofile,
+                                      "modeid":modeid,
+                                      "modename":modename,
+                                      "selectedGenderIds":selectedGenderIds,
+                                      "selectedoptionIds":selectedoptionIds,
+                                      "selectedheight":selectedheight,
+                                      "selectedinterestIds":selectedinterestsIds,
+                                      "selectedQualitiesIds":selectedQualitiesIds,
+                                      "selectedHabbits":selectedHabitIds,
+                                      "selectedKidsIds":selectedKidsIds,
+                                      "selectedReligionIds":selectedReligionIds,
+                                      "selectedCausesIds":selectedcausesIds,
+                                      'email':email,
+                                      'mobile':mobile
+                                    },
+                                );
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text("Please select 4 options"))

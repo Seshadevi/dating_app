@@ -1,47 +1,10 @@
-
 import 'package:dating/screens/editprompt_screen.dart';
 import 'package:dating/screens/face_screen.dart';
 import 'package:flutter/material.dart';
 
 class DatePromptScreen extends StatefulWidget {
-  final String email;
-  final double latitude;
-  final double longitude;
-  final String userName;
-  final String dateOfBirth;
-  final String selectedGender;
-  final bool showGenderOnProfile;
-  final dynamic showMode;
-  final List<String> selectedGenderIds;
-  final dynamic selectionOptionIds;
-  final dynamic selectedHeight;
-  final List<int> selectedInterestIds;
-  final List<int> selectedqualitiesIDs;
-  final List<int> selectedhabbits;
-  final List<int> selectedkids;
-  final List<int> selectedreligions;
-  final List<int> selectedcauses;
 
-  DatePromptScreen({
-    super.key,
-    required this.email,
-    required this.latitude,
-    required this.longitude,
-    required this.userName,
-    required this.dateOfBirth,
-    required this.selectedGender,
-    required this.showGenderOnProfile,
-    this.showMode,
-    required this.selectedGenderIds,
-    this.selectionOptionIds,
-    this.selectedHeight,
-    required this.selectedInterestIds,
-    required this.selectedqualitiesIDs,
-    required this.selectedhabbits,
-    required this.selectedkids,
-    required this.selectedreligions,
-    required this.selectedcauses,
-  });
+  const DatePromptScreen({super.key,});
 
   @override
   _DatePromptScreenState createState() => _DatePromptScreenState();
@@ -56,6 +19,59 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
 
   // Track which prompts are selected and their answers
   Map<int, String> selectedPrompts = {}; // index -> answer
+
+  
+   String? email;
+   String? mobile;
+   double? latitude;
+   double? longitude;
+   String? dateofbirth;
+   String? userName;
+   String? selectedgender;
+   bool? showonprofile;
+   int? modeid;
+   String? modename;
+   List<String>? selectedGenderIds;
+   List<int>? selectedoptionIds;
+   int? selectedheight;
+   List<int>? selectedinterestsIds;
+   List<int>? selectedQualitiesIds;
+   List<int>? selectedHabitIds;
+   List<int>? selectedKidsIds;
+   List<int>? selectedReligionIds;
+   List<int>? selectedcausesIds;
+
+    @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null ) { // Prevent overwriting selected products
+      setState(() {
+          email= args['email'] ??'';
+          mobile = args['mobile'] ?? '';
+          latitude = args['latitude'] ?? 0.0 ;
+          longitude = args['longitude'] ?? 0.0 ;
+          dateofbirth = args['dateofbirth'] ?? '';
+          userName = args['userName'] ?? '';
+          selectedgender = args['selectgender'] ?? '';
+          showonprofile = args['showonprofile'] ?? true;
+          modeid=args['modeid'] ?? 0;
+          modename =args['modename'] ?? '';
+          selectedGenderIds=args['selectedGenderIds'] ?? [];
+          selectedoptionIds=args['selectedoptionIds'] ?? [];
+          selectedheight=args['selectedheight'] ?? 154;
+          selectedinterestsIds=args['selectedinterestIds'] ?? [];
+          selectedQualitiesIds=args['selectedQualitiesIds'] ?? [];
+          selectedHabitIds=args['selectedHabbits'] ?? [];
+          selectedKidsIds=args['selectedKidsIds'] ?? [];
+          selectedReligionIds=args['selectedReligionIds'] ?? [];
+          selectedcausesIds =args['selectedCausesIds'] ?? [];
+          selectedPrompts =args['selectedPrompts'] ?? {};
+
+      });
+    }
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -85,15 +101,63 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
                   IconButton(
                     icon: const Icon(Icons.arrow_back_ios),
                     onPressed: () {
-                      Navigator.pop(context);
-                      // Navigate back to previous screen (CausesScreen)
+                            
+                      Navigator.pushNamed(
+                        context,
+                        '/causesScreen',
+                        arguments: {
+                          'latitude': latitude,
+                          'longitude': longitude,
+                          'dateofbirth':dateofbirth,
+                          'userName':userName,
+                          'selectgender':selectedgender,
+                          "showonprofile":showonprofile,
+                          "modeid":modeid,
+                          "modename":modename,
+                          "selectedGenderIds":selectedGenderIds,
+                          "selectedoptionIds":selectedoptionIds,
+                          "selectedheight":selectedheight,
+                          "selectedinterestIds":selectedinterestsIds,
+                          "selectedQualitiesIds":selectedQualitiesIds,
+                          "selectedHabbits":selectedHabitIds,
+                          "selectedKidsIds":selectedKidsIds,
+                          "selectedReligionIds":selectedReligionIds,
+                          "selectedCausesIds":selectedcausesIds,
+                          'email':email,
+                          'mobile':mobile
+                        },
+                     );
                     },
                   ),
                   const Spacer(),
                   GestureDetector(
                     onTap: () {
-                      // Skip to next screen
-                      // _navigateToNextScreen();
+                             
+                        Navigator.pushNamed(
+                          context,
+                          '/defaultmessagesScreen',
+                          arguments: {
+                            'latitude': latitude,
+                            'longitude': longitude,
+                            'dateofbirth':dateofbirth,
+                            'userName':userName,
+                            'selectgender':selectedgender,
+                            "showonprofile":showonprofile,
+                            "modeid":modeid,
+                            "modename":modename,
+                            "selectedGenderIds":selectedGenderIds,
+                            "selectedoptionIds":selectedoptionIds,
+                            "selectedheight":selectedheight,
+                            "selectedinterestIds":selectedinterestsIds,
+                            "selectedQualitiesIds":selectedQualitiesIds,
+                            "selectedHabbits":selectedHabitIds,
+                            "selectedKidsIds":selectedKidsIds,
+                            "selectedReligionIds":selectedReligionIds,
+                            "selectedCausesIds":selectedcausesIds,
+                            'email':email,
+                            'mobile':mobile
+                        },
+                    );
                     },
                     child: const Text(
                       'Skip',
@@ -109,7 +173,7 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
 
               // Title
               const Text(
-                "Choose Five Things\nYou Are Really Into",
+                "Choose Five Things You Are \n Really Into",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -120,7 +184,7 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
 
               // Subtitle
               Text(
-                "A Joy, Obviously, But Go Ahead\nAnd Answer In Your Own Words.",
+                "A Joy, Obviously, But Go Ahead \n And Answer In Your Own Words.",
                 style: TextStyle(
                   color: Colors.grey[700],
                   height: 1.4,
@@ -170,54 +234,33 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
                               onPressed: () {
                                       if(selectedPrompts.length >= 2){
                                               
-                                                print("✅ Proceeding with:");
-                                                print("Email: ${widget.email}");
-                                                print("Lat: ${widget.latitude}, Long: ${widget.longitude}");
-                                                print("Username: ${widget.userName}");
-                                                print("DOB: ${widget.dateOfBirth}");
-                                                print("Gender: ${widget.selectedGender}");
-                                                print("Show Gender: ${widget.showGenderOnProfile}");
-                                                print("Selected Mode: ${widget.showMode.value} (ID: ${widget.showMode.id})");
-                                                print("Selected options: ${widget.selectionOptionIds}");
-                                                List<int> selectedOptions = List<int>.from(widget.selectionOptionIds);
-                                                print("Selected options as List<int>: $selectedOptions");
-                                                print("selected height:${widget.selectedHeight}");
-                                                print("selected intrests:${widget.selectedInterestIds}");
-                                                print('Selected qualities IDs: ${widget.selectedqualitiesIDs}');
-                                                print("selected habbits:${widget.selectedhabbits}");
-                                                print("selected kids:${widget.selectedkids}");
-                                                print("selected religion:${widget.selectedreligions}");
-                                                print("selected causes:${widget.selectedcauses}");
-                                                print("selected prompts:$selectedPrompts");
-                                                print("selected prompts convert list:${selectedPrompts.values.toList()}");
-
-
-                                      Navigator.pushReplacement(
+                                              
+                                        Navigator.pushNamed(
                                           context,
-                                          MaterialPageRoute(
-                                            builder: (context) => PhotoUploadScreen(
-                                                
-                                                email: widget.email,
-                                                latitude: widget.latitude,
-                                                longitude: widget.longitude,
-                                                userName: widget.userName,
-                                                dateOfBirth: widget.dateOfBirth,
-                                                selectedGender: widget.selectedGender,
-                                                showGenderOnProfile: widget.showGenderOnProfile,
-                                                showMode: widget.showMode,
-                                                selectedGenderIds:widget.selectedGenderIds,
-                                                selectionOptionIds:List<int>.from(widget.selectionOptionIds),
-                                                selectedHeight:widget.selectedHeight ,
-                                                selectedInterestIds:widget.selectedInterestIds,
-                                                selectedqualitiesIDs:widget.selectedqualitiesIDs,
-                                                selectedhabbits: widget.selectedhabbits,
-                                                selectedkids:widget.selectedkids,
-                                                selectedreligions:widget.selectedreligions,
-                                                selectedcauses:widget.selectedcauses,
-                                                seletedprompts:selectedPrompts.values.toList()
-                                            ),
-                                          ),
-                                        );
+                                          '/defaultmessagesScreen',
+                                          arguments: {
+                                            'latitude': latitude,
+                                            'longitude': longitude,
+                                            'dateofbirth':dateofbirth,
+                                            'userName':userName,
+                                            'selectgender':selectedgender,
+                                            "showonprofile":showonprofile,
+                                            "modeid":modeid,
+                                            "modename":modename,
+                                            "selectedGenderIds":selectedGenderIds,
+                                            "selectedoptionIds":selectedoptionIds,
+                                            "selectedheight":selectedheight,
+                                            "selectedinterestIds":selectedinterestsIds,
+                                            "selectedQualitiesIds":selectedQualitiesIds,
+                                            "selectedHabbits":selectedHabitIds,
+                                            "selectedKidsIds":selectedKidsIds,
+                                            "selectedReligionIds":selectedReligionIds,
+                                            "selectedCausesIds":selectedcausesIds,
+                                            "selectedPrompts":selectedPrompts,
+                                            'email':email,
+                                            'mobile':mobile
+                                          },
+                                    );
                                 }
                                 else{
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -373,38 +416,42 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
     );
   }
 
-  void _addPrompt(int index, String promptText) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PromptEditScreen(
-          promptText: promptText,
-          onSave: (answer) {
-            setState(() {
-              selectedPrompts[index] = answer;
-            });
-          },
-        ),
+  void _addPrompt(int index, String promptText) async {
+  final result = await Navigator.push<String>(
+    context,
+    MaterialPageRoute(
+      builder: (context) => PromptEditScreen(
+        promptText: promptText,
       ),
-    );
-  }
+    ),
+  );
 
-  void _editPrompt(int index, String promptText) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PromptEditScreen(
-          promptText: promptText,
-          initialAnswer: selectedPrompts[index] ?? '',
-          onSave: (answer) {
-            setState(() {
-              selectedPrompts[index] = answer;
-            });
-          },
-        ),
-      ),
-    );
+  if (result != null && result.isNotEmpty) {
+    setState(() {
+      selectedPrompts[index] = result;
+    });
   }
+}
+
+
+  void _editPrompt(int index, String promptText) async {
+  final result = await Navigator.push<String>(
+    context,
+    MaterialPageRoute(
+      builder: (context) => PromptEditScreen(
+        promptText: promptText,
+        initialAnswer: selectedPrompts[index] ?? '',
+      ),
+    ),
+  );
+
+  if (result != null && result.isNotEmpty) {
+    setState(() {
+      selectedPrompts[index] = result;
+    });
+  }
+}
+
 
   void _deletePrompt(int index) {
     setState(() {
@@ -413,31 +460,10 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
   }
 }
 
-//   void _navigateToNextScreen() {
-//     // Navigate to PhotoUploadScreen or next screen
-//     Navigator.pushReplacement(
-//       context,
-//       MaterialPageRoute(
-//         builder: (context) => PhotoUploadScreen(),
-//       ),
-//     );
-//   }
-// }
 
 
 
-// // Placeholder for PhotoUploadScreen - replace with your actual implementation
-// class PhotoUploadScreen extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text('Photo Upload')),
-//       body: const Center(
-//         child: Text('Photo Upload Screen'),
-//       ),
-//     );
-//   }
-// }
+
 
 
 

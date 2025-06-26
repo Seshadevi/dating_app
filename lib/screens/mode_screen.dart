@@ -4,33 +4,53 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dating/provider/signupprocessProviders/modeProvider.dart';
 import 'package:dating/screens/meet_selection.dart';
 import '../model/signupprocessmodels/modeModel.dart';
+import 'package:collection/collection.dart';
 
 class IntroDatecategory extends ConsumerStatefulWidget {
-  final String email;
-  final double latitude;
-  final double longitude;
-  final String userName;
-  final String dateOfBirth;
-  final String selectedGender;
-  final bool showGenderOnProfile;
 
-  const IntroDatecategory({
-    super.key,
-    required this.email,
-    required this.latitude,
-    required this.longitude,
-    required this.userName,
-    required this.dateOfBirth,
-    required this.selectedGender,
-    required this.showGenderOnProfile,
-  });
+  const IntroDatecategory({super.key});
 
   @override
   ConsumerState<IntroDatecategory> createState() => _IntroDatecategoryState();
 }
 
 class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
-  Data? selectedMode;
+   Data? selectedMode;
+   String? mobile;
+   double? latitude;
+   double? longitude;
+   String? dateofbirth;
+   String? userName;
+   String? selectedgender;
+   bool? showonprofile;
+   String? email;
+   int? modeid;
+   String? modename;
+
+@override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null ) { // Prevent overwriting selected products
+      setState(() {
+          email= args['email'] ??'';
+          mobile = args['mobile'] ?? '';
+          latitude = args['latitude'] ?? 0.0 ;
+          longitude = args['longitude'] ?? 0.0 ;
+          dateofbirth = args['dateofbirth'] ?? '';
+          userName = args['userName'] ?? '';
+          selectedgender = args['selectgender'] ?? '';
+          showonprofile = args['showonprofile'] ?? true ;
+          modeid=args['modeid'] ?? 0;
+          modename=args['modename'] ?? '';
+        
+      });
+      // If mode list is already loaded, try selecting the matching mode
+        final modes = ref.read(modesProvider).data ?? [];
+        selectedMode = modes.firstWhereOrNull((mode) => mode.id == modeid);
+        }
+  }
 
   @override
   void initState() {
@@ -71,15 +91,22 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
                     IconButton(
                       icon: const Icon(Icons.arrow_back_ios),
                       iconSize: 30,
-                      onPressed: () => Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>IntroMail(
-                        
-                                      latitude: widget.latitude,
-                                      longitude: widget.longitude,
-                                      userName: widget.userName,
-                                      dateOfBirth: widget.dateOfBirth,
-                                      selectedGender: widget.selectedGender,
-                                      showGenderOnProfile: widget.showGenderOnProfile,
-                      ))),
+                      onPressed: () {
+                         Navigator.pushNamed(
+                                    context,
+                                    '/emailscreen',
+                                    arguments: {
+                                      'latitude': latitude,
+                                      'longitude': longitude,
+                                      'dateofbirth':dateofbirth,
+                                      'userName':userName,
+                                      'selectgender':selectedgender,
+                                      "showonprofile":showonprofile,
+                                      'email':email,
+                                      'mobile':mobile
+                                    },
+                                );
+                      }
                     ),
                     const SizedBox(width: 8),
                     const Text(
@@ -166,23 +193,58 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
                       child: IconButton(
                         icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
                         onPressed: () {
-                          if (selectedMode != null) {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => IntroMeetselection(
-                                  email: widget.email,
-                                  latitude: widget.latitude,
-                                  longitude: widget.longitude,
-                                  userName: widget.userName,
-                                  dateOfBirth: widget.dateOfBirth,
-                                  selectedGender: widget.selectedGender,
-                                  showGenderOnProfile: widget.showGenderOnProfile,
-                                  showMode: selectedMode!,
-                                ),
-                              ),
-                            );
-                          } else {
+                          if (selectedMode != null && modename == "date") {
+                             print("modeid:$modeid");
+                              print("modename:$modename");
+                             Navigator.pushNamed(
+                                    context,
+                                    '/intromeetgender',
+                                    arguments: {
+                                      'latitude': latitude,
+                                      'longitude': longitude,
+                                      'dateofbirth':dateofbirth,
+                                      'userName':userName,
+                                      'selectgender':selectedgender,
+                                      "showonprofile":showonprofile,
+                                      "modeid":modeid,
+                                      "modename":modename,
+                                      'email':email,
+                                      'mobile':mobile
+                                    },
+                                );
+                            
+                          } 
+                          else if(selectedMode != null && (modename == "bff"||modename == "bizz")) {
+                              print("modeid: $modeid (type: ${modeid.runtimeType})");
+                              print("modename: $modename (type: ${modename.runtimeType})");
+                              print("latitude: $latitude (type: ${latitude.runtimeType})");
+                              print("longitude: $longitude (type: ${longitude.runtimeType})");
+                              print("dateofbirth: $dateofbirth (type: ${dateofbirth.runtimeType})");
+                              print("userName: $userName (type: ${userName.runtimeType})");
+                              print("selectedgender: $selectedgender (type: ${selectedgender.runtimeType})");
+                              print("showonProfile: $showonprofile (type: ${showonprofile.runtimeType})");
+                              print("email: $email (type: ${email.runtimeType})");
+                              print("mobile: $mobile (type: ${mobile.runtimeType})");
+
+                             Navigator.pushNamed(
+                                    context,
+                                    '/photosScreen',
+                                    arguments: {
+                                      'latitude': latitude,
+                                      'longitude': longitude,
+                                      'dateofbirth':dateofbirth,
+                                      'userName':userName,
+                                      'selectgender':selectedgender,
+                                      "showonprofile":showonprofile,
+                                      "modeid":modeid,
+                                      "modename":modename,
+                                      'email':email,
+                                      'mobile':mobile
+                                    },
+                                );
+                            
+                          } 
+                          else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text("Please select a mode")),
                             );
@@ -205,7 +267,7 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
     final textColor = isSelected ? Colors.white : const Color.fromARGB(255, 90, 118, 81);
 
     return InkWell(
-      onTap: () => setState(() => selectedMode = mode),
+      onTap: () => setState(() {selectedMode = mode; modeid=mode.id; modename=mode.value;}),
       child: Container(
         width: double.infinity,
         height: 120,

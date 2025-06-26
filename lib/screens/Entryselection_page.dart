@@ -136,7 +136,15 @@ class _SelectPageState extends ConsumerState<SelectPage> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Invalid user.Please signup.")),
                   );
-                 Navigator.push(context,MaterialPageRoute(builder: (context) => LocationScreen()));
+                   Navigator.pushNamed(
+                        context,
+                        '/locationScreen',
+                        arguments: {
+                          'email': email,
+                        
+                        },
+                      );
+                //  Navigator.push(context,MaterialPageRoute(builder: (context) => LocationScreen()));
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("Server error ($statusCode). Please try again later.")),

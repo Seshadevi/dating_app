@@ -2,25 +2,43 @@ import 'package:flutter/material.dart';
 import 'gender_display_screen.dart';
 
 class GenderSelectionScreen extends StatefulWidget {
-  final double latitude;
-  final double longitude;
-  final String userName;
-  final String dateOfBirth;
+  
 
-  const GenderSelectionScreen({
-    super.key,
-    required this.latitude,
-    required this.longitude,
-    required this.userName,
-    required this.dateOfBirth,
-  });
+  const GenderSelectionScreen({super.key});
 
   @override
   State<GenderSelectionScreen> createState() => _GenderSelectionScreenState();
 }
 
 class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
+  
+  String? entryemail;
+  String? mobile;
+  double? latitude;
+  double? longitude;
+  String? dateofbirth;
+  String? userName;
   String selectedGender = '';
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null ) { // Prevent overwriting selected products
+      setState(() {
+         entryemail = args['email'] ?? '';
+         mobile= args['mobile'] ?? '';
+         latitude=args['latitude'] ?? 0.0;
+         longitude=args['longitude']?? 0.0;
+         dateofbirth=args['dateofbirth'] ?? '';
+         userName=args['userName'] ?? '';
+         selectedGender=args['selectgender'] ?? '' ;
+     
+      });
+    }
+  }
+  
 
   Widget _buildGenderOption(String label) {
     final bool isSelected = selectedGender == label;
@@ -100,7 +118,19 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                     children: [
                        IconButton(
                               icon: const Icon(Icons.arrow_back_ios,),
-                              onPressed: () => Navigator.pop(context),
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/intropage',
+                                  arguments: {
+                                    'latitude': latitude,
+                                    'longitude': longitude,
+                                    'dateofbirth':dateofbirth,
+                                    'userName':userName,
+                                    'email':entryemail,
+                                    'mobile':mobile
+                                  },);
+                              },
                             ),
                   const Text(
                     "Sai Is A Great Name",
@@ -114,7 +144,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                    ),
                   const SizedBox(height: 12),
                   const Text(
-                    "We Love That You're Here. Pick\nThe Gender That Best Describes\nYou, Then Add More About It If\nYou Like.",
+                    "We Love That You're Here. Pick The Gen\n-der That Best Describes You, Then Add \n More About It If You Like.",
                     style: TextStyle(
                       fontSize: 15,
                       fontFamily: 'Inter',
@@ -196,18 +226,18 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                       icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
                       onPressed: () {
                         if (selectedGender.isNotEmpty) {
-                          Navigator.push(
+                          Navigator.pushNamed(
                             context,
-                            MaterialPageRoute(
-                              builder: (_) => GenderDisplayScreen(
-                                latitude: widget.latitude,
-                                longitude: widget.longitude,
-                                userName: widget.userName,
-                                dateOfBirth: widget.dateOfBirth,
-                                selectedGender: selectedGender,
-                              ),
-                            ),
-                          );
+                            '/profileshowscreen',
+                            arguments: {
+                              'latitude': latitude,
+                              'longitude': longitude,
+                              'dateofbirth':dateofbirth,
+                              'userName':userName,
+                              'selectgender':selectedGender,
+                              'email':entryemail,
+                              'mobile':mobile
+                            },);
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text("Please select a gender")),

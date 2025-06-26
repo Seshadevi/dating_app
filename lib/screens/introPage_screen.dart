@@ -3,25 +3,54 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class IntroPageScreen extends StatefulWidget {
-  final double latitude;
-  final double longitude;
-  const IntroPageScreen({super.key, required this.latitude, required this.longitude});
-
+  
+  const IntroPageScreen({super.key});
+  
   @override
   State<IntroPageScreen> createState() => _IntroPageScreenState();
 }
 
 class _IntroPageScreenState extends State<IntroPageScreen> {
-  String userName = '';
+  TextEditingController _nameController = TextEditingController();
+  String? entryemail;
+  String? mobile;
+  double? latitude;
+  double? longitude;
+  // String userName = '';
   String _month = '';
   String _day = '';
   String _year = '';
   String dateOfBirth = '';
 
+   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null ) { // Prevent overwriting selected products
+      setState(() {
+         entryemail = args['email'] ?? '';
+         mobile= args['mobile'] ?? '';
+         latitude=args['latitude'] ?? 0.0;
+         longitude=args['longitude']?? 0.0;
+         _nameController.text=args['userName'] ?? '';
+         dateOfBirth =args['dateofbirth'] ?? '';
+     
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+
   Widget _styledInput({
     required String label,
     required String hint,
-    required Function(String) onChanged,
+    required TextEditingController controller,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,11 +58,11 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
         Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(height: 10),
         TextField(
-          decoration: InputDecoration(
-            hintText: hint,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-          onChanged: onChanged,
+          controller: controller,
+              decoration: InputDecoration(
+                hintText: hint,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              ),
         ),
       ],
     );
@@ -110,7 +139,17 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                       IconButton(
                         icon: const Icon(Icons.arrow_back_ios),
                         iconSize: 30,
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/allownotification',
+                            arguments: {
+                              'latitude': latitude,
+                              'longitude': longitude,
+                              'email':entryemail,
+                              'mobile':mobile
+                            },);
+                        },
                       ),
                       const SizedBox(width: 12),
                       const Text(
@@ -129,9 +168,7 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                   _styledInput(
                     label: "Your First Name",
                     hint: "Enter your name",
-                    onChanged: (value) {
-                      setState(() => userName = value);
-                    },
+                    controller: _nameController,
                   ),
 
                   const SizedBox(height: 40),
@@ -204,21 +241,22 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                   child: IconButton(
                     icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
                     onPressed: () {
-                      if (userName.isNotEmpty &&
-                          _month.isNotEmpty &&
-                          _day.isNotEmpty &&
-                          _year.isNotEmpty) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => GenderSelectionScreen(
-                              latitude: widget.latitude,
-                              longitude: widget.longitude,
-                              userName: userName,
-                              dateOfBirth: dateOfBirth,
-                            ),
-                          ),
-                        );
+                      print("this is a PROBLEM");
+                      final name = _nameController.text.trim();
+                      print("username $name,,month $_month,,day $_day,,,year $_year");
+
+                      if (_month.isNotEmpty && _day.isNotEmpty &&_year.isNotEmpty) {
+                          Navigator.pushNamed(
+                              context,
+                              '/genderstaticselection',
+                              arguments: {
+                                'latitude': latitude,
+                                'longitude': longitude,
+                                'dateofbirth':dateOfBirth,
+                                'userName':name,
+                                'email':entryemail,
+                                'mobile':mobile
+                              },);
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text("Please fill in all fields")),

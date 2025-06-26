@@ -5,51 +5,8 @@ import 'package:flutter/material.dart';
 
 class BeKindScreen extends StatefulWidget {
   
-  final String email;
-  final double latitude;
-  final double longitude;
-  final String userName;
-  final String dateOfBirth;
-  final String selectedGender;
-  final bool showGenderOnProfile;
-  final dynamic showMode;
-  final List<String> selectedGenderIds;
-  final List<int> selectionOptionIds;
-  final dynamic selectedHeight;
-  final List<int> selectedInterestIds;
-  final List<int> selectedqualitiesIDs;
-  final List<int> selectedhabbits;
-  final List<int> selectedkids;
-  final List<int> selectedreligions;
-  final List<int> selectedcauses;
-  final List<String> seletedprompts;
-  final List<File?> choosedimages;
-  final List<int> defaultmessages;
-  final String? finalheadline;
-  const BeKindScreen({
-    super.key,
-    required this.email,
-    required this.latitude,
-    required this.longitude,
-    required this.userName,
-    required this.dateOfBirth,
-    required this.selectedGender,
-    required this.showGenderOnProfile,
-    this.showMode,
-    required this.selectedGenderIds,
-    required this.selectionOptionIds,
-    this.selectedHeight,
-    required this.selectedInterestIds,
-    required this.selectedqualitiesIDs,
-    required this.selectedhabbits,
-    required this.selectedkids,
-    required this.selectedreligions,
-    required this.selectedcauses,
-    required this.seletedprompts,
-    required this.choosedimages,
-    required this.defaultmessages,
-    required this.finalheadline
-  });
+  
+  const BeKindScreen({super.key,});
 
   @override
   State<BeKindScreen> createState() => _BeKindScreenState();
@@ -58,7 +15,65 @@ class BeKindScreen extends StatefulWidget {
 class _BeKindScreenState extends State<BeKindScreen> {
   bool showTerms = false;
   bool isChecked = false;
+  
+  
 
+   String? email;
+   String? mobile;
+   double? latitude;
+   double? longitude;
+   String? dateofbirth;
+   String? userName;
+   String? selectedgender;
+   bool? showonprofile;
+   int? modeid;
+   String? modename;
+   List<String>? selectedGenderIds;
+   List<int>? selectedoptionIds;
+   int? selectedheight;
+   List<int>? selectedinterestsIds;
+   List<int>? selectedQualitiesIds;
+   List<int>? selectedHabitIds;
+   List<int>? selectedKidsIds;
+   List<int>? selectedReligionIds;
+   List<int>? selectedcausesIds;
+   Map<int, String>? seletedprompts;
+   List<int>? selectedIndexes;
+   List<File?>? selectedImages;
+   String? finalHeadline;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null ) { // Prevent overwriting selected products
+      setState(() {
+          email= args['email'] ??'';
+          mobile = args['mobile'] ?? '';
+          latitude = args['latitude'] ?? 0.0;
+          longitude = args['longitude'] ?? 0.0;
+          dateofbirth = args['dateofbirth'] ?? '';
+          userName = args['userName'] ?? '';
+          selectedgender = args['selectgender'] ?? '';
+          showonprofile = args['showonprofile'] ?? true;
+          modeid=args['modeid'] ?? 0;
+          modename =args['modename'] ?? '';
+          selectedGenderIds=args['selectedGenderIds'] ?? [];
+          selectedoptionIds=args['selectedoptionIds'] ?? [];
+          selectedheight=args['selectedheight'] ?? 154;
+          selectedinterestsIds=args['selectedinterestIds'] ?? [];
+          selectedQualitiesIds=args['selectedQualitiesIds'] ?? [];
+          selectedHabitIds=args['selectedHabbits'] ?? [];
+          selectedKidsIds=args['selectedKidsIds'] ?? [];
+          selectedReligionIds= args['selectedReligionIds'] ?? [];
+          selectedcausesIds = args['selectedCausesIds'] ?? [];
+          seletedprompts = args['selectedPrompts'] ?? {};
+          selectedIndexes=args['selectedmessagesIds'] ?? [];
+           selectedImages = (args['selectedImages'] as List<File?>?) ?? List.filled(6, null);
+          finalHeadline=args['finalHeadline'] ?? '';
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final screen = MediaQuery.of(context).size;
@@ -85,6 +100,39 @@ class _BeKindScreenState extends State<BeKindScreen> {
         iconTheme: const IconThemeData(color: Colors.black),
         elevation: 0,
         centerTitle: true,
+        leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () {
+             Navigator.pushNamed(
+                context,
+                '/addheadlinescreen',
+                arguments: {
+                  'latitude': latitude,
+                  'longitude': longitude,
+                  'dateofbirth':dateofbirth,
+                  'userName':userName,
+                  'selectgender':selectedgender,
+                  "showonprofile":showonprofile,
+                  "modeid":modeid,
+                  "modename":modename,
+                  "selectedGenderIds":selectedGenderIds,
+                  "selectedoptionIds":selectedoptionIds,
+                  "selectedheight":selectedheight,
+                  "selectedinterestIds":selectedinterestsIds,
+                  "selectedQualitiesIds":selectedQualitiesIds,
+                  "selectedHabbits":selectedHabitIds,
+                  "selectedKidsIds":selectedKidsIds,
+                  "selectedReligionIds":selectedReligionIds,
+                  "selectedCausesIds":selectedcausesIds,
+                  "selectedPrompts":seletedprompts,
+                  "selectedmessagesIds":selectedIndexes,
+                  "selectedImages":selectedImages,
+                  "finalHeadline":finalHeadline,
+                  'email':email,
+                  'mobile':mobile
+                },);
+             },
+          ),
       ),
       body: SafeArea(
         child: Padding(
@@ -182,35 +230,35 @@ class _BeKindScreenState extends State<BeKindScreen> {
                 GestureDetector(
                   onTap: isChecked
                       ? () {
-                          Navigator.pushReplacement(
+                           Navigator.pushNamed(
                             context,
-                            MaterialPageRoute(
-                              builder: (context) => FriendOnboardingScreen(
-                                                email: widget.email,
-                                                latitude: widget.latitude,
-                                                longitude: widget.longitude,
-                                                userName: widget.userName,
-                                                dateOfBirth: widget.dateOfBirth,
-                                                selectedGender: widget.selectedGender,
-                                                showGenderOnProfile: widget.showGenderOnProfile,
-                                                showMode: widget.showMode,
-                                               selectedGenderIds:widget.selectedGenderIds,
-                                                selectionOptionIds:widget.selectionOptionIds,
-                                                selectedHeight:widget.selectedHeight ,
-                                                selectedInterestIds:widget.selectedInterestIds,
-                                                selectedqualitiesIDs:widget.selectedqualitiesIDs,
-                                                selectedhabbits: widget.selectedhabbits,
-                                                selectedkids:widget.selectedkids,
-                                                selectedreligions:widget.selectedreligions,
-                                                selectedcauses:widget.selectedcauses,
-                                                seletedprompts:widget.seletedprompts,
-                                                choosedimages:widget.choosedimages,
-                                                defaultmessages:widget.defaultmessages,
-                                                finalheadline:widget.finalheadline,
-                                                termsAndCondition: termsAndCondition,
-                              ),
-                            ),
-                          );
+                            '/finalStageSingupScreen',
+                            arguments: {
+                              'latitude': latitude,
+                              'longitude': longitude,
+                              'dateofbirth':dateofbirth,
+                              'userName':userName,
+                              'selectgender':selectedgender,
+                              "showonprofile":showonprofile,
+                              "modeid":modeid,
+                              "modename":modename,
+                              "selectedGenderIds":selectedGenderIds,
+                              "selectedoptionIds":selectedoptionIds,
+                              "selectedheight":selectedheight,
+                              "selectedinterestIds":selectedinterestsIds,
+                              "selectedQualitiesIds":selectedQualitiesIds,
+                              "selectedHabbits":selectedHabitIds,
+                              "selectedKidsIds":selectedKidsIds,
+                              "selectedReligionIds":selectedReligionIds,
+                              "selectedCausesIds":selectedcausesIds,
+                              "selectedPrompts":seletedprompts,
+                              "selectedmessagesIds":selectedIndexes,
+                              "selectedImages":selectedImages,
+                              "finalHeadline":finalHeadline,
+                              "termsAndCondition":termsAndCondition,
+                              'email':email,
+                              'mobile':mobile
+                            },);
                         }
                       : null,
                   child: Opacity(

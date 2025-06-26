@@ -1,13 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'notification_screen.dart';
 
-class LocationScreen extends StatelessWidget {
+class LocationScreen extends StatefulWidget {
   const LocationScreen({super.key});
+
+   @override
+   State<LocationScreen> createState() => Locationstatescreen();
+ }
+
+ class Locationstatescreen extends State<LocationScreen> { 
+   String? email;
+   String? mobile;
+ 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null ) { // Prevent overwriting selected products
+      setState(() {
+         email = args['email'] ?? '';
+         mobile= args['mobile'] ?? '';
+     
+      });
+    }
+  }
 
   Future<void> _handleLocationPermissionAndNavigate(BuildContext context) async {
     bool serviceEnabled;
     LocationPermission permission;
+ 
 
     // 1. Check if location services are enabled
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -36,15 +61,26 @@ class LocationScreen extends StatelessWidget {
     );
 
     // 4. Pass location to next screen
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AllowNotification(
-          latitude: position.latitude,
-          longitude: position.longitude,
-        ),
-      ),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => AllowNotification(
+    //       latitude: position.latitude,
+    //       longitude: position.longitude,
+    //     ),
+    //   ),
+    // );
+
+     Navigator.pushNamed(
+                        context,
+                        '/allownotification',
+                        arguments: {
+                          'latitude': position.latitude,
+                          'longitude':position.longitude,
+                          'email':email,
+                          'mobile':mobile
+                        },
+                      );
   }
 
   @override
@@ -124,16 +160,24 @@ class LocationScreen extends StatelessWidget {
                   TextButton(
                     onPressed: () {
                       // Skip location screen if needed
-                      Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AllowNotification(latitude: 0.0,
-        longitude: 0.0,)
-        ),
-      );
-                  
-    
-  },
+                      // Navigator.push(
+                      //         context,
+                      //         MaterialPageRoute(
+                      //           builder: (context) => AllowNotification(latitude: 0.0,
+                      //           longitude: 0.0,)
+                      //           ),
+                      //         );
+                      Navigator.pushNamed(
+                        context,
+                        '/allownotification',
+                        arguments: {
+                          'latitude': 0.0,
+                          'longitude':0.0,
+                          'email':email,
+                          'mobile':mobile
+                        },
+                      );        
+                           },
                     
                     child: Text(
                       "Not Now",
@@ -172,4 +216,7 @@ class LocationScreen extends StatelessWidget {
       ),
     );
   }
+  
+ 
+
 }

@@ -1,35 +1,14 @@
-
-
 import 'package:dating/provider/signupprocessProviders/lookingProvider.dart';
 import 'package:dating/screens/height_selection_screen.dart';
 import 'package:dating/screens/meet_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// import 'Intro_heightselection.dart';
+
 
 class InrtoPartneroption extends ConsumerStatefulWidget {
-  final String email;
-  final double latitude;
-  final double longitude;
-  final String userName;
-  final String dateOfBirth;
-  final String selectedGender;
-  final bool showGenderOnProfile;
-  final showMode;
-  final List<String> gendermode;
-  const InrtoPartneroption(
-    {super.key,
-     required this.email,
-      required this.latitude,
-      required this.longitude,
-      required this.userName,
-      required this.dateOfBirth,
-      required this.selectedGender,
-      required this.showGenderOnProfile,
-      this.showMode,
-        required this.gendermode
-    });
+
+  const InrtoPartneroption({super.key});
 
   @override
   ConsumerState<InrtoPartneroption> createState() => InrtoPartneroptionState();
@@ -37,22 +16,50 @@ class InrtoPartneroption extends ConsumerStatefulWidget {
 
 class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
 
+   List<String>? selectedGenderIds;
+   String? mobile;
+   double? latitude;
+   double? longitude;
+   String? dateofbirth;
+   String? userName;
+   String? selectedgender;
+   bool? showonprofile;
+   String? email;
+   int? modeid;
+   String? modename;
+   List<int> selectedOptionIds = [];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null ) { // Prevent overwriting selected products
+      setState(() {
+          email= args['email'] ??'';
+          mobile = args['mobile'] ?? '';
+          latitude = args['latitude'] ?? 0.0 ;
+          longitude = args['longitude'] ?? 0.0 ;
+          dateofbirth = args['dateofbirth'] ?? '';
+          userName = args['userName'] ?? '';
+          selectedgender = args['selectgender'] ?? '';
+          showonprofile = args['showonprofile'] ?? true;
+          modeid=args['modeid'] ?? 0;
+          modename =args['modename'] ?? '';
+          selectedGenderIds=args['selectedGenderIds'] ?? [];
+          selectedOptionIds=args['selectedoptionIds'] ?? [];
+
+      });
+    }
+  }
   @override
   void initState() {
     super.initState();
     ref.read(lookingProvider.notifier).getLookingFor();
   }
 
-  final List options = [
-    'A Long-Term Relationship',
-    'A Life Partner',
-    'Fun,Casual Dates',
-    'Intimacy, Without Commitment',
-    'Marriage',
-    'Ethical Non-Monogamy',
-  ];
+ 
 
-  final Set<int> selectedOptionIds = {};
 
   @override
   Widget build(BuildContext context) {
@@ -86,11 +93,28 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.arrow_back_ios),
-                      onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>IntroMeetselection(email: widget.email, latitude: widget.latitude, longitude: widget.longitude, userName: widget.userName, dateOfBirth: widget.dateOfBirth, selectedGender: widget.selectedGender, showGenderOnProfile: widget.showGenderOnProfile, showMode: widget.showMode))),
-                    ),
+                      onPressed: () {
+                         Navigator.pushNamed(
+                                    context,
+                                    '/intromeetgender',
+                                    arguments: {
+                                      'latitude': latitude,
+                                      'longitude': longitude,
+                                      'dateofbirth':dateofbirth,
+                                      'userName':userName,
+                                      'selectgender':selectedgender,
+                                      "showonprofile":showonprofile,
+                                      "modeid":modeid,
+                                      "modename":modename,
+                                      "selectedGenderIds":selectedGenderIds,
+                                      'email':email,
+                                      'mobile':mobile
+                                    },
+                                );
+                      }),
                     const SizedBox(width: 8),
                     const Text(
-                      "And What Are You\nHoping To Find?",
+                      "And What Are You Hoping \n To Find?",
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -122,16 +146,7 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Text(
-                      //   'And What Are You\nHoping To Find?',
-                      //   style: TextStyle(
-                      //     fontSize: 32,
-                      //     fontWeight: FontWeight.bold,
-                      //     height: 1.2,
-                      //     letterSpacing: 1,
-                      //   ),
-                      // ),
-                      // SizedBox(height: 16),
+                      
                       Text(
                         textAlign: TextAlign.start,
                         'It\'s Your Dating Journey, So\nChoose 1 Or 2 Options That Feel\nRight For You.',
@@ -169,9 +184,9 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 24.0),
                     child: GestureDetector(
-                       onTap: () {
+                      onTap: () {
                           setState(() {
-                            if (isSelected) {
+                            if (selectedOptionIds.contains(item.id)) {
                               selectedOptionIds.remove(item.id);
                             } else {
                               if (selectedOptionIds.length < 2) {
@@ -179,7 +194,8 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                               }
                             }
                           });
-                      },
+                        },
+
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -267,32 +283,7 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                // Container(
-                //   width: 56,
-                //   height: 56,
-                //   decoration: BoxDecoration(
-                //     gradient: LinearGradient(
-                //       colors: [
-                //         Color(0xffB2D12E),
-                //         Color(0xff000000),
-                //       ],
-                //       begin: Alignment.topCenter,
-                //       end: Alignment.bottomCenter,
-                //     ),
-                //     shape: BoxShape.circle,
-                //   ),
-                //   child: IconButton(
-                //       icon: Icon(
-                //         Icons.arrow_forward,
-                //         color: Colors.white,
-                //       ),
-                //       onPressed: () {
-                //         Navigator.push(
-                //             context,
-                //             MaterialPageRoute(
-                //                 builder: (context) => HeightSelectionScreen()));
-                //       }),
-                // ),
+                
               ],
             ),
           ),
@@ -319,30 +310,36 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                     onPressed: () {
                       if (selectedOptionIds.length < 3) {
                         print("✅ Proceeding with:");
-                        print("Email: ${widget.email}");
-                        print("Lat: ${widget.latitude}, Long: ${widget.longitude}");
-                        print("Username: ${widget.userName}");
-                        print("DOB: ${widget.dateOfBirth}");
-                        print("Gender: ${widget.selectedGender}");
-                        print("Show Gender: ${widget.showGenderOnProfile}");
-                        print("Selected Mode: ${widget.showMode.value} (ID: ${widget.showMode.id})");
-                        print("Selected options: $selectedOptionIds");
-                        print("email............${widget.email}");
+                        print("mobile:$mobile");
+                        print("Email: $email");
+                        print("Lat: $latitude, Long: $longitude");
+                        print("Username: $userName");
+                        print("DOB: $dateofbirth");
+                        print("Gender: $selectedgender");
+                        print("Show Gender: $showonprofile");
+                        // print("Selected Mode: ${showmode.value} (ID: ${showmode.id})");
+                        print("Selected options: ${selectedOptionIds.toList()}");
+                      
                     
                     //     // Navigator.push(...) your next screen here
-                        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> HeightSelectionScreen(
-                                    email: widget.email,
-                                    latitude: widget.latitude,
-                                    longitude: widget.longitude,
-                                    userName: widget.userName,
-                                    dateOfBirth: widget.dateOfBirth,
-                                    selectedGender: widget.selectedGender,
-                                    showGenderOnProfile: widget.showGenderOnProfile,
-                                    showMode: widget.showMode,
-                                    selectedGenderIds:widget.gendermode,
-                                    selectionOptionIds:selectedOptionIds
-              
-                        )));
+                        Navigator.pushNamed(
+                                    context,
+                                    '/heightscreen',
+                                    arguments: {
+                                      'latitude': latitude,
+                                      'longitude': longitude,
+                                      'dateofbirth':dateofbirth,
+                                      'userName':userName,
+                                      'selectgender':selectedgender,
+                                      "showonprofile":showonprofile,
+                                      "modeid":modeid,
+                                      "modename":modename,
+                                      "selectedGenderIds":selectedGenderIds,
+                                      "selectedoptionIds":selectedOptionIds,
+                                      'email':email,
+                                      'mobile':mobile
+                                    },
+                                );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text("Please select 2 options"))

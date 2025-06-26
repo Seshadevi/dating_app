@@ -7,36 +7,51 @@ import '../../model/signupprocessmodels/genderModel.dart';
 // import '../../provider/signupproviders/gender_provider.dart'; // adjust your import if needed
 
 class IntroMeetselection extends ConsumerStatefulWidget {
-  final String email;
-  final double latitude;
-  final double longitude;
-  final String userName;
-  final String dateOfBirth;
-  final String selectedGender;
-  final bool showGenderOnProfile;
-  final  showMode;
 
-  const IntroMeetselection({
-    super.key,
-    required this.email,
-    required this.latitude,
-    required this.longitude,
-    required this.userName,
-    required this.dateOfBirth,
-    required this.selectedGender,
-    required this.showGenderOnProfile,
-    required this.showMode,
-  });
+
+  const IntroMeetselection({super.key});
 
   @override
   ConsumerState<IntroMeetselection> createState() => _IntroMeetselectionState();
 }
 
 class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
-  String? selectedMode;
+  // String? selectedMode;
   bool isOpenToEveryone = false;
   List<String> selectedGenderIds = [];
+   String? mobile;
+   double? latitude;
+   double? longitude;
+   String? dateofbirth;
+   String? userName;
+   String? selectedgender;
+   bool? showonprofile;
+   String? email;
+   int? modeid;
+   String? modename;
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null ) { // Prevent overwriting selected products
+      setState(() {
+          email= args['email'] ??'';
+          mobile = args['mobile'] ?? '';
+          latitude = args['latitude'] ?? 0.0 ;
+          longitude = args['longitude'] ?? 0.0;
+          dateofbirth = args['dateofbirth'] ?? '';
+          userName = args['userName'] ?? '';
+          selectedgender = args['selectgender'] ?? '';
+          showonprofile = args['showonprofile'] ?? true;
+          modeid=args['modeid'] ?? 0;
+          modename =args['modename'] ?? '';
+          selectedGenderIds=args['selectedGenderIds'] ?? [];
+      });
+    }
+  }
+  
   @override
   void initState() {
     super.initState();
@@ -106,20 +121,22 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
           IconButton(
             icon: const Icon(Icons.arrow_back_ios),
             onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => IntroDatecategory(
-                    email: widget.email,
-                    latitude: widget.latitude,
-                    longitude: widget.longitude,
-                    userName: widget.userName,
-                    dateOfBirth: widget.dateOfBirth,
-                    selectedGender: widget.selectedGender,
-                    showGenderOnProfile: widget.showGenderOnProfile,
-                  ),
-                ),
-              );
+              Navigator.pushNamed(
+                        context,
+                        '/modescreen',
+                        arguments: {
+                          'latitude': latitude,
+                          'longitude': longitude,
+                          'dateofbirth':dateofbirth,
+                          'userName':userName,
+                          'selectgender':selectedgender,
+                          "showonprofile":showonprofile,
+                          "modeid":modeid,
+                          "modename":modename,
+                          'email':email,
+                          'mobile':mobile
+                        },
+                    );
             },
           ),
           const SizedBox(width: 8),
@@ -147,7 +164,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
               isOpenToEveryone = value;
               if (value) {
                 selectedGenderIds.clear();
-                selectedMode = null;
+                // selectedMode = null;
                 // Add all gender IDs from API
                 if (genderState.data != null) {
                   selectedGenderIds = genderState.data!.map((e) => e.id.toString()).toList();
@@ -288,23 +305,23 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
               icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
               onPressed: () {
                 if (selectedGenderIds.isNotEmpty) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => InrtoPartneroption(
-                        email: widget.email,
-                        latitude: widget.latitude,
-                        longitude: widget.longitude,
-                        userName: widget.userName,
-                        dateOfBirth: widget.dateOfBirth,
-                        selectedGender: widget.selectedGender,
-                        showGenderOnProfile: widget.showGenderOnProfile,
-                        showMode: widget.showMode,
-                        gendermode: selectedGenderIds,
-                        // selectedGenderIds: selectedGenderIds, // send list here
-                      ),
-                    ),
-                  );
+                  Navigator.pushNamed(
+                        context,
+                        '/partnersSelection',
+                        arguments: {
+                          'latitude': latitude,
+                          'longitude': longitude,
+                          'dateofbirth':dateofbirth,
+                          'userName':userName,
+                          'selectgender':selectedgender,
+                          "showonprofile":showonprofile,
+                          "modeid":modeid,
+                          "modename":modename,
+                          "selectedGenderIds":selectedGenderIds,
+                          'email':email,
+                          'mobile':mobile
+                        },
+                    );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Please select at least one gender preference")),

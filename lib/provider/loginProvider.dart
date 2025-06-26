@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:http_parser/http_parser.dart'; // for MediaType
 
 import 'package:dating/model/loginmodel.dart';
 import 'package:dating/provider/firebase_auth.dart';
@@ -245,117 +246,140 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
 
 Future<int> signupuserApi({
   required String email,
+  required String mobile,
   required double latitude,
   required double longitude,
   required String userName,
   required String dateOfBirth,
   required String selectedGender,
   required bool showGenderOnProfile,
-  dynamic showMode,
+  required int? modeid,
+  required String? modename,
   required List<String> selectedGenderIds,
   required List<int> selectionOptionIds,
-  dynamic selectedHeight,
+  required int selectedHeight,
   required List<int> selectedInterestIds,
   required List<int> selectedqualitiesIDs,
   required List<int> selectedhabbits,
   required List<int> selectedkids,
   required List<int> selectedreligions,
   required List<int> selectedcauses,
-  required List<String> seletedprompts,
+  required Map<int, String> seletedprompts,
   required List<File?> choosedimages,
   required List<int> defaultmessages,
   required String? finalheadline,
-  required bool termsAndCondition, 
-  // required List<String> gendermode,
+  required bool termsAndCondition,
+
 }) async {
+
   const String apiUrl = Dgapi.login;
   final prefs = await SharedPreferences.getInstance();
-    print("✅ Proceeding with:");
-    print("Email: $email");
-    print("Lat: $latitude, Long: $longitude");
-    print("Username: $userName");
-    print("DOB: $dateOfBirth");
-    print("Gender: $selectedGender");
-    print("Show Gender: $showGenderOnProfile");
-    print("Selected Mode: ${showMode.value} (ID: ${showMode.id}");
-    print("genderget:$selectedGenderIds");
-    print("Selected options: $selectionOptionIds");
-                                                
-  
-    print("selected height:$selectedHeight");
-    print("selected intrests:$selectedInterestIds");
-    print('Selected qualities IDs: $selectedqualitiesIDs');
-    print("selected habbits:$selectedhabbits");
-    print("selected kids:$selectedkids");
-    print("selected religion:$selectedreligions");
-    print("selected causes:$selectedcauses");
-    print("selected prompts:$seletedprompts");
-    print("selected images:${choosedimages.length}");
-    print("selected images:$choosedimages");
-    print("selected default messages:$defaultmessages");
-    print("selected finalHealine:$finalheadline");
-    print("selected prompts:$termsAndCondition");
-                                               
+
+  print("✅ Proceeding with API request...");
 
   try {
-
     var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
 
-    // Add simple fields
+    // Basic fields
     request.fields['email'] = email;
     request.fields['latitude'] = latitude.toString();
     request.fields['longitude'] = longitude.toString();
     request.fields['firstName'] = userName;
     request.fields['dob'] = dateOfBirth;
-    request.fields['role']="user";
-    request.fields['gender'] = selectedGender;
+    request.fields['role'] = "user";
+    request.fields['gender'] = "male";
     request.fields['showOnProfile'] = showGenderOnProfile.toString();
-    request.fields['mode'] = showMode.toString();
-    request.fields['gender_mode'] = selectedGenderIds as String;
-    request.fields['height'] = selectedHeight?.toString() ?? '';
+    request.fields['mode'] = modename ?? '';
+    request.fields['height'] = selectedHeight.toString();
     request.fields['headLine'] = finalheadline ?? '';
     request.fields['termsAndConditions'] = termsAndCondition.toString();
+    request.fields['mobile'] = mobile;
 
-    // Add list fields (convert to JSON string or comma-separated)
-    request.fields['selection_options'] = selectionOptionIds.join(',');
-    request.fields['interest_ids'] = selectedInterestIds.join(',');
-    request.fields['qualities'] = selectedqualitiesIDs.join(',');
-    request.fields['drinking'] = selectedhabbits.join(',');
-    request.fields['kids'] = selectedkids.join(',');
-    request.fields['religions'] = selectedreligions.join(',');
-    request.fields['causesAndCommunities'] = selectedcauses.join(',');
-    request.fields['prompts'] = seletedprompts.join(',');
-    request.fields['defaultMessages'] = defaultmessages.join(',');
+    // // Safe list fields (skip empty ones)
+    // if (selectedGenderIds.isNotEmpty) {
+    //   request.fields['genderIdentities'] = selectedGenderIds.join(',');
+    // }
 
-    // Add image files
+    if (selectionOptionIds.isNotEmpty) {
+      request.fields['lookingFor'] = selectionOptionIds.whereType<int>().join(',');
+    }
+
+    // if (selectedInterestIds.isNotEmpty) {
+    //   request.fields['interests'] = selectedInterestIds.whereType<int>().join(',');
+    // }
+
+    // if (selectedqualitiesIDs.isNotEmpty) {
+    //   request.fields['qualities'] = selectedqualitiesIDs.whereType<int>().join(',');
+    // }
+
+    // if (selectedhabbits.isNotEmpty) {
+    //   request.fields['drinking'] = selectedhabbits.whereType<int>().join(',');
+    // }
+
+    // if (selectedkids.isNotEmpty) {
+    //   request.fields['kids'] = selectedkids.whereType<int>().join(',');
+    // }
+
+    // if (selectedreligions.isNotEmpty) {
+    //   request.fields['religions'] = selectedreligions.whereType<int>().join(',');
+    // }
+
+    // if (selectedcauses.isNotEmpty) {
+    //   request.fields['causesAndCommunities'] = selectedcauses.whereType<int>().join(',');
+    // }
+
+    // if (seletedprompts.isNotEmpty) {
+    //   request.fields['prompts'] = seletedprompts.values.toList().join(',');
+    // }
+
+    // if (defaultmessages.isNotEmpty) {
+    //   request.fields['defaultMessages'] = defaultmessages.whereType<int>().join(',');
+    // }
+
+    // Upload images (only jpg/png/jpeg)
     for (int i = 0; i < choosedimages.length; i++) {
       final image = choosedimages[i];
+
       if (image != null && await image.exists()) {
+        final filePath = image.path;
+        final fileExtension = filePath.split('.').last.toLowerCase();
+
+        MediaType? contentType;
+        if (fileExtension == 'jpg' || fileExtension == 'jpeg') {
+          contentType = MediaType('image', 'jpeg');
+        } else if (fileExtension == 'png') {
+          contentType = MediaType('image', 'png');
+        } else {
+          print('❌ Unsupported file type: $filePath');
+          continue;
+        }
+
         final multipartFile = await http.MultipartFile.fromPath(
-          'profilePic[$i]', // e.g., images[0], images[1]
-          image.path,
+          'profilePic',
+          filePath,
+          contentType: contentType,
         );
+
         request.files.add(multipartFile);
       }
     }
 
     // Send the request
     final response = await request.send();
-
-    // Check response
     final responseBody = await response.stream.bytesToString();
-    print("Signup Response: $responseBody");
+
+    print("🔄 API Response: $responseBody");
+
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      // Save data if needed
       await prefs.setBool("isSignedUp", true);
       return response.statusCode;
     } else {
-      print("Signup failed with status: ${response.statusCode}");
+      print("❌ Signup failed with status: ${response.statusCode}");
       return response.statusCode;
     }
   } catch (e) {
-    print("Exception during signup: $e");
+    print("❗ Exception during signup: $e");
     return 500;
   }
 }

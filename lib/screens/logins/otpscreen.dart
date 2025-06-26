@@ -76,7 +76,15 @@ class _OTPScreenState extends ConsumerState<OTPScreen> {
           SnackBar(content: Text("Welcome $phoneNumber!")),
         );
       } else if (statusCode == 400) {
-        Navigator.push(context,MaterialPageRoute(builder: (context) => LocationScreen())); // or back to location for signup
+        // Navigator.push(context,MaterialPageRoute(builder: (context) => LocationScreen())); // or back to location for signup
+        Navigator.pushNamed(
+            context,
+            '/locationScreen',
+            arguments: {
+              'mobile': phoneNumber,
+             
+            },
+          );
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Invalid mobile number. Please try again.")),
         );

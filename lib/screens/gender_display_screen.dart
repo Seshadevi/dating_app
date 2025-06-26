@@ -2,26 +2,44 @@ import 'package:dating/screens/introMail.dart';
 import 'package:flutter/material.dart';
 
 class GenderDisplayScreen extends StatefulWidget {
-  final String selectedGender;
-  final String userName;
-   final double latitude;
-  final double longitude;
-  final String dateOfBirth;
  
-
-  const GenderDisplayScreen({
+ const GenderDisplayScreen({
     super.key,
-    required this.selectedGender,
-    required this.userName,
-  
-  required this.latitude, required this.longitude, required this.dateOfBirth});
+    });
 
   @override
   State<GenderDisplayScreen> createState() => _GenderDisplayScreenState();
 }
 
 class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
-  bool showGenderOnProfile = true;
+   String? entryemail;
+   String? mobile;
+   double? latitude;
+   double? longitude;
+   String? dateofbirth;
+   String? userName;
+   String selectedgender='';
+   bool showGenderOnProfile = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null ) { // Prevent overwriting selected products
+      setState(() {
+         entryemail = args['email'] ?? '';
+         mobile= args['mobile'] ?? '';
+         latitude=args['latitude'] ?? 0.0 ;
+         longitude=args['longitude']?? 0.0 ;
+         dateofbirth=args['dateofbirth'] ?? '';
+         userName=args['userName'] ?? '';
+         selectedgender=args['selectgender'] ?? '';
+         showGenderOnProfile =args['showonprofile'] ?? true ;
+      });
+    }
+  }
+  
 
   void nextPage() {
     // Implement your navigation logic
@@ -78,7 +96,20 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
                         IconButton(
                           icon: const Icon(Icons.arrow_back_ios),
                           iconSize: 30,
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () {
+                               Navigator.pushNamed(
+                                context,
+                                '/genderstaticselection',
+                                arguments: {
+                                  'latitude': latitude,
+                                  'longitude': longitude,
+                                  'dateofbirth':dateofbirth,
+                                  'userName':userName,
+                                  'selectgender':selectedgender,
+                                  'email':entryemail,
+                                  'mobile':mobile
+                             },);
+                          },
                         ),
                         const SizedBox(width: 12),
                         const Text(
@@ -92,7 +123,7 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
                       ],
                     ),
                   // ),
-
+                const SizedBox(height: 10),
                 const Text(
                   "It’s Totally Up To You Whether\nYou Feel Comfortable Sharing\nThis.",
                   textAlign: TextAlign.start,
@@ -107,9 +138,9 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
                 const SizedBox(height: 10),
 
                 Chip(
-                  label: Text(widget.selectedGender.isEmpty
+                  label: Text(selectedgender!.isEmpty
                       ? "Man"
-                      : widget.selectedGender),
+                      : selectedgender),
                   backgroundColor: const Color(0xffB2D12E),
                 ),
 
@@ -161,14 +192,19 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
                         // if (selectedGender.isNotEmpty) {
                         //   // Navigate to next screen
                         //   // Example:
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => IntroMail(
-                            latitude:widget.latitude,
-                              longitude: widget.longitude,
-                              userName:widget. userName,
-                              dateOfBirth: widget.dateOfBirth,
-                              selectedGender: widget.selectedGender,
-                              showGenderOnProfile:showGenderOnProfile
-                          )));
+                          Navigator.pushNamed(
+                            context,
+                            '/emailscreen',
+                            arguments: {
+                              'latitude': latitude,
+                              'longitude': longitude,
+                              'dateofbirth':dateofbirth,
+                              'userName':userName,
+                              'selectgender':selectedgender,
+                              "showonprofile":showGenderOnProfile,
+                              'email':entryemail,
+                              'mobile':mobile
+                            },);
                         // } else {
                         //   ScaffoldMessenger.of(context).showSnackBar(
                         //     const SnackBar(content: Text("Please select a gender")),

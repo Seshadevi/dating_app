@@ -3,39 +3,58 @@ import 'package:dating/screens/partners_selections.dart';
 import 'package:flutter/material.dart';
 
 class HeightSelectionScreen extends StatefulWidget {
-  final String email;
-  final double latitude;
-  final double longitude;
-  final String userName;
-  final String dateOfBirth;
-  final String selectedGender;
-  final bool showGenderOnProfile;
-  final showMode;
-  final List<String> selectedGenderIds;
-  final Set<int> selectionOptionIds;
+ 
 
-  const HeightSelectionScreen({
-    Key? key,
-    required this.email,
-    required this.latitude,
-    required this.longitude,
-    required this.userName,
-    required this.dateOfBirth,
-    required this.selectedGender,
-    required this.showGenderOnProfile,
-    this.showMode,
-    required this.selectedGenderIds,
-    required this.selectionOptionIds,
-  }) : super(key: key);
+   HeightSelectionScreen({
+    super.key,
+  });
 
   @override
   State<HeightSelectionScreen> createState() => _HeightSelectionScreenState();
 }
 
 class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
+   String? email;
+   String? mobile;
+   double? latitude;
+   double? longitude;
+   String? dateofbirth;
+   String? userName;
+   String? selectedgender;
+   bool? showonprofile;
+   int? modeid;
+   String? modename;
+   List<String>? selectedGenderIds;
+   List<int>? selectedoptionIds;
+
   int _selectedHeight = 154;
   final int _minHeight = 120;
   final int _maxHeight = 240;
+
+   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null ) { // Prevent overwriting selected products
+      setState(() {
+          email= args['email'] ??'';
+          mobile = args['mobile'] ?? '';
+          latitude = args['latitude'] ?? 0.0;
+          longitude = args['longitude'] ?? 0.0;
+          dateofbirth = args['dateofbirth'] ?? '';
+          userName = args['userName'] ?? '';
+          selectedgender = args['selectgender'] ?? '';
+          showonprofile = args['showonprofile'] ?? true;
+          modeid=args['modeid'] ?? 0;
+          modename =args['modename'] ?? '';
+          selectedGenderIds=args['selectedGenderIds'] ?? [];
+          selectedoptionIds=args['selectedoptionIds'] ?? [];
+          _selectedHeight=args['selectedheight'] ?? 154 ;
+
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,21 +82,26 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: () => Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => InrtoPartneroption(
-                        email: widget.email,
-                        latitude: widget.latitude,
-                        longitude: widget.longitude,
-                        userName: widget.userName,
-                        dateOfBirth: widget.dateOfBirth,
-                        selectedGender: widget.selectedGender,
-                        showGenderOnProfile: widget.showGenderOnProfile,
-                        gendermode: widget.selectedGenderIds,
-                      ),
-                    ),
-                  ),
+                  onPressed: () {
+                     Navigator.pushNamed(
+                                    context,
+                                    '/partnersSelection',
+                                    arguments: {
+                                      'latitude': latitude,
+                                      'longitude': longitude,
+                                      'dateofbirth':dateofbirth,
+                                      'userName':userName,
+                                      'selectgender':selectedgender,
+                                      "showonprofile":showonprofile,
+                                      "modeid":modeid,
+                                      "modename":modename,
+                                      "selectedGenderIds":selectedGenderIds,
+                                      "selectedoptionIds":selectedoptionIds,
+                                      'email':email,
+                                      'mobile':mobile
+                                    },
+                                );
+                  }
                 ),
                 const SizedBox(width: 8),
                 const Text(
@@ -150,24 +174,26 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
                   child: IconButton(
                     icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
                     onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => InterestsScreen(
-                            email: widget.email,
-                            latitude: widget.latitude,
-                            longitude: widget.longitude,
-                            userName: widget.userName,
-                            dateOfBirth: widget.dateOfBirth,
-                            selectedGender: widget.selectedGender,
-                            showGenderOnProfile: widget.showGenderOnProfile,
-                            showMode: widget.showMode,
-                            selectedGenderIds: widget.selectedGenderIds,
-                            selectedHeight: _selectedHeight,
-                            selectionOptionIds: widget.selectionOptionIds,
-                          ),
-                        ),
-                      );
+                          // Navigator.push(...) your next screen here
+                        Navigator.pushNamed(
+                                    context,
+                                    '/interestScreen',
+                                    arguments: {
+                                      'latitude': latitude,
+                                      'longitude': longitude,
+                                      'dateofbirth':dateofbirth,
+                                      'userName':userName,
+                                      'selectgender':selectedgender,
+                                      "showonprofile":showonprofile,
+                                      "modeid":modeid,
+                                      "modename":modename,
+                                      "selectedGenderIds":selectedGenderIds,
+                                      "selectedoptionIds":selectedoptionIds,
+                                      "selectedheight":_selectedHeight,
+                                      'email':email,
+                                      'mobile':mobile
+                                    },
+                                );
                     },
                   ),
                 ),

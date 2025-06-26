@@ -2,42 +2,13 @@ import 'package:dating/provider/signupprocessProviders/qualities.dart';
 import 'package:dating/screens/lifeStryle_habits.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../model/signupprocessmodels/qualitiesModel.dart';
 import 'package:collection/collection.dart';
 
 
 
 class ValuesSelectionScreen extends ConsumerStatefulWidget {
-  final String email;
-  final double latitude;
-  final double longitude;
-  final String userName;
-  final String dateOfBirth;
-  final String selectedGender;
-  final bool showGenderOnProfile;
-  final showMode;
-  final List<String> gendermode;
-  final List<int> selectedInterestIds;
-  final dynamic selectedHeight;
-  final dynamic selectionOptionIds;
-
-  const ValuesSelectionScreen({
-    super.key,
-    required this.email,
-    required this.latitude,
-    required this.longitude,
-    required this.userName,
-    required this.dateOfBirth,
-    required this.selectedGender,
-    required this.showGenderOnProfile,
-    this.showMode,
-    required this.gendermode,
-    this.selectedHeight,
-    this.selectionOptionIds,
-    // required this.selectedIntersts, 
-    required this.selectedInterestIds,
-  });
+  const ValuesSelectionScreen({super.key,});
 
   @override
   _ValuesSelectionScreenState createState() => _ValuesSelectionScreenState();
@@ -46,6 +17,50 @@ class ValuesSelectionScreen extends ConsumerStatefulWidget {
 class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
   List<String> selectedQualities = [];
   List<int> selectedQualitiesIds = [];
+
+   String? email;
+   String? mobile;
+   double? latitude;
+   double? longitude;
+   String? dateofbirth;
+   String? userName;
+   String? selectedgender;
+   bool? showonprofile;
+   int? modeid;
+   String? modename;
+   List<String>? selectedGenderIds;
+   List<int>? selectedoptionIds;
+   int? selectedheight;
+   List<int>? selectedinterestsIds;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null ) { // Prevent overwriting selected products
+      setState(() {
+          email= args['email'] ??'';
+          mobile = args['mobile'] ?? '';
+          latitude = args['latitude'] ?? 0.0 ;
+          longitude = args['longitude'] ?? 0.0 ;
+          dateofbirth = args['dateofbirth'] ?? '';
+          userName = args['userName'] ?? '';
+          selectedgender = args['selectgender'] ?? '';
+          showonprofile = args['showonprofile'] ?? true;
+          modeid=args['modeid'] ?? 0;
+          modename =args['modename'] ?? '';
+          selectedGenderIds=args['selectedGenderIds'] ?? [];
+          selectedoptionIds=args['selectedoptionIds'] ?? [];
+          selectedheight=args['selectedheight'] ?? 154;
+          selectedinterestsIds=args['selectedinterestIds'] ?? [];
+          selectedQualitiesIds =args['selectedQualitiesIds'] ?? [];
+
+
+      });
+    }
+  }
+
 
   @override
   void initState() {
@@ -228,7 +243,29 @@ class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_back_ios),
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () {
+                           
+                                   Navigator.pushNamed(
+                                    context,
+                                    '/interestScreen',
+                                    arguments: {
+                                      'latitude': latitude,
+                                      'longitude': longitude,
+                                      'dateofbirth':dateofbirth,
+                                      'userName':userName,
+                                      'selectgender':selectedgender,
+                                      "showonprofile":showonprofile,
+                                      "modeid":modeid,
+                                      "modename":modename,
+                                      "selectedGenderIds":selectedGenderIds,
+                                      "selectedoptionIds":selectedoptionIds,
+                                      "selectedheight":selectedheight,
+                                      "selectedinterestIds":selectedinterestsIds,
+                                      'email':email,
+                                      'mobile':mobile
+                                    },
+                                );
+                        },
                       ),
                       const SizedBox(width: 8),
                       const Expanded(
@@ -309,7 +346,27 @@ class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
                   children: [
                     TextButton(
                       onPressed: () {
-                        // Handle skip action
+                        
+                                   Navigator.pushNamed(
+                                    context,
+                                    '/habbitsScreen',
+                                    arguments: {
+                                      'latitude': latitude,
+                                      'longitude': longitude,
+                                      'dateofbirth':dateofbirth,
+                                      'userName':userName,
+                                      'selectgender':selectedgender,
+                                      "showonprofile":showonprofile,
+                                      "modeid":modeid,
+                                      "modename":modename,
+                                      "selectedGenderIds":selectedGenderIds,
+                                      "selectedoptionIds":selectedoptionIds,
+                                      "selectedheight":selectedheight,
+                                      "selectedinterestIds":selectedinterestsIds,
+                                      'email':email,
+                                      'mobile':mobile
+                                    },
+                                );
                       },
                       child: const Text(
                         'Skip',
@@ -355,37 +412,30 @@ class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
                             ),
                             onPressed: () {
                                 if (selectedQualities.length == 4) {
-                                        print("✅ Proceeding with:");
-                                        print("Email: ${widget.email}");
-                                        print("Lat: ${widget.latitude}, Long: ${widget.longitude}");
-                                        print("Username: ${widget.userName}");
-                                        print("DOB: ${widget.dateOfBirth}");
-                                        print("Gender: ${widget.selectedGender}");
-                                        print("Show Gender: ${widget.showGenderOnProfile}");
-                                        print("Selected Mode: ${widget.showMode.value} (ID: ${widget.showMode.id})");
-                                        print("Selected options: ${widget.selectionOptionIds}");
-                                        print("selected intrests:${widget.selectedInterestIds}");
-                                        print('Selected qualities IDs: $selectedQualitiesIds');
+                                     
                                       
                           
-                                   // Navigator.push(...) your next screen here
-                                    Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> LifestyleHabitsScreen(
-                                          email: widget.email,
-                                          latitude: widget.latitude,
-                                          longitude: widget.longitude,
-                                          userName: widget.userName,
-                                          dateOfBirth: widget.dateOfBirth,
-                                          selectedGender: widget.selectedGender,
-                                          showGenderOnProfile: widget.showGenderOnProfile,
-                                          showMode: widget.showMode,
-                                          gendermode:widget.gendermode,
-                                          selectionOptionIds:widget.selectionOptionIds,
-                                          selectedHeight:widget.selectedHeight ,
-                                          selectedInterestIds:widget.selectedInterestIds,
-                                          selectedqualitiesIDs:selectedQualitiesIds,
-                                        
-                    
-                              )));
+                                   Navigator.pushNamed(
+                                    context,
+                                    '/habbitsScreen',
+                                    arguments: {
+                                      'latitude': latitude,
+                                      'longitude': longitude,
+                                      'dateofbirth':dateofbirth,
+                                      'userName':userName,
+                                      'selectgender':selectedgender,
+                                      "showonprofile":showonprofile,
+                                      "modeid":modeid,
+                                      "modename":modename,
+                                      "selectedGenderIds":selectedGenderIds,
+                                      "selectedoptionIds":selectedoptionIds,
+                                      "selectedheight":selectedheight,
+                                      "selectedinterestIds":selectedinterestsIds,
+                                      "selectedQualitiesIds":selectedQualitiesIds,
+                                      'email':email,
+                                      'mobile':mobile
+                                    },
+                                );
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(content: Text("Please select 4 options"))

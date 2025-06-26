@@ -57,7 +57,7 @@ var selectedMode;
         _buildIntroPage(context),
         _buildGenderSelectionPage(),
         _buildGenderDisplayPage(),
-        _buildMailPage(),
+        // _buildMailPage(),
         // _buildDateCategory(),
         // _buildMeetSelection(),
         // _buildPartnersSelections(),
@@ -494,16 +494,16 @@ var selectedMode;
     );
   }
 
- Widget _buildMailPage() {
-  return IntroMail(
-    latitude: widget.latitude,
-    longitude: widget.longitude,
-    userName: userName,
-    dateOfBirth: dateOfBirth,
-    selectedGender: selectedGender,
-    showGenderOnProfile: showGenderOnProfile,
-  );
-}
+//  Widget _buildMailPage() {
+//   return IntroMail(
+//     latitude: widget.latitude,
+//     longitude: widget.longitude,
+//     userName: userName,
+//     dateOfBirth: dateOfBirth,
+//     selectedGender: selectedGender,
+//     showGenderOnProfile: showGenderOnProfile,
+//   );
+// }
 
 
 //  Widget _buildDateCategory() {

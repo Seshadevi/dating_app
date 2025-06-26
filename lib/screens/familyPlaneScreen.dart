@@ -5,37 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FamilyPlanScreen extends ConsumerStatefulWidget {
-  final String email;
-  final double latitude;
-  final double longitude;
-  final String userName;
-  final String dateOfBirth;
-  final String selectedGender;
-  final bool showGenderOnProfile;
-  final showMode;
-  final List<String> gendermode;
-  final dynamic selectionOptionIds;
-  final dynamic selectedHeight;
-  final List<int> selectedInterestIds;
-  final List<int> selectedqualitiesIDs;
-  final List<int> selectedhabbits;
+  
 
   const FamilyPlanScreen({
     super.key,
-    required this.email,
-    required this.latitude,
-    required this.longitude,
-    required this.userName,
-    required this.dateOfBirth,
-    required this.selectedGender,
-    required this.showGenderOnProfile,
-    this.showMode,
-    required this.gendermode,
-    this.selectionOptionIds,
-    this.selectedHeight,
-    required this.selectedInterestIds,
-    required this.selectedqualitiesIDs,
-    required this.selectedhabbits,
+    
   });
 
   @override
@@ -43,7 +17,54 @@ class FamilyPlanScreen extends ConsumerStatefulWidget {
 }
 
 class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
-  Set<int> selectedKidsIds = {};
+  List<int> selectedKidsIds = [];
+
+   String? email;
+   String? mobile;
+   double? latitude;
+   double? longitude;
+   String? dateofbirth;
+   String? userName;
+   String? selectedgender;
+   bool? showonprofile;
+   int? modeid;
+   String? modename;
+   List<String>? selectedGenderIds;
+   List<int>? selectedoptionIds;
+   int? selectedheight;
+   List<int>? selectedinterestsIds;
+   List<int>? selectedQualitiesIds;
+   List<int>? selectedHabitIds;
+
+    @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null ) { // Prevent overwriting selected products
+      setState(() {
+          email= args['email'] ??'';
+          mobile = args['mobile'] ?? '';
+          latitude = args['latitude'] ?? 0.0;
+          longitude = args['longitude'] ?? 0.0;
+          dateofbirth = args['dateofbirth'] ?? '';
+          userName = args['userName'] ?? '';
+          selectedgender = args['selectgender'] ?? '';
+          showonprofile = args['showonprofile'] ?? true;
+          modeid=args['modeid'] ?? 0;
+          modename =args['modename'] ?? '';
+          selectedGenderIds=args['selectedGenderIds'] ?? [];
+          selectedoptionIds=args['selectedoptionIds'] ?? [];
+          selectedheight=args['selectedheight'] ?? 154;
+          selectedinterestsIds=args['selectedinterestIds'] ?? [];
+          selectedQualitiesIds=args['selectedQualitiesIds'] ?? [];
+          selectedHabitIds=args['selectedHabbits'] ?? [];
+          selectedKidsIds =args[''] ?? [];
+
+
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -52,14 +73,15 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
   }
 
   void toggleSelect(int id) {
-    setState(() {
-      if (selectedKidsIds.contains(id)) {
-        selectedKidsIds.remove(id);
-      } else {
-        selectedKidsIds.add(id);
-      }
-    });
-  }
+  setState(() {
+    if (selectedKidsIds.contains(id)) {
+      selectedKidsIds.remove(id);
+    } else {
+      selectedKidsIds.add(id);
+    }
+  });
+}
+
 
   Widget optionButton(String text, int id, double size, double fontSize) {
     bool isSelected = selectedKidsIds.contains(id);
@@ -131,68 +153,43 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
                       children: [
                         IconButton(
                           icon: const Icon(Icons.arrow_back_ios),
-                          onPressed: () => Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => LifestyleHabitsScreen(
-                                email: widget.email,
-                                latitude: widget.latitude,
-                                longitude: widget.longitude,
-                                userName: widget.userName,
-                                dateOfBirth: widget.dateOfBirth,
-                                selectedGender: widget.selectedGender,
-                                showGenderOnProfile: widget.showGenderOnProfile,
-                                showMode: widget.showMode,
-                                gendermode: widget.gendermode,
-                                selectionOptionIds: widget.selectionOptionIds,
-                                selectedHeight: widget.selectedHeight,
-                                selectedInterestIds: widget.selectedInterestIds,
-                                selectedqualitiesIDs:
-                                    widget.selectedqualitiesIDs,
-                              ),
-                            ),
-                          ),
+                          onPressed: () {
+                             Navigator.pushNamed(
+                                        context,
+                                        '/habbitsScreen',
+                                        arguments: {
+                                          'latitude': latitude,
+                                          'longitude': longitude,
+                                          'dateofbirth':dateofbirth,
+                                          'userName':userName,
+                                          'selectgender':selectedgender,
+                                          "showonprofile":showonprofile,
+                                          "modeid":modeid,
+                                          "modename":modename,
+                                          "selectedGenderIds":selectedGenderIds,
+                                          "selectedoptionIds":selectedoptionIds,
+                                          "selectedheight":selectedheight,
+                                          "selectedinterestIds":selectedinterestsIds,
+                                          "selectedQualitiesIds":selectedQualitiesIds,
+                                          "selectedHabbits":selectedHabitIds,
+                                          'email':email,
+                                          'mobile':mobile
+                                        },
+                                    );
+                          },
                         ),
-                        const Spacer(),
-                        GestureDetector(
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ReligionSelectorWidget(
-                                email: widget.email,
-                                latitude: widget.latitude,
-                                longitude: widget.longitude,
-                                userName: widget.userName,
-                                dateOfBirth: widget.dateOfBirth,
-                                selectedGender: widget.selectedGender,
-                                showGenderOnProfile: widget.showGenderOnProfile,
-                                showMode: widget.showMode,
-                                gendermode: widget.gendermode,
-                                selectionOptionIds: widget.selectionOptionIds,
-                                selectedHeight: widget.selectedHeight,
-                                selectedInterestIds: widget.selectedInterestIds,
-                                selectedqualitiesIDs:
-                                widget.selectedqualitiesIDs,
-                                selectedhabbits: widget.selectedhabbits,
-                                selectedKidsIds: selectedKidsIds.toList(),
-                              ),
-                            ),
+                         const SizedBox(width: 8),
+                        const Text(
+                            "Do You Have Kids Or\nFamily Plans?",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Poppins'),
                           ),
-                          child: const Text('Skip',
-                              style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w500)),
-                        )
                       ],
                     ),
                     const SizedBox(height: 10),
-                    const Text(
-                      "Do You Have Kids Or\nFamily Plans?",
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Poppins'),
-                    ),
+                    
                     Text(
                       "Let’s get deeper. Feel free to skip if you'd prefer not to say.",
                       style: TextStyle(
@@ -244,76 +241,130 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: screen.width * 0.05,
-                vertical: screen.height * 0.015,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "${selectedKidsIds.length} Selected",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: screen.width * 0.04,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Material(
-                    elevation: 10,
-                    borderRadius: BorderRadius.circular(50),
-                    child: Container(
-                      width: screen.width * 0.125,
-                      height: screen.width * 0.125,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xffB2D12E), Color(0xff000000)],
-                        ),
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.arrow_forward_ios,
-                            color: Colors.white),
-                        onPressed: () {
-                          if (selectedKidsIds.isNotEmpty) {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ReligionSelectorWidget(
-                                  email: widget.email,
-                                  latitude: widget.latitude,
-                                  longitude: widget.longitude,
-                                  userName: widget.userName,
-                                  dateOfBirth: widget.dateOfBirth,
-                                  selectedGender: widget.selectedGender,
-                                  showGenderOnProfile:
-                                      widget.showGenderOnProfile,
-                                  showMode: widget.showMode,
-                                  gendermode: widget.gendermode,
-                                  selectionOptionIds: widget.selectionOptionIds,
-                                  selectedHeight: widget.selectedHeight,
-                                  selectedInterestIds:
-                                      widget.selectedInterestIds,
-                                  selectedqualitiesIDs:
-                                      widget.selectedqualitiesIDs,
-                                  selectedhabbits: widget.selectedhabbits,
-                                  selectedKidsIds: selectedKidsIds.toList(),
-                                ),
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text(
-                                      "Please select at least one option")),
-                            );
-                          }
-                        },
-                      ),
-                    ),
+            // Bottom section - Fixed
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, -5),
                   ),
                 ],
+              ),
+              child: SafeArea(
+                top: false,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                         Navigator.pushNamed(
+                                        context,
+                                        '/religionScreen',
+                                        arguments: {
+                                          'latitude': latitude,
+                                          'longitude': longitude,
+                                          'dateofbirth':dateofbirth,
+                                          'userName':userName,
+                                          'selectgender':selectedgender,
+                                          "showonprofile":showonprofile,
+                                          "modeid":modeid,
+                                          "modename":modename,
+                                          "selectedGenderIds":selectedGenderIds,
+                                          "selectedoptionIds":selectedoptionIds,
+                                          "selectedheight":selectedheight,
+                                          "selectedinterestIds":selectedinterestsIds,
+                                          "selectedQualitiesIds":selectedQualitiesIds,
+                                          "selectedHabbits":selectedHabitIds,
+                                          'email':email,
+                                          'mobile':mobile
+                                        },
+                                    );
+                      },
+                      child: const Text(
+                        'Skip',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          '${selectedKidsIds.length}/2 Selected',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+
+                        // Gradient button
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: selectedKidsIds.length == 2
+                                ? const LinearGradient(
+                                    colors: [Color(0xFF869E23), Color(0xFF000000)],
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                  )
+                                : null,
+                            color: selectedKidsIds.length != 2
+                                ? Colors.grey.shade400
+                                : null,
+                          ),
+                          child: IconButton(
+                            icon: const Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                            onPressed: () {
+                              if (selectedKidsIds.isNotEmpty) {
+                                Navigator.pushNamed(
+                                        context,
+                                        '/religionScreen',
+                                        arguments: {
+                                          'latitude': latitude,
+                                          'longitude': longitude,
+                                          'dateofbirth':dateofbirth,
+                                          'userName':userName,
+                                          'selectgender':selectedgender,
+                                          "showonprofile":showonprofile,
+                                          "modeid":modeid,
+                                          "modename":modename,
+                                          "selectedGenderIds":selectedGenderIds,
+                                          "selectedoptionIds":selectedoptionIds,
+                                          "selectedheight":selectedheight,
+                                          "selectedinterestIds":selectedinterestsIds,
+                                          "selectedQualitiesIds":selectedQualitiesIds,
+                                          "selectedHabbits":selectedHabitIds,
+                                          "selectedKidsIds":selectedKidsIds,
+                                          'email':email,
+                                          'mobile':mobile
+                                        },
+                                    );
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Please select at least one option")),
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -322,3 +373,9 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
     );
   }
 }
+
+
+
+
+
+

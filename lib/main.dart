@@ -1,11 +1,33 @@
 import 'package:dating/firebase_options.dart';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/screens/FriendOnboardingScreen.dart';
+import 'package:dating/screens/addHeadlineScreen.dart';
+import 'package:dating/screens/beKindScreen.dart';
+import 'package:dating/screens/causes_Community.dart';
+import 'package:dating/screens/choose_foodies.dart';
+import 'package:dating/screens/datePromtSelection.dart';
+import 'package:dating/screens/face_screen.dart';
+import 'package:dating/screens/familyPlaneScreen.dart';
+import 'package:dating/screens/gender_display_screen.dart';
+import 'package:dating/screens/genderselection_screen.dart';
+import 'package:dating/screens/height_selection_screen.dart';
+import 'package:dating/screens/importantLife.dart';
+import 'package:dating/screens/introMail.dart';
+import 'package:dating/screens/introPage_screen.dart';
+import 'package:dating/screens/lifeStryle_habits.dart';
+import 'package:dating/screens/location_screen.dart';
 import 'package:dating/screens/logins/loginscreen.dart';
+import 'package:dating/screens/meet_selection.dart';
+import 'package:dating/screens/mode_screen.dart';
+import 'package:dating/screens/notification_screen.dart';
+import 'package:dating/screens/openingMoveScreen.dart';
+import 'package:dating/screens/partners_selections.dart';
 import 'package:dating/screens/profile_screens/chat_pay_Screen.dart';
 import 'package:dating/screens/profile_screens/discover_screen.dart';
 import 'package:dating/screens/profile_screens/heartsync_screen.dart';
 import 'package:dating/screens/profile_screens/liked_Screen.dart';
 import 'package:dating/screens/profile_screens/profile_screen.dart';
+import 'package:dating/screens/valueSelection.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'; // ✅ Add this
@@ -56,16 +78,34 @@ class MyApp extends StatelessWidget {
         
       }),
       routes: {
-         "loginscreen": (context) => LoginScreen(),
-         "profilescreen": (context) =>ProfileScreen(),
-   
-        "discoverscreen": (context) =>const DiscoverScreen(),
-    
-        "myheartsyncpage": (context) =>const MyHeartsyncPage(),
-    
-        "likedyouscreen": (context) =>const LikedYouScreen(),
-   
-        "messagescreen": (context) =>MessagesScreen(),
+         "/loginscreen" : (context) => LoginScreen(),
+         "/locationScreen":(context) => LocationScreen(),
+         "/allownotification":(context)=> AllowNotification(),
+         "/intropage" :(context) => IntroPageScreen(),
+         '/genderstaticselection':(context) => GenderSelectionScreen(),
+         "/profileshowscreen":(context) => GenderDisplayScreen(),
+         "/emailscreen" :(context) => IntroMail(),
+         "/modescreen" :(context) => IntroDatecategory(),
+         "/intromeetgender":(context)=> IntroMeetselection(),
+         "/partnersSelection":(context)=>InrtoPartneroption(),
+         "/heightscreen":(context) =>HeightSelectionScreen(),
+         "/interestScreen":(context) => InterestsScreen(),
+         "/qualityScreen":(context) => ValuesSelectionScreen(),
+         "/habbitsScreen":(context) => LifestyleHabitsScreen(),
+         "/familyPlanScreen":(context) =>FamilyPlanScreen(),
+         "/religionScreen":(context) => ReligionSelectorWidget(),
+         "/causesScreen":(context) => CausesScreen(),
+         "/promptsScreen":(context) => DatePromptScreen(),
+         "/defaultmessagesScreen":(context) => OpeningMoveScreen(),
+         "/photosScreen":(context) => PhotoUploadScreen(),
+         "/addheadlinescreen":(context)=>AddHeadlineScreen(),
+         "/termsandconditions":(context)=>BeKindScreen(),
+         "/finalStageSingupScreen":(context) => FriendOnboardingScreen(),
+         "profilescreen" : (context) => ProfileScreen(),
+         "discoverscreen": (context) =>const DiscoverScreen(),
+         "myheartsyncpage": (context) =>const MyHeartsyncPage(),
+         "likedyouscreen": (context) =>const LikedYouScreen(),
+         "messagescreen": (context) => MessagesScreen(),
       },
     );
   }

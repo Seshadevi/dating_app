@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/screens/profile_screens/profile_screen.dart';
 import 'package:dating/screens/tab_bar/tabScreen.dart';
@@ -8,58 +7,76 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../screens/glitchScreen.dart';
 
 class FriendOnboardingScreen extends ConsumerStatefulWidget {
-  final String email;
-  final double latitude;
-  final double longitude;
-  final String userName;
-  final String dateOfBirth;
-  final String selectedGender;
-  final bool showGenderOnProfile;
-  final dynamic showMode;
-  final List<String> selectedGenderIds;
-  final List<int> selectionOptionIds;
-  final dynamic selectedHeight;
-  final List<int> selectedInterestIds;
-  final List<int> selectedqualitiesIDs;
-  final List<int> selectedhabbits;
-  final List<int> selectedkids;
-  final List<int> selectedreligions;
-  final List<int> selectedcauses;
-  final List<String> seletedprompts;
-  final List<File?> choosedimages;
-  final List<int> defaultmessages;
-  final String? finalheadline;
-  final bool termsAndCondition;
-  const FriendOnboardingScreen({
-    super.key,
-    required this.email,
-    required this.latitude,
-    required this.longitude,
-    required this.userName,
-    required this.dateOfBirth,
-    required this.selectedGender,
-    required this.showGenderOnProfile,
-    this.showMode,
-    required this.selectedGenderIds,
-    required this.selectionOptionIds,
-    this.selectedHeight,
-    required this.selectedInterestIds,
-    required this.selectedqualitiesIDs,
-    required this.selectedhabbits,
-    required this.selectedkids,
-    required this.selectedreligions,
-    required this.selectedcauses,
-    required this.seletedprompts,
-    required this.choosedimages,
-    required this.defaultmessages,
-    required this.finalheadline, 
-    required this.termsAndCondition});
+  
+  const FriendOnboardingScreen({super.key});
 
   @override
   ConsumerState<FriendOnboardingScreen> createState() => _FriendOnboardingScreenState();
 }
 
+
 class _FriendOnboardingScreenState extends ConsumerState<FriendOnboardingScreen> {
+
+   String? email;
+   String? mobile;
+   double? latitude;
+   double? longitude;
+   String? dateofbirth;
+   String? userName;
+   String? selectedgender;
+   bool? showonprofile;
+   int? modeid;
+   String? modename;
+   List<String>? selectedGenderIds;
+   List<int>? selectedoptionIds;
+   int? selectedheight;
+   List<int>? selectedinterestsIds;
+   List<int>? selectedQualitiesIds;
+   List<int>? selectedHabitIds;
+   List<int>? selectedKidsIds;
+   List<int>? selectedReligionIds;
+   List<int>? selectedcausesIds;
+   Map<int, String>? seletedprompts;
+   List<int>? selectedIndexes;
+   List<File?>? selectedImages;
+   String? finalHeadline;
+   bool? termsAndCondition;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null ) { // Prevent overwriting selected products
+      setState(() {
+          email= args['email'] ??'';
+          mobile = args['mobile'] ?? '';
+          latitude = args['latitude'] ?? 0.0;
+          longitude = args['longitude'] ?? 0.0;
+          dateofbirth = args['dateofbirth'] ?? '';
+          userName = args['userName'] ?? '';
+          selectedgender = args['selectgender'] ?? '';
+          showonprofile = args['showonprofile'] ?? true;
+          modeid=args['modeid'] ?? 0;
+          modename =args['modename'] ?? '';
+          selectedGenderIds=args['selectedGenderIds'] ?? [];
+          selectedoptionIds=args['selectedoptionIds'] ?? [];
+          selectedheight=args['selectedheight'] ?? 154;
+          selectedinterestsIds=args['selectedinterestIds'] ?? [];
+          selectedQualitiesIds=args['selectedQualitiesIds'] ?? [];
+          selectedHabitIds=args['selectedHabbits'] ?? [];
+          selectedKidsIds=args['selectedKidsIds'] ?? [];
+          selectedReligionIds= args['selectedReligionIds'] ?? [];
+          selectedcausesIds = args['selectedCausesIds'] ?? [];
+          seletedprompts = args['selectedPrompts'] ?? {};
+          selectedIndexes=args['selectedmessagesIds'] ?? [];
+           selectedImages = (args['selectedImages'] as List<File?>?) ?? List.filled(6, null);
+          finalHeadline=args['finalHeadline'] ?? '';
+          termsAndCondition=args['termsAndCondition'] ?? false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,42 +148,42 @@ class _FriendOnboardingScreenState extends ConsumerState<FriendOnboardingScreen>
                     width: double.infinity,
                     height: 48,
                     child: ElevatedButton(
-                      onPressed: () async{
-                        final statuscode = await ref.read(loginProvider.notifier).signupuserApi(
-                              email: widget.email,
-                              latitude: widget.latitude,
-                              longitude: widget.longitude,
-                              userName: widget.userName,
-                              dateOfBirth: widget.dateOfBirth,
-                              selectedGender: widget.selectedGender,
-                              showGenderOnProfile: widget.showGenderOnProfile,
-                              showMode: widget.showMode,
-                              selectedGenderIds: widget.selectedGenderIds,
-                              selectionOptionIds: widget.selectionOptionIds,
-                              selectedHeight: widget.selectedHeight,
-                              selectedInterestIds: widget.selectedInterestIds,
-                              selectedqualitiesIDs: widget.selectedqualitiesIDs,
-                              selectedhabbits: widget.selectedhabbits,
-                              selectedkids: widget.selectedkids,
-                              selectedreligions: widget.selectedreligions,
-                              selectedcauses: widget.selectedcauses,
-                              seletedprompts: widget.seletedprompts,
-                              choosedimages: widget.choosedimages,
-                              defaultmessages: widget.defaultmessages,
-                              finalheadline: widget.finalheadline,
-                              termsAndCondition: widget.termsAndCondition,
-                            );
+                      onPressed: () async {
+                      final statuscode = await ref.read(loginProvider.notifier).signupuserApi(
+                        email: email ?? '',
+                        mobile:mobile ??'',
+                        latitude: latitude ?? 0.0,
+                        longitude: longitude ?? 0.0,
+                        userName: userName ?? '',
+                        dateOfBirth: dateofbirth ?? '',
+                        selectedGender: selectedgender ?? '',
+                        showGenderOnProfile: showonprofile ?? false,
+                        modeid:modeid,
+                        modename:modename,
+                        selectedGenderIds: selectedGenderIds ?? [],
+                        selectionOptionIds: selectedoptionIds ?? [],
+                        selectedHeight: selectedheight ?? 0,
+                        selectedInterestIds: selectedinterestsIds ?? [],
+                        selectedqualitiesIDs: selectedQualitiesIds ?? [],
+                        selectedhabbits: selectedHabitIds ?? [],
+                        selectedkids: selectedKidsIds ?? [],
+                        selectedreligions: selectedReligionIds ?? [],
+                        selectedcauses: selectedcausesIds ?? [],
+                        seletedprompts: seletedprompts ?? {},
+                        choosedimages: selectedImages ?? [],
+                        defaultmessages: selectedIndexes ?? [],
+                        finalheadline: finalHeadline,
+                        termsAndCondition: termsAndCondition ?? false,
+                      );
 
-                        if(statuscode==200 ||statuscode==201){
-                           Navigator.pushReplacement(
+                      if (statuscode == 200 || statuscode == 201) {
+                        Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => ProfileScreen(),
-                          ),
+                          MaterialPageRoute(builder: (context) => ProfileScreen()),
                         );
-                        }
-                        
-                      },
+                      }
+                    },
+
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.zero,
                         shape: RoundedRectangleBorder(

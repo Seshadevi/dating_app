@@ -3,30 +3,53 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../screens/onboarding_screens.dart'; // Update this import as per your project structure
 
-class AllowNotification extends StatelessWidget {
-  final double latitude;
-  final double longitude;
+class AllowNotification extends StatefulWidget {
+  
 
-  const AllowNotification({
-    super.key,
-    required this.latitude,
-    required this.longitude,
-  });
+  const AllowNotification({super.key,});
+
+  @override
+  State<AllowNotification> createState() => _AllowNotificationState();
+}
+
+class _AllowNotificationState extends State<AllowNotification> {
+
+   String? entryemail;
+   String? mobile;
+   double? latitude;
+   double? longitude;
+   
+   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null ) { // Prevent overwriting selected products
+      setState(() {
+         entryemail = args['email'] ?? '';
+         mobile= args['mobile'] ?? '';
+         latitude=args['latitude'] ?? 0.0;
+         longitude=args['longitude']?? 0.0;
+     
+      });
+    }
+  }
 
   Future<void> _handleNotificationPermission(BuildContext context) async {
     final status = await Permission.notification.request();
 
     if (status.isGranted || status.isLimited) {
-      // Navigate and pass lat/lng
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => IntroPageScreen(
-            latitude: latitude,
-            longitude: longitude,
-          ),
-        ),
-      );
+      
+      Navigator.pushNamed(
+          context,
+          '/intropage',
+          arguments: {
+            'latitude': latitude,
+            'longitude': longitude,
+            'email':entryemail,
+            'mobile':mobile
+          },
+        );    
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -114,15 +137,16 @@ class AllowNotification extends StatelessWidget {
             padding: const EdgeInsets.only(top: 25),
             child: TextButton(
               onPressed: () {
-                Navigator.pushReplacement(
+                Navigator.pushNamed(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => IntroPageScreen(
-                      latitude: 0.0,
-                      longitude: 0.0,
-                    ),
-                  ),
-                );
+                  '/intropage',
+                  arguments: {
+                    'latitude': latitude,
+                    'longitude': longitude,
+                    'email':entryemail,
+                    'mobile':mobile
+                  },
+                );   
               },
               child: Text(
                 'Not Now',

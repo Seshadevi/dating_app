@@ -2,22 +2,8 @@ import 'package:flutter/material.dart';
 import 'mode_screen.dart';
 
 class IntroMail extends StatefulWidget {
-  final double latitude;
-  final double longitude;
-  final String userName;
-  final String dateOfBirth;
-  final String selectedGender;
-  final bool showGenderOnProfile;
 
-  const IntroMail({
-    super.key,
-    required this.latitude,
-    required this.longitude,
-    required this.userName,
-    required this.dateOfBirth,
-    required this.selectedGender,
-    required this.showGenderOnProfile,
-  });
+  const IntroMail({super.key,});
 
   @override
   State<IntroMail> createState() => _IntroMailState();
@@ -26,6 +12,36 @@ class IntroMail extends StatefulWidget {
 class _IntroMailState extends State<IntroMail> {
   final TextEditingController emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+   
+   String? mobile;
+   double? latitude;
+   double? longitude;
+   String? dateofbirth;
+   String? userName;
+   String? selectedgender;
+   bool? showonprofile;
+   bool _isInitialized = false;
+
+@override
+void didChangeDependencies() {
+  super.didChangeDependencies();
+  
+  if (!_isInitialized) {
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    if (args != null) {
+      emailController.text = args['email'] ??'';
+      mobile = args['mobile'] ?? '';
+      latitude = args['latitude'] ?? 0.0 ;
+      longitude = args['longitude'] ?? 0.0 ;
+      dateofbirth = args['dateofbirth'] ?? '';
+      userName = args['userName'] ?? '';
+      selectedgender = args['selectgender'] ?? '';
+      showonprofile = args['showonprofile'] ?? true;
+    }
+    _isInitialized = true; // Mark as initialized
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +79,22 @@ class _IntroMailState extends State<IntroMail> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_back_ios),
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () {
+                            Navigator.pushNamed(
+                                    context,
+                                    '/profileshowscreen',
+                                    arguments: {
+                                      'latitude': latitude,
+                                      'longitude': longitude,
+                                      'dateofbirth':dateofbirth,
+                                      'userName':userName,
+                                      'selectgender':selectedgender,
+                                      "showonprofile":showonprofile,
+                                      'email':emailController.text,
+                                      'mobile':mobile
+                                    },
+                                );
+                        },
                       ),
                       const SizedBox(width: 12),
                       const Text(
@@ -134,19 +165,27 @@ class _IntroMailState extends State<IntroMail> {
                             icon: const Icon(Icons.arrow_forward_ios),
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => IntroDatecategory(
-                                      email: emailController.text,
-                                      latitude: widget.latitude,
-                                      longitude: widget.longitude,
-                                      userName: widget.userName,
-                                      dateOfBirth: widget.dateOfBirth,
-                                      selectedGender: widget.selectedGender,
-                                      showGenderOnProfile: widget.showGenderOnProfile,
-                                    ),
-                                  ),
+                                 print("latitiude:$latitude");
+                                 print("longitude:$longitude");
+                                 print("dateofbirth:$dateofbirth");
+                                 print("userName:$userName");
+                                 print("selectedgender:$selectedgender");
+                                 print("showonprofile:$showonprofile");
+                                 print("email:$emailController");
+                                 print("mobile:$mobile");
+                                 Navigator.pushNamed(
+                                    context,
+                                    '/modescreen',
+                                    arguments: {
+                                      'latitude': latitude,
+                                      'longitude': longitude,
+                                      'dateofbirth':dateofbirth,
+                                      'userName':userName,
+                                      'selectgender':selectedgender,
+                                      "showonprofile":showonprofile,
+                                      'email':emailController.text,
+                                      'mobile':mobile
+                                    },
                                 );
                               }
                             },

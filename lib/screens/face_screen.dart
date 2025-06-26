@@ -5,55 +5,81 @@ import 'package:image_picker/image_picker.dart';
 
 class PhotoUploadScreen extends StatefulWidget {
 
-  final String email;
-  final double latitude;
-  final double longitude;
-  final String userName;
-  final String dateOfBirth;
-  final String selectedGender;
-  final bool showGenderOnProfile;
-  final dynamic showMode;
-  final List<String> selectedGenderIds;
-  final List<int> selectionOptionIds;
-  final dynamic selectedHeight;
-  final List<int> selectedInterestIds;
-  final List<int> selectedqualitiesIDs;
-  final List<int> selectedhabbits;
-  final List<int> selectedkids;
-  final List<int> selectedreligions;
-  final List<int> selectedcauses;
-  final List<String> seletedprompts;
-
-  const PhotoUploadScreen(
-    {
-    super.key,
-    required this.email,
-    required this.latitude,
-    required this.longitude,
-    required this.userName,
-    required this.dateOfBirth,
-    required this.selectedGender,
-    required this.showGenderOnProfile,
-    this.showMode,
-    required this.selectedGenderIds,
-    required this.selectionOptionIds,
-    this.selectedHeight,
-    required this.selectedInterestIds,
-    required this.selectedqualitiesIDs,
-    required this.selectedhabbits,
-    required this.selectedkids,
-    required this.selectedreligions,
-    required this.selectedcauses,
-    required this.seletedprompts, 
-    // required List<String> gendermode
-    });
+  const PhotoUploadScreen({super.key, });
 
   @override
   State<PhotoUploadScreen> createState() => _PhotoUploadScreenState();
 }
 
 class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
-  final List<File?> selectedImages = List.filled(6, null);
+   List<File?> selectedImages = List.filled(6, null);
+
+   String? email;
+   String? mobile;
+   double? latitude;
+   double? longitude;
+   String? dateofbirth;
+   String? userName;
+   String? selectedgender;
+   bool? showonprofile;
+   int? modeid;
+   String? modename;
+   List<String>? selectedGenderIds;
+   List<int>? selectedoptionIds;
+   int? selectedheight;
+   List<int>? selectedinterestsIds;
+   List<int>? selectedQualitiesIds;
+   List<int>? selectedHabitIds;
+   List<int>? selectedKidsIds;
+   List<int>? selectedReligionIds;
+   List<int>? selectedcausesIds;
+   Map<int, String>? seletedprompts;
+   List<int>? selectedIndexes;
+
+    @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    print("inside profile");
+    if (args != null ) { // Prevent overwriting selected products
+      setState(() {
+          email= args['email'] ??'';
+          mobile = args['mobile'] ?? '';
+          latitude = args['latitude'] ?? 0.0;
+          longitude = args['longitude'] ?? 0.0;
+          dateofbirth = args['dateofbirth'] ?? '';
+          userName = args['userName'] ?? '';
+          selectedgender = args['selectgender'] ?? '';
+          showonprofile = args['showonprofile'] ?? false;
+          modeid=args['modeid'] ?? 0;
+          modename =args['modename'] ?? '';
+          selectedGenderIds=args['selectedGenderIds'] ?? [];
+          selectedoptionIds=args['selectedoptionIds'] ?? [];
+          selectedheight=args['selectedheight'] ?? 154;
+          selectedinterestsIds=args['selectedinterestIds'] ?? [];
+          selectedQualitiesIds=args['selectedQualitiesIds'] ?? [];
+          selectedHabitIds=args['selectedHabbits'] ?? [];
+          selectedKidsIds=args['selectedKidsIds'] ?? [];
+          selectedReligionIds= args['selectedReligionIds'] ?? [];
+          selectedcausesIds = args['selectedCausesIds'] ?? [];
+          seletedprompts = args['selectedPrompts'] ?? {};
+          selectedIndexes=args['selectedmessagesIds']?? [];
+          if (args['selectedImages'] != null) {
+              selectedImages = (args['selectedImages'] as List<File?>);
+            }
+
+      });
+      print("latitude:$latitude");
+      print("longitude:$longitude");
+      print("dateofbirth:$dateofbirth");
+      print("userName:$userName");
+      print("selectedgender:$selectedgender");
+      print("showonProfile:$showonprofile");
+      print("email:$email");
+      print("mobile:$mobile");
+    }
+  }
+
 
   Future<void> _pickImage(int index) async {
     final picker = ImagePicker();
@@ -108,7 +134,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               LinearProgressIndicator(
-                value: 17 / 18,
+                value: 18 / 18,
                 backgroundColor: Colors.grey[300],
                 valueColor: const AlwaysStoppedAnimation<Color>(
                     Color.fromARGB(255, 147, 179, 3)),
@@ -118,21 +144,69 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.arrow_back_ios),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  const Spacer(),
-                  GestureDetector(
-                    onTap: () {
-                      // Skip navigation
+                    onPressed: (){
+                        if(modename == "date"){
+                              Navigator.pushNamed(
+                                        context,
+                                        '/defaultmessagesScreen',
+                                        arguments: {
+                                          'latitude': latitude,
+                                          'longitude': longitude,
+                                          'dateofbirth':dateofbirth,
+                                          'userName':userName,
+                                          'selectgender':selectedgender,
+                                          "showonprofile":showonprofile,
+                                          "modeid":modeid,
+                                          "modename":modename,
+                                          "selectedGenderIds":selectedGenderIds,
+                                          "selectedoptionIds":selectedoptionIds,
+                                          "selectedheight":selectedheight,
+                                          "selectedinterestIds":selectedinterestsIds,
+                                          "selectedQualitiesIds":selectedQualitiesIds,
+                                          "selectedHabbits":selectedHabitIds,
+                                          "selectedKidsIds":selectedKidsIds,
+                                          "selectedReligionIds":selectedReligionIds,
+                                          "selectedCausesIds":selectedcausesIds,
+                                          "selectedPrompts":seletedprompts,
+                                          "selectedmessagesIds":selectedIndexes,
+                                          'email':email,
+                                          'mobile':mobile
+                                        },);
+                          
+                        }
+                        else if(modename == "bff" || modename == "bizz"){
+                               Navigator.pushNamed(
+                                        context,
+                                        '/modescreen',
+                                        arguments: {
+                                          'latitude': latitude,
+                                          'longitude': longitude,
+                                          'dateofbirth':dateofbirth,
+                                          'userName':userName,
+                                          'selectgender':selectedgender,
+                                          "showonprofile":showonprofile,
+                                          "modeid":modeid,
+                                          "modename":modename,
+                                          'email':email,
+                                          'mobile':mobile
+                                    },);
+                          
+                        }
                     },
-                    child: const Text(
-                      'Skip',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
                   ),
+                  // const Spacer(),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     // Skip navigation
+                  //   },
+                  //   child: const Text(
+                  //     'Skip',
+                  //     style: TextStyle(
+                  //       color: Colors.grey,
+                  //       fontWeight: FontWeight.w500,
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -234,40 +308,41 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
                             color: Colors.white),
                         onPressed: () {
                           if (imageCount >= 4) {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => OpeningMoveScreen(
-                                                email: widget.email,
-                                                latitude: widget.latitude,
-                                                longitude: widget.longitude,
-                                                userName: widget.userName,
-                                                dateOfBirth: widget.dateOfBirth,
-                                                selectedGender: widget.selectedGender,
-                                                showGenderOnProfile: widget.showGenderOnProfile,
-                                                showMode: widget.showMode,
-                                                selectedGenderIds:widget.selectedGenderIds,
-                                                selectionOptionIds:widget.selectionOptionIds,
-                                                selectedHeight:widget.selectedHeight ,
-                                                selectedInterestIds:widget.selectedInterestIds,
-                                                selectedqualitiesIDs:widget.selectedqualitiesIDs,
-                                                selectedhabbits: widget.selectedhabbits,
-                                                selectedkids:widget.selectedkids,
-                                                selectedreligions:widget.selectedreligions,
-                                                selectedcauses:widget.selectedcauses,
-                                                seletedprompts:widget.seletedprompts,
-                                                choosedimages:selectedImages
-                                ),
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content:
-                                    Text("Please upload at least 4 photos."),
-                              ),
-                            );
-                          }
+                           Navigator.pushNamed(
+                                        context,
+                                        '/addheadlinescreen',
+                                        arguments: {
+                                          'latitude': latitude,
+                                          'longitude': longitude,
+                                          'dateofbirth':dateofbirth,
+                                          'userName':userName,
+                                          'selectgender':selectedgender,
+                                          "showonprofile":showonprofile,
+                                          "modeid":modeid,
+                                          "modename":modename,
+                                          "selectedGenderIds":selectedGenderIds,
+                                          "selectedoptionIds":selectedoptionIds,
+                                          "selectedheight":selectedheight,
+                                          "selectedinterestIds":selectedinterestsIds,
+                                          "selectedQualitiesIds":selectedQualitiesIds,
+                                          "selectedHabbits":selectedHabitIds,
+                                          "selectedKidsIds":selectedKidsIds,
+                                          "selectedReligionIds":selectedReligionIds,
+                                          "selectedCausesIds":selectedcausesIds,
+                                          "selectedPrompts":seletedprompts,
+                                          "selectedmessagesIds":selectedIndexes,
+                                          "selectedImages":selectedImages,
+                                          'email':email,
+                                          'mobile':mobile
+                                        },);
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content:
+                                            Text("Please upload at least 4 photos."),
+                                      ),
+                                    );
+                                  }
                         },
                       ),
                     ),
