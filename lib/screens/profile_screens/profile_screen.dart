@@ -1,22 +1,45 @@
-import 'package:dating/screens/profile_after_click/premium.dart';
-import 'package:dating/screens/settings/settings_page.dart';
-import 'package:dating/screens/profile_screens/tabbar_content_widgets.dart';
-import 'package:dating/widgets/profile_header_layout.dart';
 import 'package:flutter/material.dart';
-import '../profile_screens/profile_bottomNavigationbar.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/screens/settings/settings_page.dart';
+import 'package:dating/widgets/profile_header_layout.dart';
+import 'package:dating/screens/profile_screens/tabbar_content_widgets.dart';
+import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+class ProfileScreen extends ConsumerStatefulWidget {
+  const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
-  bool showTabBar = false; // Toggle for displaying TabBar
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  bool showTabBar = false;
 
   @override
   Widget build(BuildContext context) {
+    final userModel = ref.watch(loginProvider);
+    final user = userModel.data?.isNotEmpty == true ? userModel.data![0].user : null;
+
+    final firstName = user?.firstName?.toString() ?? 'User';
+    final lastName = user?.lastName?.toString() ?? '';
+    final name = '$firstName $lastName'.trim();
+    // final imageUrl = (user?.profilePics != null && user!.profilePics!.isNotEmpty)
+    //     ? user.profilePics!.first.toString()
+    //     : null;
+    final imageUrl = (user?.profilePics != null &&
+        user!.profilePics!.isNotEmpty &&
+        user.profilePics!.first is Map &&
+        user.profilePics!.first['url'] != null)
+    ? 'http://97.74.93.26:6100/${user.profilePics!.first['url']}'
+    : null;
+
+        print("IMAGE URL::::: $imageUrl");
+
+
+    double profilePercent = 0.26; // Later: calculate based on actual profile fields
+    int profileDisplayPercent = (profilePercent * 100).round();
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -24,7 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              // 💚 Green Profile Header Area
+              // Header
               Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
@@ -40,8 +63,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.only(top: 50, bottom: 20),
                 child: Column(
                   children: [
-                    const Text('Profile',
-                        style: TextStyle(color: Colors.white, fontSize: 20)),
+                    const Text('Profile', style: TextStyle(color: Colors.white, fontSize: 20)),
                     const SizedBox(height: 16),
                     Stack(
                       alignment: Alignment.center,
@@ -50,43 +72,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           height: 165,
                           width: 165,
                           child: CircularProgressIndicator(
-                            value: 0.26,
+                            value: profilePercent,
                             strokeWidth: 3,
                             backgroundColor: Colors.grey[300],
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                                Colors.pink),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                profilePercent < 0.3 ? Colors.red : Colors.pink),
                           ),
                         ),
-                        const CircleAvatar(
+                        CircleAvatar(
                           radius: 80,
-                          backgroundImage:
-                              AssetImage('assets/profileImage.jpg'),
+                          backgroundImage: imageUrl != null
+                              ? NetworkImage(imageUrl)
+                              : const AssetImage('assets/profileImage.jpg') as ImageProvider,
                         ),
                       ],
                     ),
                     const SizedBox(height: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Text(
-                        '26% COMPLETE',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 12),
+                      child: Text(
+                        '$profileDisplayPercent% COMPLETE',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      'Rachel, 33',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold),
+                    Text(
+                      name,
+                      style: const TextStyle(
+                          color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
+
+                    // Action buttons
                     SizedBox(
                       height: 120,
                       child: Stack(
@@ -102,8 +123,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            SettingsScreen()));
+                                        builder: (context) => const SettingsScreen()));
                               },
                             ),
                           ),
@@ -114,10 +134,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               label: 'Complete Profile',
                               hasDot: true,
                               onTap: () {
-                                 Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>ProfileHeaderLayout()));
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ProfileHeaderLayout()),
+                                );
                               },
                             ),
                           ),
@@ -127,9 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             child: _CircleButton(
                               icon: Icons.security,
                               label: 'SAFETY',
-                              onTap: () {
-                               
-                              },
+                              onTap: () {},
                             ),
                           ),
                         ],
@@ -139,102 +158,83 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
 
-              // 🟩 HeartSync Platinum Section & Learn More button (hidden when TabBar visible)
+              // Promo section
               if (!showTabBar)
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: Column(
-                    children: [
-                      const Text(
-                        'Heart Sync Platinum',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    const Text('Heart Sync Platinum',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    const Text('Level Up Every Action You Take On \nHeartsync',
+                        textAlign: TextAlign.center, style: TextStyle(fontSize: 15)),
+                    const SizedBox(height: 8),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.circle, size: 15, color: Color.fromARGB(255, 200, 232, 164)),
+                        Icon(Icons.circle, size: 15, color: Color.fromARGB(255, 200, 232, 164)),
+                        Icon(Icons.circle, size: 15, color: Color.fromARGB(255, 200, 232, 164)),
+                        Icon(Icons.circle, size: 15, color: Color.fromARGB(255, 200, 232, 164)),
+                        Icon(Icons.circle_outlined, size: 15, color: Colors.lightGreen),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          showTabBar = true;
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey.shade200,
+                        foregroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                       ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        'Level Up Every Action You Take On \nHeartsync',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 15),
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        child: Text('LEARN MORE'),
                       ),
-                      const SizedBox(height: 8),
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.circle,
-                              size: 15,
-                              color: Color.fromARGB(255, 200, 232, 164)),
-                          Icon(Icons.circle,
-                              size: 15,
-                              color: Color.fromARGB(255, 200, 232, 164)),
-                          Icon(Icons.circle,
-                              size: 15,
-                              color: Color.fromARGB(255, 200, 232, 164)),
-                          Icon(Icons.circle,
-                              size: 15,
-                              color: Color.fromARGB(255, 200, 232, 164)),
-                          Icon(Icons.circle_outlined,
-                              size: 15, color: Colors.lightGreen),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            showTabBar = true;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey.shade200,
-                          foregroundColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 12),
-                          child: Text('LEARN MORE'),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
 
-              // 🧭 TabBar Section - Visible after button click with button style tabs
-              if (showTabBar) ...[
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 1),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: TabBar(
-                    indicator: BoxDecoration(
-                      color: Color.fromARGB(255, 128, 154, 10),
-                      borderRadius: BorderRadius.circular(10),
+              // Tabs
+              if (showTabBar)
+                Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 1),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: TabBar(
+                        indicator: BoxDecoration(
+                          color: const Color.fromARGB(255, 128, 154, 10),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        labelColor: Colors.white,
+                        unselectedLabelColor: Colors.black87,
+                        labelPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 1),
+                        tabs: const [
+                          Tab(text: 'Pay Plan'),
+                          Tab(text: 'Profile Insights'),
+                          Tab(text: 'Safety and well'),
+                        ],
+                      ),
                     ),
-                    labelColor: Colors.white,
-                    unselectedLabelColor: Colors.black87,
-                    labelPadding:
-                        EdgeInsets.symmetric(horizontal: 14, vertical: 1),
-                    tabs: [
-                      Tab(text: 'Pay Plan'),
-                      Tab(text: 'Profile Insights'),
-                      Tab(text: 'Safety and well'),
-                    ],
-                  ),
+                    const SizedBox(
+                      height: 300,
+                      child: TabBarView(
+                        children: [
+                          PayPlanTab(),
+                          ProfileInsightsTab(),
+                          SafetyTab(),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  height: 300,
-                  child: TabBarView(
-                    children: [
-                      PayPlanTab(),
-                      ProfileInsightsTab(),
-                      SafetyTab(),
-                    ],
-                  ),
-                ),
-              ],
             ],
           ),
         ),
@@ -268,8 +268,7 @@ class _CircleButton extends StatelessWidget {
               child: CircleAvatar(
                 radius: 28,
                 backgroundColor: Colors.white,
-                child:
-                    Icon(icon, color: const Color.fromARGB(255, 139, 135, 135)),
+                child: Icon(icon, color: const Color.fromARGB(255, 139, 135, 135)),
               ),
             ),
             if (hasDot)

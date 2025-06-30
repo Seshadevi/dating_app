@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dating/screens/logins/loginscreen.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+
 
 class SelectPage extends ConsumerStatefulWidget {
   const SelectPage({super.key});
@@ -171,9 +173,60 @@ class _SelectPageState extends ConsumerState<SelectPage> {
             const Color(0xff4267B2),
             screenWidth,
             isSmallScreen,
-            () {
-              print("Facebook Login Clicked");
-            },
+           
+              () async {
+                try {
+                  final LoginResult result = await FacebookAuth.instance.login();
+
+                  if (result.status == LoginStatus.success) {
+                    final userData = await FacebookAuth.instance.getUserData(fields: "email,name");
+
+                    final email = userData['email'];
+                    if (email != null) {
+                      final statusCode = await ref.read(loginProvider.notifier).sendemailToAPI(email);
+
+                      if (statusCode == 200 || statusCode == 201) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Welcome $email!")),
+                        );
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen()));
+                      } else if (statusCode == 400) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Invalid user. Please signup.")),
+                        );
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => LocationScreen()));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Server error ($statusCode). Please try again later.")),
+                        );
+                      }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Email not available from Facebook account.")),
+                      );
+                    }
+                  } else if (result.status == LoginStatus.cancelled) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Facebook login cancelled")),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Facebook login failed: ${result.message}")),
+                      
+                    );
+                    print('............$result');
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Facebook login error: $e")),
+
+                  );
+                  print('............$e');
+                }
+              },
+
+            //   print("Facebook Login Clicked");
+            // },
             icon: Icons.facebook,
           ),
           SizedBox(height: buttonSpacing),

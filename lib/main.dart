@@ -55,7 +55,27 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Consumer(builder: (context, ref, child) {
-       
+      //  print("build main.dart");
+      //  final authState = ref.watch(loginProvider);
+      //       // Watch the authentication state
+      //       // Check for a valid access token
+      //       final accessToken = authState.data?.isNotEmpty == true
+      //           ? authState.data![0].accessToken
+      //           : null;
+      //       // final status = authState.data?.isNotEmpty == true
+      //       //     ? authState.data![0].
+      //       //     : null;
+      //       print('token/main $accessToken');
+      //       // print('status...$status');
+      //       // Check if the user has a valid refresh token
+      //       if (accessToken != null && accessToken.isNotEmpty 
+      //       // && (status=='Active'||status=='active')
+      //       ) {
+      //         print('navigate to the dashboard....................');
+      //         return const  ProfileScreen(); // User is authenticated, redirect to Home
+      //       } else {
+      //         print('No valid refresh token, trying auto-login');
+      //       }
         // / Attempt auto-login if refresh token is not available
             return FutureBuilder<bool>(
               future: ref.read(loginProvider.notifier).tryAutoLogin(), // Attempt auto-login
@@ -76,7 +96,8 @@ class MyApp extends StatelessWidget {
               },
             );
         
-      }),
+      }
+      ),
       routes: {
          "/loginscreen" : (context) => LoginScreen(),
          "/locationScreen":(context) => LocationScreen(),

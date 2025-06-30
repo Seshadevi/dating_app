@@ -161,6 +161,7 @@
 //     );
 //   }
 // }
+import 'package:dating/screens/tab_bar/tabScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dating/screens/Entryselection_page.dart';
@@ -250,6 +251,7 @@ class JoinPageScreen extends ConsumerWidget {
                             context,
                             MaterialPageRoute(builder: (context) => SelectPage()),
                           );
+                          // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SubscriptionTabScreen()));
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xffE9F1C4),

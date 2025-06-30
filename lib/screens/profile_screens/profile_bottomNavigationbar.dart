@@ -32,35 +32,49 @@ class CustomBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 60,
-      padding: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 6),
+          BoxShadow(color: Colors.black12, blurRadius: 8),
         ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildNavItem(context, 0, 'assets/campusnav.png', 64, 84),
-          _buildNavItem(context, 1, 'assets/profilenav.png', 64, 84),
-          _buildNavItem(context, 2, 'assets/peoplesnav.png', 40, 40),
-          _buildNavItem(context, 3, 'assets/heartnav.png', 40, 40),
-          _buildNavItem(context, 4, 'assets/chatnav.png', 40, 40),
+          _buildNavItem(context, 0, 'assets/Compass_fill.png', 50, 190),
+          _buildNavItem(context, 1, 'assets/Profile.png', 50, 190),
+          _buildNavItem(context, 2, 'assets/peoplesnav.png', 40, 50),
+          _buildNavItem(context, 3, 'assets/Heart@3x.png', 40, 50),
+          _buildNavItem(context, 4, 'assets/chatnav.png', 40, 50),
         ],
       ),
     );
   }
 
-  Widget _buildNavItem(BuildContext context, int index, String assetPath, double width, double height) {
+  Widget _buildNavItem(
+    BuildContext context,
+    int index,
+    String assetPath,
+    double width,
+    double height,
+  ) {
     final isSelected = index == currentIndex;
+
     return GestureDetector(
       onTap: () => _onTabTapped(context, index),
-      child: Image.asset(
-        assetPath,
-        width: width,
-        height: height,
-        color: isSelected ? Color.fromARGB(255, 16, 20, 2) : null, // Optional tint for selected
+      child: SizedBox(
+        width: 60,
+        height: 60,
+        child: Center(
+          child: Image.asset(
+            assetPath,
+            width: width,
+            height: height,
+            fit: BoxFit.contain,
+            color: isSelected ? const Color.fromARGB(255, 91, 110, 4) : null,
+          ),
+        ),
       ),
     );
   }

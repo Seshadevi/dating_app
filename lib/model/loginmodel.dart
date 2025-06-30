@@ -185,8 +185,7 @@ class User {
       drinking: drinking ?? this.drinking,
       kids: kids ?? this.kids,
       religions: religions ?? this.religions,
-      causesAndCommunities:
-          causesAndCommunities ?? this.causesAndCommunities,
+      causesAndCommunities: causesAndCommunities ?? this.causesAndCommunities,
       prompts: prompts ?? this.prompts,
       defaultMessages: defaultMessages ?? this.defaultMessages,
       location: location ?? this.location,

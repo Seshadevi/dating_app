@@ -8,6 +8,7 @@ import 'package:dating/screens/completeprofile/intrest_screen.dart';
 import 'package:dating/screens/completeprofile/lifeBadgesScreen.dart';
 import 'package:dating/screens/completeprofile/profile_strength_detailScreen.dart';
 import 'package:dating/screens/completeprofile/prompt_selection_screen.dart';
+import 'package:dating/screens/completeprofile/pronoun_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -696,19 +697,29 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: Colors.grey[300]!, width: 1),
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  'Add Your Pronouns',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
+          child: GestureDetector(
+            onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const GenderPronounsScreen(), // your target screen
+                  ),
+                );
+              },
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Add Your Pronouns',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
-              ),
-              Icon(Icons.arrow_forward_ios, color: Colors.grey[400], size: 16),
-            ],
+                Icon(Icons.arrow_forward_ios, color: Colors.grey[400], size: 16),
+              ],
+            ),
           ),
         ),
       ],
