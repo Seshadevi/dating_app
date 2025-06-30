@@ -42,8 +42,13 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
           userName = args['userName'] ?? '';
           selectedgender = args['selectgender'] ?? '';
           showonprofile = args['showonprofile'] ?? true ;
-          modeid=args['modeid'] ?? 0;
-          modename=args['modename'] ?? '';
+          if (args.containsKey('modeid') && args['modeid'] != null) {
+            modeid = args['modeid'];
+          }
+          if (args.containsKey('modename') && args['modename'] != null && args['modename'].toString().isNotEmpty) {
+            modename = args['modename'];
+          }
+
         
       });
       // If mode list is already loaded, try selecting the matching mode

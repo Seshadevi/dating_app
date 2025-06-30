@@ -63,7 +63,9 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
           selectedReligionIds= args['selectedReligionIds'] ?? [];
           selectedcausesIds = args['selectedCausesIds'] ?? [];
           seletedprompts = args['selectedPrompts'] ?? {};
-          selectedIndexes =args['selectedmessagesIds'] ?? [];
+          if (args['selectedmessagesIds'] != null) {
+            selectedIndexes = List<int>.from(args['selectedmessagesIds']);
+          }
 
       });
     }

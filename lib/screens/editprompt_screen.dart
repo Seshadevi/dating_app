@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 class PromptEditScreen extends StatefulWidget {
   final String promptText;
   final String initialAnswer;
-  // final Function(String) onSave;
+  final Function(String) onSave;
   
   const PromptEditScreen({
     super.key,
     required this.promptText,
     this.initialAnswer = '',
-    // required this.onSave,
+    required this.onSave,
   });
 
   @override
@@ -123,11 +123,11 @@ class _PromptEditScreenState extends State<PromptEditScreen> {
                   ),
                   GestureDetector(
                     onTap: _characterCount > 0 && _characterCount <= _maxCharacters
-                      ? () {
-                          Navigator.pop(context, _controller.text);
-                        }
-                      : null,
-
+                        ? () {
+                            widget.onSave(_controller.text);
+                            Navigator.pop(context);
+                          }
+                        : null,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24,

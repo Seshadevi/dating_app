@@ -35,7 +35,9 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
          dateofbirth=args['dateofbirth'] ?? '';
          userName=args['userName'] ?? '';
          selectedgender=args['selectgender'] ?? '';
-         showGenderOnProfile =args['showonprofile'] ?? true ;
+         if (args.containsKey('showonprofile') && args['showonprofile'] != null) {
+            showGenderOnProfile = args['showonprofile'];
+          }
       });
     }
   }

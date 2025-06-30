@@ -54,9 +54,9 @@ class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
           selectedoptionIds=args['selectedoptionIds'] ?? [];
           selectedheight=args['selectedheight'] ?? 154;
           selectedinterestsIds=args['selectedinterestIds'] ?? [];
-          selectedQualitiesIds =args['selectedQualitiesIds'] ?? [];
-
-
+          if (args['selectedQualitiesIds'] != null) {
+            selectedQualitiesIds = List<int>.from(args['selectedQualitiesIds']);
+          }
       });
     }
   }

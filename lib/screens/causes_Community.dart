@@ -63,7 +63,10 @@ final List<String> selectedcauses = [];
           selectedHabitIds=args['selectedHabbits'] ?? [];
           selectedKidsIds=args['selectedKidsIds'] ?? [];
           selectedReligionIds=args['selectedReligionIds'] ?? [];
-          selectedcausesIds=args['selectedCausesIds'] ?? [];
+          if (args['selectedCausesIds'] != null) {
+            selectedcausesIds = List<int>.from(args['selectedCausesIds']);
+          }
+
       });
     }
   }

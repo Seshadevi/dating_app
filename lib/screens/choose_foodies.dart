@@ -53,8 +53,9 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
           selectedGenderIds=args['selectedGenderIds'] ?? [];
           selectedoptionIds=args['selectedoptionIds'] ?? [];
           selectedheight=args['selectedheight'] ?? 154;
-          selectedInterestIds=args['selectedinterestIds'] ?? [] ;
-
+          if (args.containsKey('selectedinterestIds') && args['selectedinterestIds'] != null) {
+            selectedInterestIds = List<int>.from(args['selectedinterestIds']);
+          }
       });
     }
   }

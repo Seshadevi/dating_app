@@ -60,7 +60,9 @@ class _ReligionSelectorWidgetState extends ConsumerState<ReligionSelectorWidget>
           selectedQualitiesIds=args['selectedQualitiesIds'] ?? [];
           selectedHabitIds=args['selectedHabbits'] ?? [];
           selectedKidsIds=args['selectedKidsIds'] ?? [];
-          selectedReligionIds = args['selectedReligionIds'] ?? [];
+          if (args['selectedReligionIds'] != null) {
+            selectedReligionIds = List<int>.from(args['selectedReligionIds']);
+          }
 
 
       });

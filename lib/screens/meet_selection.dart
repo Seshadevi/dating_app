@@ -47,7 +47,12 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
           showonprofile = args['showonprofile'] ?? true;
           modeid=args['modeid'] ?? 0;
           modename =args['modename'] ?? '';
-          selectedGenderIds=args['selectedGenderIds'] ?? [];
+          if (args.containsKey('selectedGenderIds') &&
+              args['selectedGenderIds'] is List &&
+              args['selectedGenderIds'] != null) {
+            selectedGenderIds = List<String>.from(args['selectedGenderIds']);
+          }
+
       });
     }
   }

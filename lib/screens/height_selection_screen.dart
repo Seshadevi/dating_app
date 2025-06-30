@@ -50,8 +50,11 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
           modename =args['modename'] ?? '';
           selectedGenderIds=args['selectedGenderIds'] ?? [];
           selectedoptionIds=args['selectedoptionIds'] ?? [];
-          _selectedHeight=args['selectedheight'] ?? 154 ;
-
+          if (args.containsKey('selectedheight') && args['selectedheight'] != null) {
+            _selectedHeight = args['selectedheight'] is int
+                ? args['selectedheight']
+                : int.tryParse(args['selectedheight'].toString()) ?? 154;
+          }
       });
     }
   }

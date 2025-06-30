@@ -47,7 +47,11 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
           modeid=args['modeid'] ?? 0;
           modename =args['modename'] ?? '';
           selectedGenderIds=args['selectedGenderIds'] ?? [];
-          selectedOptionIds=args['selectedoptionIds'] ?? [];
+          if (args.containsKey('selectedoptionIds') &&
+              args['selectedoptionIds'] != null &&
+              args['selectedoptionIds'] is List) {
+            selectedOptionIds = List<int>.from(args['selectedoptionIds']);
+          }
 
       });
     }

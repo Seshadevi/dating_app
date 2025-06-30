@@ -296,45 +296,68 @@ Future<int> signupuserApi({
     request.fields['mobile'] = mobile;
 
     // // Safe list fields (skip empty ones)
-    // if (selectedGenderIds.isNotEmpty) {
-    //   request.fields['genderIdentities'] = selectedGenderIds.join(',');
-    // }
-
-    if (selectionOptionIds.isNotEmpty) {
-      request.fields['lookingFor'] = selectionOptionIds.whereType<int>().join(',');
+    if (selectedGenderIds.isNotEmpty) {
+       for (int i = 0; i < selectedGenderIds.length; i++) {
+        request.fields['genderIdentities[$i]'] = selectedGenderIds[i];
+       }
     }
 
-    // if (selectedInterestIds.isNotEmpty) {
-    //   request.fields['interests'] = selectedInterestIds.whereType<int>().join(',');
-    // }
+    if (selectionOptionIds.isNotEmpty) {
+      // With this loop
+        for (int i = 0; i < selectionOptionIds.length; i++) {
+          request.fields['lookingFor[$i]'] = selectionOptionIds[i].toString();
+        }
+    }
 
-    // if (selectedqualitiesIDs.isNotEmpty) {
-    //   request.fields['qualities'] = selectedqualitiesIDs.whereType<int>().join(',');
-    // }
+    if (selectedInterestIds.isNotEmpty) {
+       for (int i = 0; i < selectedInterestIds.length; i++) {
+          request.fields['interests[$i]'] = selectedInterestIds[i].toString();
+       }
+    }
 
-    // if (selectedhabbits.isNotEmpty) {
-    //   request.fields['drinking'] = selectedhabbits.whereType<int>().join(',');
-    // }
+    if (selectedqualitiesIDs.isNotEmpty) {
+      for (int i = 0; i < selectedqualitiesIDs.length; i++) {
+         request.fields['qualities[$i]'] = selectedqualitiesIDs[i].toString();
+      }
+    }
 
-    // if (selectedkids.isNotEmpty) {
-    //   request.fields['kids'] = selectedkids.whereType<int>().join(',');
-    // }
+    if (selectedhabbits.isNotEmpty) {
+      for (int i = 0; i < selectedhabbits.length; i++) {
+        request.fields['drinking[$i]'] = selectedhabbits[i].toString();
+      }
+    }
 
-    // if (selectedreligions.isNotEmpty) {
-    //   request.fields['religions'] = selectedreligions.whereType<int>().join(',');
-    // }
+    if (selectedkids.isNotEmpty) {
+      for (int i = 0; i < selectedkids.length; i++) {
+        request.fields['kids[$i]'] = selectedkids[i].toString();
+      }
 
-    // if (selectedcauses.isNotEmpty) {
-    //   request.fields['causesAndCommunities'] = selectedcauses.whereType<int>().join(',');
-    // }
+    }
 
-    // if (seletedprompts.isNotEmpty) {
-    //   request.fields['prompts'] = seletedprompts.values.toList().join(',');
-    // }
+    if (selectedreligions.isNotEmpty) {
+      for (int i = 0; i < selectedreligions.length; i++) {
+        request.fields['religions[$i]'] = selectedreligions[i].toString();
+      }
+    }
 
-    // if (defaultmessages.isNotEmpty) {
-    //   request.fields['defaultMessages'] = defaultmessages.whereType<int>().join(',');
-    // }
+    if (selectedcauses.isNotEmpty) {
+      for (int i = 0; i < selectedcauses.length; i++) {
+        request.fields['causesAndCommunities[$i]'] = selectedcauses[i].toString();
+      }
+    }
+
+    if (seletedprompts.isNotEmpty) {
+      // Prompts (Map<int, String>)
+      seletedprompts.forEach((key, value) {
+        request.fields['prompts[$key]'] = value;
+      });
+    }
+
+    if (defaultmessages.isNotEmpty) {
+     for (int i = 0; i < defaultmessages.length; i++) {
+        request.fields['defaultMessages[$i]'] = defaultmessages[i].toString();
+      }
+    }
 
     // Upload images (only jpg/png/jpeg)
     for (int i = 0; i < choosedimages.length; i++) {

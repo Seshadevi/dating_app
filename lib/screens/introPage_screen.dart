@@ -16,7 +16,6 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
   String? mobile;
   double? latitude;
   double? longitude;
-  // String userName = '';
   String _month = '';
   String _day = '';
   String _year = '';
@@ -33,7 +32,9 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
          mobile= args['mobile'] ?? '';
          latitude=args['latitude'] ?? 0.0;
          longitude=args['longitude']?? 0.0;
-         _nameController.text=args['userName'] ?? '';
+         if (_nameController.text.isEmpty && args['userName'] != null && args['userName'].toString().isNotEmpty) {
+            _nameController.text = args['userName'];
+          }
          dateOfBirth =args['dateofbirth'] ?? '';
      
       });

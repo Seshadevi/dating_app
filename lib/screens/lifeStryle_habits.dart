@@ -60,7 +60,10 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
           selectedheight=args['selectedheight'] ?? 154;
           selectedinterestsIds=args['selectedinterestIds'] ?? [];
           selectedQualitiesIds=args['selectedQualitiesIds'] ?? [];
-          selectedHabitIds=args['selectedHabbits'] ?? [];
+          if (args['selectedHabbits'] != null) {
+            selectedHabitIds = List<int>.from(args['selectedHabbits']);
+          }
+
 
       });
     }

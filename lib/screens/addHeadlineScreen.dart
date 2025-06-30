@@ -68,7 +68,9 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
           seletedprompts = args['selectedPrompts'] ?? {};
           selectedIndexes=args['selectedmessagesIds'] ?? [];
            selectedImages = (args['selectedImages'] as List<File?>?) ?? List.filled(6, null);
-          finalHeadline=args['finalHeadline'] ?? '';
+           if (args['finalHeadline'] != null && args['finalHeadline'].toString().isNotEmpty) {
+            finalHeadline = args['finalHeadline'];
+          }
       });
     }
   }

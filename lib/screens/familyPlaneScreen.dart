@@ -59,8 +59,9 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
           selectedinterestsIds=args['selectedinterestIds'] ?? [];
           selectedQualitiesIds=args['selectedQualitiesIds'] ?? [];
           selectedHabitIds=args['selectedHabbits'] ?? [];
-          selectedKidsIds =args[''] ?? [];
-
+          if (args['selectedKidsIds'] != null) {
+            selectedKidsIds = List<int>.from(args['selectedKidsIds']);
+          }
 
       });
     }

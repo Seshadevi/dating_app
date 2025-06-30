@@ -67,7 +67,9 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
           selectedKidsIds=args['selectedKidsIds'] ?? [];
           selectedReligionIds=args['selectedReligionIds'] ?? [];
           selectedcausesIds =args['selectedCausesIds'] ?? [];
-          selectedPrompts =args['selectedPrompts'] ?? {};
+          if (args['selectedPrompts'] != null && args['selectedPrompts'] is Map<int, String>) {
+            selectedPrompts = Map<int, String>.from(args['selectedPrompts']);
+          }
 
       });
     }
@@ -416,42 +418,38 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
     );
   }
 
-  void _addPrompt(int index, String promptText) async {
-  final result = await Navigator.push<String>(
-    context,
-    MaterialPageRoute(
-      builder: (context) => PromptEditScreen(
-        promptText: promptText,
+  void _addPrompt(int index, String promptText) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PromptEditScreen(
+          promptText: promptText,
+          onSave: (answer) {
+            setState(() {
+              selectedPrompts[index] = answer;
+            });
+          },
+        ),
       ),
-    ),
-  );
-
-  if (result != null && result.isNotEmpty) {
-    setState(() {
-      selectedPrompts[index] = result;
-    });
+    );
   }
-}
 
-
-  void _editPrompt(int index, String promptText) async {
-  final result = await Navigator.push<String>(
-    context,
-    MaterialPageRoute(
-      builder: (context) => PromptEditScreen(
-        promptText: promptText,
-        initialAnswer: selectedPrompts[index] ?? '',
+  void _editPrompt(int index, String promptText) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PromptEditScreen(
+          promptText: promptText,
+          initialAnswer: selectedPrompts[index] ?? '',
+          onSave: (answer) {
+            setState(() {
+              selectedPrompts[index] = answer;
+            });
+          },
+        ),
       ),
-    ),
-  );
-
-  if (result != null && result.isNotEmpty) {
-    setState(() {
-      selectedPrompts[index] = result;
-    });
+    );
   }
-}
-
 
   void _deletePrompt(int index) {
     setState(() {

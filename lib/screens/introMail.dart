@@ -29,7 +29,9 @@ void didChangeDependencies() {
   if (!_isInitialized) {
     final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     if (args != null) {
-      emailController.text = args['email'] ??'';
+      if (args.containsKey('email') && args['email'] != null && args['email'].toString().isNotEmpty) {
+        emailController.text = args['email'];
+      }
       mobile = args['mobile'] ?? '';
       latitude = args['latitude'] ?? 0.0 ;
       longitude = args['longitude'] ?? 0.0 ;

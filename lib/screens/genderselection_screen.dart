@@ -33,7 +33,9 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
          longitude=args['longitude']?? 0.0;
          dateofbirth=args['dateofbirth'] ?? '';
          userName=args['userName'] ?? '';
-         selectedGender=args['selectgender'] ?? '' ;
+         if (args['selectgender'] != null && args['selectgender'] is String) {
+          selectedGender = args['selectgender'];
+        }
      
       });
     }
