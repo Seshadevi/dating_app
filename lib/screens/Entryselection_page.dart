@@ -217,9 +217,8 @@ class _SelectPageState extends ConsumerState<SelectPage> {
                     print('............$result');
                   }
                 } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("Facebook login error: $e")),
-
                   );
                   print('............$e');
                 }
