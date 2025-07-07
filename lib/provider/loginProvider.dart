@@ -17,61 +17,62 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
   final Ref ref;
   PhoneAuthNotifier(this.ref) : super(UserModel.initial());
 
+  Future<bool> tryAutoLogin() async {
+    final prefs = await SharedPreferences.getInstance();
 
- Future<bool> tryAutoLogin() async {
-  final prefs = await SharedPreferences.getInstance();
-
-  // Check if the 'userData' key exists in SharedPreferences
-  if (!prefs.containsKey('userData')) {
-    print('No user data found. tryAutoLogin is set to false.');
-    return false;
-  }
-
-  try {
-    // Retrieve and decode the user data from SharedPreferences
-    final extractedData = json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
-    print("Extracted data from SharedPreferences: $extractedData");
-
-    // Validate that all necessary keys exist in the extracted data
-    if (extractedData.containsKey('statusCode') &&
-        extractedData.containsKey('success') &&
-        extractedData.containsKey('messages') &&
-        extractedData.containsKey('data')) {
-      
-      // Map the JSON data to the UserModel
-      final userModel = UserModel.fromJson(extractedData);
-      print("User Model from SharedPreferences: $userModel");
-
-      // Validate nested data structure
-      if (userModel.data != null && userModel.data!.isNotEmpty) {
-        final firstData = userModel.data![0]; // Access the first element in the list
-        if (firstData.user == null || firstData.accessToken == null) {
-          print('Invalid user data structure inside SharedPreferences.');
-          return false;
-        }
-      }
-
-      // Update the state with the decoded user data
-      state = state.copyWith(
-        statusCode: userModel.statusCode,
-        success: userModel.success,
-        messages: userModel.messages,
-        data: userModel.data,
-      );
-
-      print('User ID from auto-login: ${state.data?[0].user?.id}'); // Accessing User ID from the first Data object
-      return true;
-    } else {
-      print('Necessary fields are missing in SharedPreferences.');
+    // Check if the 'userData' key exists in SharedPreferences
+    if (!prefs.containsKey('userData')) {
+      print('No user data found. tryAutoLogin is set to false.');
       return false;
     }
-  } catch (e, stackTrace) {
-    // Log the error for debugging purposes
-    print('Error while parsing user data: $e');
-    print(stackTrace);
-    return false;
+
+    try {
+      // Retrieve and decode the user data from SharedPreferences
+      final extractedData =
+          json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
+      print("Extracted data from SharedPreferences: $extractedData");
+
+      // Validate that all necessary keys exist in the extracted data
+      if (extractedData.containsKey('statusCode') &&
+          extractedData.containsKey('success') &&
+          extractedData.containsKey('messages') &&
+          extractedData.containsKey('data')) {
+        // Map the JSON data to the UserModel
+        final userModel = UserModel.fromJson(extractedData);
+        print("User Model from SharedPreferences: $userModel");
+
+        // Validate nested data structure
+        if (userModel.data != null && userModel.data!.isNotEmpty) {
+          final firstData =
+              userModel.data![0]; // Access the first element in the list
+          if (firstData.user == null || firstData.accessToken == null) {
+            print('Invalid user data structure inside SharedPreferences.');
+            return false;
+          }
+        }
+
+        // Update the state with the decoded user data
+        state = state.copyWith(
+          statusCode: userModel.statusCode,
+          success: userModel.success,
+          messages: userModel.messages,
+          data: userModel.data,
+        );
+
+        print(
+            'User ID from auto-login: ${state.data?[0].user?.id}'); // Accessing User ID from the first Data object
+        return true;
+      } else {
+        print('Necessary fields are missing in SharedPreferences.');
+        return false;
+      }
+    } catch (e, stackTrace) {
+      // Log the error for debugging purposes
+      print('Error while parsing user data: $e');
+      print(stackTrace);
+      return false;
+    }
   }
-}
 
   Future<bool> verifyPhoneNumber(String phoneNumber, WidgetRef ref) async {
     print('Phone number: $phoneNumber');
@@ -79,36 +80,33 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
     var loader = ref.read(loadingProvider.notifier);
     var codeSentNotifier = ref.read(codeSentProvider.notifier);
     var pref = await SharedPreferences.getInstance();
-       // Use a Completer to handle the async callbacks
-  Completer<bool> completer = Completer<bool>();
+    // Use a Completer to handle the async callbacks
+    Completer<bool> completer = Completer<bool>();
     try {
       print('Starting phone verification...');
       await auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
-        
         verificationCompleted: (PhoneAuthCredential credential) async {
-          
           print('Verification completed automatically.');
           await auth.signInWithCredential(credential);
-           if (!completer.isCompleted) {
-          completer.complete(true);
-        }
+          if (!completer.isCompleted) {
+            completer.complete(true);
+          }
         },
         verificationFailed: (FirebaseAuthException e) {
-          
           print("Verification failed: ${e.message}");
-            if (!completer.isCompleted) {
-          completer.complete(false);
-        }
+          if (!completer.isCompleted) {
+            completer.complete(false);
+          }
         },
         codeSent: (String verificationId, int? resendToken) {
           print("Code sent. Verification ID: $verificationId");
           pref.setString("verificationid", verificationId);
           ref.read(verificationIdProvider.notifier).state = verificationId;
           //codeSentNotifier.state = true;
-           if (!completer.isCompleted) {
-          completer.complete(true);
-        }
+          if (!completer.isCompleted) {
+            completer.complete(true);
+          }
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           print("Auto-retrieval timeout. Verification ID: $verificationId");
@@ -119,9 +117,9 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
       loader.state = false;
       print("Error during phone verification: $e");
       if (!completer.isCompleted) {
-      completer.complete(false);
-    }
-    return false;
+        completer.complete(false);
+      }
+      return false;
     }
   }
 
@@ -168,246 +166,242 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
   //   }
   // }
 
- Future<int> sendPhoneNumberAndRoleToAPI(String phoneNumber) async {
-  const String apiUrl = Dgapi.userExisting;
-  final prefs = await SharedPreferences.getInstance();
-  print('Sending phone number to API: $phoneNumber');
+  Future<int> sendPhoneNumberAndRoleToAPI(String phoneNumber) async {
+    const String apiUrl = Dgapi.userExisting;
+    final prefs = await SharedPreferences.getInstance();
+    print('Sending phone number to API: $phoneNumber');
 
-  try {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: json.encode({"mobile": phoneNumber}),
-    );
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({"mobile": phoneNumber}),
+      );
 
-    print("API Response: ${response.body}");
+      print("API Response: ${response.body}");
 
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      final userDetails = json.decode(response.body);
-      if (userDetails != null && userDetails['data'] != null) {
-        final userModel = UserModel.fromJson(userDetails);
-        state = userModel;
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final userDetails = json.decode(response.body);
+        if (userDetails != null && userDetails['data'] != null) {
+          final userModel = UserModel.fromJson(userDetails);
+          state = userModel;
 
-        final userData = json.encode(userDetails);
-        await prefs.setString('userData', userData);
-        print('User data saved in SharedPreferences.');
-        return response.statusCode; // success
+          final userData = json.encode(userDetails);
+          await prefs.setString('userData', userData);
+          print('User data saved in SharedPreferences.');
+          return response.statusCode; // success
+        } else {
+          return 400; // invalid/missing data
+        }
       } else {
-        return 400; // invalid/missing data
+        print("API Error: ${response.statusCode}");
+        return response.statusCode; // forward status for handling
       }
-    } else {
-      print("API Error: ${response.statusCode}");
-      return response.statusCode; // forward status for handling
+    } catch (e) {
+      print("Exception during API call: $e");
+      return 500; // server or network error
     }
-  } catch (e) {
-    print("Exception during API call: $e");
-    return 500; // server or network error
   }
-}
 
-  Future<int> sendemailToAPI(String email
-  ) async {
-  const String apiUrl = Dgapi.userExisting;
-  final prefs = await SharedPreferences.getInstance();
-  print('Sending email to API: $email');
+  Future<int> sendemailToAPI(String email) async {
+    const String apiUrl = Dgapi.userExisting;
+    final prefs = await SharedPreferences.getInstance();
+    print('Sending email to API: $email');
 
-  try {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      body: json.encode({"email": email}),
-      headers: {'Content-Type': 'application/json'},
-    );
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        body: json.encode({"email": email}),
+        headers: {'Content-Type': 'application/json'},
+      );
 
-    print("API Response: ${response.body}");
+      print("API Response: ${response.body}");
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final userDetails = json.decode(response.body);
-      if (userDetails != null && userDetails['data'] != null) {
-        final userModel = UserModel.fromJson(userDetails);
-        state = userModel;
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final userDetails = json.decode(response.body);
+        if (userDetails != null && userDetails['data'] != null) {
+          final userModel = UserModel.fromJson(userDetails);
+          state = userModel;
 
-        final userData = json.encode(userDetails);
-        await prefs.setString('userData', userData);
+          final userData = json.encode(userDetails);
+          await prefs.setString('userData', userData);
 
-        return response.statusCode; // 200 or 201
+          return response.statusCode; // 200 or 201
+        } else {
+          return 400; // malformed data, treat like bad request
+        }
       } else {
-        return 400; // malformed data, treat like bad request
+        return response.statusCode; // 400 or 500 etc.
       }
-    } else {
-      return response.statusCode; // 400 or 500 etc.
+    } catch (e) {
+      print("Exception: $e");
+      return 500; // fallback for exception
     }
-  } catch (e) {
-    print("Exception: $e");
-    return 500; // fallback for exception
   }
-}
 
-Future<int> signupuserApi({
-  required String email,
-  required String mobile,
-  required double latitude,
-  required double longitude,
-  required String userName,
-  required String dateOfBirth,
-  required String selectedGender,
-  required bool showGenderOnProfile,
-  required int? modeid,
-  required String? modename,
-  required List<String> selectedGenderIds,
-  required List<int> selectionOptionIds,
-  required int selectedHeight,
-  required List<int> selectedInterestIds,
-  required List<int> selectedqualitiesIDs,
-  required List<int> selectedhabbits,
-  required List<int> selectedkids,
-  required List<int> selectedreligions,
-  required List<int> selectedcauses,
-  required Map<int, String> seletedprompts,
-  required List<File?> choosedimages,
-  required List<int> defaultmessages,
-  required String? finalheadline,
-  required bool termsAndCondition,
+  Future<int> signupuserApi({
+    required String email,
+    required String mobile,
+    required double latitude,
+    required double longitude,
+    required String userName,
+    required String dateOfBirth,
+    required String selectedGender,
+    required bool showGenderOnProfile,
+    required int? modeid,
+    required String? modename,
+    required List<String> selectedGenderIds,
+    required List<int> selectionOptionIds,
+    required int selectedHeight,
+    required List<int> selectedInterestIds,
+    required List<int> selectedqualitiesIDs,
+    required List<int> selectedhabbits,
+    required List<int> selectedkids,
+    required List<int> selectedreligions,
+    required List<int> selectedcauses,
+    required Map<int, String> seletedprompts,
+    required List<File?> choosedimages,
+    required List<int> defaultmessages,
+    required String? finalheadline,
+    required bool termsAndCondition,
+  }) async {
+    const String apiUrl = Dgapi.login;
+    final prefs = await SharedPreferences.getInstance();
 
-}) async {
+    print("✅ Proceeding with API request...");
+    print(
+        'sign in data.........email:$email,mobile:$mobile,latitude:$latitude,longitude:$longitude,Name:$userName,dob:$dateOfBirth,selectedgender:$selectedGender:');
+    print(
+        'data.......show:$showGenderOnProfile,height:$selectedHeight,headline:$finalheadline,images:${choosedimages.length},');
 
-  const String apiUrl = Dgapi.login;
-  final prefs = await SharedPreferences.getInstance();
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
 
-  print("✅ Proceeding with API request...");
+      // Basic fields
+      request.fields['email'] = email;
+      request.fields['latitude'] = latitude.toString();
+      request.fields['longitude'] = longitude.toString();
+      request.fields['firstName'] = userName;
+      request.fields['dob'] = dateOfBirth;
+      request.fields['role'] = "user";
+      request.fields['gender'] = "male";
+      request.fields['showOnProfile'] = showGenderOnProfile.toString();
+      request.fields['mode'] = modename ?? '';
+      request.fields['height'] = selectedHeight.toString();
+      request.fields['headLine'] = finalheadline ?? '';
+      request.fields['termsAndConditions'] = termsAndCondition.toString();
+      request.fields['mobile'] = mobile;
 
-  try {
-    var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
+      // // Safe list fields (skip empty ones)
+      if (selectedGenderIds.isNotEmpty) {
+        for (int i = 0; i < selectedGenderIds.length; i++) {
+          request.fields['genderIdentities[$i]'] = selectedGenderIds[i];
+        }
+      }
 
-    // Basic fields
-    request.fields['email'] = email;
-    request.fields['latitude'] = latitude.toString();
-    request.fields['longitude'] = longitude.toString();
-    request.fields['firstName'] = userName;
-    request.fields['dob'] = dateOfBirth;
-    request.fields['role'] = "user";
-    request.fields['gender'] = "male";
-    request.fields['showOnProfile'] = showGenderOnProfile.toString();
-    request.fields['mode'] = modename ?? '';
-    request.fields['height'] = selectedHeight.toString();
-    request.fields['headLine'] = finalheadline ?? '';
-    request.fields['termsAndConditions'] = termsAndCondition.toString();
-    request.fields['mobile'] = mobile;
-
-    // // Safe list fields (skip empty ones)
-    if (selectedGenderIds.isNotEmpty) {
-       for (int i = 0; i < selectedGenderIds.length; i++) {
-        request.fields['genderIdentities[$i]'] = selectedGenderIds[i];
-       }
-    }
-
-    if (selectionOptionIds.isNotEmpty) {
-      // With this loop
+      if (selectionOptionIds.isNotEmpty) {
+        // With this loop
         for (int i = 0; i < selectionOptionIds.length; i++) {
           request.fields['lookingFor[$i]'] = selectionOptionIds[i].toString();
         }
-    }
+      }
 
-    if (selectedInterestIds.isNotEmpty) {
-       for (int i = 0; i < selectedInterestIds.length; i++) {
+      if (selectedInterestIds.isNotEmpty) {
+        for (int i = 0; i < selectedInterestIds.length; i++) {
           request.fields['interests[$i]'] = selectedInterestIds[i].toString();
-       }
-    }
-
-    if (selectedqualitiesIDs.isNotEmpty) {
-      for (int i = 0; i < selectedqualitiesIDs.length; i++) {
-         request.fields['qualities[$i]'] = selectedqualitiesIDs[i].toString();
-      }
-    }
-
-    if (selectedhabbits.isNotEmpty) {
-      for (int i = 0; i < selectedhabbits.length; i++) {
-        request.fields['drinking[$i]'] = selectedhabbits[i].toString();
-      }
-    }
-
-    if (selectedkids.isNotEmpty) {
-      for (int i = 0; i < selectedkids.length; i++) {
-        request.fields['kids[$i]'] = selectedkids[i].toString();
-      }
-
-    }
-
-    if (selectedreligions.isNotEmpty) {
-      for (int i = 0; i < selectedreligions.length; i++) {
-        request.fields['religions[$i]'] = selectedreligions[i].toString();
-      }
-    }
-
-    if (selectedcauses.isNotEmpty) {
-      for (int i = 0; i < selectedcauses.length; i++) {
-        request.fields['causesAndCommunities[$i]'] = selectedcauses[i].toString();
-      }
-    }
-
-    if (seletedprompts.isNotEmpty) {
-      // Prompts (Map<int, String>)
-      seletedprompts.forEach((key, value) {
-        request.fields['prompts[$key]'] = value;
-      });
-    }
-
-    if (defaultmessages.isNotEmpty) {
-     for (int i = 0; i < defaultmessages.length; i++) {
-        request.fields['defaultMessages[$i]'] = defaultmessages[i].toString();
-      }
-    }
-
-    // Upload images (only jpg/png/jpeg)
-    for (int i = 0; i < choosedimages.length; i++) {
-      final image = choosedimages[i];
-
-      if (image != null && await image.exists()) {
-        final filePath = image.path;
-        final fileExtension = filePath.split('.').last.toLowerCase();
-
-        MediaType? contentType;
-        if (fileExtension == 'jpg' || fileExtension == 'jpeg') {
-          contentType = MediaType('image', 'jpeg');
-        } else if (fileExtension == 'png') {
-          contentType = MediaType('image', 'png');
-        } else {
-          print('❌ Unsupported file type: $filePath');
-          continue;
         }
-
-        final multipartFile = await http.MultipartFile.fromPath(
-          'profilePic',
-          filePath,
-          contentType: contentType,
-        );
-
-        request.files.add(multipartFile);
       }
+
+      if (selectedqualitiesIDs.isNotEmpty) {
+        for (int i = 0; i < selectedqualitiesIDs.length; i++) {
+          request.fields['qualities[$i]'] = selectedqualitiesIDs[i].toString();
+        }
+      }
+
+      if (selectedhabbits.isNotEmpty) {
+        for (int i = 0; i < selectedhabbits.length; i++) {
+          request.fields['drinking[$i]'] = selectedhabbits[i].toString();
+        }
+      }
+
+      if (selectedkids.isNotEmpty) {
+        for (int i = 0; i < selectedkids.length; i++) {
+          request.fields['kids[$i]'] = selectedkids[i].toString();
+        }
+      }
+
+      if (selectedreligions.isNotEmpty) {
+        for (int i = 0; i < selectedreligions.length; i++) {
+          request.fields['religions[$i]'] = selectedreligions[i].toString();
+        }
+      }
+
+      if (selectedcauses.isNotEmpty) {
+        for (int i = 0; i < selectedcauses.length; i++) {
+          request.fields['causesAndCommunities[$i]'] =
+              selectedcauses[i].toString();
+        }
+      }
+
+      if (seletedprompts.isNotEmpty) {
+        // Prompts (Map<int, String>)
+        seletedprompts.forEach((key, value) {
+          request.fields['prompts[$key]'] = value;
+        });
+      }
+
+      if (defaultmessages.isNotEmpty) {
+        for (int i = 0; i < defaultmessages.length; i++) {
+          request.fields['defaultMessages[$i]'] = defaultmessages[i].toString();
+        }
+      }
+
+      // Upload images (only jpg/png/jpeg)
+      for (int i = 0; i < choosedimages.length; i++) {
+        final image = choosedimages[i];
+
+        if (image != null && await image.exists()) {
+          final filePath = image.path;
+          final fileExtension = filePath.split('.').last.toLowerCase();
+
+          MediaType? contentType;
+          if (fileExtension == 'jpg' || fileExtension == 'jpeg') {
+            contentType = MediaType('image', 'jpeg');
+          } else if (fileExtension == 'png') {
+            contentType = MediaType('image', 'png');
+          } else {
+            print('❌ Unsupported file type: $filePath');
+            continue;
+          }
+
+          final multipartFile = await http.MultipartFile.fromPath(
+            'profilePic',
+            filePath,
+            contentType: contentType,
+          );
+
+          request.files.add(multipartFile);
+        }
+      }
+
+      // Send the request
+      final response = await request.send();
+      final responseBody = await response.stream.bytesToString();
+
+      print("🔄 API Response: $responseBody");
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        await prefs.setBool("isSignedUp", true);
+        return response.statusCode;
+      } else {
+        print("❌ Signup failed with status: ${response.statusCode}");
+        return response.statusCode;
+      }
+    } catch (e) {
+      print("❗ Exception during signup: $e");
+      return 500;
     }
-
-    // Send the request
-    final response = await request.send();
-    final responseBody = await response.stream.bytesToString();
-
-    print("🔄 API Response: $responseBody");
-
-
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      await prefs.setBool("isSignedUp", true);
-      return response.statusCode;
-    } else {
-      print("❌ Signup failed with status: ${response.statusCode}");
-      return response.statusCode;
-    }
-  } catch (e) {
-    print("❗ Exception during signup: $e");
-    return 500;
   }
-}
-
-
 
   Future<String> restoreAccessToken() async {
     const url = Dgapi.refreshToken;

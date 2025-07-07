@@ -71,7 +71,11 @@ class _OTPScreenState extends ConsumerState<OTPScreen> {
       final statusCode = await ref.read(loginProvider.notifier).sendPhoneNumberAndRoleToAPI(phoneNumber);
 
       if (statusCode == 200 || statusCode == 201) {
-        Navigator.push(context,MaterialPageRoute(builder: (context) => ProfileScreen())); // or your home screen
+         Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => ProfileScreen()),
+          (route) => false,
+        );
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Welcome $phoneNumber!")),
         );

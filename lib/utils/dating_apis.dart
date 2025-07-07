@@ -17,6 +17,7 @@ class Dgapi {
   static const String refreshToken = "$baseUrl/auth/refresh-token";
   static const String interests = "$baseUrl/user/getAllInterests";
   static const String peoplesAll= "$baseUrl/users/all";
+  static const String plans= "$baseUrl/admin/plan/get";
    
   
 } 

@@ -1,4 +1,5 @@
 import 'package:dating/model/peoples_all_model.dart';
+import 'package:dating/model/plans/plans.dart';
 import 'package:dating/provider/loader.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/utils/dating_apis.dart';
@@ -8,11 +9,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/retry.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class PeoplesAllProvider extends StateNotifier<PeoplesAllModel> {
+class PlansProvider extends StateNotifier<PlansModel> {
   final Ref ref;
-  PeoplesAllProvider(this.ref) : super(PeoplesAllModel.initial());
+  PlansProvider(this.ref) : super(PlansModel.initial());
 
-  Future<void> getPeoplesAll() async {
+  Future<void> getPlans() async {
     final loadingState = ref.read(loadingProvider.notifier);
     final prefs = await SharedPreferences.getInstance();
 
@@ -61,7 +62,7 @@ class PeoplesAllProvider extends StateNotifier<PeoplesAllModel> {
 
       // ✅ Now use the possibly updated token here
       final response = await client.get(
-        Uri.parse(Dgapi.peoplesAll),
+        Uri.parse(Dgapi.plans),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -70,35 +71,35 @@ class PeoplesAllProvider extends StateNotifier<PeoplesAllModel> {
 
       final responseBody = response.body;
 
-      print('Get peoples Status Code: ${response.statusCode}');
-      print('Get peoples Response Body: $responseBody');
+      print('Get plans Status Code: ${response.statusCode}');
+      print('Get plans Response Body: $responseBody');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         try {
           final res = jsonDecode(responseBody);
-          final usersData = PeoplesAllModel.fromJson(res);
+          final usersData = PlansModel.fromJson(res);
           state = usersData;
 
           await prefs.setString('userData', jsonEncode(res));
 
-          print("peoples fetched successfully: ${usersData}");
+          print("plans fetched successfully: ${usersData}");
         } catch (e) {
           print("Invalid response format: $e");
           throw Exception("Error parsing peoples.");
         }
       } else {
-        print("Error fetching peoples: ${response.body}");
-        throw Exception("Error fetching peoples: ${response.body}");
+        print("Error fetching plans: ${response.body}");
+        throw Exception("Error fetching plans: ${response.body}");
       }
     } catch (e) {
-      print("Failed to fetch peoples: $e");
+      print("Failed to fetch plans: $e");
     } finally {
       loadingState.state = false;
     }
   }
 }
 
-final peoplesProvider =
-    StateNotifierProvider<PeoplesAllProvider, PeoplesAllModel>((ref) {
-  return PeoplesAllProvider(ref);
+final plansProvider =
+    StateNotifierProvider<PlansProvider, PlansModel>((ref) {
+  return PlansProvider(ref);
 });
