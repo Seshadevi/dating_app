@@ -175,54 +175,58 @@ class _SelectPageState extends ConsumerState<SelectPage> {
             isSmallScreen,
            
               () async {
-                try {
-                  final LoginResult result = await FacebookAuth.instance.login();
+                  try {
+                    final LoginResult result = await FacebookAuth.instance.login();
 
-                  if (result.status == LoginStatus.success) {
-                    final userData = await FacebookAuth.instance.getUserData(fields: "email,name");
+                    if (!context.mounted) return; // 🔐 protect context after await
 
-                    final email = userData['email'];
-                    if (email != null) {
-                      final statusCode = await ref.read(loginProvider.notifier).sendemailToAPI(email);
+                    if (result.status == LoginStatus.success) {
+                      final userData = await FacebookAuth.instance.getUserData(fields: "email,name");
 
-                      if (statusCode == 200 || statusCode == 201) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Welcome $email!")),
-                        );
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen()));
-                      } else if (statusCode == 400) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Invalid user. Please signup.")),
-                        );
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => LocationScreen()));
+                      final email = userData['email'];
+                      if (email != null) {
+                        final statusCode = await ref.read(loginProvider.notifier).sendemailToAPI(email);
+
+                        if (!context.mounted) return; // 🔐 again after await
+
+                        if (statusCode == 200 || statusCode == 201) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Welcome $email!")),
+                          );
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen()));
+                        } else if (statusCode == 400) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Invalid user. Please signup.")),
+                          );
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => LocationScreen()));
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Server error ($statusCode). Please try again later.")),
+                          );
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Server error ($statusCode). Please try again later.")),
+                          const SnackBar(content: Text("Email not available from Facebook account.")),
                         );
                       }
+                    } else if (result.status == LoginStatus.cancelled) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Facebook login cancelled")),
+                      );
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Email not available from Facebook account.")),
+                        SnackBar(content: Text("Facebook login failed: ${result.message}")),
                       );
+                      print('............$result');
                     }
-                  } else if (result.status == LoginStatus.cancelled) {
+                  } catch (e) {
+                    if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Facebook login cancelled")),
+                      SnackBar(content: Text("Facebook login error: $e")),
                     );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Facebook login failed: ${result.message}")),
-                      
-                    );
-                    print('............$result');
+                    print('............$e');
                   }
-                } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Facebook login error: $e")),
-                  );
-                  print('............$e');
-                }
-              },
+                },
 
             //   print("Facebook Login Clicked");
             // },

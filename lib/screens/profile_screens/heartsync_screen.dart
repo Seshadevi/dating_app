@@ -314,7 +314,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage> {
             print("Pass tapped");
           },
           child: Image.asset(
-            "assets/usersstar.png",
+            "assets/usersstar1.png",
             width: 60,
             height: 120,
             fit: BoxFit.cover,

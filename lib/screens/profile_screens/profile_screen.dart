@@ -224,7 +224,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ),
                     ),
                     const SizedBox(
-                      height: 300,
+                      height: 500,
                       child: TabBarView(
                         children: [
                           PayPlanTab(),
