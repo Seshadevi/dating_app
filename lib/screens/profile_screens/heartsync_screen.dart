@@ -1,4 +1,5 @@
 import 'package:dating/model/peoples_all_model.dart';
+import 'package:dating/provider/likedislikeprovider.dart';
 import 'package:dating/provider/peoples_all_provider.dart';
 import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
 import 'package:flutter/material.dart';
@@ -198,10 +199,12 @@ void didUpdateWidget(covariant MyHeartsyncPage oldWidget) {
                                 });
 
                           
-                          if (direction == CardSwiperDirection.left) {
+                          if (direction == CardSwiperDirection.left) {//------------------------
                             _handleReject(previousIndex);
-                          } else if (direction == CardSwiperDirection.right) {
+
+                          } else if (direction == CardSwiperDirection.right) {//--------------------
                             _handleLike(previousIndex);
+
                           }
                           
                           return true;
@@ -336,10 +339,11 @@ if (!_hideFixedImage)
                   
                   // Action buttons
                   Positioned(
-                    top: 500,
-                    left: (MediaQuery.of(context).size.width - 220) / 1,
+                    top: 545,
+                    left:40,
+                    // left: (MediaQuery.of(context).size.width - 220) / 1,
                     child: SizedBox(
-                      width: 290,
+                      width: 250,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -357,13 +361,13 @@ if (!_hideFixedImage)
                           // ),
                           GestureDetector(
                             onTap: () {
-                              controller.swipe(CardSwiperDirection.right);
+                              // controller.swipe(CardSwiperDirection.right);
                               print("Like tapped");
                             },
                             child: Image.asset(
                               "assets/userslike.png",
-                              width: 80,
-                              height: 80,
+                              width: 50,
+                              height: 50,
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -387,7 +391,8 @@ if (!_hideFixedImage)
                   // User name and age overlay
                   Positioned(
                     bottom: 0,
-                    left: 0,
+                    top: 485,
+                    left:10,
                     right: 0,
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -591,32 +596,33 @@ if (!_hideFixedImage)
 
                               child: _buildActionButton(
                                 "assets/userscross.png",
-                                "",
-                                const Color.fromARGB(255, 202, 193, 192),
+                                // "",
+                                // const Color.fromARGB(255, 202, 193, 192),
                                 () {
                                   controller.swipe(CardSwiperDirection.left);
                                   _handleReject(currentCardIndex);
                                 },
                               ),
                             ),
-                           Positioned(
-                              top:200,
-                              child: _buildActionButton(
-                              "assets/usersstar.png",
-                              "",
-                              const Color.fromARGB(255, 234, 235, 236),
-                              key: _imageKey,
-                              () {
-                                controller.swipe(CardSwiperDirection.top);
-                                _handleSuperLike(currentCardIndex);
-                              },
-                            ),
-                           ),
+                           // ⭐ Super Like button → lift it upward
+          Transform.translate(
+            offset: const Offset(0, -40), // Move up by 20 pixels
+            child: _buildActionButton(
+              "assets/usersstar.png",
+              // "Super Like",
+              // Colors.blue,
+              () {
+                controller.swipe(CardSwiperDirection.top);
+                _handleSuperLike(currentCardIndex);
+              },
+              key: _imageKey,
+            ),
+          ),
                             _buildActionButton(
                               "assets/userslike.png",
                               
-                              "",
-                              const Color.fromARGB(255, 225, 227, 225),
+                              // "",
+                              // const Color.fromARGB(255, 225, 227, 225),
                               () {
                                 controller.swipe(CardSwiperDirection.right);
                                 _handleLike(currentCardIndex);
@@ -654,7 +660,7 @@ if (!_hideFixedImage)
                       ],
                     ),
                   ),
-                  const SizedBox(height: 100),
+                  // const SizedBox(height: 100),
                 ],
               ),
             ),
@@ -666,8 +672,8 @@ if (!_hideFixedImage)
 
   Widget _buildActionButton(
   String assetPath,
-  String label,
-  Color color,
+  // String label,
+  // Color color,
   VoidCallback onTap, {
   Key? key, // 
 }) {
@@ -682,7 +688,7 @@ if (!_hideFixedImage)
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: Colors.white,
-            border: Border.all(color: color.withOpacity(0.3), width: 2),
+            // border: Border.all(color: color.withOpacity(0.3), width: 2),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
@@ -699,14 +705,14 @@ if (!_hideFixedImage)
           ),
         ),
         const SizedBox(height: 8),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: color,
-          ),
-        ),
+        // Text(
+        //   // label,
+        //   style: TextStyle(
+        //     fontSize: 12,
+        //     fontWeight: FontWeight.w500,
+        //     // color: color,
+        //   ),
+        // ),
       ],
     ),
   );
@@ -847,21 +853,33 @@ if (!_hideFixedImage)
     }
   }
 
-  void _handleLike(int index) {
-    if (index < allUsers.length) {
-      final user = allUsers[index];
-      print('Liked user: ${user.firstName}');
-      // TODO: Add your like API call here
-    }
-  }
+ void _handleLike(int index) {
+  if (index < allUsers.length) {
+    final user = allUsers[index];
+    print('Liked user: ${user.firstName}');
 
-  void _handleReject(int index) {
-    if (index < allUsers.length) {
-      final user = allUsers[index];
-      print('Rejected user: ${user.firstName}');
-      // TODO: Add your reject API call here
-    }
+    // Trigger the like API via provider
+    ref.read(likedDislikeProvider.notifier).addLikeDislike(
+      user.id.toString(), // or just user.userId if it's already a String
+      'right',
+    );
   }
+}
+
+
+void _handleReject(int index) {
+  if (index < allUsers.length) {
+    final user = allUsers[index];
+    print('Rejected user: ${user.firstName}');
+
+    // Trigger the dislike API via provider
+    ref.read(likedDislikeProvider.notifier).addLikeDislike(
+      user.id.toString(), // ensure it's a string if your API expects one
+      'left',
+    );
+  }
+}
+
 
   void _handleSuperLike(int index) {
     if (index < allUsers.length) {
