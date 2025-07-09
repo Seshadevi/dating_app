@@ -284,7 +284,7 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
       request.fields['firstName'] = userName;
       request.fields['dob'] = dateOfBirth;
       request.fields['role'] = "user";
-      request.fields['gender'] = "male";
+      request.fields['gender'] = selectedGender;
       request.fields['showOnProfile'] = showGenderOnProfile.toString();
       request.fields['mode'] = modename ?? '';
       request.fields['height'] = selectedHeight.toString();

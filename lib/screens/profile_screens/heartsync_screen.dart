@@ -234,7 +234,7 @@ if (!_hideFixedImage)
                 ),
               ],
             ),
-      bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 2),
+      // bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 2),
     );
   }
 

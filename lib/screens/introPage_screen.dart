@@ -260,7 +260,7 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                       print("this is a PROBLEM");
                       final name = _nameController.text.trim();
                       print("username $name,,month $_month,,day $_day,,,year $_year");
-
+                      print("date of birth:$dateOfBirth");
                       if (_month.isNotEmpty && _day.isNotEmpty &&_year.isNotEmpty) {
                           Navigator.pushNamed(
                               context,

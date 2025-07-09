@@ -1,6 +1,7 @@
 import 'package:dating/provider/googe_sign_provider.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/screens/location_screen.dart';
+import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
 import 'package:dating/screens/profile_screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -133,7 +134,11 @@ class _SelectPageState extends ConsumerState<SelectPage> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("Welcome $email!")),
                   );
-                 Navigator.push(context,MaterialPageRoute(builder: (context) => ProfileScreen()));
+                  Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (_) => CustomBottomNavigationBar()),
+                            (route) => false, // remove all previous screens
+                          );
                 } else if (statusCode == 400) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Invalid user.Please signup.")),
@@ -193,7 +198,11 @@ class _SelectPageState extends ConsumerState<SelectPage> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("Welcome $email!")),
                           );
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen()));
+                           Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (_) => CustomBottomNavigationBar()),
+                            (route) => false, // remove all previous screens
+                          );
                         } else if (statusCode == 400) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text("Invalid user. Please signup.")),

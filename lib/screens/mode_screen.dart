@@ -198,7 +198,7 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
                       child: IconButton(
                         icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
                         onPressed: () {
-                          if (selectedMode != null && modename == "date") {
+                          if (selectedMode != null && modename == "DATE") {
                              print("modeid:$modeid");
                               print("modename:$modename");
                              Navigator.pushNamed(
@@ -219,7 +219,7 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
                                 );
                             
                           } 
-                          else if(selectedMode != null && (modename == "bff"||modename == "bizz")) {
+                          else if(selectedMode != null && (modename == "BFF"||modename == "BIZZ")) {
                               print("modeid: $modeid (type: ${modeid.runtimeType})");
                               print("modename: $modename (type: ${modename.runtimeType})");
                               print("latitude: $latitude (type: ${latitude.runtimeType})");

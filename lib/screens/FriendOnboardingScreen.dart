@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
 import 'package:dating/screens/profile_screens/profile_screen.dart';
 import 'package:dating/screens/tab_bar/tabScreen.dart';
 import 'package:flutter/material.dart';
@@ -177,10 +178,12 @@ class _FriendOnboardingScreenState extends ConsumerState<FriendOnboardingScreen>
                       );
 
                       if (statuscode == 200 || statuscode == 201) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => ProfileScreen()),
-                        );
+                          // After successful signup/login:
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (_) => CustomBottomNavigationBar()),
+                            (route) => false, // remove all previous screens
+                          );
                       }
                     },
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:dating/provider/firebase_auth.dart';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
 import 'package:dating/screens/profile_screens/profile_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -71,14 +72,15 @@ class _OTPScreenState extends ConsumerState<OTPScreen> {
       final statusCode = await ref.read(loginProvider.notifier).sendPhoneNumberAndRoleToAPI(phoneNumber);
 
       if (statusCode == 200 || statusCode == 201) {
-         Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => ProfileScreen()),
-          (route) => false,
-        );
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Welcome $phoneNumber!")),
-        );
+         // After successful signup/login:
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => CustomBottomNavigationBar()),
+              (route) => false, // remove all previous screens
+            );
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Welcome $phoneNumber!")),
+          );
       } else if (statusCode == 400) {
         // Navigator.push(context,MaterialPageRoute(builder: (context) => LocationScreen())); // or back to location for signup
         Navigator.pushNamed(

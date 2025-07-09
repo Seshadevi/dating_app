@@ -26,6 +26,7 @@ import 'package:dating/screens/profile_screens/chat_pay_Screen.dart';
 import 'package:dating/screens/profile_screens/discover_screen.dart';
 import 'package:dating/screens/profile_screens/heartsync_screen.dart';
 import 'package:dating/screens/profile_screens/liked_Screen.dart';
+import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
 import 'package:dating/screens/profile_screens/profile_screen.dart';
 import 'package:dating/screens/valueSelection.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -88,7 +89,7 @@ class MyApp extends StatelessWidget {
                   );
                 } else if (snapshot.hasData &&snapshot.data == true) {
                   // If auto-login is successful and refresh token is available, go to Dashboard
-                  return const ProfileScreen();
+                  return const CustomBottomNavigationBar();
                 } else {
                   // If auto-login fails or no token, redirect to LoginScreen
                   return JoinPageScreen();

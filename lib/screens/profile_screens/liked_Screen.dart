@@ -71,7 +71,7 @@ class LikedYouScreen extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 3,),
+      // bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 3,),
     );
   }
 }
