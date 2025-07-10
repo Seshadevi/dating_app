@@ -1,4 +1,5 @@
 import 'package:dating/screens/profile_screens/profile_screen.dart';
+import 'package:dating/screens/tab_bar/tabbartotal.dart';
 import 'package:flutter/material.dart';
 import '../main_Screens/bottomnavigationbar.dart';
 import '../tab_bar/tabScreen.dart';
@@ -65,7 +66,7 @@ class ChatScreen extends StatelessWidget {
     child: InkWell(
       onTap: () {
         // Add your button action here
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SubscriptionTabScreen()));
+        // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SubscriptionTabScreen(typeId: ,)));
         //  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ProfileScreen()));
         print("Find Your Person tapped");
       },
