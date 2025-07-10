@@ -82,7 +82,7 @@ class PlansFullProvider extends StateNotifier<PlansFullModel> {
           final usersData = PlansFullModel.fromJson(res);
           state = usersData;
 
-          await prefs.setString('userData', jsonEncode(res));
+          // await prefs.setString('userData', jsonEncode(res));
 
           print("PlansFull fetched successfully: ${usersData}");
         } catch (e) {

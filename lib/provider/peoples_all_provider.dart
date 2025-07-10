@@ -79,7 +79,7 @@ class PeoplesAllProvider extends StateNotifier<PeoplesAllModel> {
           final usersData = PeoplesAllModel.fromJson(res);
           state = usersData;
 
-          await prefs.setString('userData', jsonEncode(res));
+          // await prefs.setString('userData', jsonEncode(res));
 
           print("peoples fetched successfully: ${usersData}");
         } catch (e) {

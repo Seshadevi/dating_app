@@ -74,6 +74,8 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
     }
   }
 
+  
+
   Future<bool> verifyPhoneNumber(String phoneNumber, WidgetRef ref) async {
     print('Phone number: $phoneNumber');
     final auth = ref.read(firebaseAuthProvider);
@@ -269,8 +271,7 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
     final prefs = await SharedPreferences.getInstance();
 
     print("✅ Proceeding with API request...");
-    print(
-        'sign in data.........email:$email,mobile:$mobile,latitude:$latitude,longitude:$longitude,Name:$userName,dob:$dateOfBirth,selectedgender:$selectedGender:');
+    print('sign in data.........email:$email,mobile:$mobile,latitude:$latitude,longitude:$longitude,Name:$userName,dob:$dateOfBirth,selectedgender:$selectedGender:');
     print(
         'data.......show:$showGenderOnProfile,height:$selectedHeight,headline:$finalheadline,images:${choosedimages.length},');
 
@@ -392,6 +393,13 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         await prefs.setBool("isSignedUp", true);
+          final userDetails = jsonDecode(responseBody);
+        final userModel = UserModel.fromJson(userDetails);
+          state = userModel;
+
+          final userData = json.encode(userDetails);
+          await prefs.setString('userData', userData);
+          print('User data saved in SharedPreferences.');
         return response.statusCode;
       } else {
         print("❌ Signup failed with status: ${response.statusCode}");
