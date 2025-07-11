@@ -1,11 +1,13 @@
 import 'package:dating/model/peoples_all_model.dart';
 import 'package:dating/provider/likedislikeprovider.dart';
+import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/peoples_all_provider.dart';
 import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'dart:math' as math;
+import 'package:geocoding/geocoding.dart';
 
 class MyHeartsyncPage extends ConsumerStatefulWidget {
   const MyHeartsyncPage({super.key});
@@ -19,24 +21,36 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage> {
   final CardSwiperController controller = CardSwiperController();
   List<Users> allUsers = [];
   int currentCardIndex = 0;
+  int viewedUsersCount = 0; // Track viewed users
+  bool allUsersCompleted = false; // Track if all users are completed
   
   // Current user location (you'll need to get this from your login model/API)
   double? currentUserLatitude;
   double? currentUserLongitude;
-   final ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
   final GlobalKey _imageKey = GlobalKey();
   bool _hideFixedImage = false;
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(peoplesProvider.notifier).getPeoplesAll();
-      _getCurrentUserLocation(); // Get current user location
-       _scrollController.addListener(_checkVisibility);
-     
-    });
-  }
+void initState() {
+  super.initState();
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    ref.read(peoplesProvider.notifier).getPeoplesAll();
+    
+    final userModel = ref.read(loginProvider); // <- use `read` instead of `watch` inside initState
+
+    final location = userModel.data?.isNotEmpty == true
+        ? userModel.data!.first.user?.location
+        : null;
+
+    currentUserLatitude = location?.latitude?.toDouble();
+    currentUserLongitude = location?.longitude?.toDouble();
+
+    _scrollController.addListener(_checkVisibility);
+  });
+}
+
+
   void _checkVisibility() {
     // Check if scrollable image is visible
     final box = _imageKey.currentContext?.findRenderObject() as RenderBox?;
@@ -63,7 +77,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage> {
   }
 
   // Method to get current user location from your login model/API
-  void _getCurrentUserLocation() {
+  // void _getCurrentUserLocation() {
     // TODO: Replace with actual API call to get current user location
     // Example:
     // final currentUser = ref.read(currentUserProvider);
@@ -71,65 +85,128 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage> {
     // currentUserLongitude = currentUser.longitude;
     
     // For now, using dummy data - replace with your actual implementation
-    currentUserLatitude = 17.3850; // Hyderabad latitude
-    currentUserLongitude = 78.4867; // Hyderabad longitude
+  //   currentUserLatitude = 17.3850; // Hyderabad latitude
+  //   currentUserLongitude = 78.4867; // Hyderabad longitude
+  // }
+
+  Future<String> _getPlaceName(double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+      if (placemarks.isNotEmpty) {
+        final Placemark place = placemarks.first;
+        // You can customize how much of the address you want to show
+        return "${place.locality}, ${place.administrativeArea}";
+      } else {
+        return "Unknown location";
+      }
+    } catch (e) {
+      return "Location error";
+    }
   }
 
   // Calculate distance between two coordinates
-  double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-    const double earthRadius = 6371; // Earth's radius in kilometers
-    
-    double dLat = _toRadians(lat2 - lat1);
-    double dLon = _toRadians(lon2 - lon1);
-    
-    double a = math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.cos(_toRadians(lat1)) * math.cos(_toRadians(lat2)) *
-        math.sin(dLon / 2) * math.sin(dLon / 2);
-    
-    double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
-    
-    return earthRadius * c;
-  }
+ double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+  const double earthRadius = 6371; // in kilometers
+
+  double dLat = _toRadians(lat2 - lat1);
+  double dLon = _toRadians(lon2 - lon1);
+
+  double a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+      math.cos(_toRadians(lat1)) * math.cos(_toRadians(lat2)) *
+      math.sin(dLon / 2) * math.sin(dLon / 2);
+
+  double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
+
+  return earthRadius * c;
+}
 
   double _toRadians(double degrees) {
     return degrees * math.pi / 180;
   }
+
   @override
-void didUpdateWidget(covariant MyHeartsyncPage oldWidget) {
-  super.didUpdateWidget(oldWidget);
-  _checkVisibility(); // ✅ Recheck visibility when widget updates
+  void didUpdateWidget(covariant MyHeartsyncPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _checkVisibility(); // ✅ Recheck visibility when widget updates
+  }
+
+ String _getDistanceText(Users user) {
+  if (currentUserLatitude == null || currentUserLongitude == null) {
+    return "Location not available";
+  }
+
+  double userLat = user.latitude ?? 0.0;
+  double userLon = user.longitude ?? 0.0;
+
+  double distance = _calculateDistance(
+    currentUserLatitude!,
+    currentUserLongitude!,
+    userLat,
+    userLon,
+  );
+
+  if (distance < 1) {
+    return "${(distance * 1000).round()} meters away";
+  } else {
+    return "${distance.toStringAsFixed(1)} km away";
+  }
 }
 
+  // Method to update progress and check completion
+  void _updateProgress() {
+    setState(() {
+      viewedUsersCount++;
+      if (viewedUsersCount >= allUsers.length) {
+        allUsersCompleted = true;
+      }
+    });
+  }
 
-  String _getDistanceText(Users user) {
-    if (currentUserLatitude == null || currentUserLongitude == null) {
-      return "Location not available";
-    }
-    
-    // TODO: Get user's latitude and longitude from the user model
-    // For now, using dummy data - replace with actual user coordinates
-    double userLat = user.latitude ?? 17.4065; // Default to Hyderabad if not available
-    double userLon = user.longitude ?? 78.4772;
-    
-    double distance = _calculateDistance(
-      currentUserLatitude!,
-      currentUserLongitude!,
-      userLat,
-      userLon,
+  // Method to show completion dialog
+  void _showCompletionDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('All Users Viewed!'),
+          content: const Text('You have viewed all available users. Would you like to refresh and see more users?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _resetProgress();
+              },
+              child: const Text('Refresh'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop(); // Go back to previous screen
+              },
+              child: const Text('Exit'),
+            ),
+          ],
+        );
+      },
     );
-    
-    if (distance < 1) {
-      return "${(distance * 1000).round()} meters away";
-    } else {
-      return "${distance.toStringAsFixed(1)} km away";
-    }
+  }
+
+  // Method to reset progress
+  void _resetProgress() {
+    setState(() {
+      viewedUsersCount = 0;
+      allUsersCompleted = false;
+      currentCardIndex = 0;
+    });
+    // Optionally reload users
+    ref.read(peoplesProvider.notifier).getPeoplesAll();
   }
 
   @override
   Widget build(BuildContext context) {
     final peoplesModel = ref.watch(peoplesProvider);
     final users = peoplesModel.users ?? [];
-     
     
     // Update allUsers when new data comes
     if (users.isNotEmpty && allUsers.isEmpty) {
@@ -154,84 +231,228 @@ void didUpdateWidget(covariant MyHeartsyncPage oldWidget) {
             )
           : Column(
               children: [
-                // Custom AppBar
+                // Custom AppBar with Progress Bar
                 SafeArea(
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Row(
+                    child: Column(
                       children: [
-                        const Icon(Icons.arrow_back, color: Colors.black),
-                        const SizedBox(width: 16),
-                        const Expanded(
-                          child: Text(
-                            'Heart Sync',
-                            style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
+                        Row(
+                          children: [
+                            const Icon(Icons.arrow_back, color: Colors.black),
+                            const SizedBox(width: 16),
+                            const Expanded(
+                              child: Text(
+                                'Heart Sync',
+                                style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                            const Icon(Icons.more_vert, color: Colors.black),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        // Progress Bar
+                        Container(
+                          width: double.infinity,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Stack(
+                            children: [
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 300),
+                                width: MediaQuery.of(context).size.width * 
+                                    (viewedUsersCount / allUsers.length),
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: allUsersCompleted ? const Color.fromARGB(255, 237, 38, 3) : Color(0xffB2D12E),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const Icon(Icons.more_vert, color: Colors.black),
+                        // const SizedBox(height: 8),
+                        // Progress Text
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Viewed: $viewedUsersCount/${allUsers.length}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Text(
+                              allUsersCompleted ? 'Completed!' : '${(viewedUsersCount / allUsers.length * 100).toInt()}%',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: allUsersCompleted ? Colors.green : Colors.pink,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
                 ),
                 
+                // Completion Message (if all users are viewed)
+                if (allUsersCompleted)
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.green[50],
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.green.shade200),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.check_circle, color: Colors.green, size: 24),
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Text(
+                            'All users viewed! No more cards to swipe.',
+                            style: TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: _resetProgress,
+                          child: const Text('Refresh'),
+                        ),
+                      ],
+                    ),
+                  ),
+                
                 // Full Screen Card Content
                 Expanded(
                   child: Stack(
                     children: [
-                      CardSwiper(
-                        controller: controller,
-                        cardsCount: allUsers.length,
-                        numberOfCardsDisplayed: 1,
-                        isLoop: true,
-                        allowedSwipeDirection: const AllowedSwipeDirection.symmetric(horizontal: true),
-                        backCardOffset: const Offset(0, 0),
-                        padding: EdgeInsets.zero,
-                        onSwipe: (previousIndex, currentIndex, direction) {
-                          setState(() {
-                            currentCardIndex = currentIndex ?? 0;
-                          });
-                          
-                          if (currentIndex != null && currentIndex >= allUsers.length - 3 && !isLoadingMore) {
-                            _loadMoreUsers();
-                          }
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                                  _checkVisibility(); // ✅ This ensures visibility is rechecked after card changes
-                                });
+                      // Show card swiper only if not all users are completed
+                      if (!allUsersCompleted)
+                        CardSwiper(
+                          controller: controller,
+                          cardsCount: allUsers.length,
+                          numberOfCardsDisplayed: 1,
+                          isLoop: false, // Disable loop when tracking progress
+                          allowedSwipeDirection: const AllowedSwipeDirection.symmetric(horizontal: true),
+                          backCardOffset: const Offset(0, 0),
+                          padding: EdgeInsets.zero,
+                          onSwipe: (previousIndex, currentIndex, direction) {
+                            setState(() {
+                              currentCardIndex = currentIndex ?? 0;
+                            });
+                            
+                            // Update progress
+                            _updateProgress();
+                            
+                            // Show completion dialog when all users are viewed
+                            if (allUsersCompleted) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                _showCompletionDialog();
+                              });
+                            }
+                            
+                            if (currentIndex != null && currentIndex >= allUsers.length - 3 && !isLoadingMore) {
+                              _loadMoreUsers();
+                            }
+                            
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              _checkVisibility(); // ✅ This ensures visibility is rechecked after card changes
+                            });
 
-                          
-                          if (direction == CardSwiperDirection.left) {//------------------------
-                            _handleReject(previousIndex);
-
-                          } else if (direction == CardSwiperDirection.right) {//--------------------
-                            _handleLike(previousIndex);
-
-                          }
-                          
-                          return true;
-                        },
-                        cardBuilder: (BuildContext context, int index, int hOffset, int vOffset) {
-                          if (index >= allUsers.length) return Container();
-                          return _buildUserCard(allUsers[index % allUsers.length]);
-                        },
-                      ),
-                       // Fixed image (not moving while scrolling)
-       // Add this inside the Stack in your Scaffold (NOT inside _buildUserCard)
-if (!_hideFixedImage)
-  Positioned(
-    right: 30,
-    top: 540,
-    child: AnimatedOpacity(
-      opacity: _hideFixedImage ? 0.0 : 1.0,
-      duration: const Duration(milliseconds: 300),
-      child: Image.asset(
-        "assets/usersstar.png",
-        width: 60,
-        height: 60,
-        // key: _imageKey
-      ),
-    ),
-  ),
-
+                            if (direction == CardSwiperDirection.left) {
+                              _handleReject(previousIndex);
+                            } else if (direction == CardSwiperDirection.right) {
+                              _handleLike(previousIndex);
+                            }
+                            
+                            return true;
+                          },
+                          cardBuilder: (BuildContext context, int index, int hOffset, int vOffset) {
+                            if (index >= allUsers.length) return Container();
+                            return _buildUserCard(allUsers[index % allUsers.length]);
+                          },
+                        ),
+                      
+                      // Show completion screen when all users are viewed
+                      if (allUsersCompleted)
+                        Container(
+                          width: double.infinity,
+                          height: double.infinity,
+                          color: Colors.white,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.favorite,
+                                size: 80,
+                                color: Colors.pink,
+                              ),
+                              const SizedBox(height: 20),
+                              const Text(
+                                'All Done!',
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              const Text(
+                                'You have viewed all available users.\nCheck back later for more profiles!',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+                              ElevatedButton(
+                                onPressed: _resetProgress,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF869E23),
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'View Again',
+                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      
+                      // Fixed image (not moving while scrolling)
+                      if (!_hideFixedImage && !allUsersCompleted)
+                        Positioned(
+                          right: 30,
+                          top: 540,
+                          child: AnimatedOpacity(
+                            opacity: _hideFixedImage ? 0.0 : 1.0,
+                            duration: const Duration(milliseconds: 300),
+                            child: Image.asset(
+                              "assets/usersstar.png",
+                              width: 60,
+                              height: 60,
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -263,20 +484,6 @@ if (!_hideFixedImage)
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
-            // Static usersstar.png image at the top of every page
-            // Container(
-            //   width: MediaQuery.of(context).size.width,
-            //   padding: const EdgeInsets.symmetric(vertical: 10),
-            //   child: Center(
-            //     child: Image.asset(
-            //       "assets/usersstar.png",
-            //       width: 60,
-            //       height: 60,
-            //       fit: BoxFit.cover,
-            //     ),
-            //   ),
-            // ),
-            
             // Main image section with background
             SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -301,12 +508,6 @@ if (!_hideFixedImage)
                       ),
                     ),
                   ),
-//                 Image.asset(
-//   "assets/usersstar.png",
-//   // key: _imageKey, // 👈 Important for visibility tracking
-//   width: 60,
-//   height: 60,  
-// ),
 
                   // Main curved user image
                   Positioned(
@@ -340,29 +541,17 @@ if (!_hideFixedImage)
                   // Action buttons
                   Positioned(
                     top: 545,
-                    left:40,
-                    // left: (MediaQuery.of(context).size.width - 220) / 1,
+                    left: 40,
                     child: SizedBox(
                       width: 250,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // GestureDetector(
-                          //   onTap: () {
-                          //     controller.swipe(CardSwiperDirection.top);
-                          //     print("Super like tapped");
-                          //   },
-                          //   child: Image.asset(
-                          //     "assets/usersstar.png",
-                          //     width: 80,
-                          //     height: 80,
-                          //     fit: BoxFit.cover,
-                          //   ),
-                          // ),
                           GestureDetector(
                             onTap: () {
-                              // controller.swipe(CardSwiperDirection.right);
-                              print("Like tapped");
+                              if (!allUsersCompleted) {
+                                print("Like tapped");
+                              }
                             },
                             child: Image.asset(
                               "assets/userslike.png",
@@ -371,18 +560,6 @@ if (!_hideFixedImage)
                               fit: BoxFit.cover,
                             ),
                           ),
-                          // GestureDetector(
-                          //   onTap: () {
-                          //     controller.swipe(CardSwiperDirection.left);
-                          //     print("Reject tapped");
-                          //   },
-                          //   child: Image.asset(
-                          //     "assets/userscross.png",
-                          //     width: 80,
-                          //     height: 80,
-                          //     fit: BoxFit.cover,
-                          //   ),
-                          // ),
                         ],
                       ),
                     ),
@@ -392,7 +569,7 @@ if (!_hideFixedImage)
                   Positioned(
                     bottom: 0,
                     top: 485,
-                    left:10,
+                    left: 10,
                     right: 0,
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -536,7 +713,7 @@ if (!_hideFixedImage)
 
                   // Location section
                   const Text(
-                    "Location",
+                    "📍Location",
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -570,8 +747,26 @@ if (!_hideFixedImage)
                           ],
                         ),
                         const SizedBox(height: 8),
+                        FutureBuilder<String>(
+                          future: _getPlaceName(user.latitude ?? 17.4065, user.longitude ?? 78.4772),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return const Text("Loading location...");
+                            } else if (snapshot.hasError || !snapshot.hasData) {
+                              return const Text("Location unavailable");
+                            } else {
+                              return Text(
+                                snapshot.data!,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black54,
+                                ),
+                              );
+                            }
+                          },
+                        ),
                         Text(
-                          "Coordinates: ${user.latitude?.toStringAsFixed(4) ?? 'N/A'}, ${user.longitude?.toStringAsFixed(4) ?? 'N/A'}",
+                          "📌Coordinates: ${user.latitude?.toStringAsFixed(4) ?? 'N/A'}, ${user.longitude?.toStringAsFixed(4) ?? 'N/A'}",
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey[600],
@@ -592,40 +787,36 @@ if (!_hideFixedImage)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Positioned(
-
-                              child: _buildActionButton(
-                                "assets/userscross.png",
-                                // "",
-                                // const Color.fromARGB(255, 202, 193, 192),
-                                () {
+                            _buildActionButton(
+                              "assets/userscross.png",
+                              () {
+                                if (!allUsersCompleted) {
                                   controller.swipe(CardSwiperDirection.left);
                                   _handleReject(currentCardIndex);
+                                }
+                              },
+                            ),
+                            // ⭐ Super Like button → lift it upward
+                            Transform.translate(
+                              offset: const Offset(0, -40), // Move up by 20 pixels
+                              child: _buildActionButton(
+                                "assets/usersstar.png",
+                                () {
+                                  if (!allUsersCompleted) {
+                                    controller.swipe(CardSwiperDirection.top);
+                                    _handleSuperLike(currentCardIndex);
+                                  }
                                 },
+                                key: _imageKey,
                               ),
                             ),
-                           // ⭐ Super Like button → lift it upward
-          Transform.translate(
-            offset: const Offset(0, -40), // Move up by 20 pixels
-            child: _buildActionButton(
-              "assets/usersstar.png",
-              // "Super Like",
-              // Colors.blue,
-              () {
-                controller.swipe(CardSwiperDirection.top);
-                _handleSuperLike(currentCardIndex);
-              },
-              key: _imageKey,
-            ),
-          ),
                             _buildActionButton(
                               "assets/userslike.png",
-                              
-                              // "",
-                              // const Color.fromARGB(255, 225, 227, 225),
                               () {
-                                controller.swipe(CardSwiperDirection.right);
-                                _handleLike(currentCardIndex);
+                                if (!allUsersCompleted) {
+                                  controller.swipe(CardSwiperDirection.right);
+                                  _handleLike(currentCardIndex);
+                                }
                               },
                             ),
                           ],
@@ -640,7 +831,7 @@ if (!_hideFixedImage)
                               
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor:Color(0xFF869E23),
+                              backgroundColor: const Color(0xFF869E23),
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               shape: RoundedRectangleBorder(
@@ -660,7 +851,6 @@ if (!_hideFixedImage)
                       ],
                     ),
                   ),
-                  // const SizedBox(height: 100),
                 ],
               ),
             ),
@@ -671,52 +861,43 @@ if (!_hideFixedImage)
   }
 
   Widget _buildActionButton(
-  String assetPath,
-  // String label,
-  // Color color,
-  VoidCallback onTap, {
-  Key? key, // 
-}) {
-  return GestureDetector(
-    onTap: onTap,
-    child: Column(
-      children: [
-        Container(
-          key: key,
-          width: 70,
-          height: 70,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.white,
-            // border: Border.all(color: color.withOpacity(0.3), width: 2),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+    String assetPath,
+    VoidCallback onTap, {
+    Key? key,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            key: key,
+            width: 70,
+            height: 70,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: ClipOval(
+              child: Image.asset(
+                assetPath,
+                fit: BoxFit.cover,
               ),
-            ],
-          ),
-          child: ClipOval(
-            child: Image.asset(
-              assetPath,
-              fit: BoxFit.cover,
             ),
           ),
-        ),
-        const SizedBox(height: 8),
-        // Text(
-        //   // label,
-        //   style: TextStyle(
-        //     fontSize: 12,
-        //     fontWeight: FontWeight.w500,
-        //     // color: color,
-        //   ),
-        // ),
-      ],
-    ),
-  );
-}
+          const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+
+  
 
 
   Widget _buildRemainingImages(List<ProfilePics> images) {

@@ -9,7 +9,8 @@ class SpotlightTabContent extends ConsumerStatefulWidget {
   const SpotlightTabContent({super.key, required this.typeId});
 
   @override
-  ConsumerState<SpotlightTabContent> createState() => _SpotlightTabContentState();
+  ConsumerState<SpotlightTabContent> createState() =>
+      _SpotlightTabContentState();
 }
 
 class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
@@ -45,7 +46,8 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
   @override
   Widget build(BuildContext context) {
     final plans = ref.watch(plansFullProvider).data ?? [];
-    final filteredPlans = plans.where((plan) => plan.typeId == widget.typeId).toList();
+    final filteredPlans =
+        plans.where((plan) => plan.typeId == widget.typeId).toList();
 
     if (filteredPlans.isEmpty) {
       return const Center(child: Text("No plans available for this type."));
@@ -57,7 +59,7 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
     return Column(
       children: [
         const SizedBox(height: 12),
-        Image.asset("assets/air.png", height: 100), // your top image
+        Image.asset("assets/persons.png", height: 100), // your top image
 
         // const SizedBox(height: 10),
 
@@ -80,7 +82,9 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
               width: 10,
               height: 10,
               decoration: BoxDecoration(
-                color: currentBubbleIndex == index ? Colors.green : Colors.green[100],
+                color: currentBubbleIndex == index
+                    ? Colors.green
+                    : Colors.green[100],
                 shape: BoxShape.circle,
               ),
             ),
@@ -104,18 +108,22 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
             itemBuilder: (context, index) {
               final plan = filteredPlans[index];
               final durationDays = plan.durationDays ?? 0;
-              final durationMonths = durationDays > 0 ? (durationDays / 30).ceil() : 1;
+              final durationMonths =
+                  durationDays > 29 ? (durationDays / 30).ceil() : durationDays;
               final price = double.tryParse(plan.price ?? "0") ?? 0;
-              final quantity = plan.quantity ?? 1;
-              final unitPrice = quantity > 0 ? price / quantity : 0;
+              // final quantity = plan.quantity ?? 1;
+              // final unitPrice = quantity > 0 ? price / quantity : 0;
               final isSelected = selectedIndex == index;
+              final perWeek = durationDays / 7;
 
               return AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: isSelected ? const Color(0xFF6E8B3D) : const Color(0xFFF1F3F4),
+                  color: isSelected
+                      ? const Color(0xFF6E8B3D)
+                      : const Color(0xFFF1F3F4),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: isSelected ? Colors.black : Colors.transparent,
@@ -134,8 +142,20 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    SizedBox(
+                      height: 2,
+                    ),
                     Text(
-                      "${unitPrice.toStringAsFixed(0)}\nINR\neach",
+                      "${price.toStringAsFixed(0)} INR",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isSelected ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "per week ${(price/perWeek).toStringAsFixed(2)}",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
@@ -145,14 +165,16 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
                     ),
                     Container(
                       margin: const EdgeInsets.only(top: 8),
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: const Text(
                         "SAVE 58%",
-                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 10, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
