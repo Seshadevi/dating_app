@@ -411,6 +411,69 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
     }
   }
 
+Future<int> updateProfile({
+  required int? modeid,
+  required String? modename,
+}) async {
+  final userid = ref.read(loginProvider).data![0].user?.id;
+  final String apiUrl = "${Dgapi.updateprofile}/$userid";
+
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    String? userDataString = prefs.getString('userData');
+
+    if (userDataString == null || userDataString.isEmpty) {
+      throw Exception("User token is missing. Please log in again.");
+    }
+
+    final Map<String, dynamic> userData = jsonDecode(userDataString);
+    String? token = userData['accessToken'];
+
+    // Fallback if accessToken is nested inside data[]
+    if (token == null || token.isEmpty) {
+      token = userData['data'] != null &&
+              (userData['data'] as List).isNotEmpty &&
+              userData['data'][0]['access_token'] != null
+          ? userData['data'][0]['access_token']
+          : null;
+    }
+
+    if (token == null || token.isEmpty) {
+      throw Exception("User token is invalid. Please log in again.");
+    }
+
+    print('✅ Retrieved Token: $token');
+
+    var request = http.MultipartRequest('PUT', Uri.parse(apiUrl));
+
+    // ⬅️ Add Authorization header here
+    request.headers['Authorization'] = 'Bearer $token';
+    request.headers['Accept'] = 'application/json';
+
+    // Mode field
+    request.fields['mode'] = "$modename";
+
+    // Send request
+    final response = await request.send();
+    final responseBody = await response.stream.bytesToString();
+
+    print("📨 API Response: $responseBody");
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final userDetails = jsonDecode(responseBody);
+      print("✅ Updated data: $userDetails");
+      return response.statusCode;
+    } else {
+      print("❌ Update failed with status: ${response.statusCode}");
+      return response.statusCode;
+    }
+  } catch (e) {
+    print("❗ Exception during profile update: $e");
+    return 500;
+  }
+}
+
+
   Future<String> restoreAccessToken() async {
     const url = Dgapi.refreshToken;
     final prefs = await SharedPreferences.getInstance();

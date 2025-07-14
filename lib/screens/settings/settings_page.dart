@@ -1,4 +1,6 @@
+import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/logout_notitifier.dart';
+import 'package:dating/provider/signupprocessProviders/modeProvider.dart';
 import 'package:dating/screens/feedback/feedback_screen.dart';
 import 'package:dating/screens/notifications/notifications.dart';
 import 'package:dating/screens/profile_screens/profile_screen.dart';
@@ -8,6 +10,8 @@ import 'package:dating/screens/settings/typesOfconnections.dart';
 import 'package:dating/screens/settings/videoAutoPlayScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../model/signupprocessmodels/modeModel.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -40,15 +44,36 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             _greenButtonTile("Add Your Email", "Sign Up to Be Notified With Important Event Type Updates"),
             const SizedBox(height: 16),
             GestureDetector(
-              onTap: (){
-                Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const Typeofconnection()),
-                        );
-              },
-           
-           child:  _tileWithTextArrow("Type Of Connection", "Date"),
+            onTap: () {
+              final loginModel = ref.watch(loginProvider);
+              final user = loginModel.data!.first.user;
+              final userModeValue = user?.mode;
+
+              final modeList = ref.watch(modesProvider).data ?? [];
+
+              // Get the full Data object (not just the value)
+              final matchedMode = modeList.firstWhere(
+                (mode) => mode.value == userModeValue,
+                orElse: () => Data(id: 0, value: 'Not set'),
+              );
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => Typeofconnection(
+                    selectedModeId: matchedMode.id ?? 0,
+                    selectedModeName: matchedMode.value ?? 'Not set',
+                  ),
+                ),
+              );
+            },
+            child: _tileWithTextArrow(
+              "Type Of Connection",
+              ref.watch(loginProvider).data!.first.user?.mode ?? "Date",
             ),
+          ),
+
+
             const SizedBox(height: 16),
             _tileWithSwitch("Date Mode",  true),
             const SizedBox(height: 8),
@@ -93,7 +118,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         context,
                         MaterialPageRoute(builder: (_) => Feedbackpage()),
                         );
-            }),
+                       }),
             _simpleArrowTile("Content And FAQ",(){
               Navigator.push(
                         context,
@@ -126,7 +151,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-   void _showLogoutDialog(BuildContext context) {
+  void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
       barrierDismissible: false,

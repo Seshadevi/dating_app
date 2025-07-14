@@ -26,6 +26,7 @@ import 'package:dating/screens/profile_screens/chat_pay_Screen.dart';
 import 'package:dating/screens/profile_screens/discover_screen.dart';
 import 'package:dating/screens/profile_screens/heartsync_screen.dart';
 import 'package:dating/screens/profile_screens/liked_Screen.dart';
+import 'package:dating/screens/profile_screens/narrowsearch.dart';
 import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
 import 'package:dating/screens/profile_screens/profile_screen.dart';
 import 'package:dating/screens/valueSelection.dart';
@@ -126,6 +127,7 @@ class MyApp extends StatelessWidget {
          "profilescreen" : (context) => ProfileScreen(),
          "discoverscreen": (context) =>const DiscoverScreen(),
          "myheartsyncpage": (context) =>const MyHeartsyncPage(),
+         "/narrowsearch":(context) => NarrowSearchScreen() ,
          "likedyouscreen": (context) =>const LikedYouScreen(),
          "messagescreen": (context) => MessagesScreen(),
       },

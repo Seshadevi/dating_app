@@ -247,7 +247,12 @@ void initState() {
                                 style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
                               ),
                             ),
-                            const Icon(Icons.more_vert, color: Colors.black),
+                             IconButton(
+                                icon: const Icon(Icons.tune, color: Colors.black),
+                                onPressed: () {
+                                       Navigator.pushNamed(context,'/narrowsearch');
+                                },
+                              ),
                           ],
                         ),
                         const SizedBox(height: 12),
