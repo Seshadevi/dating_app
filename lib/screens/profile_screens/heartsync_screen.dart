@@ -906,70 +906,92 @@ void initState() {
 
 
   Widget _buildRemainingImages(List<ProfilePics> images) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 1,
-        crossAxisSpacing: 0,
-        mainAxisSpacing: 16,
-        childAspectRatio: 0.5,
-      ),
-      itemCount: images.length,
-      itemBuilder: (context, index) {
-        final imageUrl = images[index].url;
-        final fullUrl = imageUrl != null && imageUrl.isNotEmpty
-            ? 'http://97.74.93.26:6100$imageUrl'
-            : null;
+  return GridView.builder(
+    shrinkWrap: true,
+    physics: const NeverScrollableScrollPhysics(),
+    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 1,
+      crossAxisSpacing: 0,
+      mainAxisSpacing: 16,
+      childAspectRatio: 0.5,
+    ),
+    itemCount: images.length,
+    itemBuilder: (context, index) {
+      final imageUrl = images[index].url;
+      final fullUrl = imageUrl != null && imageUrl.isNotEmpty
+          ? 'http://97.74.93.26:6100$imageUrl'
+          : null;
 
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: fullUrl != null
-                ? Image.network(
-                    fullUrl,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        color: Colors.grey[300],
-                        child: const Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.grey[300],
-                        child: const Center(
-                          child: Icon(Icons.broken_image, size: 40, color: Colors.grey),
-                        ),
-                      );
-                    },
-                  )
-                : Container(
-                    color: Colors.grey[300],
-                    child: const Center(
-                      child: Icon(Icons.image, size: 40, color: Colors.grey),
+      return Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: fullUrl != null
+                  ? Image.network(
+                      fullUrl,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: double.infinity,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          color: Colors.grey[300],
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.grey[300],
+                          child: const Center(
+                            child: Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                          ),
+                        );
+                      },
+                    )
+                  : Container(
+                      color: Colors.grey[300],
+                      child: const Center(
+                        child: Icon(Icons.image, size: 40, color: Colors.grey),
+                      ),
                     ),
-                  ),
+            ),
           ),
-        );
-      },
-    );
-  }
 
-  Widget _buildInterestChip(String label) {
+          // 👇 Positioned icon (your action icon like "userslike.png")
+          Positioned(
+            bottom: 8,
+            right: 230,
+            child: GestureDetector(
+              onTap: () {
+                // TODO: handle tap
+                print("Icon tapped on image $index");
+              },
+              child: Image.asset(
+                "assets/userslike.png", // replace with your asset path
+                width: 76,
+                height: 76,
+              ),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+ Widget _buildInterestChip(String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(

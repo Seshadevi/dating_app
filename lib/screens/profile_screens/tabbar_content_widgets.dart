@@ -16,6 +16,17 @@ class PayPlanTab extends ConsumerStatefulWidget {
 
 class _PayPlanTabState extends ConsumerState<PayPlanTab> {
   int selectedPlanIndex = 0;
+  
+  // Filter properties
+  bool showOnlyAvailableFeatures = false;
+  String searchQuery = '';
+  List<String> priorityFeatures = [
+    'Unlimited Likes',
+    'See Who Liked You',
+    'Advanced Filters',
+    'Unlimited Extends',
+    'Incognito Mode'
+  ];
 
   @override
   void initState() {
@@ -24,101 +35,382 @@ class _PayPlanTabState extends ConsumerState<PayPlanTab> {
       ref.read(plansFullProvider.notifier).getPlans();
     });
   }
-
-  // Helper method to build all features list with conditional checkmarks
-  List<Widget> _buildAllFeaturesList(List<Data> featurePlans, int selectedPlanIndex) {
-    if (featurePlans.isEmpty || selectedPlanIndex >= featurePlans.length) {
-      return [];
-    }
-    
-    // Get all unique features from all plans
-    Set<String> allFeatures = {};
-    for (var plan in featurePlans) {
-      if (plan.planType?.features != null && plan.planType!.features!.isNotEmpty) {
-        for (var feature in plan.planType!.features!) {
-          if (feature.featureName != null && feature.featureName!.isNotEmpty) {
-            allFeatures.add(feature.featureName!);
-          }
-        }
+// Enhanced method to build filtered features list - showing only available features
+List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPlanIndex) {
+  if (featurePlans.isEmpty || selectedPlanIndex >= featurePlans.length) {
+    return [];
+  }
+  
+  // Get features of selected plan only
+  Set<String> selectedPlanFeatures = {};
+  final selectedPlan = featurePlans[selectedPlanIndex];
+  if (selectedPlan.planType?.features != null && selectedPlan.planType!.features!.isNotEmpty) {
+    for (var feature in selectedPlan.planType!.features!) {
+      if (feature.featureName != null && feature.featureName!.isNotEmpty) {
+        selectedPlanFeatures.add(feature.featureName!);
       }
     }
-    
-    // Get features of selected plan
-    Set<String> selectedPlanFeatures = {};
-    final selectedPlan = featurePlans[selectedPlanIndex];
-    if (selectedPlan.planType?.features != null && selectedPlan.planType!.features!.isNotEmpty) {
-      for (var feature in selectedPlan.planType!.features!) {
-        if (feature.featureName != null && feature.featureName!.isNotEmpty) {
-          selectedPlanFeatures.add(feature.featureName!);
-        }
-      }
-    }
+  }
 
-    // Debug: Print selected plan features
-    print("=== FEATURE ANALYSIS ===");
-    print("Selected Plan Index: $selectedPlanIndex");
-    print("Selected Plan: ${selectedPlan.title}");
-    print("Selected Plan Features: $selectedPlanFeatures");
-    print("All Features: $allFeatures");
+  // Start with only features from selected plan
+  List<String> filteredFeatures = selectedPlanFeatures.toList();
+  
+  // Apply search filter
+  if (searchQuery.isNotEmpty) {
+    filteredFeatures = filteredFeatures.where((feature) => 
+      feature.toLowerCase().contains(searchQuery.toLowerCase())
+    ).toList();
+  }
+  
+  // Sort by priority (priority features first)
+  filteredFeatures.sort((a, b) {
+    final aPriority = priorityFeatures.contains(a);
+    final bPriority = priorityFeatures.contains(b);
     
-    if (allFeatures.isEmpty) {
-      return [
-        Container(
-          padding: const EdgeInsets.all(16),
-          child: const Text(
-            "No features available for this plan",
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 14,
-            ),
+    if (aPriority && !bPriority) return -1;
+    if (!aPriority && bPriority) return 1;
+    return a.compareTo(b);
+  });
+  
+  if (filteredFeatures.isEmpty) {
+    return [
+      Container(
+        padding: const EdgeInsets.all(16),
+        child: Text(
+          searchQuery.isNotEmpty 
+            ? "No features found matching '$searchQuery'"
+            : "No features available for this plan",
+          style: const TextStyle(
+            color: Colors.grey,
+            fontSize: 14,
           ),
         ),
-      ];
-    }
+      ),
+    ];
+  }
+  
+  // Build widgets for each filtered feature - showing only available features
+  return filteredFeatures.map((featureName) {
+    final isPriority = priorityFeatures.contains(featureName);
     
-    // Build widgets for each feature
-    return allFeatures.map((featureName) {
-      final hasFeature = selectedPlanFeatures.contains(featureName);
-      
-      return Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: hasFeature ? Colors.green.shade50 : Colors.grey.shade50,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: hasFeature ? Colors.green.shade200 : Colors.grey.shade300,
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Colors.grey.shade200,
+            width: 1,
           ),
         ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: hasFeature ? Colors.green : Colors.grey.shade400,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(
-                hasFeature ? Icons.check : Icons.close,
-                size: 16,
-                color: Colors.white,
-              ),
+      ),
+      child: Row(
+        children: [
+          // Feature name with info icon
+          Expanded(
+            child: Row(
+              children: [
+                Text(
+                  featureName,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // Info icon (circular with 'i')
+                Container(
+                  width: 16,
+                  height: 16,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.grey.shade400,
+                      width: 1,
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'i',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey.shade600,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                featureName,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: hasFeature ? Colors.black87 : Colors.grey.shade600,
-                  fontWeight: hasFeature ? FontWeight.w500 : FontWeight.normal,
+          ),
+          
+          // Check mark (always shown since we only display available features)
+          Icon(
+            Icons.check,
+            color: Colors.green,
+            size: 20,
+          ),
+        ],
+      ),
+    );
+  }).toList();
+}
+
+// Simplified filter controls - only search bar
+// Widget _buildFilterControls() {
+//   return Container(
+//     padding: const EdgeInsets.all(16),
+//     margin: const EdgeInsets.only(bottom: 16),
+//     decoration: BoxDecoration(
+//       color: Colors.white,
+//       borderRadius: BorderRadius.circular(12),
+//       boxShadow: [
+//         BoxShadow(
+//           color: Colors.grey.withOpacity(0.1),
+//           blurRadius: 8,
+//           offset: const Offset(0, 4),
+//         ),
+//       ],
+//     ),
+//     child: TextField(
+//       onChanged: (value) => setState(() => searchQuery = value),
+//       decoration: InputDecoration(
+//         hintText: 'Search features...',
+//         prefixIcon: const Icon(Icons.search),
+//         suffixIcon: searchQuery.isNotEmpty
+//             ? IconButton(
+//                 icon: const Icon(Icons.clear),
+//                 onPressed: () => setState(() => searchQuery = ''),
+//               )
+//             : null,
+//         border: OutlineInputBorder(
+//           borderRadius: BorderRadius.circular(8),
+//           borderSide: BorderSide(color: Colors.grey.shade300),
+//         ),
+//         focusedBorder: OutlineInputBorder(
+//           borderRadius: BorderRadius.circular(8),
+//           borderSide: const BorderSide(color: Color(0xFF869E23)),
+//         ),
+//       ),
+//     ),
+//   );
+// }
+
+  // Widget for filter controls
+  // Widget _buildFilterControls() {
+  //   return Container(
+  //     padding: const EdgeInsets.all(16),
+  //     margin: const EdgeInsets.only(bottom: 16),
+  //     decoration: BoxDecoration(
+  //       color: Colors.white,
+  //       borderRadius: BorderRadius.circular(12),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.grey.withOpacity(0.1),
+  //           blurRadius: 8,
+  //           offset: const Offset(0, 4),
+  //         ),
+  //       ],
+  //     ),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         // Search bar
+  //         TextField(
+  //           onChanged: (value) => setState(() => searchQuery = value),
+  //           decoration: InputDecoration(
+  //             hintText: 'Search features...',
+  //             prefixIcon: const Icon(Icons.search),
+  //             suffixIcon: searchQuery.isNotEmpty
+  //                 ? IconButton(
+  //                     icon: const Icon(Icons.clear),
+  //                     onPressed: () => setState(() => searchQuery = ''),
+  //                   )
+  //                 : null,
+  //             border: OutlineInputBorder(
+  //               borderRadius: BorderRadius.circular(8),
+  //               borderSide: BorderSide(color: Colors.grey.shade300),
+  //             ),
+  //             focusedBorder: OutlineInputBorder(
+  //               borderRadius: BorderRadius.circular(8),
+  //               borderSide: const BorderSide(color: Color(0xFF869E23)),
+  //             ),
+  //           ),
+  //         ),
+          
+  //         const SizedBox(height: 12),
+          
+  //         // Filter toggle
+  //         Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             const Text(
+  //               'Show only available features',
+  //               style: TextStyle(fontSize: 14),
+  //             ),
+  //             Switch(
+  //               value: showOnlyAvailableFeatures,
+  //               onChanged: (value) => setState(() => showOnlyAvailableFeatures = value),
+  //               activeColor: const Color(0xFF869E23),
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  // Features section 
+  Widget _buildFeaturesSection() {
+    final model = ref.watch(plansFullProvider);
+    final plans = model.data ?? [];
+    
+    // Get feature plans (Premium, Premium++, Boost)
+    List<Data> featurePlans = [];
+    
+    final premiumPlan = plans.where((p) {
+      final title = p.title?.toLowerCase() ?? '';
+      return (title == 'premium' || 
+              (title.contains('premium') && 
+               !title.contains('++') && 
+               !title.contains('premium+') &&
+               !title.contains('premium +')));
+    }).firstOrNull;
+    
+    final premiumPlusPlan = plans.where((p) {
+      final title = p.title?.toLowerCase() ?? '';
+      return (title.contains('premium++') || 
+              title.contains('premium ++') || 
+              title.contains('premium+') ||
+              title.contains('premium +'));
+    }).firstOrNull;
+    
+    final boostPlan = plans.where((p) => 
+        p.title?.toLowerCase().contains('boost') == true).firstOrNull;
+    
+    if (premiumPlan != null) featurePlans.add(premiumPlan);
+    if (premiumPlusPlan != null) featurePlans.add(premiumPlusPlan);
+    if (boostPlan != null) featurePlans.add(boostPlan);
+
+    if (featurePlans.isEmpty) return const SizedBox.shrink();
+
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header with "what you get:" and selected plan name
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: Colors.grey.shade200,
+                  width: 1,
                 ),
               ),
             ),
-          ],
-        ),
-      );
-    }).toList();
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "what you get:",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                    color: Colors.black87,
+                  ),
+                ),
+                Text(
+                  featurePlans[selectedPlanIndex].title ?? '',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: Color(0xFF869E23),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          // Tab Bar for Premium, Premium++, Boost
+          Container(
+            height: 50,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade50,
+              border: Border(
+                bottom: BorderSide(
+                  color: Colors.grey.shade200,
+                  width: 1,
+                ),
+              ),
+            ),
+            child: Row(
+              children: featurePlans.asMap().entries.map((entry) {
+                final index = entry.key;
+                final plan = entry.value;
+                final isSelected = selectedPlanIndex == index;
+                
+                Color planColor = Color(0xFF869E23);
+                final title = plan.title?.toLowerCase() ?? '';
+                if (title.contains('premium++') || title.contains('premium +')) {
+                  planColor = Colors.purple;
+                } else if (title.contains('boost')) {
+                  planColor = Colors.orange;
+                }
+                
+                return Expanded(
+                  child: GestureDetector(
+                    onTap: () => setState(() => selectedPlanIndex = index),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: isSelected ? Border(
+                          bottom: BorderSide(
+                            color: planColor,
+                            width: 3,
+                          ),
+                        ) : null,
+                      ),
+                      child: Center(
+                        child: Text(
+                          plan.title ?? '',
+                          style: TextStyle(
+                            color: isSelected ? planColor : Colors.grey.shade600,
+                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+          
+          // Features List
+          SizedBox(
+            height: 400,
+            child: SingleChildScrollView(
+              child: Column(
+                children: _buildFilteredFeaturesList(featurePlans, selectedPlanIndex),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -167,26 +459,6 @@ class _PayPlanTabState extends ConsumerState<PayPlanTab> {
     if (premiumPlan != null) featurePlans.add(premiumPlan);
     if (premiumPlusPlan != null) featurePlans.add(premiumPlusPlan);
     if (boostPlan != null) featurePlans.add(boostPlan);
-    
-    // Debug: Print plan names and their features
-    print("=== PLAN ANALYSIS ===");
-    for (int i = 0; i < plans.length; i++) {
-      final plan = plans[i];
-      print("Plan $i: ${plan.title}");
-      print("  - Has features: ${plan.planType?.features?.isNotEmpty ?? false}");
-      print("  - Feature count: ${plan.planType?.features?.length ?? 0}");
-      if (plan.planType?.features != null) {
-        for (var feature in plan.planType!.features!) {
-          print("    * ${feature.featureName}");
-        }
-      }
-    }
-    
-    print("Premium Plan: ${premiumPlan?.title}");
-    print("Premium++ Plan: ${premiumPlusPlan?.title}");
-    print("Boost Plan: ${boostPlan?.title}");
-    print("Feature Plans: ${featurePlans.map((p) => p.title).toList()}");
-    print("All Plans: ${plans.map((p) => p.title).toList()}");
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F5F2),
@@ -215,10 +487,9 @@ class _PayPlanTabState extends ConsumerState<PayPlanTab> {
                               }
                             },
                             child: Container(
-                              padding: const EdgeInsets.all(1),
+                              padding: const EdgeInsets.all(16),
                               margin: const EdgeInsets.only(right: 8),
                               decoration: BoxDecoration(
-                                // color: Color.fromARGB(255, 213, 227, 156),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(color: Color(0xFF869E23)),
                               ),
@@ -261,10 +532,9 @@ class _PayPlanTabState extends ConsumerState<PayPlanTab> {
                               }
                             },
                             child: Container(
-                              padding: const EdgeInsets.all(1),
+                              padding: const EdgeInsets.all(16),
                               margin: const EdgeInsets.only(left: 8),
                               decoration: BoxDecoration(
-                                // color: Color.fromARGB(255, 213, 227, 156),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(color: Color(0xFF869E23)),
                               ),
@@ -300,7 +570,6 @@ class _PayPlanTabState extends ConsumerState<PayPlanTab> {
                   if (featurePlans.isNotEmpty)
                     SizedBox(
                       height: 180,
-                      // width: 20,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: featurePlans.length,
@@ -310,19 +579,6 @@ class _PayPlanTabState extends ConsumerState<PayPlanTab> {
                           
                           Color planColor = Color(0xFF869E23);
                           IconData planIcon = Icons.star;
-                          
-                          // Dynamic color based on plan title
-                          // final title = plan.title?.toLowerCase() ?? '';
-                          // if (title.contains('premium++') || title.contains('premium +')) {
-                          //   planColor = Colors.purple;
-                          //   planIcon = Icons.star_border;
-                          // } else if (title.contains('boost')) {
-                          //   planColor =  Color(0xFF869E23);
-                          //   planIcon = Icons.rocket_launch;
-                          // } else if (title.contains('premium')) {
-                          //   planColor = Color(0xFF869E23);
-                          //   planIcon = Icons.star;
-                          // }
                           
                           return GestureDetector(
                             onTap: () => setState(() => selectedPlanIndex = index),
@@ -404,141 +660,16 @@ class _PayPlanTabState extends ConsumerState<PayPlanTab> {
                       ),
                     ),
                   
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   
-                  // FEATURES: Tab bar with all features and selective checkmarks
-                  if (featurePlans.isNotEmpty)
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.1),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Header with Tab Bar
-                          const Text(
-                            "What you get:",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          
-                          // Tab Bar for Premium, Premium++, Boost
-                          Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade200,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              children: featurePlans.asMap().entries.map((entry) {
-                                final index = entry.key;
-                                final plan = entry.value;
-                                final isSelected = selectedPlanIndex == index;
-                                
-                                Color planColor = Colors.blue;
-                                final title = plan.title?.toLowerCase() ?? '';
-                                if (title.contains('premium++') || title.contains('premium +')) {
-                                  planColor = Colors.purple;
-                                } else if (title.contains('boost')) {
-                                  planColor =  Color(0xFF869E23);
-                                } else if (title.contains('premium')) {
-                                  planColor =  Color(0xFF869E23);
-                                }
-                                
-                                return Expanded(
-                                  child: GestureDetector(
-                                    onTap: () => setState(() => selectedPlanIndex = index),
-                                    child: Container(
-                                      margin: const EdgeInsets.all(2),
-                                      decoration: BoxDecoration(
-                                        color: isSelected ? planColor : Colors.transparent,
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          plan.title ?? '',
-                                          style: TextStyle(
-                                            color: isSelected ? Colors.white : Colors.black,
-                                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                          
-                          const SizedBox(height: 20),
-                          
-                          // All Features List with Conditional Checkmarks
-                          SizedBox(
-                            height: 300, // Fixed height for scroll
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: _buildAllFeaturesList(featurePlans, selectedPlanIndex),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                  // Filter controls
+                  // if (featurePlans.isNotEmpty) _buildFilterControls(),
+                  
+                  // FEATURES: Tab bar with filtered features
+                  if (featurePlans.isNotEmpty) _buildFeaturesSection(),
                 ],
               ),
             ),
-    );
-  }
-}
-
-class NextPage extends StatelessWidget {
-  final int typeId;
-  const NextPage({super.key, required this.typeId});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Explore Page"),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.explore,
-              size: 80,
-              color: Colors.blue,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              "Selected Type ID: $typeId",
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

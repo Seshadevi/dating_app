@@ -1,12 +1,37 @@
+import 'package:dating/provider/plans/plansfullprovider.dart';
 import 'package:dating/screens/profile_screens/favourate.dart';
 import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
+import 'package:dating/screens/tab_bar/spotlight.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LikedYouScreen extends StatelessWidget {
+class LikedYouScreen extends ConsumerStatefulWidget {
   const LikedYouScreen({super.key});
+  @override
+  ConsumerState<LikedYouScreen> createState() => _LikedYouState();
+}
+
+class _LikedYouState extends ConsumerState<LikedYouScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref.read(plansFullProvider.notifier).getPlans();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final model = ref.watch(plansFullProvider);
+     final plans = model.data ?? [];
+     // Separate plans with and without features
+    final plansWithoutFeatures = plans.where((p) => 
+        p.planType?.features?.isEmpty ?? true).toList();
+    
+    // Filter top 2 boxes (Spotlight & Superswipe)
+    final spotlightPlan = plansWithoutFeatures.where((p) => 
+        p.title?.toLowerCase().contains('spotlight') == true).firstOrNull;
+    
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -33,7 +58,7 @@ class LikedYouScreen extends StatelessWidget {
         child: Column(
           // mainAxisAlignment: MainAxisAlignment.center,
           children: [
-           const SizedBox(height: 20),
+            const SizedBox(height: 20),
             const Text(
               "When People Are Into You, They’ll \nAppear Here.\nEnjoy.",
               textAlign: TextAlign.start,
@@ -60,7 +85,14 @@ class LikedYouScreen extends StatelessWidget {
               child: TextButton(
                 onPressed: () {
                   // Add your action here
-                  Navigator.push(context, MaterialPageRoute(builder:(context) => FavoritesScreen(),));
+                 if (spotlightPlan!.typeId!= null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SpotlightScreen(typeId: spotlightPlan.typeId!),
+                                  ),
+                                );
+                              }
                 },
                 child: const Text(
                   "Try A Spotlight",
@@ -75,4 +107,3 @@ class LikedYouScreen extends StatelessWidget {
     );
   }
 }
-
