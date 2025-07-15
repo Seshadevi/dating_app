@@ -1,3 +1,4 @@
+import 'package:dating/screens/completeprofile/complete_profile.dart';
 import 'package:dating/screens/profile_screens/insightstab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -138,7 +139,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ProfileHeaderLayout()),
+                                      builder: (context) => BumbleDateProfileScreen()),
                                 );
                               },
                             ),

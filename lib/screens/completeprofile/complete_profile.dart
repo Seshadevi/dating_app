@@ -1,19 +1,24 @@
+import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/screens/About_section/city_screen.dart';
 import 'package:dating/screens/About_section/education_screen.dart';
 import 'package:dating/screens/About_section/gender_screen.dart';
 import 'package:dating/screens/About_section/hometown_screen.dart';
 import 'package:dating/screens/About_section/occupation_screen.dart';
+import 'package:dating/screens/completeprofile/causeScreen.dart';
 import 'package:dating/screens/completeprofile/id_verification_screen.dart';
+import 'package:dating/screens/completeprofile/interests.dart';
 import 'package:dating/screens/completeprofile/intrest_screen.dart';
 import 'package:dating/screens/completeprofile/lifeBadgesScreen.dart';
 import 'package:dating/screens/completeprofile/profile_strength_detailScreen.dart';
 import 'package:dating/screens/completeprofile/prompt_selection_screen.dart';
 import 'package:dating/screens/completeprofile/pronoun_screen.dart';
+import 'package:dating/screens/completeprofile/qualities.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-class BumbleDateProfileScreen extends StatefulWidget {
+class BumbleDateProfileScreen extends ConsumerStatefulWidget {
   const BumbleDateProfileScreen({super.key});
 
   @override
@@ -21,14 +26,28 @@ class BumbleDateProfileScreen extends StatefulWidget {
       _BumbleDateProfileScreenState();
 }
 
-class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
-  List<File?> selectedImages = List.filled(6, null);
+class _BumbleDateProfileScreenState
+    extends ConsumerState<BumbleDateProfileScreen> {
+  // List<ImageProvider?> selectedImages = List.filled(6, null);
+  // List<File?> selectedImages = List.filled(6, null);
+  List<dynamic> selectedImages =
+      List.filled(6, null); // allows both File and NetworkImage
+
   final ImagePicker _picker = ImagePicker();
   final TextEditingController _bioController = TextEditingController();
   String selectedGender = 'Man';
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfileImages();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final userData = ref.watch(loginProvider);
+    final user =
+        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -36,7 +55,7 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.pushNamed(context, 'profilescreen'),
         ),
         title: Text(
           'Bumble Date',
@@ -66,11 +85,14 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
             SizedBox(height: 24),
 
             // My Life Section
-            _buildMyLifeSection(context),
+            _buildQualitiesSection(context),
             SizedBox(height: 24),
 
             // Interests Section
-            _buildInterestsSection(),
+            _buildInterestsSection(context),
+            SizedBox(height: 24),
+            // Interests Section
+            _buildCausesSection(context),
             SizedBox(height: 24),
 
             // Prompts Section
@@ -167,6 +189,21 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
     );
   }
 
+  void _loadUserProfileImages() {
+    final userData = ref.read(loginProvider);
+    final user =
+        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+
+    if (user != null && user.profilePics != null) {
+      final profilePics = user.profilePics!;
+      for (int i = 0; i < profilePics.length && i < 6; i++) {
+        final fullUrl = "http://97.74.93.26:6100${profilePics[i]['url']}";
+
+        selectedImages[i] = NetworkImage(fullUrl);
+      }
+    }
+  }
+
   Widget _buildPhotosVideosSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,11 +226,11 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
         ),
         SizedBox(height: 16),
         GridView.count(
-          crossAxisCount: 2,
+          crossAxisCount: 3,
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
-          crossAxisSpacing: 1,
-          mainAxisSpacing: 1,
+          crossAxisSpacing: 0,
+          mainAxisSpacing: 0,
           childAspectRatio: 1,
           children: List.generate(6, (index) {
             return _buildPhotoSlot(index: index);
@@ -212,12 +249,12 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
   }
 
   Widget _buildPhotoSlot({required int index}) {
-    bool hasImage = selectedImages[index] != null;
+    final image = selectedImages[index];
 
     return GestureDetector(
       onTap: () => _showImageSourceDialog(index),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(6.0),
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -227,19 +264,19 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
             ),
             borderRadius: BorderRadius.circular(12),
           ),
-          padding: EdgeInsets.all(2), // Thickness of gradient border
+          padding: EdgeInsets.all(2),
           child: Container(
             decoration: BoxDecoration(
-              color: hasImage ? Colors.grey[200] : Colors.white,
+              color: image != null ? Colors.grey[200] : Colors.white,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: hasImage
+            child: image != null
                 ? Stack(
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: Image.file(
-                          selectedImages[index]!,
+                        child: Image(
+                          image: image,
                           width: double.infinity,
                           height: double.infinity,
                           fit: BoxFit.cover,
@@ -249,16 +286,16 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
                         top: 8,
                         right: 8,
                         child: Container(
-                          width: 24,
-                          height: 24,
-                          decoration: const BoxDecoration(
-                            color: Colors.green,
+                          width: 14,
+                          height: 14,
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 20, 109, 23),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(
+                          child: Icon(
                             Icons.check,
                             color: Colors.white,
-                            size: 16,
+                            size: 10,
                           ),
                         ),
                       ),
@@ -323,13 +360,35 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
     try {
       final XFile? pickedFile = await _picker.pickImage(source: source);
       if (pickedFile != null) {
+        final File imageFile = File(pickedFile.path);
         setState(() {
-          selectedImages[index] = File(pickedFile.path);
+          selectedImages[index] = FileImage(imageFile);
         });
+
+        // ✅ After setting image, call API to update immediately
+        _uploadProfileImage(imageFile, index);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error picking image: $e')),
+      );
+    }
+  }
+
+  void _uploadProfileImage(File imageFile, int index) async {
+    try {
+      // TODO: Add your real API call here
+      // For example:
+      // await ApiService.updateProfileImage(imageFile, index);
+
+      print('Uploading image at index $index: ${imageFile.path}');
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Image updated successfully!')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to upload image: $e')),
       );
     }
   }
@@ -382,12 +441,17 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
     );
   }
 
-  Widget _buildMyLifeSection(BuildContext context) {
+  Widget _buildQualitiesSection(BuildContext context) {
+    final userData = ref.watch(loginProvider);
+    final user =
+        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+    final List<dynamic> qualities = user?.qualities ?? [];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'My Life',
+          'Qualities',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -395,32 +459,153 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
           ),
         ),
         const SizedBox(height: 8),
-        Text(
-          'Show How You Are In Life With Your Friends',
+        const Text(
+          'Get specific about the things you love.',
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey[600],
+            color: Colors.grey,
           ),
         ),
         const SizedBox(height: 16),
-        _buildSectionButton(
-          'Add Life Badges',
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const LifeBadgesScreen()),
-            );
-          },
+
+        // ✅ Entire content inside one Card-like container
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Favorite quality header
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => LifeBadgesScreen(),
+                    ),
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                      // border: Border(
+                      //   bottom: BorderSide(color: Colors.grey.shade300),
+                      // ),
+                      ),
+                  child: Row(
+                    children: const [
+                      Icon(Icons.bookmark_border,
+                          size: 20, color: Colors.black),
+                      SizedBox(width: 8),
+                      Text(
+                        'Favorite quality',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Spacer(),
+                      Icon(Icons.arrow_forward_ios,
+                          size: 16, color: Colors.grey),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Selected qualities chips
+              if (qualities.isNotEmpty)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: qualities.map<Widget>((quality) {
+                      final name = quality['name'] ?? '';
+                      final emoji = quality['emoji'] ?? '🌟';
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(emoji),
+                            const SizedBox(width: 6),
+                            Text(
+                              name,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+
+              // Add more qualities button
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => QualitiesScreen(),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(color: Colors.grey.shade300),
+                    ),
+                  ),
+                  child: Row(
+                    children: const [
+                      Expanded(
+                        child: Text(
+                          'Add more qualities',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      Icon(Icons.add, size: 20),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildInterestsSection() {
+  Widget _buildInterestsSection(BuildContext context) {
+    final userData = ref.watch(loginProvider);
+    final user =
+        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+    final List<dynamic> interests = user?.interests ?? [];
+    print('interests...........$interests');
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Interests',
           style: TextStyle(
             fontSize: 18,
@@ -428,102 +613,154 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
             color: Colors.black,
           ),
         ),
-        SizedBox(height: 8),
-        Text(
-          'Let People About The Things You Love',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
-          ),
-        ),
-        SizedBox(height: 16),
-        _buildSectionButton(
-          'Add Interest Badges',
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const IntrestScreen()),
-            );
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPromptsSection(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Prompts',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
-        ),
         const SizedBox(height: 8),
-        Text(
-          'I like To Personality Stand Out From The Crowd',
+        const Text(
+          'Get specific about the things you love',
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey[600],
+            color: Colors.grey,
           ),
         ),
         const SizedBox(height: 16),
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const PromptSelectionScreen()),
-            );
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.grey[300]!),
-            ),
-            child: Row(
-              children: [
-                const Expanded(
-                  child: Text(
-                    'Add a prompt',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
+
+        // ✅ Entire content inside one Card-like container
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Favorite quality header
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => LifeBadgesScreen(),
                     ),
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                      // border: Border(
+                      //   bottom: BorderSide(color: Colors.grey.shade300),
+                      // ),
+                      ),
+                  child: Row(
+                    children: const [
+                      Icon(Icons.bookmark_border,
+                          size: 20, color: Colors.black),
+                      SizedBox(width: 8),
+                      Text(
+                        'Favorite Interests',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Spacer(),
+                      Icon(Icons.arrow_forward_ios,
+                          size: 16, color: Colors.grey),
+                    ],
                   ),
                 ),
-                Container(
-                  width: 24,
-                  height: 24,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.black,
+              ),
+
+              // Selected qualities chips
+              if (interests.isNotEmpty)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: interests.map<Widget>((interests) {
+                      final name = interests['interests'] ?? '';
+                      final emoji = interests['emoji'] ?? '🌟';
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(emoji),
+                            const SizedBox(width: 6),
+                            Text(
+                              name,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
                   ),
-                  child: const Icon(
-                    Icons.add,
-                    size: 16,
-                    color: Colors.white,
+                ),
+
+              // Add more qualities button
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => InterestsScreen(),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(color: Colors.grey.shade300),
+                    ),
                   ),
-                )
-              ],
-            ),
+                  child: Row(
+                    children: const [
+                      Expanded(
+                        child: Text(
+                          'Add more interests',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      Icon(Icons.add, size: 20),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],
     );
   }
 
-  Widget _buildBioSection() {
+  Widget _buildCausesSection(BuildContext context) {
+    final userData = ref.watch(loginProvider);
+    final user =
+        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+    final List<dynamic> causes = user?.causesAndCommunities ?? [];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Bio',
+          'Causes',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -531,34 +768,322 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
           ),
         ),
         const SizedBox(height: 8),
-        Text(
-          'Write a few short words about you',
+        const Text(
+          'Get specific about the things you love.',
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey[600],
+            color: Colors.grey,
           ),
         ),
         const SizedBox(height: 16),
+
+        // ✅ Entire content inside one Card-like container
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          width: double.infinity,
           decoration: BoxDecoration(
-            color: const Color(0xFFFFF8E1),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[300]!),
+            border: Border.all(color: Colors.grey.shade300),
           ),
-          child: TextField(
-            controller: _bioController,
-            maxLines: 5,
-            decoration: const InputDecoration(
-              hintText: 'Write about you',
-              border: InputBorder.none,
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Favorite quality header
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => LifeBadgesScreen(),
+                    ),
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                      // border: Border(
+                      //   bottom: BorderSide(color: Colors.grey.shade300),
+                      // ),
+                      ),
+                  child: Row(
+                    children: const [
+                      Icon(Icons.bookmark_border,
+                          size: 20, color: Colors.black),
+                      SizedBox(width: 8),
+                      Text(
+                        'Favorite causes',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Spacer(),
+                      Icon(Icons.arrow_forward_ios,
+                          size: 16, color: Colors.grey),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Selected qualities chips
+              if (causes.isNotEmpty)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: causes.map<Widget>((causes) {
+                      final name = causes['causesAndCommunities'] ?? '';
+                      final emoji = causes['emoji'] ?? '🌟';
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(emoji),
+                            const SizedBox(width: 6),
+                            Text(
+                              name,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+
+              // Add more qualities button
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => CausesScreen(),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(color: Colors.grey.shade300),
+                    ),
+                  ),
+                  child: Row(
+                    children: const [
+                      Expanded(
+                        child: Text(
+                          'Add more causes',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      Icon(Icons.add, size: 20),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+Widget _buildPromptsSection(BuildContext context) {
+  final userData = ref.watch(loginProvider);
+  final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+  final List<dynamic> prompts = user?.prompts ?? [];
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'Prompts',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: Colors.black,
+        ),
+      ),
+      const SizedBox(height: 8),
+      const Text(
+        'Add personality to your profile with prompts.',
+        style: TextStyle(
+          fontSize: 14,
+          color: Colors.grey,
+        ),
+      ),
+      const SizedBox(height: 16),
+
+      Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Prompt list
+            ...prompts.map((prompt) {
+              final String promptText = prompt['prompt'] ?? '';
+              // final String response = prompt['response'] ?? '';
+
+              return Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: Colors.grey.shade300),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      promptText,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    // Text(
+                    //   response.isNotEmpty ? response : 'No response added.',
+                    //   style: const TextStyle(
+                    //     fontSize: 14,
+                    //     color: Colors.black87,
+                    //   ),
+                    // ),
+                  ],
+                ),
+              );
+            }).toList(),
+
+            // Add prompt button if less than 3
+            if (prompts.length < 3)
+              GestureDetector(
+                onTap: () {
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (_) => const AddPromptScreen()),
+                  // );
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(color: Colors.grey.shade300),
+                    ),
+                  ),
+                  child: Row(
+                    children: const [
+                      Expanded(
+                        child: Text(
+                          'Add Prompt',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      Icon(Icons.add, size: 20),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    ],
+  );
+}
+
+
+
+  Widget _buildBioSection() {
+  final userData = ref.watch(loginProvider);
+  final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+  final String? headline = user?.headLine;
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'Bio',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: Colors.black,
+        ),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        'Write a few short words about you',
+        style: TextStyle(
+          fontSize: 14,
+          color: Colors.grey[600],
+        ),
+      ),
+      const SizedBox(height: 16),
+
+      // ✅ Show existing headline if available
+      if (headline != null && headline.trim().isNotEmpty)
+        Container(
+          width: double.infinity,
+          margin: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: Text(
+            headline,
             style: const TextStyle(fontSize: 16, color: Colors.black87),
           ),
         ),
-      ],
-    );
-  }
+
+      // ✅ Text field to add or update bio
+      if(headline==null)
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFF8E1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey[300]!),
+        ),
+        child: TextField(
+          controller: _bioController,
+          maxLines: 5,
+          decoration: const InputDecoration(
+            hintText: 'Write about you',
+            border: InputBorder.none,
+          ),
+          style: const TextStyle(fontSize: 16, color: Colors.black87),
+        ),
+      ),
+    ],
+  );
+}
+
 
   Widget _buildSectionButton(String text, {VoidCallback? onTap}) {
     return GestureDetector(
@@ -617,12 +1142,14 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
         }),
         _buildProfileItem(Icons.location_on_outlined, 'Location', 'Add',
             onTap: () {
-               Navigator.pushReplacement(context,
+          Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => FindCityScreen()));
-            }),
+        }),
         _buildProfileItem(Icons.home_outlined, 'Hometown', 'Add', onTap: () {
-           Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => HomeTownSelectionScreen()));
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => HomeTownSelectionScreen()));
         }),
       ],
     );
@@ -699,13 +1226,14 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
           ),
           child: GestureDetector(
             onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const GenderPronounsScreen(), // your target screen
-                  ),
-                );
-              },
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      const GenderPronounsScreen(), // your target screen
+                ),
+              );
+            },
             child: Row(
               children: [
                 Expanded(
@@ -717,7 +1245,8 @@ class _BumbleDateProfileScreenState extends State<BumbleDateProfileScreen> {
                     ),
                   ),
                 ),
-                Icon(Icons.arrow_forward_ios, color: Colors.grey[400], size: 16),
+                Icon(Icons.arrow_forward_ios,
+                    color: Colors.grey[400], size: 16),
               ],
             ),
           ),

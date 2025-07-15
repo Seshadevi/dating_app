@@ -74,8 +74,6 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
     }
   }
 
-  
-
   Future<bool> verifyPhoneNumber(String phoneNumber, WidgetRef ref) async {
     print('Phone number: $phoneNumber');
     final auth = ref.read(firebaseAuthProvider);
@@ -187,6 +185,7 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
         if (userDetails != null && userDetails['data'] != null) {
           final userModel = UserModel.fromJson(userDetails);
           state = userModel;
+          print('user model data.......$userDetails');
 
           final userData = json.encode(userDetails);
           await prefs.setString('userData', userData);
@@ -271,7 +270,8 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
     final prefs = await SharedPreferences.getInstance();
 
     print("✅ Proceeding with API request...");
-    print('sign in data.........email:$email,mobile:$mobile,latitude:$latitude,longitude:$longitude,Name:$userName,dob:$dateOfBirth,selectedgender:$selectedGender:');
+    print(
+        'sign in data.........email:$email,mobile:$mobile,latitude:$latitude,longitude:$longitude,Name:$userName,dob:$dateOfBirth,selectedgender:$selectedGender:');
     print(
         'data.......show:$showGenderOnProfile,height:$selectedHeight,headline:$finalheadline,images:${choosedimages.length},');
 
@@ -393,13 +393,13 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         await prefs.setBool("isSignedUp", true);
-          final userDetails = jsonDecode(responseBody);
+        final userDetails = jsonDecode(responseBody);
         final userModel = UserModel.fromJson(userDetails);
-          state = userModel;
+        state = userModel;
 
-          final userData = json.encode(userDetails);
-          await prefs.setString('userData', userData);
-          print('User data saved in SharedPreferences.');
+        final userData = json.encode(userDetails);
+        await prefs.setString('userData', userData);
+        print('User data saved in SharedPreferences.');
         return response.statusCode;
       } else {
         print("❌ Signup failed with status: ${response.statusCode}");
@@ -411,68 +411,67 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
     }
   }
 
-Future<int> updateProfile({
-  required int? modeid,
-  required String? modename,
-}) async {
-  final userid = ref.read(loginProvider).data![0].user?.id;
-  final String apiUrl = "${Dgapi.updateprofile}/$userid";
+  Future<int> updateProfile({
+    required int? modeid,
+    required String? modename,
+  }) async {
+    final userid = ref.read(loginProvider).data![0].user?.id;
+    final String apiUrl = "${Dgapi.updateprofile}/$userid";
 
-  try {
-    final prefs = await SharedPreferences.getInstance();
-    String? userDataString = prefs.getString('userData');
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      String? userDataString = prefs.getString('userData');
 
-    if (userDataString == null || userDataString.isEmpty) {
-      throw Exception("User token is missing. Please log in again.");
+      if (userDataString == null || userDataString.isEmpty) {
+        throw Exception("User token is missing. Please log in again.");
+      }
+
+      final Map<String, dynamic> userData = jsonDecode(userDataString);
+      String? token = userData['accessToken'];
+
+      // Fallback if accessToken is nested inside data[]
+      if (token == null || token.isEmpty) {
+        token = userData['data'] != null &&
+                (userData['data'] as List).isNotEmpty &&
+                userData['data'][0]['access_token'] != null
+            ? userData['data'][0]['access_token']
+            : null;
+      }
+
+      if (token == null || token.isEmpty) {
+        throw Exception("User token is invalid. Please log in again.");
+      }
+
+      print('✅ Retrieved Token: $token');
+
+      var request = http.MultipartRequest('PUT', Uri.parse(apiUrl));
+
+      // ⬅️ Add Authorization header here
+      request.headers['Authorization'] = 'Bearer $token';
+      request.headers['Accept'] = 'application/json';
+
+      // Mode field
+      request.fields['mode'] = "$modename";
+
+      // Send request
+      final response = await request.send();
+      final responseBody = await response.stream.bytesToString();
+
+      print("📨 API Response: $responseBody");
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final userDetails = jsonDecode(responseBody);
+        print("✅ Updated data: $userDetails");
+        return response.statusCode;
+      } else {
+        print("❌ Update failed with status: ${response.statusCode}");
+        return response.statusCode;
+      }
+    } catch (e) {
+      print("❗ Exception during profile update: $e");
+      return 500;
     }
-
-    final Map<String, dynamic> userData = jsonDecode(userDataString);
-    String? token = userData['accessToken'];
-
-    // Fallback if accessToken is nested inside data[]
-    if (token == null || token.isEmpty) {
-      token = userData['data'] != null &&
-              (userData['data'] as List).isNotEmpty &&
-              userData['data'][0]['access_token'] != null
-          ? userData['data'][0]['access_token']
-          : null;
-    }
-
-    if (token == null || token.isEmpty) {
-      throw Exception("User token is invalid. Please log in again.");
-    }
-
-    print('✅ Retrieved Token: $token');
-
-    var request = http.MultipartRequest('PUT', Uri.parse(apiUrl));
-
-    // ⬅️ Add Authorization header here
-    request.headers['Authorization'] = 'Bearer $token';
-    request.headers['Accept'] = 'application/json';
-
-    // Mode field
-    request.fields['mode'] = "$modename";
-
-    // Send request
-    final response = await request.send();
-    final responseBody = await response.stream.bytesToString();
-
-    print("📨 API Response: $responseBody");
-
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      final userDetails = jsonDecode(responseBody);
-      print("✅ Updated data: $userDetails");
-      return response.statusCode;
-    } else {
-      print("❌ Update failed with status: ${response.statusCode}");
-      return response.statusCode;
-    }
-  } catch (e) {
-    print("❗ Exception during profile update: $e");
-    return 500;
   }
-}
-
 
   Future<String> restoreAccessToken() async {
     const url = Dgapi.refreshToken;

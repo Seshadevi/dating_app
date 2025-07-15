@@ -100,6 +100,7 @@ class User {
   dynamic mode;
   List<dynamic>? qualities;
   List<dynamic>? drinking;
+  List<dynamic>? interests;
   List<dynamic>? kids;
   List<dynamic>? religions;
   List<dynamic>? causesAndCommunities;
@@ -123,6 +124,7 @@ class User {
     this.qualities,
     this.drinking,
     this.kids,
+    this.interests,
     this.religions,
     this.causesAndCommunities,
     this.prompts,
@@ -140,6 +142,7 @@ class User {
         drinking: [],
         kids: [],
         religions: [],
+        interests: [],
         causesAndCommunities: [],
         prompts: [],
         defaultMessages: [],
@@ -163,6 +166,7 @@ class User {
     List<dynamic>? drinking,
     List<dynamic>? kids,
     List<dynamic>? religions,
+    List<dynamic>? interests,
     List<dynamic>? causesAndCommunities,
     List<dynamic>? prompts,
     List<dynamic>? defaultMessages,
@@ -185,6 +189,7 @@ class User {
       drinking: drinking ?? this.drinking,
       kids: kids ?? this.kids,
       religions: religions ?? this.religions,
+      interests: interests ?? this.interests,
       causesAndCommunities: causesAndCommunities ?? this.causesAndCommunities,
       prompts: prompts ?? this.prompts,
       defaultMessages: defaultMessages ?? this.defaultMessages,
@@ -209,6 +214,14 @@ class User {
     drinking = json['drinking'];
     kids = json['kids'];
     religions = json['religions'];
+    interests = json['interests'];
+    // ?.map((e) => {
+    //   'id': e['id'],
+    //   'interests': e['interests'],
+    //   'emoji': '🎯' // optional fallback if emoji not in API
+    // })
+    // .toList();
+
     causesAndCommunities = json['causesAndCommunities'];
     prompts = json['prompts'];
     defaultMessages = json['defaultMessages'];
@@ -233,6 +246,7 @@ class User {
         'drinking': drinking,
         'kids': kids,
         'religions': religions,
+        'interests': interests,
         'causesAndCommunities': causesAndCommunities,
         'prompts': prompts,
         'defaultMessages': defaultMessages,

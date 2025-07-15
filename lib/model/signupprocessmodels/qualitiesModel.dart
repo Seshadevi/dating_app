@@ -1,3 +1,5 @@
+import 'package:flutter/src/widgets/basic.dart';
+
 class QualitiesModel {
   bool? success;
   String? message;
@@ -47,6 +49,8 @@ class QualitiesModel {
     }
     return data;
   }
+
+  when({required Center Function() loading, required Center Function(dynamic e, dynamic _) error, required Padding Function(dynamic qualitiesModel) data}) {}
 }
 
 class Data {
