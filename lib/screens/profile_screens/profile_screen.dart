@@ -29,12 +29,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     // final imageUrl = (user?.profilePics != null && user!.profilePics!.isNotEmpty)
     //     ? user.profilePics!.first.toString()
     //     : null;
-    final imageUrl = (user?.profilePics != null &&
-        user!.profilePics!.isNotEmpty &&
-        user.profilePics!.first is Map &&
-        user.profilePics!.first['url'] != null)
-    ? 'http://97.74.93.26:6100/${user.profilePics!.first['url']}'
-    : null;
+   String? imageUrl;
+
+if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
+  var first = user.profilePics!.first;
+  if (first is String) {
+    imageUrl = 'http://97.74.93.26:6100/${first.toString().replaceFirst(RegExp(r'^/'), '')}';
+  } else if (first is Map && first['url'] != null) {
+    imageUrl = 'http://97.74.93.26:6100/${first['url'].toString().replaceFirst(RegExp(r'^/'), '')}';
+  }
+}
+
 
         print("IMAGE URL::::: $imageUrl");
 
