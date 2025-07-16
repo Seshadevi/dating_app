@@ -1,12 +1,13 @@
 import 'package:dating/provider/signupprocessProviders/causesProvider.dart';
-import 'package:dating/provider/signupprocessProviders/choosr_foodies_provider.dart';
+import 'package:dating/screens/completeprofile/favoriteCauses.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dating/provider/signupprocessProviders/qualities.dart';
-import 'package:dating/model/signupprocessmodels/qualitiesModel.dart';
+
+// import 'package:dating/model/signupprocessmodels/qualitiesModel.dart';
 
 class CausesScreen extends ConsumerStatefulWidget {
-  const CausesScreen({Key? key}) : super(key: key);
+  final List<Map<String, dynamic>> usersCauses;
+  const CausesScreen({Key? key,required this.usersCauses}) : super(key: key);
 
   @override
   ConsumerState<CausesScreen> createState() => _CausesScreenState();
@@ -19,14 +20,15 @@ class _CausesScreenState extends ConsumerState<CausesScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(causesProvider.notifier).getCauses();
+       ref.read(causesProvider.notifier).getCauses();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final interestState = ref.watch(causesProvider);
-    final interests = interestState.data ?? [];
+   
+     final causeState = ref.watch(causesProvider);
+    final causes = causeState.data ?? [];
 
     return Scaffold(
       appBar: AppBar(
@@ -37,7 +39,7 @@ class _CausesScreenState extends ConsumerState<CausesScreen> {
       ),
       body: Column(
         children: [
-          // Selectedinterests display
+          // Selected qualities display
           if (selectedIds.isNotEmpty)
             Container(
               width: double.infinity,
@@ -46,7 +48,7 @@ class _CausesScreenState extends ConsumerState<CausesScreen> {
               child: Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children:interests
+                children: causes
                     .where((q) => selectedIds.contains(q.id))
                     .map((q) => Chip(
                           label: Text(q.causesAndCommunities ?? 'Unknown'),
@@ -61,12 +63,12 @@ class _CausesScreenState extends ConsumerState<CausesScreen> {
               ),
             ),
 
-          //interests list
+          // Qualities list
           Expanded(
             child: ListView.builder(
-              itemCount:interests.length,
+              itemCount: causes.length,
               itemBuilder: (context, index) {
-                final quality =interests[index];
+                final quality = causes[index];
                 final isSelected = selectedIds.contains(quality.id);
                 return ListTile(
                   title: Text(quality.causesAndCommunities ?? 'Unnamed'),
@@ -93,10 +95,24 @@ class _CausesScreenState extends ConsumerState<CausesScreen> {
             child: ElevatedButton(
               onPressed: selectedIds.isNotEmpty
                   ? () {
-                      final selected =interests
-                          .where((q) => selectedIds.contains(q.id))
-                          .toList();
-                      _onContinue(selected.cast<Data>());
+                      final selectedCauses = causes
+    .where((c) => selectedIds.contains(c.id))
+    .map((c) => {
+          'id': c.id,
+          'causesAndCommunities': c.causesAndCommunities ?? '',
+        })
+    .toList();
+
+Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (_) => FavoriteCauseScreen(
+      userCauses: widget.usersCauses,   // ⬅ previously selected
+      selectedCauses: selectedCauses,   // ⬅ just selected
+    ),
+  ),
+);
+
                     }
                   : null,
               style: ElevatedButton.styleFrom(
@@ -111,26 +127,26 @@ class _CausesScreenState extends ConsumerState<CausesScreen> {
     );
   }
 
-  void _onContinue(List<Data> selectedQualities) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Selectedinterests'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: selectedQualities
-              .map((q) => Text(q.name ?? 'Unnamed'))
-              .toList(),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          )
-        ],
-      ),
-    );
+  // void _onContinue(List<Data> selectedQualities) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //       title: const Text('Selected Qualities'),
+  //       content: Column(
+  //         mainAxisSize: MainAxisSize.min,
+  //         children: selectedQualities
+  //             .map((q) => Text(q.name ?? 'Unnamed'))
+  //             .toList(),
+  //       ),
+  //       actions: [
+  //         TextButton(
+  //           onPressed: () => Navigator.of(context).pop(),
+  //           child: const Text('OK'),
+  //         )
+  //       ],
+  //     ),
+  //   );
 
-    // You could also navigate to the next screen and pass selectedQualities
-  }
+  //   // You could also navigate to the next screen and pass selectedQualities
+  // }
 }

@@ -1,11 +1,14 @@
 import 'package:dating/provider/signupprocessProviders/choosr_foodies_provider.dart';
+import 'package:dating/screens/completeprofile/favoriteinterests.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dating/provider/signupprocessProviders/qualities.dart';
 import 'package:dating/model/signupprocessmodels/qualitiesModel.dart';
 
 class InterestsScreen extends ConsumerStatefulWidget {
-  const InterestsScreen({Key? key}) : super(key: key);
+  final List<Map<String, dynamic>> usersInterets;
+  const InterestsScreen({Key? key,required this.usersInterets}) : super(key: key);
+
 
   @override
   ConsumerState<InterestsScreen> createState() => _InterestsScreenState();
@@ -92,10 +95,23 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
             child: ElevatedButton(
               onPressed: selectedIds.isNotEmpty
                   ? () {
-                      final selected =interests
-                          .where((q) => selectedIds.contains(q.id))
-                          .toList();
-                      _onContinue(selected.cast<Data>());
+                       final selectedInteres =interests 
+    .where((c) => selectedIds.contains(c.id))
+    .map((c) => {
+          'id': c.id,
+          'interests': c.interests?? '',
+        })
+    .toList();
+
+Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (_) => FavoriteInterests(
+      userInteres: widget.usersInterets,   // ⬅ previously selected
+      selectedInteres: selectedInteres,   // ⬅ just selected
+    ),
+  ),
+);
                     }
                   : null,
               style: ElevatedButton.styleFrom(

@@ -1,10 +1,12 @@
+import 'package:dating/screens/completeprofile/favoritequalities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dating/provider/signupprocessProviders/qualities.dart';
 import 'package:dating/model/signupprocessmodels/qualitiesModel.dart';
 
 class QualitiesScreen extends ConsumerStatefulWidget {
-  const QualitiesScreen({Key? key}) : super(key: key);
+  final List<Map<String, dynamic>> usersQualities;
+  const QualitiesScreen({Key? key,required this.usersQualities}) : super(key: key);
 
   @override
   ConsumerState<QualitiesScreen> createState() => _QualitiesScreenState();
@@ -25,7 +27,7 @@ class _QualitiesScreenState extends ConsumerState<QualitiesScreen> {
   Widget build(BuildContext context) {
     final qualitiesState = ref.watch(qualitiesProvider);
     final qualities = qualitiesState.data ?? [];
-
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Select Qualities'),
@@ -91,10 +93,23 @@ class _QualitiesScreenState extends ConsumerState<QualitiesScreen> {
             child: ElevatedButton(
               onPressed: selectedIds.isNotEmpty
                   ? () {
-                      final selected = qualities
-                          .where((q) => selectedIds.contains(q.id))
-                          .toList();
-                      _onContinue(selected);
+                      final selectedQualities = qualities
+    .where((c) => selectedIds.contains(c.id))
+    .map((c) => {
+          'id': c.id,
+          'name': c.name?? '',
+        })
+    .toList();
+
+Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (_) => FavoriteQualities(
+      userCauses: widget.usersQualities,   // ⬅ previously selected
+      selectedCauses: selectedQualities,   // ⬅ just selected
+    ),
+  ),
+);
                     }
                   : null,
               style: ElevatedButton.styleFrom(
