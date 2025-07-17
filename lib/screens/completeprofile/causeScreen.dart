@@ -3,150 +3,130 @@ import 'package:dating/screens/completeprofile/favoriteCauses.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// import 'package:dating/model/signupprocessmodels/qualitiesModel.dart';
-
 class CausesScreen extends ConsumerStatefulWidget {
   final List<Map<String, dynamic>> usersCauses;
-  const CausesScreen({Key? key,required this.usersCauses}) : super(key: key);
+  const CausesScreen({Key? key, required this.usersCauses}) : super(key: key);
 
   @override
   ConsumerState<CausesScreen> createState() => _CausesScreenState();
 }
 
 class _CausesScreenState extends ConsumerState<CausesScreen> {
-  final Set<int> selectedIds = {}; // Store selected quality IDs
+  final Set<int> selectedIds = {};
+  final int maxSelection = 4;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-       ref.read(causesProvider.notifier).getCauses();
+      ref.read(causesProvider.notifier).getCauses();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-   
-     final causeState = ref.watch(causesProvider);
+    final causeState = ref.watch(causesProvider);
     final causes = causeState.data ?? [];
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Select Causes'),
-        backgroundColor:const Color.fromARGB(255, 10, 127, 6),
-        foregroundColor: Colors.white,
+        title: const Text('Causes'),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 0,
         centerTitle: true,
+        leading: const BackButton(),
       ),
-      body: Column(
-        children: [
-          // Selected qualities display
-          if (selectedIds.isNotEmpty)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              color: Colors.deepPurple.shade50,
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "You can choose ${maxSelection - selectedIds.length} more causes",
+              style: const TextStyle(fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 12),
+            const Text("Causes & Communities", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const SizedBox(height: 12),
+            Expanded(
               child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: causes
-                    .where((q) => selectedIds.contains(q.id))
-                    .map((q) => Chip(
-                          label: Text(q.causesAndCommunities ?? 'Unknown'),
-                          backgroundColor: Colors.deepPurple.shade100,
-                          labelStyle: const TextStyle(color:const Color.fromARGB(255, 10, 127, 6),),
-                          deleteIcon: const Icon(Icons.close, size: 16),
-                          onDeleted: () {
-                            setState(() => selectedIds.remove(q.id));
-                          },
-                        ))
-                    .toList(),
+                spacing: 12,
+                runSpacing: 12,
+                children: causes.map((cause) {
+                  final isSelected = selectedIds.contains(cause.id);
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        if (isSelected) {
+                          selectedIds.remove(cause.id);
+                        } else if (selectedIds.length < maxSelection) {
+                          selectedIds.add(cause.id!);
+                        }
+                      });
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: isSelected ? const Color.fromARGB(255, 218, 217, 215) : Colors.white,
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            cause.causesAndCommunities ?? '',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Icon(
+                            isSelected ? Icons.close : Icons.add,
+                            size: 18,
+                            color: Colors.black87,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
               ),
             ),
-
-          // Qualities list
-          Expanded(
-            child: ListView.builder(
-              itemCount: causes.length,
-              itemBuilder: (context, index) {
-                final quality = causes[index];
-                final isSelected = selectedIds.contains(quality.id);
-                return ListTile(
-                  title: Text(quality.causesAndCommunities ?? 'Unnamed'),
-                  trailing: isSelected
-                      ? const Icon(Icons.check_circle, color:const Color.fromARGB(255, 10, 127, 6),)
-                      : const Icon(Icons.circle_outlined),
-                  onTap: () {
-                    setState(() {
-                      if (isSelected) {
-                        selectedIds.remove(quality.id);
-                      } else {
-                        selectedIds.add(quality.id!);
-                      }
-                    });
-                  },
-                );
-              },
-            ),
-          ),
-
-          // Continue button
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: ElevatedButton(
+            const SizedBox(height: 20),
+            ElevatedButton(
               onPressed: selectedIds.isNotEmpty
                   ? () {
                       final selectedCauses = causes
-    .where((c) => selectedIds.contains(c.id))
-    .map((c) => {
-          'id': c.id,
-          'causesAndCommunities': c.causesAndCommunities ?? '',
-        })
-    .toList();
+                          .where((c) => selectedIds.contains(c.id))
+                          .map((c) => {
+                                'id': c.id,
+                                'causesAndCommunities': c.causesAndCommunities ?? '',
+                              })
+                          .toList();
 
-Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (_) => FavoriteCauseScreen(
-      userCauses: widget.usersCauses,   // ⬅ previously selected
-      selectedCauses: selectedCauses,   // ⬅ just selected
-    ),
-  ),
-);
-
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => FavoriteCauseScreen(
+                            userCauses: widget.usersCauses,
+                            selectedCauses: selectedCauses,
+                          ),
+                        ),
+                      );
                     }
                   : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 10, 127, 6),
+                backgroundColor:Color(0xFF869E23),
                 minimumSize: const Size.fromHeight(50),
               ),
-              child: const Text('Continue',style:TextStyle(color: Colors.white),),
+              child: const Text("Continue", style: TextStyle(color: Colors.white)),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
-
-  // void _onContinue(List<Data> selectedQualities) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) => AlertDialog(
-  //       title: const Text('Selected Qualities'),
-  //       content: Column(
-  //         mainAxisSize: MainAxisSize.min,
-  //         children: selectedQualities
-  //             .map((q) => Text(q.name ?? 'Unnamed'))
-  //             .toList(),
-  //       ),
-  //       actions: [
-  //         TextButton(
-  //           onPressed: () => Navigator.of(context).pop(),
-  //           child: const Text('OK'),
-  //         )
-  //       ],
-  //     ),
-  //   );
-
-  //   // You could also navigate to the next screen and pass selectedQualities
-  // }
 }

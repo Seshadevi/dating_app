@@ -414,9 +414,16 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
   Future<int> updateProfile({
     required int? modeid,
     required String? modename,
+    // int? causeId,
+    // required String bio,
+    // int? interestId,
+    // int? qualityId,
+    // required String prompt,
+    // required File? image,
   }) async {
     final userid = ref.read(loginProvider).data![0].user?.id;
     final String apiUrl = "${Dgapi.updateprofile}/$userid";
+    // print('updated data....modeId:$modeid,modename:$modename,causedId:$causeId,intrestId:$interestId,qualityId:$qualityId,bio:$bio,prompt:$prompt,image:${image!.path}');
 
     try {
       final prefs = await SharedPreferences.getInstance();

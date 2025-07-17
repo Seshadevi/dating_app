@@ -145,7 +145,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
                   IconButton(
                     icon: const Icon(Icons.arrow_back_ios),
                     onPressed: (){
-                        if(modename == "date"){
+                        if(modename == "DATE"){
                               Navigator.pushNamed(
                                         context,
                                         '/defaultmessagesScreen',
@@ -174,7 +174,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
                                         },);
                           
                         }
-                        else if(modename == "bff" || modename == "bizz"){
+                        else if(modename == "BFF" || modename == "BIZZ"){
                                Navigator.pushNamed(
                                         context,
                                         '/modescreen',

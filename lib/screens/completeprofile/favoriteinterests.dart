@@ -1,6 +1,8 @@
+import 'package:dating/provider/loginProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FavoriteInterests extends StatefulWidget {
+class FavoriteInterests extends ConsumerStatefulWidget {
   final List<Map<String, dynamic>> userInteres;     // Previously selected
   final List<Map<String, dynamic>> selectedInteres; // Just selected now
 
@@ -11,20 +13,20 @@ class FavoriteInterests extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<FavoriteInterests> createState() => _FavoriteInterestsState();
+  ConsumerState<FavoriteInterests> createState() => _FavoriteInterestsState();
 }
 
-class _FavoriteInterestsState extends State<FavoriteInterests> {
-  int? selectedCauseId;
+class _FavoriteInterestsState extends ConsumerState<FavoriteInterests> {
+  int? selectInterestId;
   List<Map<String, dynamic>> visibleInterests = [];
 
   @override
   void initState() {
     super.initState();
 
-    // ✅ Only show selectedInteres in UI
+    // ✅ Merge selected + previous, deduplicated by ID
     final Map<int, Map<String, dynamic>> interestMap = {};
-    for (var interest in widget.selectedInteres) {
+    for (var interest in [...widget.selectedInteres, ...widget.userInteres]) {
       if (interest['id'] != null) {
         interestMap[interest['id']] = interest;
       }
@@ -32,11 +34,11 @@ class _FavoriteInterestsState extends State<FavoriteInterests> {
 
     visibleInterests = interestMap.values.toList();
 
-    // ✅ Pre-select favorite from userInteres if it exists in selectedInteres
+    // ✅ Preselect old favorite
     if (widget.userInteres.isNotEmpty) {
       final previousFavoriteId = widget.userInteres.first['id'];
       if (interestMap.containsKey(previousFavoriteId)) {
-        selectedCauseId = previousFavoriteId;
+        selectInterestId = previousFavoriteId;
       }
     }
 
@@ -71,7 +73,6 @@ class _FavoriteInterestsState extends State<FavoriteInterests> {
           ),
           const SizedBox(height: 16),
 
-          // ✅ List of new (visible) interests only
           Expanded(
             child: ListView.builder(
               itemCount: visibleInterests.length,
@@ -80,13 +81,13 @@ class _FavoriteInterestsState extends State<FavoriteInterests> {
                 final int? id = item['id'];
                 final String emoji = item['emoji'] ?? '🌟';
                 final String name = item['interests'] ?? '';
-                final bool isSelected = selectedCauseId == id;
+                final bool isSelected = selectInterestId == id;
 
                 return GestureDetector(
                   onTap: () {
                     if (id != null) {
                       setState(() {
-                        selectedCauseId = id;
+                        selectInterestId = id;
                       });
                     }
                   },
@@ -125,15 +126,27 @@ class _FavoriteInterestsState extends State<FavoriteInterests> {
             ),
           ),
 
-          // ✅ Save Button
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ElevatedButton(
-              onPressed:
-                   () {
+              onPressed: () async {
+                try {
+                  // await ref.read(loginProvider.notifier).updateProfile(
+                  //   interestId: selectInterestId,
+                  // );
+                  print('Interest updated');
 
-                   //API-------------------------------------------------
-                  },
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Interest updated successfully!')),
+                  );
+
+                  _returnSelectedInterest(); // Return selected interest
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to upload interest: $e')),
+                  );
+                }
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 minimumSize: const Size.fromHeight(50),
@@ -142,13 +155,12 @@ class _FavoriteInterestsState extends State<FavoriteInterests> {
             ),
           ),
 
-          // ✅ Remove Button
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: OutlinedButton(
               onPressed: () {
-                setState(() => selectedCauseId = null);
-                Navigator.pop(context, null); // Send null on removal
+                setState(() => selectInterestId = null);
+                Navigator.pop(context, null); // Remove interest
               },
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size.fromHeight(50),
@@ -161,9 +173,9 @@ class _FavoriteInterestsState extends State<FavoriteInterests> {
     );
   }
 
-  void _saveFavorite() {
+  void _returnSelectedInterest() {
     final selected = visibleInterests.firstWhere(
-      (item) => item['id'] == selectedCauseId,
+      (item) => item['id'] == selectInterestId,
       orElse: () => {},
     );
 
@@ -183,6 +195,6 @@ class _FavoriteInterestsState extends State<FavoriteInterests> {
       SnackBar(content: Text("Favorite interest '$name' saved!")),
     );
 
-    Navigator.pop(context, selected); // Send selected interest back
+    Navigator.pop(context, selected);
   }
 }

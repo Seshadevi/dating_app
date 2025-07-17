@@ -132,14 +132,14 @@ class MessagesScreen extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   child: Row(
                     children: [
-                      GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: Icon(
-                          Icons.arrow_back_ios,
-                          size: 20,
-                          color: Colors.black87,
-                        ),
-                      ),
+                      // GestureDetector(
+                      //   onTap: () => Navigator.pop(context),
+                        // child: Icon(
+                        //   Icons.arrow_back_ios,
+                        //   size: 20,
+                        //   color: Colors.black87,
+                        // ),
+                      // ),
                       SizedBox(width: 16),
                       Text(
                         'Messages',

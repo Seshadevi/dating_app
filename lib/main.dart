@@ -130,6 +130,7 @@ class MyApp extends StatelessWidget {
          "/narrowsearch":(context) => NarrowSearchScreen() ,
          "likedyouscreen": (context) =>const LikedYouScreen(),
          "messagescreen": (context) => MessagesScreen(),
+         "/custombottomnav": (context) => CustomBottomNavigationBar(),
       },
     );
   }

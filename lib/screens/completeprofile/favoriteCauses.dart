@@ -1,8 +1,10 @@
+import 'package:dating/provider/loginProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FavoriteCauseScreen extends StatefulWidget {
-  final List<Map<String, dynamic>> userCauses;     // Previously selected causes
-  final List<Map<String, dynamic>> selectedCauses; // Just selected causes
+class FavoriteCauseScreen extends ConsumerStatefulWidget {
+  final List<Map<String, dynamic>> userCauses;
+  final List<Map<String, dynamic>> selectedCauses;
 
   const FavoriteCauseScreen({
     Key? key,
@@ -11,10 +13,10 @@ class FavoriteCauseScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<FavoriteCauseScreen> createState() => _FavoriteCauseScreenState();
+  ConsumerState<FavoriteCauseScreen> createState() => _FavoriteCauseScreenState();
 }
 
-class _FavoriteCauseScreenState extends State<FavoriteCauseScreen> {
+class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
   int? selectedCauseId;
   List<Map<String, dynamic>> mergedCauses = [];
 
@@ -22,7 +24,7 @@ class _FavoriteCauseScreenState extends State<FavoriteCauseScreen> {
   void initState() {
     super.initState();
 
-    // ✅ Merge unique causes by ID
+    // Merge user + selected causes by ID (remove duplicates)
     final Map<int, Map<String, dynamic>> mergedMap = {};
     for (var cause in [...widget.selectedCauses, ...widget.userCauses]) {
       if (cause['id'] != null) {
@@ -32,7 +34,7 @@ class _FavoriteCauseScreenState extends State<FavoriteCauseScreen> {
 
     mergedCauses = mergedMap.values.toList();
 
-    // ✅ Preselect user's previously selected favorite
+    // Pre-select previously chosen cause
     if (widget.userCauses.isNotEmpty) {
       selectedCauseId = widget.userCauses.first['id'];
     }
@@ -68,7 +70,6 @@ class _FavoriteCauseScreenState extends State<FavoriteCauseScreen> {
           ),
           const SizedBox(height: 16),
 
-          // ✅ List of causes
           Expanded(
             child: ListView.builder(
               itemCount: mergedCauses.length,
@@ -122,15 +123,26 @@ class _FavoriteCauseScreenState extends State<FavoriteCauseScreen> {
             ),
           ),
 
-          // ✅ Save Button
-           Padding(
+          Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ElevatedButton(
-              onPressed:
-                   () {
+              onPressed: () async {
+                try {
+                  // await ref.read(loginProvider.notifier).updateProfile(causeId: selectedCauseId);
+                  print('Cause updated');
 
-                   //API-------------------------------------------------
-                  },
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Cause updated successfully!')),
+                  );
+
+                  // Return updated cause
+                  _returnSelectedCause();
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to upload cause: $e')),
+                  );
+                }
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 minimumSize: const Size.fromHeight(50),
@@ -139,7 +151,6 @@ class _FavoriteCauseScreenState extends State<FavoriteCauseScreen> {
             ),
           ),
 
-          // ✅ Remove Button (Closes screen and clears favorite)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: OutlinedButton(
@@ -148,8 +159,7 @@ class _FavoriteCauseScreenState extends State<FavoriteCauseScreen> {
                   selectedCauseId = null;
                 });
 
-                // Return null or {} to indicate "removed"
-                Navigator.pop(context, null);
+                Navigator.pop(context, null); // Remove selection
               },
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size.fromHeight(50),
@@ -162,7 +172,7 @@ class _FavoriteCauseScreenState extends State<FavoriteCauseScreen> {
     );
   }
 
-  void _saveFavoriteCause() {
+  void _returnSelectedCause() {
     final selected = mergedCauses.firstWhere(
       (c) => c['id'] == selectedCauseId,
       orElse: () => {},
@@ -175,17 +185,6 @@ class _FavoriteCauseScreenState extends State<FavoriteCauseScreen> {
       return;
     }
 
-    final int id = selected['id'];
-    final String name = selected['causesAndCommunities'] ?? '';
-
-    // 🚀 TODO: Send this to your backend/API if needed
-    print("🎯 Selected Cause -> ID: $id, Name: $name");
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Favorite cause '$name' saved!")),
-    );
-
-    // ✅ Return selected cause to previous screen
-    Navigator.pop(context, selected);
+    Navigator.pop(context, selected); // Pass data back
   }
 }

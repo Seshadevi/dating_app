@@ -31,17 +31,15 @@ class _BumbleDateProfileScreenState
   // List<ImageProvider?> selectedImages = List.filled(6, null);
   // List<File?> selectedImages = List.filled(6, null);
   List<dynamic> selectedImages =
-  List.filled(6, null); // allows both File and NetworkImage
+      List.filled(6, null); // allows both File and NetworkImage
   bool isEditing = false;
   final TextEditingController _bioController = TextEditingController();
   bool isAddingPrompt = false;
   final TextEditingController _promptController = TextEditingController();
   List<Map<String, dynamic>> localPrompts = [];
   int? editingPromptIndex; // Track which prompt is being edited
-TextEditingController _editPromptController = TextEditingController();
-
-
-
+  TextEditingController _editPromptController = TextEditingController();
+  late File image;
 
   final ImagePicker _picker = ImagePicker();
   // final TextEditingController _bioController = TextEditingController();
@@ -65,7 +63,7 @@ TextEditingController _editPromptController = TextEditingController();
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pushNamed(context, 'profilescreen'),
+          onPressed: () => Navigator.pushNamed(context, '/custombottomnav'),
         ),
         title: Text(
           'Bumble Date',
@@ -386,10 +384,22 @@ TextEditingController _editPromptController = TextEditingController();
   }
 
   void _uploadProfileImage(File imageFile, int index) async {
+    final key = 'photo${index + 1}';
+    File image;
     try {
       // TODO: Add your real API call here
-      // For example:
-      // await ApiService.updateProfileImage(imageFile, index);
+      final XFile? pickedImage =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+
+      if (pickedImage != null) {
+        final File imageFile = File(pickedImage.path);
+        final String key = 'photo1'; // Can also be 'profileImage', etc.
+
+        // await ref.read(loginProvider.notifier).updateProfile(imageFile, key);
+        // await ref.read(loginProvider.notifier).updateProfile(
+        //       image: imageFile,
+        //     );
+      }
 
       print('Uploading image at index $index: ${imageFile.path}');
 
@@ -566,18 +576,19 @@ TextEditingController _editPromptController = TextEditingController();
               // Add more qualities button
               GestureDetector(
                 onTap: () {
-                  List<Map<String, dynamic>> selected = qualities.map<Map<String, dynamic>>((qualities) {
-                      return {
-                        'id': qualities['id'], // or 'causesId' or whatever key holds the ID
-                        'name': qualities['name'],
-                        
-                      };
-                    }).toList();
-                                  Navigator.push(
+                  List<Map<String, dynamic>> selected =
+                      qualities.map<Map<String, dynamic>>((qualities) {
+                    return {
+                      'id': qualities[
+                          'id'], // or 'causesId' or whatever key holds the ID
+                      'name': qualities['name'],
+                    };
+                  }).toList();
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => CausesScreen(
-                        usersCauses: selected
+                      builder: (_) => QualitiesScreen(
+                        usersQualities: selected,
                       ),
                     ),
                   );
@@ -729,25 +740,26 @@ TextEditingController _editPromptController = TextEditingController();
 
               // Add more qualities button
               GestureDetector(
-               onTap: () {
-                        List<Map<String, dynamic>> selected = interests.map<Map<String, dynamic>>((interest) {
-                          return {
-                            'id': interest['id'],
-                            'interests': interest['interests'],
-                            'emoji': interest['emoji'], // ✅ Include emoji if you use it later
-                          };
-                        }).toList();
+                onTap: () {
+                  List<Map<String, dynamic>> selected =
+                      interests.map<Map<String, dynamic>>((interest) {
+                    return {
+                      'id': interest['id'],
+                      'interests': interest['interests'],
+                      'emoji': interest[
+                          'emoji'], // ✅ Include emoji if you use it later
+                    };
+                  }).toList();
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => InterestsScreen(
-                              usersInterets: selected,
-                            ),
-                          ),
-                        );
-                      },
-
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => InterestsScreen(
+                        usersInterets: selected,
+                      ),
+                    ),
+                  );
+                },
                 child: Container(
                   width: double.infinity,
                   padding:
@@ -895,19 +907,18 @@ TextEditingController _editPromptController = TextEditingController();
               // Add more qualities button
               GestureDetector(
                 onTap: () {
-                    List<Map<String, dynamic>> selected = causes.map<Map<String, dynamic>>((cause) {
-                      return {
-                        'id': cause['id'], // or 'causesId' or whatever key holds the ID
-                        'causesAndCommunities': cause['causesAndCommunities'],
-                        
-                      };
-                    }).toList();
-                                  Navigator.push(
+                  List<Map<String, dynamic>> selected =
+                      causes.map<Map<String, dynamic>>((cause) {
+                    return {
+                      'id': cause[
+                          'id'], // or 'causesId' or whatever key holds the ID
+                      'causesAndCommunities': cause['causesAndCommunities'],
+                    };
+                  }).toList();
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => CausesScreen(
-                        usersCauses: selected
-                      ),
+                      builder: (_) => CausesScreen(usersCauses: selected),
                     ),
                   );
                 },
@@ -942,305 +953,331 @@ TextEditingController _editPromptController = TextEditingController();
       ],
     );
   }
-Widget _buildPromptsSection(BuildContext context) {
-  final userData = ref.watch(loginProvider);
-  final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
-  final List<dynamic> serverPrompts = user?.prompts ?? [];
 
-  final List<dynamic> prompts = localPrompts.isNotEmpty ? localPrompts : serverPrompts;
+  Widget _buildPromptsSection(BuildContext context) {
+    final userData = ref.watch(loginProvider);
+    final user =
+        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+    final List<dynamic> serverPrompts = user?.prompts ?? [];
 
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'Prompts',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
-      ),
-      const SizedBox(height: 8),
-      const Text(
-        'Add personality to your profile with prompts.',
-        style: TextStyle(fontSize: 14, color: Colors.grey),
-      ),
-      const SizedBox(height: 16),
+    final List<dynamic> prompts =
+        localPrompts.isNotEmpty ? localPrompts : serverPrompts;
 
-      Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade300),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Prompts',
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ...prompts.asMap().entries.map((entry) {
-              final int index = entry.key;
-              final prompt = entry.value;
-              final String promptText = prompt['prompt'] ?? '';
+        const SizedBox(height: 8),
+        const Text(
+          'Add personality to your profile with prompts.',
+          style: TextStyle(fontSize: 14, color: Colors.grey),
+        ),
+        const SizedBox(height: 16),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ...prompts.asMap().entries.map((entry) {
+                final int index = entry.key;
+                final prompt = entry.value;
+                final String promptText = prompt['prompt'] ?? '';
 
-              if (editingPromptIndex == index) {
-                _editPromptController.text = promptText;
+                if (editingPromptIndex == index) {
+                  _editPromptController.text = promptText;
 
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  return Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF8E1),
+                      border: Border(
+                        bottom: BorderSide(color: Colors.grey.shade300),
+                      ),
+                    ),
+                    child: TextField(
+                      controller: _editPromptController,
+                      maxLines: 2,
+                      style: const TextStyle(fontSize: 15),
+                      decoration: InputDecoration(
+                        hintText: 'Edit your prompt...',
+                        border: InputBorder.none,
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.check, color: Colors.green),
+                          onPressed: () {
+                            final edited = _editPromptController.text.trim();
+                            if (edited.isNotEmpty) {
+                              setState(() {
+                                prompts[index]['prompt'] = edited;
+                                localPrompts = List.from(prompts);
+                                editingPromptIndex = null;
+
+                                // 🔁 Optional: Call API to update backend
+                                // ref
+                                //     .read(loginProvider.notifier)
+                                //     .updateProfile(prompt: edited);
+                                    
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  );
+                } else {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(color: Colors.grey.shade300),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            promptText,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.edit,
+                            color: Colors.black,
+                            size: 15,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              editingPromptIndex = index;
+                              _editPromptController.text = promptText;
+                            });
+                          },
+                        )
+                      ],
+                    ),
+                  );
+                }
+              }).toList(),
+              if (isAddingPrompt)
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: const Color(0xFFFFF8E1),
-                    border: Border(
-                      bottom: BorderSide(color: Colors.grey.shade300),
-                    ),
+                    border:
+                        Border(top: BorderSide(color: Colors.grey.shade300)),
                   ),
                   child: TextField(
-                    controller: _editPromptController,
+                    controller: _promptController,
                     maxLines: 2,
-                    style: const TextStyle(fontSize: 15),
+                    style: const TextStyle(fontSize: 15, color: Colors.black87),
                     decoration: InputDecoration(
-                      hintText: 'Edit your prompt...',
+                      hintText: 'Write your prompt...',
                       border: InputBorder.none,
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.check, color: Colors.green),
                         onPressed: () {
-                          final edited = _editPromptController.text.trim();
-                          if (edited.isNotEmpty) {
+                          final promptText = _promptController.text.trim();
+                          if (promptText.isNotEmpty) {
                             setState(() {
-                              prompts[index]['prompt'] = edited;
-                              localPrompts = List.from(prompts);
-                              editingPromptIndex = null;
-
-                              // 🔁 Optional: Call API to update backend
-                              // await ref.read(profileViewModelProvider.notifier).updatePrompt(index, edited);
+                              localPrompts = [
+                                ...prompts,
+                                {"prompt": promptText}
+                              ];
+                              _promptController.clear();
+                              isAddingPrompt = false;
                             });
                           }
                         },
                       ),
                     ),
                   ),
-                );
-              } else {
-                return Container(
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color: Colors.grey.shade300),
+                )
+              else if (prompts.length < 3)
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isAddingPrompt = true;
+                      _promptController.clear();
+                    });
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 12),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        top: BorderSide(color: Colors.grey.shade300),
+                      ),
                     ),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          promptText,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
+                    child: Row(
+                      children: const [
+                        Expanded(
+                          child: Text(
+                            'Add Prompt',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w600),
                           ),
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.black,size: 15,),
-                        onPressed: () {
-                          setState(() {
-                            editingPromptIndex = index;
-                            _editPromptController.text = promptText;
-                          });
-                        },
-                      )
-                    ],
-                  ),
-                );
-              }
-            }).toList(),
-
-            if (isAddingPrompt)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFFF8E1),
-                  border: Border(top: BorderSide(color: Colors.grey.shade300)),
-                ),
-                child: TextField(
-                  controller: _promptController,
-                  maxLines: 2,
-                  style: const TextStyle(fontSize: 15, color: Colors.black87),
-                  decoration: InputDecoration(
-                    hintText: 'Write your prompt...',
-                    border: InputBorder.none,
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.check, color: Colors.green),
-                      onPressed: () {
-                        final promptText = _promptController.text.trim();
-                        if (promptText.isNotEmpty) {
-                          setState(() {
-                            localPrompts = [...prompts, {"prompt": promptText}];
-                            _promptController.clear();
-                            isAddingPrompt = false;
-                          });
-                        }
-                      },
+                        Icon(Icons.add, size: 20),
+                      ],
                     ),
                   ),
                 ),
-              )
-            else if (prompts.length < 3)
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    isAddingPrompt = true;
-                    _promptController.clear();
-                  });
-                },
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(color: Colors.grey.shade300),
-                    ),
-                  ),
-                  child: Row(
-                    children: const [
-                      Expanded(
-                        child: Text(
-                          'Add Prompt',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                      Icon(Icons.add, size: 20),
-                    ],
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    ],
-  );
-}
-
-
-Widget _buildBioSection() {
-  final userData = ref.watch(loginProvider);
-  final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
-  final String? serverHeadline = user?.headLine;
-  final String headline = _bioController.text.trim().isEmpty && serverHeadline != null
-      ? serverHeadline
-      : _bioController.text.trim();
-
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'Bio',
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          color: Colors.black,
-        ),
-      ),
-      const SizedBox(height: 8),
-      Text(
-        'Write a few short words about you',
-        style: TextStyle(
-          fontSize: 14,
-          color: Colors.grey[600],
-        ),
-      ),
-      const SizedBox(height: 16),
-
-      if (isEditing)
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFF8E1),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[300]!),
-          ),
-          child: TextField(
-            controller: _bioController,
-            maxLines: 5,
-            textInputAction: TextInputAction.done,
-            keyboardType: TextInputType.multiline,
-            style: const TextStyle(fontSize: 16, color: Colors.black87),
-            decoration: InputDecoration(
-              hintText: 'Write about you',
-              border: InputBorder.none,
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.check, color: Colors.green),
-                onPressed: () async {
-                  final updatedHeadline = _bioController.text.trim();//--------------------
-
-                  // ✅ Save to API---------------------------
-                  // await ref.read(profileViewModelProvider.notifier).updateHeadline(updatedHeadline);
-
-                  setState(() {
-                    isEditing = false;
-                    // Do NOT reset _bioController — keep the typed value until page refresh
-                  });
-                },
-              ),
-            ),
-          ),
-        )
-      else if (headline.isNotEmpty)
-        Container(
-          width: double.infinity,
-          margin: const EdgeInsets.only(bottom: 16),
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade100,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade300),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Text(
-                  headline,
-                  style: const TextStyle(fontSize: 16, color: Colors.black87),
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.edit, size: 15),
-                onPressed: () {
-                  setState(() {
-                    isEditing = true;
-                    _bioController.text = serverHeadline ?? '';
-                  });
-                },
-              ),
             ],
           ),
-        )
-      else
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: const Color(0xFFFFF8E1),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[300]!),
-          ),
-          child: TextField(
-            controller: _bioController,
-            maxLines: 5,
-            textInputAction: TextInputAction.done,
-            keyboardType: TextInputType.multiline,
-            decoration: const InputDecoration(
-              hintText: 'Write about you',
-              border: InputBorder.none,
-            ),
-            style: const TextStyle(fontSize: 16, color: Colors.black87),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBioSection() {
+    final userData = ref.watch(loginProvider);
+    final user =
+        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+    final String? serverHeadline = user?.headLine;
+    final String headline =
+        _bioController.text.trim().isEmpty && serverHeadline != null
+            ? serverHeadline
+            : _bioController.text.trim();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Bio',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Colors.black,
           ),
         ),
-    ],
-  );
-}
+        const SizedBox(height: 8),
+        Text(
+          'Write a few short words about you',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[600],
+          ),
+        ),
+        const SizedBox(height: 16),
+        if (isEditing)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF8E1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey[300]!),
+            ),
+            child: TextField(
+              controller: _bioController,
+              maxLines: 5,
+              textInputAction: TextInputAction.done,
+              keyboardType: TextInputType.multiline,
+              style: const TextStyle(fontSize: 16, color: Colors.black87),
+              decoration: InputDecoration(
+                hintText: 'Write about you',
+                border: InputBorder.none,
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.check, color: Colors.green),
+                  onPressed: () async {
+                    final updatedHeadline =
+                        _bioController.text.trim(); //--------------------
+
+                    // ✅ Save to API---------------------------
+                    try {
+                    //  await ref.read(loginProvider.notifier).updateProfile(bio:updatedHeadline);
+                        print('headline updated');
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('headline updated successfully!')),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Failed to upload headline: $e')),
+                      );
+                    }
 
 
-
-
+                    setState(() {
+                      isEditing = false;
+                      // Do NOT reset _bioController — keep the typed value until page refresh
+                    });
+                  },
+                ),
+              ),
+            ),
+          )
+        else if (headline.isNotEmpty)
+          Container(
+            width: double.infinity,
+            margin: const EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey.shade300),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    headline,
+                    style: const TextStyle(fontSize: 16, color: Colors.black87),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.edit, size: 15),
+                  onPressed: () {
+                    setState(() {
+                      isEditing = true;
+                      _bioController.text = serverHeadline ?? '';
+                    });
+                  },
+                ),
+              ],
+            ),
+          )
+        else
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF8E1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey[300]!),
+            ),
+            child: TextField(
+              controller: _bioController,
+              maxLines: 5,
+              textInputAction: TextInputAction.done,
+              keyboardType: TextInputType.multiline,
+              decoration: const InputDecoration(
+                hintText: 'Write about you',
+                border: InputBorder.none,
+              ),
+              style: const TextStyle(fontSize: 16, color: Colors.black87),
+            ),
+          ),
+      ],
+    );
+  }
 
   Widget _buildSectionButton(String text, {VoidCallback? onTap}) {
-    
     return GestureDetector(
       onTap: onTap,
       child: Container(
