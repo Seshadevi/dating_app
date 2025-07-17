@@ -396,9 +396,13 @@ class _BumbleDateProfileScreenState
         final String key = 'photo1'; // Can also be 'profileImage', etc.
 
         // await ref.read(loginProvider.notifier).updateProfile(imageFile, key);
-        // await ref.read(loginProvider.notifier).updateProfile(
-        //       image: imageFile,
-        //     );
+        await ref.read(loginProvider.notifier).updateProfile(
+              image: imageFile, 
+              modeid: null,
+              bio: null, 
+              modename:null, 
+              prompt:null,
+            );
       }
 
       print('Uploading image at index $index: ${imageFile.path}');
@@ -1022,9 +1026,13 @@ class _BumbleDateProfileScreenState
                                 editingPromptIndex = null;
 
                                 // 🔁 Optional: Call API to update backend
-                                // ref
-                                //     .read(loginProvider.notifier)
-                                //     .updateProfile(prompt: edited);
+                                ref
+                                    .read(loginProvider.notifier)
+                                    .updateProfile(image: null, 
+                                                  modeid: null,
+                                                  bio: null, 
+                                                  modename:null, 
+                                                  prompt:edited,);
                                     
                               });
                             }
@@ -1200,7 +1208,11 @@ class _BumbleDateProfileScreenState
 
                     // ✅ Save to API---------------------------
                     try {
-                    //  await ref.read(loginProvider.notifier).updateProfile(bio:updatedHeadline);
+                     await ref.read(loginProvider.notifier).updateProfile(image: null, 
+                                                                          modeid: null,
+                                                                          bio: updatedHeadline, 
+                                                                          modename:null, 
+                                                                          prompt:null,);
                         print('headline updated');
 
                       ScaffoldMessenger.of(context).showSnackBar(

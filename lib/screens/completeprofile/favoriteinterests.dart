@@ -131,9 +131,14 @@ class _FavoriteInterestsState extends ConsumerState<FavoriteInterests> {
             child: ElevatedButton(
               onPressed: () async {
                 try {
-                  // await ref.read(loginProvider.notifier).updateProfile(
-                  //   interestId: selectInterestId,
-                  // );
+                  await ref.read(loginProvider.notifier).updateProfile(
+                    interestId: selectInterestId,
+                    image: null, 
+                    modeid: null,
+                    bio: null, 
+                    modename:null, 
+                    prompt:null,
+                  );
                   print('Interest updated');
 
                   ScaffoldMessenger.of(context).showSnackBar(

@@ -179,9 +179,14 @@ class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
     print("🎯 Selected Quality -> ID: $id, Name: $name");
 
     try {
-      // await ref.read(loginProvider.notifier).updateProfile(
-      //   qualityId: selectedQualityId,
-      // );
+      await ref.read(loginProvider.notifier).updateProfile(
+        qualityId: selectedQualityId,
+        image: null, 
+        modeid: null,
+        bio: null, 
+        modename:null, 
+        prompt:null,
+      );
       print('✅ Qualities updated');
 
       ScaffoldMessenger.of(context).showSnackBar(

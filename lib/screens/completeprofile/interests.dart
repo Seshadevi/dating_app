@@ -6,6 +6,7 @@ import 'package:dating/provider/signupprocessProviders/qualities.dart';
 
 class InterestsScreen extends ConsumerStatefulWidget {
   final List<Map<String, dynamic>> usersInterets;
+
   const InterestsScreen({Key? key, required this.usersInterets}) : super(key: key);
 
   @override
@@ -15,10 +16,12 @@ class InterestsScreen extends ConsumerStatefulWidget {
 class _InterestsScreenState extends ConsumerState<InterestsScreen> {
   final Set<int> selectedIds = {};
   final int maxSelection = 4;
+  bool preSelectionDone = false;
 
   @override
   void initState() {
     super.initState();
+    // Load interests from provider
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(interestsProvider.notifier).getInterests();
     });
@@ -28,6 +31,17 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
   Widget build(BuildContext context) {
     final interestState = ref.watch(interestsProvider);
     final interests = interestState.data ?? [];
+
+    // Preselect user interests only once
+    if (!preSelectionDone && interests.isNotEmpty) {
+      final userInterestIds = widget.usersInterets.map((e) => e['id']).toSet();
+      for (var interest in interests) {
+        if (userInterestIds.contains(interest.id)) {
+          selectedIds.add(interest.id!);
+        }
+      }
+      preSelectionDone = true;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -69,7 +83,9 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                       decoration: BoxDecoration(
-                        color: isSelected ?  const Color.fromARGB(255, 218, 217, 215) : Colors.white,
+                        color: isSelected
+                            ? const Color.fromARGB(255, 218, 217, 215)
+                            : Colors.white,
                         borderRadius: BorderRadius.circular(24),
                         border: Border.all(color: Colors.grey.shade300),
                       ),
@@ -78,7 +94,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                         children: [
                           Text(
                             interest.interests ?? '',
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w500,
                             ),
@@ -120,7 +136,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                     }
                   : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor:Color(0xFF869E23),
+                backgroundColor: const Color(0xFF869E23),
                 minimumSize: const Size.fromHeight(50),
               ),
               child: const Text("Continue", style: TextStyle(color: Colors.white)),

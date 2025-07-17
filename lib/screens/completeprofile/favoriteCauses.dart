@@ -128,7 +128,12 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
             child: ElevatedButton(
               onPressed: () async {
                 try {
-                  // await ref.read(loginProvider.notifier).updateProfile(causeId: selectedCauseId);
+                  await ref.read(loginProvider.notifier).updateProfile(causeId: selectedCauseId,
+                                                                                  image: null, 
+                                                                                  modeid: null,
+                                                                                  bio: null, 
+                                                                                  modename:null, 
+                                                                                  prompt:null,);
                   print('Cause updated');
 
                   ScaffoldMessenger.of(context).showSnackBar(

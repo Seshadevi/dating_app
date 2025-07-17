@@ -209,27 +209,46 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
               if (showTabBar)
                 Column(
                   children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 1),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: TabBar(
-                        indicator: BoxDecoration(
-                          color: const Color.fromARGB(255, 128, 154, 10),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        labelColor: Colors.white,
-                        unselectedLabelColor: Colors.black87,
-                        labelPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 1),
-                        tabs: const [
-                          Tab(text: 'Pay Plan'),
-                          Tab(text: 'Profile Insights'),
-                          Tab(text: 'Safety and well'),
-                        ],
-                      ),
-                    ),
+                 Container(
+  margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 1),
+  decoration: BoxDecoration(
+    color: const Color(0xFFF5F5F5), // Background color behind tabs
+    borderRadius: BorderRadius.circular(10),
+    // border: Border.all(color: Colors.grey, width: 1),
+  ),
+  child: TabBar(
+    indicator: BoxDecoration(
+      color: const Color.fromARGB(255, 128, 154, 10), // Active tab background
+      borderRadius: BorderRadius.circular(10),
+    ),
+    labelColor: Colors.white, // Selected tab text color
+    unselectedLabelColor: Colors.black87,
+    indicatorPadding: EdgeInsets.zero,
+    tabs: const [
+      Tab(
+        child: Padding(
+          padding: EdgeInsets.all(12), // Equal padding on all sides
+          child: Text('Pay Plan'),
+        ),
+      ),
+      Tab(
+        child: Padding(
+          padding: EdgeInsets.all(12),
+          child: Text('Insights Profile'),
+        ),
+      ),
+      Tab(
+        child: Padding(
+          padding: EdgeInsets.all(12),
+          child: Text('Safety well'),
+        ),
+      ),
+    ],
+  ),
+),
+
+
+
                     const SizedBox(
                       height: 500,
                       child: TabBarView(
