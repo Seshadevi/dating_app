@@ -6,6 +6,8 @@ import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:dating/provider/socket_users_combined_provider.dart';
+
 import 'dart:math' as math;
 import 'package:geocoding/geocoding.dart';
 
@@ -36,7 +38,9 @@ void initState() {
   super.initState();
   WidgetsBinding.instance.addPostFrameCallback((_) {
     ref.read(peoplesProvider.notifier).getPeoplesAll();
-    
+
+    ref.read(socketUserProvider.notifier).reset();
+
     final userModel = ref.read(loginProvider); // <- use `read` instead of `watch` inside initState
 
     final location = userModel.data?.isNotEmpty == true
@@ -207,8 +211,10 @@ void initState() {
   Widget build(BuildContext context) {
     final peoplesModel = ref.watch(peoplesProvider);
     final users = peoplesModel.users ?? [];
-    
+    // final users = ref.watch(socketUserProvider);
+    // print("📡 Total socket users in UI: ${users.length}");
     // Update allUsers when new data comes
+    // allUsers = users.map((e) => Users.fromJson(e)).toList();
     if (users.isNotEmpty && allUsers.isEmpty) {
       allUsers = List.from(users);
     }
@@ -250,7 +256,7 @@ void initState() {
                              IconButton(
                                 icon: const Icon(Icons.tune, color: Colors.black),
                                 onPressed: () {
-                                       Navigator.pushNamed(context,'/narrowsearch');
+                                    Navigator.pushNamed(context,'/narrowsearch');
                                 },
                               ),
                           ],
@@ -372,7 +378,9 @@ void initState() {
                             if (currentIndex != null && currentIndex >= allUsers.length - 3 && !isLoadingMore) {
                               _loadMoreUsers();
                             }
-                            
+                            // if (currentIndex != null) {
+                            //           ref.read(socketUserProvider.notifier).fetchNextPageIfNeeded(currentIndex);
+                            //         }
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               _checkVisibility(); // ✅ This ensures visibility is rechecked after card changes
                             });
