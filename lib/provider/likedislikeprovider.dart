@@ -79,6 +79,7 @@ class LikeDislikeProvider extends StateNotifier<LikeDislikeModel> {
      
      if (request.statusCode == 201 || request.statusCode == 200) {
         print("like or dislike added successfully!");
+        
         // getProducts();
       } else {
         final errorBody = jsonDecode(request.body);

@@ -9,6 +9,15 @@ import 'package:dating/screens/completeprofile/id_verification_screen.dart';
 import 'package:dating/screens/completeprofile/interests.dart';
 import 'package:dating/screens/completeprofile/intrest_screen.dart';
 import 'package:dating/screens/completeprofile/lifeBadgesScreen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/drinking_screen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/exercise_screen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/have_kids_screen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/looking_for_screen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/new_to_area_screen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/relationship_screen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/religion_screen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/smoking_screen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/star_sign_screen.dart';
 import 'package:dating/screens/completeprofile/profile_strength_detailScreen.dart';
 import 'package:dating/screens/completeprofile/prompt_selection_screen.dart';
 import 'package:dating/screens/completeprofile/pronoun_screen.dart';
@@ -1381,21 +1390,69 @@ class _BumbleDateProfileScreenState
           ),
         ),
         SizedBox(height: 16),
-        _buildProfileItem(Icons.search, 'Looking For', 'Add', onTap: () {}),
+        _buildProfileItem(Icons.search, 'Looking For', 'Add', 
+            onTap: () {
+            Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => LookingForScreen()),
+            );}),
         _buildProfileItem(Icons.favorite_border, 'Relationship', 'Add',
-            onTap: () {}),
-        _buildProfileItem(Icons.child_care, 'Have A Kids', 'Add', onTap: () {}),
+            onTap: () {
+              Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RelationshipScreen()),
+            );
+            }),
+        _buildProfileItem(Icons.child_care, 'Have A Kids', 'Add', 
+           onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HaveKidsScreen()),
+              );
+           }),
         _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', 'Add',
-            onTap: () {}),
+            onTap: () {
+              Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SmokingScreen()),
+            );
+            }),
         _buildProfileItem(Icons.local_drink_outlined, 'Drinking', 'Add',
-            onTap: () {}),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DrinkingScreen()),
+              );
+            }),
         _buildProfileItem(Icons.fitness_center_outlined, 'Exercise', 'Add',
-            onTap: () {}),
+            onTap: () {
+               Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ExerciseScreen()),
+              );
+            }),
         _buildProfileItem(Icons.location_city_outlined, 'New To Area', 'Add',
-            onTap: () {}),
-        _buildProfileItem(Icons.star_border, 'Star Sign', 'Add', onTap: () {}),
+            onTap: () {
+              Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => NewToAreaScreen()),
+            );
+            }),
+        _buildProfileItem(Icons.star_border, 'Star Sign', 'Add', 
+            onTap: () {
+             Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => StarSignScreen()),
+            );
+
+        }),
         _buildProfileItem(Icons.place_outlined, 'Religion', 'Add',
-            onTap: () {}),
+            onTap: () {
+              Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ReligionScreen()),
+            );
+            }),
       ],
     );
   }

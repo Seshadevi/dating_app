@@ -1,9 +1,11 @@
 import 'package:dating/provider/plans/plansfullprovider.dart';
+import 'package:dating/provider/socket_users_combined_provider.dart';
 import 'package:dating/screens/profile_screens/favourate.dart';
 import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
 import 'package:dating/screens/tab_bar/spotlight.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 class LikedYouScreen extends ConsumerStatefulWidget {
   const LikedYouScreen({super.key});
@@ -15,8 +17,45 @@ class _LikedYouState extends ConsumerState<LikedYouScreen> {
   @override
   void initState() {
     super.initState();
+    print("✅ Entered LikedYouScreen");
     Future.microtask(() {
       ref.read(plansFullProvider.notifier).getPlans();
+
+      // final socket = ref.watch(socketProvider);
+
+      //   socket.onConnect((_) {
+      //     print("✅ Socket connected");
+
+      //     // Emit events
+      //     socket.emit('getAvailableUsers');
+      //     // socket.emit('getUserPlanPurchases');
+      //   });
+
+      //   socket.on('getAvailableUsers', (data) {
+      //     print("📡 Likes Data: $data");
+      //   });
+
+      //   socket.on('userPlanPurchasesData', (data) {
+      //     print("📊 Plan Purchases: $data");
+      //   });
+
+      //   socket.onDisconnect((_) {
+      //     print("🔌 Socket disconnected");
+      //   });
+
+      //  // Listen to WebSocket messages
+      // final socket = ref.read(webSocketProvider);
+      // socket.stream.listen(
+      //   (message) {
+      //     print("📩 WebSocket Message: $message");
+      //   },
+      //   onError: (error) {
+      //     print("❌ WebSocket Error: $error");
+      //   },
+      //   onDone: () {
+      //     print("🛑 WebSocket Connection Closed");
+      //   },
+      // );
     });
   }
 

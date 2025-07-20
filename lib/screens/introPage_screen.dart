@@ -36,21 +36,21 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
             _nameController.text = args['userName'];
           }
           final dobArg = args['dateofbirth'];
-          if (dobArg != null && dobArg is String && dobArg.trim().isNotEmpty && dobArg.contains('/')) {
-            dateOfBirth = dobArg;
-            final parts = dobArg.split('/');
-            if (parts.length == 3) {
-              _month = parts[0];
-              _day = parts[1];
-              _year = parts[2];
-            }
-          } else {
-            // Default to empty if not valid
-            dateOfBirth = '';
-            _month = '';
-            _day = '';
-            _year = '';
-          }
+          // if (dobArg != null && dobArg is String && dobArg.trim().isNotEmpty && dobArg.contains('/')) {
+          //   dateOfBirth = dobArg;
+          //   final parts = dobArg.split('/');
+          //   if (parts.length == 3) {
+          //     _month = parts[0];
+          //     _day = parts[1];
+          //     _year = parts[2];
+          //   }
+          // } else {
+          //   // Default to empty if not valid
+          //   dateOfBirth = '';
+          //   _month = '';
+          //   _day = '';
+          //   _year = '';
+          // }
      
       });
     }
