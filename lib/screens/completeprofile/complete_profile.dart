@@ -372,6 +372,7 @@ class _BumbleDateProfileScreenState
         setState(() {
           selectedImages[index] = FileImage(imageFile);
         });
+         print('images.......$imageFile');
 
         // ✅ After setting image, call API to update immediately
         _uploadProfileImage(imageFile, index);
@@ -384,26 +385,24 @@ class _BumbleDateProfileScreenState
   }
 
   void _uploadProfileImage(File imageFile, int index) async {
-    final key = 'photo${index + 1}';
-    File image;
+     print('Uploading image at index $index: ${imageFile.path}');
+    
     try {
-      // TODO: Add your real API call here
-      final XFile? pickedImage =
-          await ImagePicker().pickImage(source: ImageSource.gallery);
+      
 
-      if (pickedImage != null) {
-        final File imageFile = File(pickedImage.path);
-        final String key = 'photo1'; // Can also be 'profileImage', etc.
+      // if (pickedImage != null) {
+      //   final File imageFile = File(pickedImage.path);
+      //   final String key = 'photo1'; // Can also be 'profileImage', etc.
 
-        // await ref.read(loginProvider.notifier).updateProfile(imageFile, key);
+        
         await ref.read(loginProvider.notifier).updateProfile(
-              image: imageFile, 
-              modeid: null,
-              bio: null, 
-              modename:null, 
-              prompt:null,
-            );
-      }
+            image: imageFile,
+            modeid: null,
+            bio: null,
+            modename: null,
+            prompt: null,
+            qualityId: null);
+      
 
       print('Uploading image at index $index: ${imageFile.path}');
 
@@ -1026,14 +1025,13 @@ class _BumbleDateProfileScreenState
                                 editingPromptIndex = null;
 
                                 // 🔁 Optional: Call API to update backend
-                                ref
-                                    .read(loginProvider.notifier)
-                                    .updateProfile(image: null, 
-                                                  modeid: null,
-                                                  bio: null, 
-                                                  modename:null, 
-                                                  prompt:edited,);
-                                    
+                                ref.read(loginProvider.notifier).updateProfile(
+                                    image: null,
+                                    modeid: null,
+                                    bio: null,
+                                    modename: null,
+                                    prompt: edited,
+                                    qualityId: null);
                               });
                             }
                           },
@@ -1208,22 +1206,25 @@ class _BumbleDateProfileScreenState
 
                     // ✅ Save to API---------------------------
                     try {
-                     await ref.read(loginProvider.notifier).updateProfile(image: null, 
-                                                                          modeid: null,
-                                                                          bio: updatedHeadline, 
-                                                                          modename:null, 
-                                                                          prompt:null,);
-                        print('headline updated');
+                      await ref.read(loginProvider.notifier).updateProfile(
+                          image: null,
+                          modeid: null,
+                          bio: updatedHeadline,
+                          modename: null,
+                          prompt: null,
+                          qualityId: null);
+                      print('headline updated');
 
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('headline updated successfully!')),
+                        SnackBar(
+                            content: Text('headline updated successfully!')),
                       );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Failed to upload headline: $e')),
+                        SnackBar(
+                            content: Text('Failed to upload headline: $e')),
                       );
                     }
-
 
                     setState(() {
                       isEditing = false;
@@ -1347,7 +1348,7 @@ class _BumbleDateProfileScreenState
         _buildProfileItem(Icons.location_on_outlined, 'Location', 'Add',
             onTap: () {
           Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => FindCityScreen()));
+              MaterialPageRoute(builder: (context) => CitySearchPage()));
         }),
         _buildProfileItem(Icons.home_outlined, 'Hometown', 'Add', onTap: () {
           Navigator.pushReplacement(

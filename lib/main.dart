@@ -5,6 +5,7 @@ import 'package:dating/screens/addHeadlineScreen.dart';
 import 'package:dating/screens/beKindScreen.dart';
 import 'package:dating/screens/causes_Community.dart';
 import 'package:dating/screens/choose_foodies.dart';
+import 'package:dating/screens/completeprofile/complete_profile.dart';
 import 'package:dating/screens/datePromtSelection.dart';
 import 'package:dating/screens/face_screen.dart';
 import 'package:dating/screens/familyPlaneScreen.dart';
@@ -131,6 +132,7 @@ class MyApp extends StatelessWidget {
          "likedyouscreen": (context) =>const LikedYouScreen(),
          "messagescreen": (context) => MessagesScreen(),
          "/custombottomnav": (context) => CustomBottomNavigationBar(),
+         "/completeprofile": (context) =>BumbleDateProfileScreen(),
       },
     );
   }

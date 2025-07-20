@@ -11,6 +11,19 @@ class AddEducationScreen extends StatefulWidget {
 class _AddEducationScreenState extends State<AddEducationScreen> {
   final TextEditingController titleController = TextEditingController();
   String selectedYear = "2025";
+  bool isButtonEnabled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    titleController.addListener(_checkInput);
+  }
+
+  void _checkInput() {
+    setState(() {
+      isButtonEnabled = titleController.text.trim().isNotEmpty;
+    });
+  }
 
   void _showYearPicker() {
     final List<String> years = [
@@ -33,8 +46,7 @@ class _AddEducationScreenState extends State<AddEducationScreen> {
             ),
             Expanded(
               child: CupertinoPicker(
-                scrollController:
-                    FixedExtentScrollController(initialItem: initialIndex),
+                scrollController: FixedExtentScrollController(initialItem: initialIndex),
                 itemExtent: 40,
                 onSelectedItemChanged: (index) {
                   setState(() {
@@ -51,8 +63,7 @@ class _AddEducationScreenState extends State<AddEducationScreen> {
                   onPressed: () => Navigator.pop(context),
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.grey.shade300,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   ),
                   child: const Text('Cancel', style: TextStyle(color: Colors.black)),
                 ),
@@ -60,8 +71,7 @@ class _AddEducationScreenState extends State<AddEducationScreen> {
                   onPressed: () => Navigator.pop(context),
                   style: TextButton.styleFrom(
                     backgroundColor: const Color(0xFF9DA200),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 28, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 8),
                   ),
                   child: const Text('Ok', style: TextStyle(color: Colors.white)),
                 ),
@@ -72,6 +82,12 @@ class _AddEducationScreenState extends State<AddEducationScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    super.dispose();
   }
 
   @override
@@ -110,6 +126,30 @@ class _AddEducationScreenState extends State<AddEducationScreen> {
             onTap: _showYearPicker,
           ),
           const Divider(height: 1),
+          const Spacer(),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                onPressed: isButtonEnabled
+                    ? () {
+                        // TODO: Call your API here
+                        print('Institution: ${titleController.text}');
+                        print('Year: $selectedYear');
+                        Navigator.pop(context); // Go back or next screen
+                      }
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      isButtonEnabled ? const Color(0xFF9DA200) : Colors.grey.shade400,
+                  disabledBackgroundColor: Colors.grey.shade300,
+                ),
+                child: const Text('Continue', style: TextStyle(color: Colors.white)),
+              ),
+            ),
+          ),
         ],
       ),
     );

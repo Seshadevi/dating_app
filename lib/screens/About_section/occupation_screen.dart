@@ -1,4 +1,5 @@
 import 'package:dating/screens/About_section/add_job_screen.dart';
+import 'package:dating/screens/completeprofile/complete_profile.dart';
 import 'package:flutter/material.dart';
 
 class OccupationScreen extends StatelessWidget {
@@ -16,7 +17,7 @@ class OccupationScreen extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.pushNamed(context, '/completeprofile'),
         ),
       ),
       body: Column(

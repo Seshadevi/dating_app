@@ -412,20 +412,22 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
   }
 
   Future<int> updateProfile({
-     int? modeid,
-     String? modename,
-    int? causeId,
+    int? modeid,
+    String? modename,
+    List<int>? causeId,
     String? bio,
-    int? interestId,
-    int? qualityId,
-     String? prompt,
-     File? image,
+    List<int>? interestId,
+    List<int>? qualityId,
+    String? prompt,
+    File? image,
   }) async {
-    final userid = ref.read(loginProvider).data![0].user?.id;
-    final String apiUrl = "${Dgapi.updateprofile}/$userid";
-    // print('updated data....modeId:$modeid,modename:$modename,causedId:$causeId,intrestId:$interestId,qualityId:$qualityId,bio:$bio,prompt:$prompt,image:${image!.path}');
+    
+    print('updated data....modeId:$modeid, modename:$modename, causedId:$causeId, intrestId:$interestId, qualityId:$qualityId, bio:$bio, prompt:$prompt, image:${image?.path}');
 
     try {
+      final userid = state.data![0].user?.id
+;
+    final String apiUrl = "${Dgapi.updateprofile}/$userid";
       final prefs = await SharedPreferences.getInstance();
       String? userDataString = prefs.getString('userData');
 
@@ -457,8 +459,22 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
       request.headers['Authorization'] = 'Bearer $token';
       request.headers['Accept'] = 'application/json';
 
-      // Mode field
-      request.fields['mode'] = "$modename";
+      if (modename != null) request.fields[''] = modename;
+      if (modeid != null) request.fields[''] = modeid.toString();
+      if (causeId != null) request.fields[''] = causeId.toString();
+      if (qualityId != null) request.fields[''] = qualityId.toString();
+      if (interestId != null) request.fields[''] = interestId.toString();
+      if (bio != null) request.fields[''] = bio;
+      if (prompt != null) request.fields[''] = prompt;
+      if (image != null) {
+        request.files.add(await http.MultipartFile.fromPath('', image.path));
+      }
+      // if (qualityId != null) {
+      //   for (var id in qualityId) {
+      //     request.fields[''] = id.toString(); // or 'quality_id[index]' based on backend
+      //   }
+      // }
+      
 
       // Send request
       final response = await request.send();

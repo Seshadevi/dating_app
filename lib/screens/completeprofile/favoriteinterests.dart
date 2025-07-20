@@ -130,16 +130,20 @@ class _FavoriteInterestsState extends ConsumerState<FavoriteInterests> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ElevatedButton(
               onPressed: () async {
+                 final List<int> interestIds = visibleInterests .map((q) => q['id'] as int).toList();
+                        print('🎯 Sending IDs only: $interestIds ');
                 try {
                   await ref.read(loginProvider.notifier).updateProfile(
-                    interestId: selectInterestId,
+                    interestId:interestIds,
                     image: null, 
                     modeid: null,
                     bio: null, 
                     modename:null, 
                     prompt:null,
+                    qualityId:null
                   );
                   print('Interest updated');
+                  
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Interest updated successfully!')),

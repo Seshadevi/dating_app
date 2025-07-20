@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FavoriteQualities extends ConsumerStatefulWidget {
-  final List<Map<String, dynamic>> userQualities;     // Previously selected qualities
+  final List<Map<String, dynamic>>
+      userQualities; // Previously selected qualities
   final List<Map<String, dynamic>> selectedQualities; // Just selected qualities
 
   const FavoriteQualities({
@@ -92,8 +93,10 @@ class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
                     }
                   },
                   child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
                     decoration: BoxDecoration(
                       color: Colors.grey.shade100,
                       borderRadius: BorderRadius.circular(12),
@@ -161,33 +164,42 @@ class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
   }
 
   Future<void> _saveFavoriteQuality() async {
+    print('saved button clicked');
     final selected = mergedQualities.firstWhere(
       (q) => q['id'] == selectedQualityId,
       orElse: () => {},
     );
+    print('selected.....$mergedQualities');
 
-    if (selected.isEmpty || selected['id'] == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("No valid quality selected.")),
-      );
-      return;
-    }
+    // if (selectedQualityId!= null) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(content: Text("No valid quality selected.")),
+    //   );
+    //   return;
+    // }
 
     final int id = selected['id'];
     final String name = selected['name'] ?? '';
 
     print("🎯 Selected Quality -> ID: $id, Name: $name");
+    // Extract only the IDs
+  final List<int> qualityIds = mergedQualities.map((q) => q['id'] as int).toList();
+  print('🎯 Sending IDs only: $qualityIds');
 
     try {
-      await ref.read(loginProvider.notifier).updateProfile(
-        qualityId: selectedQualityId,
-        image: null, 
-        modeid: null,
-        bio: null, 
-        modename:null, 
-        prompt:null,
-      );
-      print('✅ Qualities updated');
+      print('try exicutes....');
+      await 
+      
+      ref.read(loginProvider.notifier).updateProfile(
+            qualityId: qualityIds,
+            image: null,
+            modeid: null,
+            bio: null,
+            modename: null,
+            prompt: null,
+          );
+      print('✅ updateProfile completed');
+
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Qualities updated successfully!')),

@@ -127,13 +127,16 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ElevatedButton(
               onPressed: () async {
+                final List<int> causesIds = mergedCauses .map((q) => q['id'] as int).toList();
+                        print('🎯 Sending IDs only: $causesIds ');
                 try {
-                  await ref.read(loginProvider.notifier).updateProfile(causeId: selectedCauseId,
+                  await ref.read(loginProvider.notifier).updateProfile(causeId: causesIds,
                                                                                   image: null, 
                                                                                   modeid: null,
                                                                                   bio: null, 
                                                                                   modename:null, 
-                                                                                  prompt:null,);
+                                                                                  prompt:null,
+                                                                                  qualityId: null);
                   print('Cause updated');
 
                   ScaffoldMessenger.of(context).showSnackBar(

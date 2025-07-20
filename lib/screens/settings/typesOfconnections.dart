@@ -20,7 +20,6 @@ class Typeofconnection extends ConsumerStatefulWidget {
 class TypeofconnectionState extends ConsumerState<Typeofconnection> {
   late String? selectedOption;
 
-
   @override
   void initState() {
     super.initState();
@@ -32,8 +31,7 @@ class TypeofconnectionState extends ConsumerState<Typeofconnection> {
 
   @override
   Widget build(BuildContext context) {
-
-    final modeOptions =ref.watch(modesProvider).data ??[];
+    final modeOptions = ref.watch(modesProvider).data ?? [];
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
@@ -59,77 +57,86 @@ class TypeofconnectionState extends ConsumerState<Typeofconnection> {
           children: [
             const Text(
               'What Type Of Connection Are You Looking For On Heart Sync?',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
             ),
             const SizedBox(height: 8),
             const Text(
               'Dates And Romance, New Friends, Or Strictly Business? You Can Change This Any Time.',
-              style: TextStyle(fontSize: 16, color: Color(0xFF666666), height: 1.4),
+              style: TextStyle(
+                  fontSize: 16, color: Color(0xFF666666), height: 1.4),
             ),
             const SizedBox(height: 20),
-
             ...modeOptions.map((option) => Column(
-              children: [
-                _buildOptionCard(
-                  title: option.value,
-                  isSelected: selectedOption == option.value,
-                  onTap: () => setState(() => selectedOption = option.value),
-                ),
-                const SizedBox(height: 12),
-              ],
-            )),
-
+                  children: [
+                    _buildOptionCard(
+                      title: option.value,
+                      isSelected: selectedOption == option.value,
+                      onTap: () =>
+                          setState(() => selectedOption = option.value),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                )),
             const Spacer(),
-
             SizedBox(
-            width: double.infinity,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: () async {
-                final selected = modeOptions.firstWhere((e) => e.value == selectedOption);
-                final int? modeId = selected.id;
-                final String? modeName = selected.value;
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () async {
+                  final selected =
+                      modeOptions.firstWhere((e) => e.value == selectedOption);
+                  final int? modeId = selected.id;
+                  final String? modeName = selected.value;
+                  print('modes id modes name........$modeName,$modeId');
+                  // print(object);
 
-                final statuscode = await ref.read(loginProvider.notifier).updateProfile(
-                  modeid: modeId,
-                  modename: modeName,
-                );
+                  final statuscode = await ref
+                      .read(loginProvider.notifier)
+                      .updateProfile(
+                          modeid: modeId, modename: modeName, qualityId: null);
 
-                if (context.mounted) {
-                  if (statuscode == 200 || statuscode == 201) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text("Mode updated successfully to $modeName"),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
+                  if (context.mounted) {
+                    if (statuscode == 200 || statuscode == 201) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content:
+                              Text("Mode updated successfully to $modeName"),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
 
-                    // Delay for user to read the message before popping
-                    await Future.delayed(const Duration(milliseconds: 600));
-                    Navigator.pop(context);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text("Failed to update mode. Please try again."),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
+                      // Delay for user to read the message before popping
+                      await Future.delayed(const Duration(milliseconds: 600));
+                      Navigator.pop(context);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content:
+                              Text("Failed to update mode. Please try again."),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
                   }
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4A5D23),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF4A5D23),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
                 ),
-              ),
-              child: Text(
-                'Continue With $selectedOption',
-                style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                child: Text(
+                  'Continue With $selectedOption',
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600),
+                ),
               ),
             ),
-          ),
-
             const SizedBox(height: 20),
           ],
         ),
@@ -150,7 +157,9 @@ class TypeofconnectionState extends ConsumerState<Typeofconnection> {
         decoration: BoxDecoration(
           color: isSelected ? const Color(0xFF8BC34A) : const Color(0xFFE8F5E8),
           borderRadius: BorderRadius.circular(12),
-          border: isSelected ? Border.all(color: const Color(0xFF4A5D23), width: 2) : null,
+          border: isSelected
+              ? Border.all(color: const Color(0xFF4A5D23), width: 2)
+              : null,
         ),
         child: Row(
           children: [
@@ -158,7 +167,11 @@ class TypeofconnectionState extends ConsumerState<Typeofconnection> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("$title", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: isSelected ? Colors.white : Colors.black)),
+                  Text("$title",
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: isSelected ? Colors.white : Colors.black)),
                   // const SizedBox(height: 8),
                   // Text(subtitle, style: TextStyle(fontSize: 14, color: isSelected ? Colors.white.withOpacity(0.9) : const Color(0xFF666666))),
                 ],
@@ -169,10 +182,15 @@ class TypeofconnectionState extends ConsumerState<Typeofconnection> {
               height: 24,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: isSelected ? const Color(0xFF4A5D23) : Colors.grey, width: 2),
-                color: isSelected ? const Color(0xFF4A5D23) : Colors.transparent,
+                border: Border.all(
+                    color: isSelected ? const Color(0xFF4A5D23) : Colors.grey,
+                    width: 2),
+                color:
+                    isSelected ? const Color(0xFF4A5D23) : Colors.transparent,
               ),
-              child: isSelected ? const Icon(Icons.check, color: Colors.white, size: 16) : null,
+              child: isSelected
+                  ? const Icon(Icons.check, color: Colors.white, size: 16)
+                  : null,
             ),
           ],
         ),
