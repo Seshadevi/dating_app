@@ -54,7 +54,7 @@ class _CitySearchPageState extends State<CitySearchPage> {
     if (query.isEmpty) return [];
     
     try {
-      final String apiKey = "AIzaSyB_7QtF9EUbVs_5mVFxZWS-NdzYwV9dbU0"; // Replace with your actual key
+      final String apiKey = "AIzaSyB_7QtF9EUbVs_5mVFxZWS-NdzYwV9dbU0"; 
       
       // Modified URL to search for all administrative areas including districts
       final url =

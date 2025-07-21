@@ -1,38 +1,30 @@
+import 'package:dating/provider/signupprocessProviders/lookingProvider.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/relationship_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LookingForScreen extends StatefulWidget {
+class LookingForScreen extends ConsumerStatefulWidget {
   const LookingForScreen({super.key});
 
   @override
-  State<LookingForScreen> createState() => _LookingForScreenState();
+  ConsumerState<LookingForScreen> createState() => _LookingForScreenState();
 }
 
-class _LookingForScreenState extends State<LookingForScreen> {
+class _LookingForScreenState extends ConsumerState<LookingForScreen> {
   List<String> selectedOptions = [];
-  
-  final List<String> options = [
-    'People To Meet IRL',
-    'Couple Friends',
-    'Gaming',
-    'Volunteer',
-    'Workouts & Sports',
-    'Travel',
-    'Live Music',
-    'Nights Out',
-    'Coworking',
-    'Faith Studies',
-    'Arts & Culture',
-    'Roommates',
-    'Kid Playdates',
-    'Anything',
-  ];
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(lookingProvider.notifier).getLookingFor());
+  }
 
   void toggleOption(String option) {
     setState(() {
       if (selectedOptions.contains(option)) {
         selectedOptions.remove(option);
       } else {
+        selectedOptions.clear(); // Only one selected at a time
         selectedOptions.add(option);
       }
     });
@@ -40,13 +32,15 @@ class _LookingForScreenState extends State<LookingForScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final lookingState = ref.watch(lookingProvider);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.black, size: 24),
+          icon: const Icon(Icons.close, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -56,7 +50,6 @@ class _LookingForScreenState extends State<LookingForScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            // Header with icon and title
             Row(
               children: [
                 Container(
@@ -66,17 +59,13 @@ class _LookingForScreenState extends State<LookingForScreen> {
                     color: const Color(0xFF8BC34A),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(
-                    Icons.search,
-                    color: Colors.white,
-                    size: 24,
-                  ),
+                  child: const Icon(Icons.search, color: Colors.white, size: 24),
                 ),
                 const SizedBox(width: 12),
                 const Text(
                   'What Are You Looking For',
                   style: TextStyle(
-                    fontSize: 22,
+                    fontSize: 18,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
                   ),
@@ -84,65 +73,75 @@ class _LookingForScreenState extends State<LookingForScreen> {
               ],
             ),
             const SizedBox(height: 40),
-            // Options list
-            Expanded(
-              child: ListView.builder(
-                itemCount: options.length,
-                itemBuilder: (context, index) {
-                  final option = options[index];
-                  final isSelected = selectedOptions.contains(option);
-                  final isFirstOption = index == 0;
-                  
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12.0),
-                    child: GestureDetector(
-                      onTap: () => toggleOption(option),
-                      child: Container(
-                        height: 56,
-                        decoration: BoxDecoration(
-                          gradient: isSelected
-                              ? (isFirstOption 
-                                  ? const LinearGradient(
-                                      colors: [Color(0xffB2D12E), Color(0xFF2B2B2B)],
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
-                                    )
-                                  : const LinearGradient(
-                                      colors: [Color(0xffB2D12E), Color(0xFF2B2B2B)],
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
-                                    ))
-                              : null,
-                          color: isSelected ? null : Colors.white,
-                          borderRadius: BorderRadius.circular(28),
-                          border: Border.all(
-                            color: isSelected 
-                                ? Colors.transparent 
-                                : const Color(0xffB2D12E),
-                            width: 2,
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            option,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: isSelected ? Colors.white : Colors.black,
+
+            // Display list
+            lookingState.data == null || lookingState.data!.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : Expanded(
+                    child: ListView.builder(
+                      itemCount: lookingState.data!.length,
+                      itemBuilder: (context, index) {
+                        final option = lookingState.data![index].value ?? '';
+                        final isSelected = selectedOptions.contains(option);
+
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              toggleOption(option);
+                              Navigator.pop(context, option);
+                            },
+                            child: Container(
+                              height: 56,
+                              decoration: BoxDecoration(
+                                gradient: isSelected
+                                    ? const LinearGradient(
+                                        colors: [
+                                          Color(0xffB2D12E),
+                                          Color(0xFF2B2B2B),
+                                        ],
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                      )
+                                    : null,
+                                color: isSelected ? null : Colors.white,
+                                borderRadius: BorderRadius.circular(28),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? Colors.transparent
+                                      : const Color(0xffB2D12E),
+                                  width: 2,
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  option,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: isSelected ? Colors.white : Colors.black,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-            ),
+                  ),
+
+            const SizedBox(height: 16),
+
             // Skip button
             Center(
               child: TextButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => RelationshipScreen(),));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RelationshipScreen(),
+                    ),
+                  );
                 },
                 child: const Text(
                   'Skip',

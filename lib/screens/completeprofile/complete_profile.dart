@@ -49,7 +49,10 @@ class _BumbleDateProfileScreenState
   int? editingPromptIndex; // Track which prompt is being edited
   TextEditingController _editPromptController = TextEditingController();
   late File image;
-
+  String? selectedLooking;
+  String? selectedkid;
+  String? selectedDrink;
+  String? selectedReligion;
   final ImagePicker _picker = ImagePicker();
   // final TextEditingController _bioController = TextEditingController();
   String selectedGender = 'Man';
@@ -381,7 +384,7 @@ class _BumbleDateProfileScreenState
         setState(() {
           selectedImages[index] = FileImage(imageFile);
         });
-         print('images.......$imageFile');
+        print('images.......$imageFile');
 
         // ✅ After setting image, call API to update immediately
         _uploadProfileImage(imageFile, index);
@@ -394,24 +397,20 @@ class _BumbleDateProfileScreenState
   }
 
   void _uploadProfileImage(File imageFile, int index) async {
-     print('Uploading image at index $index: ${imageFile.path}');
-    
-    try {
-      
+    print('Uploading image at index $index: ${imageFile.path}');
 
+    try {
       // if (pickedImage != null) {
       //   final File imageFile = File(pickedImage.path);
       //   final String key = 'photo1'; // Can also be 'profileImage', etc.
 
-        
-        await ref.read(loginProvider.notifier).updateProfile(
-            image: imageFile,
-            modeid: null,
-            bio: null,
-            modename: null,
-            prompt: null,
-            qualityId: null);
-      
+      await ref.read(loginProvider.notifier).updateProfile(
+          image: imageFile,
+          modeid: null,
+          bio: null,
+          modename: null,
+          prompt: null,
+          qualityId: null);
 
       print('Uploading image at index $index: ${imageFile.path}');
 
@@ -1390,69 +1389,92 @@ class _BumbleDateProfileScreenState
           ),
         ),
         SizedBox(height: 16),
-        _buildProfileItem(Icons.search, 'Looking For', 'Add', 
-            onTap: () {
-            Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => LookingForScreen()),
-            );}),
+        _buildProfileItem(
+          Icons.search,
+          'Looking For',
+          selectedLooking ?? 'Add',
+          onTap: () async {
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => LookingForScreen()),
+            );
+            if (result != null) {
+              setState(() {
+                selectedLooking = result;
+              });
+            }
+          },
+        ),
         _buildProfileItem(Icons.favorite_border, 'Relationship', 'Add',
             onTap: () {
-              Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => RelationshipScreen()),
-            );
-            }),
-        _buildProfileItem(Icons.child_care, 'Have A Kids', 'Add', 
-           onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HaveKidsScreen()),
-              );
-           }),
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => RelationshipScreen()),
+          );
+        }),
+        _buildProfileItem(Icons.child_care, 'Have A Kids', selectedkid ?? 'Add',
+            onTap: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HaveKidsScreen()),
+          );
+          if (result != null) {
+            setState(() {
+              selectedkid = result;
+            });
+          }
+        }),
         _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', 'Add',
             onTap: () {
-              Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SmokingScreen()),
-            );
-            }),
-        _buildProfileItem(Icons.local_drink_outlined, 'Drinking', 'Add',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DrinkingScreen()),
-              );
-            }),
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SmokingScreen()),
+          );
+        }),
+        _buildProfileItem(
+            Icons.local_drink_outlined, 'Drinking', selectedDrink ?? 'Add',
+            onTap: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => DrinkingScreen()),
+          );
+          if (result != null) {
+            setState(() {
+              selectedDrink = result;
+            });
+          }
+        }),
         _buildProfileItem(Icons.fitness_center_outlined, 'Exercise', 'Add',
             onTap: () {
-               Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ExerciseScreen()),
-              );
-            }),
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ExerciseScreen()),
+          );
+        }),
         _buildProfileItem(Icons.location_city_outlined, 'New To Area', 'Add',
             onTap: () {
-              Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => NewToAreaScreen()),
-            );
-            }),
-        _buildProfileItem(Icons.star_border, 'Star Sign', 'Add', 
-            onTap: () {
-             Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => StarSignScreen()),
-            );
-
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => NewToAreaScreen()),
+          );
         }),
-        _buildProfileItem(Icons.place_outlined, 'Religion', 'Add',
-            onTap: () {
-              Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ReligionScreen()),
-            );
-            }),
+        _buildProfileItem(Icons.star_border, 'Star Sign', 'Add', onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => StarSignScreen()),
+          );
+        }),
+        _buildProfileItem(Icons.place_outlined, 'Religion', selectedReligion??'Add', onTap: () async{
+          final result=await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ReligionScreen()),
+          );
+           if (result != null) {
+            setState(() {
+              selectedReligion = result;
+            });
+          }
+        }),
       ],
     );
   }
@@ -1662,41 +1684,22 @@ class _BumbleDateProfileScreenState
   }
 
   Widget _buildProfileItem(IconData icon, String title, String value,
-      {VoidCallback? onTap}) {
+      {required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.only(bottom: 12),
-        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey[300]!, width: 1),
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: const BoxDecoration(
+          border: Border(bottom: BorderSide(color: Colors.grey)),
         ),
         child: Row(
           children: [
-            Icon(icon, color: Colors.grey[600], size: 24),
-            SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 16,
-                color: value == 'Add' ? Colors.grey[500] : Colors.black,
-                fontWeight:
-                    value == 'Add' ? FontWeight.normal : FontWeight.w500,
-              ),
-            ),
-            SizedBox(width: 8),
-            Icon(Icons.arrow_forward_ios, color: Colors.grey[400], size: 16),
+            Icon(icon, color: Colors.black),
+            const SizedBox(width: 16),
+            Expanded(child: Text(title, style: const TextStyle(fontSize: 16))),
+            Text(value,
+                style: const TextStyle(fontSize: 16, color: Colors.grey)),
+            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
           ],
         ),
       ),
