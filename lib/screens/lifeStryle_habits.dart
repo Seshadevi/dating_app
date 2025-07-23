@@ -278,7 +278,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
                       const SizedBox(width: 8),
                       const Expanded(
                         child: Text(
-                          "Let's Talk About Your Life\nStyle And Habits",
+                          "Let's Talk About Your Habits",
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -292,7 +292,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
                   
                   // Description
                   const Text(
-                    "share as much about your habits as you're\n habits as you're comfortable\n with",
+                    "Share your habits — only what you’re comfortable with.",
                     style: TextStyle(
                       color: Colors.black87,
                       fontSize: 14,
@@ -388,7 +388,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
                     Row(
                       children: [
                         Text(
-                          '${selectedhabbits.length}/5 Selected',
+                          '${selectedhabbits.length}/1 Selected',
                           style: const TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
@@ -402,14 +402,14 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
                           height: 40,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: selectedhabbits.length == 5
+                            gradient: selectedhabbits.length == 1
                                 ? const LinearGradient(
                                     colors: [Color(0xFF869E23), Color(0xFF000000)],
                                     begin: Alignment.topCenter,
                                     end: Alignment.bottomCenter,
                                   )
                                 : null,
-                            color: selectedhabbits.length != 5
+                            color: selectedhabbits.length != 1
                                 ? Colors.grey.shade400
                                 : null,
                           ),
@@ -420,7 +420,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
                               size: 20,
                             ),
                             onPressed: () {
-                              if (selectedhabbits.length == 5) {
+                              if (selectedhabbits.length == 1) {
                                 
 
                                  Navigator.pushNamed(
@@ -447,7 +447,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
                                 );
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text("Please select 5 options")),
+                                  const SnackBar(content: Text("Please select 1 options")),
                                 );
                               }
                             },

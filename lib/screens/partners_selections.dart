@@ -116,11 +116,11 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                                     },
                                 );
                       }),
-                    const SizedBox(width: 8),
+                    // const SizedBox(width: 8),
                     const Text(
-                      "And What Are You Hoping \n To Find?",
+                      "What Are You Find?",
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 25,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Poppins',
                       ),
@@ -130,37 +130,37 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
               ),
                SizedBox(height: screenHeight * 0.020),
           Container(
-            height: screenHeight * 0.2,
+            height: screenHeight * 0.1,
             width: screenWidth,
             child: Stack(
               //clipBehavior: Clip.none,
               children: [
-                Positioned(
-                  right: -20,
-                  top: 0,
-                  child: Image.asset(
-                    'assets/Heart.png',
-                    height: 175,
-                    width: 175,
-                    fit: BoxFit.contain,
-                  ),
-                ),
+                // Positioned(
+                //   right: -20,
+                //   top: 0,
+                //   child: Image.asset(
+                //     'assets/Heart.png',
+                //     height: 155,
+                //     width: 175,
+                //     fit: BoxFit.contain,
+                //   ),
+                // ),
                 Align(
                   alignment: Alignment.topCenter,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       
-                      Text(
-                        textAlign: TextAlign.start,
-                        'It\'s Your Dating Journey, So\nChoose 1 Or 2 Options That Feel\nRight For You.',
-                        style: TextStyle(
-                          letterSpacing: 0.4,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 15,
-                          height: 1.4,
-                        ),
-                      ),
+                      // Text(
+                      //   textAlign: TextAlign.start,
+                      //   'Select 1 or 2 options that reflect you',
+                      //   style: TextStyle(
+                      //     letterSpacing: 0.4,
+                      //     fontWeight: FontWeight.w400,
+                      //     fontSize: 15,
+                      //     height: 1.4,
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -168,7 +168,7 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
             ),
           ),
 
-          SizedBox(height: screenHeight * 0.015),
+          // SizedBox(height: screenHeight * 0.015),
 
           // Options list with padding
           Expanded(

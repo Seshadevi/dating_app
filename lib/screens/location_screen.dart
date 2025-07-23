@@ -100,16 +100,16 @@ class LocationScreen extends StatefulWidget {
                 children: [
                   SizedBox(height: height * 0.22),
                   Text(
-                    "Now, Can We Get Your\nLocation?",
+                    "Location Access",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: height * 0.035,
+                      fontSize: height * 0.039,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: height * 0.02),
+                  SizedBox(height: height * 0.04),
                   Text(
-                    "We need it so we can show you\nall the great people nearby (or far away)",
+                    "It helps us find people who match your vibe, near or far.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: height * 0.022,

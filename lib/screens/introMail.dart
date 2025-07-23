@@ -99,22 +99,22 @@ void didChangeDependencies() {
                         },
                       ),
                       const SizedBox(width: 12),
-                      const Text(
-                        "Oh Hey! Let's Start\nWith An Intro",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Poppins',
-                        ),
-                      ),
+                      // const Text(
+                      //   "Email address",
+                      //   style: TextStyle(
+                      //     fontSize: 24,
+                      //     fontWeight: FontWeight.bold,
+                      //     fontFamily: 'Poppins',
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
-
+                SizedBox(height: 30,),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
-                    "We'll Use This To Recover Your \nAccount ASAP If You Can't Log In.",
+                    "Used to recover your account",
                     style: TextStyle(
                       fontFamily: 'poppins',
                       fontSize: 15.0,
@@ -197,7 +197,7 @@ void didChangeDependencies() {
                     ],
                   ),
                 ),
-                const SizedBox(height: 160),
+                const SizedBox(height: 210),
                 SizedBox(
                   height: 150, // or any height you need
                   child: Stack(
@@ -249,7 +249,7 @@ void didChangeDependencies() {
             border: InputBorder.none,
           ),
           style: const TextStyle(
-            color: Color(0xff92AB26),
+            color: Color.fromARGB(255, 39, 40, 36),
             fontFamily: 'Inter',
             letterSpacing: 0.4,
           ),

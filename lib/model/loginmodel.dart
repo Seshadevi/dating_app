@@ -106,6 +106,7 @@ class User {
   List<dynamic>? causesAndCommunities;
   List<dynamic>? prompts;
   List<dynamic>? defaultMessages;
+  List<dynamic>? lookingFor;
   Location? location;
 
   User({
@@ -130,6 +131,7 @@ class User {
     this.prompts,
     this.defaultMessages,
     this.location,
+    this.lookingFor,
   });
 
   factory User.initial() => User(
@@ -146,6 +148,7 @@ class User {
         causesAndCommunities: [],
         prompts: [],
         defaultMessages: [],
+        lookingFor: [],
         location: Location.initial(),
       );
 
@@ -171,6 +174,7 @@ class User {
     List<dynamic>? prompts,
     List<dynamic>? defaultMessages,
     Location? location,
+    List<dynamic>? lookingFor,
   }) {
     return User(
       id: id ?? this.id,
@@ -193,6 +197,7 @@ class User {
       causesAndCommunities: causesAndCommunities ?? this.causesAndCommunities,
       prompts: prompts ?? this.prompts,
       defaultMessages: defaultMessages ?? this.defaultMessages,
+      lookingFor: lookingFor ?? this.lookingFor,
       location: location ?? this.location,
     );
   }
@@ -225,6 +230,7 @@ class User {
     causesAndCommunities = json['causesAndCommunities'];
     prompts = json['prompts'];
     defaultMessages = json['defaultMessages'];
+    lookingFor = json['lookingFor'];
     location =
         json['location'] != null ? Location.fromJson(json['location']) : null;
   }
@@ -251,6 +257,7 @@ class User {
         'prompts': prompts,
         'defaultMessages': defaultMessages,
         'location': location?.toJson(),
+        'lookingFor':lookingFor,
       };
 }
 

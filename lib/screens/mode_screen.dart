@@ -125,11 +125,11 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 36),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  "Romance and Butterflies or a Beautiful Friendship?\nChoose a mode to find your people.",
+                  "Looking for Love or Friendship",
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 15.0,

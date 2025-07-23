@@ -265,7 +265,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                       const SizedBox(width: 8),
                       const Expanded(
                         child: Text(
-                          "Choose Five Things You Are\n Really Into",
+                          "Choose Five Interests",
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -279,7 +279,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                   
                   // Description
                   const Text(
-                    'Proud foodie or big on bouldering? Add intere\n-sts to your profile to help you match with people \nwho love them too.',
+                    'Foodie or climber? Add interests to find your match.',
                     style: TextStyle(
                       color: Colors.black87,
                       fontSize: 14,

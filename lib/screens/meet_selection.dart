@@ -73,14 +73,16 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
         children: [
           const SizedBox(height: 40),
           _buildProgressBar(),
+          const SizedBox(height: 10),
           _buildHeader(context),
+          const SizedBox(height: 30),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "you can choose more than one answer and change it any time.",
+                  "Choose freely — update anytime",
                   style: TextStyle(
                     fontFamily: 'Inter',
                     fontSize: 18.0,
@@ -88,14 +90,14 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
                     height: 1.3,
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 _buildToggleOption(genderState),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 if (genderState.data != null)
                   ...genderState.data!.map((gender) =>
                     _buildGenderOption(gender)
                   ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 _buildVisibilityNote(),
               ],
             ),

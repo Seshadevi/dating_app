@@ -20,6 +20,12 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
    String? userName;
    String selectedgender='';
    bool showGenderOnProfile = true;
+    final Map<String, String> genderPronouns = {
+          'Man': 'He/Him',
+          'Woman': 'She/Her',
+          'Nonbinary': 'They/Them',
+        };
+
 
   @override
   void didChangeDependencies() {
@@ -113,38 +119,42 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
                              },);
                           },
                         ),
-                        const SizedBox(width: 12),
-                        const Text(
-                          "Oh Hey! Let's Start\nWith An Intro",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Poppins',
-                          ),
-                        ),
+                        const SizedBox(width: 2),
+                        // const Text(
+                        //   "Let's Start With Intro",
+                        //   style: TextStyle(
+                        //     fontSize: 24,
+                        //     fontWeight: FontWeight.bold,
+                        //     fontFamily: 'Poppins',
+                        //   ),
+                        // ),
                       ],
                     ),
                   // ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 const Text(
-                  "It’s Totally Up To You Whether\nYou Feel Comfortable Sharing\nThis.",
+                  "Share only if you’re comfortable.",
                   textAlign: TextAlign.start,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 44),
 
                 const Text(
                   "Shown As:",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 30),
 
+              
                 Chip(
-                  label: Text(selectedgender!.isEmpty
-                      ? "Man"
-                      : selectedgender),
+                  label: Text(
+                    selectedgender == null || selectedgender!.isEmpty
+                        ? 'Select Gender'
+                        : genderPronouns[selectedgender!] ?? selectedgender!,
+                  ),
                   backgroundColor: const Color(0xffB2D12E),
                 ),
+
 
                 const SizedBox(height: 24),
                 Row(

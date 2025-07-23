@@ -1,3 +1,4 @@
+import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/signupprocessProviders/lookingProvider.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/relationship_screen.dart';
 import 'package:flutter/material.dart';
@@ -11,21 +12,38 @@ class LookingForScreen extends ConsumerStatefulWidget {
 }
 
 class _LookingForScreenState extends ConsumerState<LookingForScreen> {
-  List<String> selectedOptions = [];
+  String? selectedOption;
 
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => ref.read(lookingProvider.notifier).getLookingFor());
-  }
+    Future.microtask(() async {
+      // 1. Fetch options
+      await ref.read(lookingProvider.notifier).getLookingFor();
 
-  void toggleOption(String option) {
-    setState(() {
-      if (selectedOptions.contains(option)) {
-        selectedOptions.remove(option);
-      } else {
-        selectedOptions.clear(); // Only one selected at a time
-        selectedOptions.add(option);
+      // 2. Get user saved data
+      final userState = ref.read(loginProvider);
+      final user = userState.data != null && userState.data!.isNotEmpty
+          ? userState.data![0].user
+          : null;
+
+      final lookingForList = user?.lookingFor;
+
+      // 3. Extract value from nested map if necessary
+      if (lookingForList != null &&
+          lookingForList is List &&
+          lookingForList.isNotEmpty) {
+        final first = lookingForList.first;
+
+        // Check if it's a string or a map with 'value'
+        if (first is Map && first.containsKey('value')) {
+          selectedOption = first['value'].toString().trim();
+        } else {
+          selectedOption = first.toString().trim();
+        }
+
+        debugPrint('Pre-selected from user data: $selectedOption');
+        setState(() {});
       }
     });
   }
@@ -33,6 +51,7 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
   @override
   Widget build(BuildContext context) {
     final lookingState = ref.watch(lookingProvider);
+    final options = lookingState.data ?? [];
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -47,7 +66,6 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
             Row(
@@ -59,88 +77,89 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
                     color: const Color(0xFF8BC34A),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(Icons.search, color: Colors.white, size: 24),
+                  child: const Icon(Icons.search, color: Colors.white),
                 ),
                 const SizedBox(width: 12),
-                const Text(
-                  'What Are You Looking For',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
+                const Expanded(
+                  child: Text(
+                    'What Are You Looking For',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 30),
 
-            // Display list
-            lookingState.data == null || lookingState.data!.isEmpty
-                ? const Center(child: CircularProgressIndicator())
-                : Expanded(
-                    child: ListView.builder(
-                      itemCount: lookingState.data!.length,
-                      itemBuilder: (context, index) {
-                        final option = lookingState.data![index].value ?? '';
-                        final isSelected = selectedOptions.contains(option);
+            /// Looking options
+            Expanded(
+              child: lookingState.data == null
+                  ? const Center(child: CircularProgressIndicator())
+                  : options.isEmpty
+                      ? const Center(child: Text("No options available"))
+                      : ListView.builder(
+                          itemCount: options.length,
+                          itemBuilder: (context, index) {
+                            final option = options[index].value?.toString().trim() ?? '';
+                            final isSelected = selectedOption?.trim() == option;
 
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              toggleOption(option);
-                              Navigator.pop(context, option);
-                            },
-                            child: Container(
-                              height: 56,
-                              decoration: BoxDecoration(
-                                gradient: isSelected
-                                    ? const LinearGradient(
-                                        colors: [
-                                          Color(0xffB2D12E),
-                                          Color(0xFF2B2B2B),
-                                        ],
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                      )
-                                    : null,
-                                color: isSelected ? null : Colors.white,
-                                borderRadius: BorderRadius.circular(28),
-                                border: Border.all(
-                                  color: isSelected
-                                      ? Colors.transparent
-                                      : const Color(0xffB2D12E),
-                                  width: 2,
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  option,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: isSelected ? Colors.white : Colors.black,
+                            debugPrint('Comparing: selectedOption="$selectedOption" | option="$option" | isSelected=$isSelected');
+
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedOption = option;
+                                  });
+                                  Navigator.pop(context, option); // Return selected value
+                                },
+                                child: Container(
+                                  height: 56,
+                                  decoration: BoxDecoration(
+                                    gradient: isSelected
+                                        ? const LinearGradient(
+                                            colors: [Color(0xffB2D12E), Color(0xFF2B2B2B)],
+                                            begin: Alignment.centerLeft,
+                                            end: Alignment.centerRight,
+                                          )
+                                        : null,
+                                    color: isSelected ? null : Colors.white,
+                                    borderRadius: BorderRadius.circular(28),
+                                    border: Border.all(
+                                      color: isSelected
+                                          ? Colors.transparent
+                                          : const Color(0xffB2D12E),
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      option,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                        color: isSelected ? Colors.white : Colors.black,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                            );
+                          },
+                        ),
+            ),
 
-            const SizedBox(height: 16),
-
-            // Skip button
+            /// Skip Button
             Center(
               child: TextButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const RelationshipScreen(),
-                    ),
+                    MaterialPageRoute(builder: (_) => const RelationshipScreen()),
                   );
                 },
                 child: const Text(

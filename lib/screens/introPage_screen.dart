@@ -1,17 +1,19 @@
-import 'package:dating/screens/genderselection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class IntroPageScreen extends StatefulWidget {
-  
   const IntroPageScreen({super.key});
-  
+
   @override
   State<IntroPageScreen> createState() => _IntroPageScreenState();
 }
 
 class _IntroPageScreenState extends State<IntroPageScreen> {
-  TextEditingController _nameController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _monthController = TextEditingController();
+  final TextEditingController _dayController = TextEditingController();
+  final TextEditingController _yearController = TextEditingController();
+
   String? entryemail;
   String? mobile;
   double? latitude;
@@ -21,37 +23,36 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
   String _year = '';
   String dateOfBirth = '';
 
-   @override
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
-    if (args != null ) { // Prevent overwriting selected products
+    if (args != null) {
       setState(() {
-         entryemail = args['email'] ?? '';
-         mobile= args['mobile'] ?? '';
-         latitude=args['latitude'] ?? 0.0;
-         longitude=args['longitude']?? 0.0;
-         if (_nameController.text.isEmpty && args['userName'] != null && args['userName'].toString().isNotEmpty) {
-            _nameController.text = args['userName'];
+        entryemail = args['email'] ?? '';
+        mobile = args['mobile'] ?? '';
+        latitude = args['latitude'] ?? 0.0;
+        longitude = args['longitude'] ?? 0.0;
+
+        if (_nameController.text.isEmpty && args['userName'] != null && args['userName'].toString().isNotEmpty) {
+          _nameController.text = args['userName'];
+        }
+
+        final dobArg = args['dateofbirth'];
+        if (dobArg != null && dobArg is String && dobArg.trim().isNotEmpty && dobArg.contains('/')) {
+          dateOfBirth = dobArg;
+          final parts = dobArg.split('/');
+          if (parts.length == 3) {
+            _month = parts[0];
+            _day = parts[1];
+            _year = parts[2];
+
+            _monthController.text = _month;
+            _dayController.text = _day;
+            _yearController.text = _year;
           }
-          final dobArg = args['dateofbirth'];
-          // if (dobArg != null && dobArg is String && dobArg.trim().isNotEmpty && dobArg.contains('/')) {
-          //   dateOfBirth = dobArg;
-          //   final parts = dobArg.split('/');
-          //   if (parts.length == 3) {
-          //     _month = parts[0];
-          //     _day = parts[1];
-          //     _year = parts[2];
-          //   }
-          // } else {
-          //   // Default to empty if not valid
-          //   dateOfBirth = '';
-          //   _month = '';
-          //   _day = '';
-          //   _year = '';
-          // }
-     
+        }
       });
     }
   }
@@ -59,9 +60,11 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
   @override
   void dispose() {
     _nameController.dispose();
+    _monthController.dispose();
+    _dayController.dispose();
+    _yearController.dispose();
     super.dispose();
   }
-
 
   Widget _styledInput({
     required String label,
@@ -75,17 +78,23 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
         const SizedBox(height: 10),
         TextField(
           controller: controller,
-              decoration: InputDecoration(
-                hintText: hint,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              ),
+          decoration: InputDecoration(
+            hintText: hint,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          ),
         ),
       ],
     );
   }
 
-  Widget _birthdayInput(String hint, int maxLength, Function(String) onChanged) {
+  Widget _birthdayInput({
+    required String hint,
+    required int maxLength,
+    required Function(String) onChanged,
+    required TextEditingController controller,
+  }) {
     return TextField(
+      controller: controller,
       decoration: InputDecoration(
         hintText: hint,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -103,7 +112,6 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -162,16 +170,16 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                             arguments: {
                               'latitude': latitude,
                               'longitude': longitude,
-                              'email':entryemail,
-                              'mobile':mobile
-                            },);
+                              'email': entryemail,
+                              'mobile': mobile,
+                            },
+                          );
                         },
                       ),
-                      const SizedBox(width: 12),
                       const Text(
-                        "Oh Hey! Let's Start\nWith An Intro",
+                        "Oh Hey! Let's Start With\nAn Intro",
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Poppins',
                         ),
@@ -180,7 +188,6 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                   ),
                   const SizedBox(height: 30),
 
-                  // Name Input
                   _styledInput(
                     label: "Your First Name",
                     hint: "Enter your name",
@@ -189,36 +196,50 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
 
                   const SizedBox(height: 40),
 
-                  // Birthday Inputs
                   const Text("Your Birthday", style: TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 10),
                   Row(
                     children: [
                       Expanded(
-                        child: _birthdayInput("Month", 2, (value) {
-                          setState(() {
-                            _month = value;
-                            dateOfBirth = '$_month/$_day/$_year';
-                          });
-                        }),
+                        child: _birthdayInput(
+                          hint: "Month",
+                          maxLength: 2,
+                          controller: _monthController,
+                          onChanged: (value) {
+                            setState(() {
+                              _month = value;
+                              dateOfBirth = '$_month/$_day/$_year';
+                            });
+                          },
+                        ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: _birthdayInput("Day", 2, (value) {
-                          setState(() {
-                            _day = value;
-                            dateOfBirth = '$_month/$_day/$_year';
-                          });
-                        }),
+                        child: _birthdayInput(
+                          hint: "Day",
+                          maxLength: 2,
+                          controller: _dayController,
+                          onChanged: (value) {
+                            setState(() {
+                              _day = value;
+                              dateOfBirth = '$_month/$_day/$_year';
+                            });
+                          },
+                        ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: _birthdayInput("Year", 4, (value) {
-                          setState(() {
-                            _year = value;
-                            dateOfBirth = '$_month/$_day/$_year';
-                          });
-                        }),
+                        child: _birthdayInput(
+                          hint: "Year",
+                          maxLength: 4,
+                          controller: _yearController,
+                          onChanged: (value) {
+                            setState(() {
+                              _year = value;
+                              dateOfBirth = '$_month/$_day/$_year';
+                            });
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -228,7 +249,6 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                     "It’s Never Too Early To Count Down",
                     style: TextStyle(fontSize: 12, color: Colors.grey),
                   ),
-
                   const SizedBox(height: 120),
                 ],
               ),
@@ -257,22 +277,23 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                   child: IconButton(
                     icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
                     onPressed: () {
-                      print("this is a PROBLEM");
                       final name = _nameController.text.trim();
-                      print("username $name,,month $_month,,day $_day,,,year $_year");
-                      print("date of birth:$dateOfBirth");
-                      if (_month.isNotEmpty && _day.isNotEmpty &&_year.isNotEmpty) {
-                          Navigator.pushNamed(
-                              context,
-                              '/genderstaticselection',
-                              arguments: {
-                                'latitude': latitude,
-                                'longitude': longitude,
-                                'dateofbirth':dateOfBirth,
-                                'userName':name,
-                                'email':entryemail,
-                                'mobile':mobile
-                              },);
+                      print("username: $name, month: $_month, day: $_day, year: $_year");
+                      print("date of birth: $dateOfBirth");
+
+                      if (_month.isNotEmpty && _day.isNotEmpty && _year.isNotEmpty) {
+                        Navigator.pushNamed(
+                          context,
+                          '/genderstaticselection',
+                          arguments: {
+                            'latitude': latitude,
+                            'longitude': longitude,
+                            'dateofbirth': dateOfBirth,
+                            'userName': name,
+                            'email': entryemail,
+                            'mobile': mobile,
+                          },
+                        );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text("Please fill in all fields")),

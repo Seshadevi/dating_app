@@ -1,3 +1,4 @@
+import 'package:dating/model/signupprocessmodels/lookingModel.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/screens/About_section/city_screen.dart';
 import 'package:dating/screens/About_section/education_screen.dart';
@@ -53,6 +54,12 @@ class _BumbleDateProfileScreenState
   String? selectedkid;
   String? selectedDrink;
   String? selectedReligion;
+ String? userLooking;
+ String? userkid;
+ String? userDrink;
+  String? userReligion;
+  bool hasUserUpdatedDrink = false;
+
   final ImagePicker _picker = ImagePicker();
   // final TextEditingController _bioController = TextEditingController();
   String selectedGender = 'Man';
@@ -60,6 +67,49 @@ class _BumbleDateProfileScreenState
   void initState() {
     super.initState();
     _loadUserProfileImages();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userData = ref.read(loginProvider);
+      final user =
+          userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+
+      if (user != null) {
+        setState(() {
+        final lookingForList = user.lookingFor;
+
+          if (lookingForList != null &&
+              lookingForList.isNotEmpty &&
+              lookingForList[0] is Map &&
+              lookingForList[0]['value'] != null) {
+            userLooking = lookingForList[0]['value'].toString();
+          }
+
+        final userkidList = user.kids ;
+         if (userkidList != null &&
+              userkidList.isNotEmpty &&
+             userkidList[0] is Map &&
+              userkidList[0]['kids'] != null) {
+            userkid = userkidList[0]['kids'].toString();
+          }
+
+          final userDrinkList = user.drinking;
+           if (userDrinkList != null &&
+              userDrinkList.isNotEmpty &&
+             userDrinkList[0] is Map &&
+              userDrinkList[0]['preference'] != null) {
+            userDrink = userDrinkList[0]['preference'].toString();
+          }
+          final userReligionList = user.religions;
+           if (userReligionList != null &&
+              userReligionList.isNotEmpty &&
+             userkidList![0] is Map &&
+              userReligionList[0]['religion'] != null) {
+            userReligion =userReligionList[0]['religion'].toString();
+          }
+          // Add other fields if needed (smoking, starSign, etc.)
+          print('lookingfor:::$userLooking');
+        });
+      }
+    });
   }
 
   @override
@@ -78,7 +128,7 @@ class _BumbleDateProfileScreenState
           onPressed: () => Navigator.pushNamed(context, '/custombottomnav'),
         ),
         title: Text(
-          'Bumble Date',
+          'everquid ${user!.mode}',
           style: TextStyle(
             color: Colors.black,
             fontSize: 18,
@@ -1392,8 +1442,10 @@ class _BumbleDateProfileScreenState
         _buildProfileItem(
           Icons.search,
           'Looking For',
-          selectedLooking ?? 'Add',
-          onTap: () async {
+          selectedLooking?.isNotEmpty == true
+          ? selectedLooking!
+          : (userLooking?.isNotEmpty == true ? userLooking! : 'Add'),
+           onTap: () async {
             final result = await Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => LookingForScreen()),
@@ -1412,7 +1464,10 @@ class _BumbleDateProfileScreenState
             MaterialPageRoute(builder: (context) => RelationshipScreen()),
           );
         }),
-        _buildProfileItem(Icons.child_care, 'Have A Kids', selectedkid ?? 'Add',
+        _buildProfileItem(Icons.child_care, 'Have A Kids', 
+        selectedkid?.isNotEmpty == true
+        ? selectedkid!
+        : (userkid?.isNotEmpty == true ? userkid! : 'Add'),
             onTap: () async {
           final result = await Navigator.push(
             context,
@@ -1432,7 +1487,9 @@ class _BumbleDateProfileScreenState
           );
         }),
         _buildProfileItem(
-            Icons.local_drink_outlined, 'Drinking', selectedDrink ?? 'Add',
+            Icons.local_drink_outlined, 'Drinking',  selectedDrink?.isNotEmpty == true
+                                                     ? selectedDrink!
+                                                     : (userDrink?.isNotEmpty == true ? userDrink! : 'Add'),
             onTap: () async {
           final result = await Navigator.push(
             context,
@@ -1464,12 +1521,16 @@ class _BumbleDateProfileScreenState
             MaterialPageRoute(builder: (context) => StarSignScreen()),
           );
         }),
-        _buildProfileItem(Icons.place_outlined, 'Religion', selectedReligion??'Add', onTap: () async{
-          final result=await Navigator.push(
+        _buildProfileItem(
+            Icons.place_outlined, 'Religion',selectedReligion?.isNotEmpty == true
+                                                     ? selectedReligion!
+                                                     : (userReligion?.isNotEmpty == true ? userReligion! : 'Add'),
+            onTap: () async {
+          final result = await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => ReligionScreen()),
           );
-           if (result != null) {
+          if (result != null) {
             setState(() {
               selectedReligion = result;
             });
@@ -1692,15 +1753,24 @@ class _BumbleDateProfileScreenState
         decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.grey)),
         ),
-        child: Row(
-          children: [
-            Icon(icon, color: Colors.black),
-            const SizedBox(width: 16),
-            Expanded(child: Text(title, style: const TextStyle(fontSize: 16))),
-            Text(value,
-                style: const TextStyle(fontSize: 16, color: Colors.grey)),
-            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Row(
+            children: [
+              Icon(icon, color: Colors.black),
+              const SizedBox(width: 16),
+              Expanded(
+                  child: Text(
+                title,
+                style: const TextStyle(fontSize: 16),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              )),
+              Text(value,
+                  style: const TextStyle(fontSize: 16, color: Colors.grey)),
+              const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+            ],
+          ),
         ),
       ),
     );

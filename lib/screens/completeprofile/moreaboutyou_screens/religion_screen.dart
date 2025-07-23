@@ -1,6 +1,7 @@
+import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/provider/signupprocessProviders/religionProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dating/provider/signupprocessProviders/religionProvider.dart';
 
 class ReligionScreen extends ConsumerStatefulWidget {
   const ReligionScreen({super.key});
@@ -10,11 +11,35 @@ class ReligionScreen extends ConsumerStatefulWidget {
 }
 
 class _ReligionScreenState extends ConsumerState<ReligionScreen> {
+  String? selectedOption;
+
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      ref.read(religionProvider.notifier).getReligions();
+    Future.microtask(() async {
+      // Fetch religion options
+      await ref.read(religionProvider.notifier).getReligions();
+
+      // Get user saved data
+      final userState = ref.read(loginProvider);
+      final user = userState.data != null && userState.data!.isNotEmpty
+          ? userState.data![0].user
+          : null;
+
+      final religions = user?.religions;
+
+      // Extract default religion from List<dynamic>
+      if (religions != null  && religions.isNotEmpty) {
+        final first = religions.first;
+
+        if (first is String) {
+          selectedOption = first;
+        } else if (first is Map && first.containsKey('religion')) {
+          selectedOption = first['religion']?.toString();
+        }
+
+        setState(() {});
+      }
     });
   }
 
@@ -50,59 +75,81 @@ class _ReligionScreenState extends ConsumerState<ReligionScreen> {
                   child: const Icon(Icons.star_border, color: Colors.white),
                 ),
                 const SizedBox(width: 12),
-                const Text(
-                  'Do you identify with a religion',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
+                const Expanded(
+                  child: Text(
+                    'Do you identify with a religion',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 30),
+
+            /// Religion Options
             Expanded(
-              child: religionState.data == null || religionState.data!.isEmpty
+              child: religionState.data == null
                   ? const Center(child: CircularProgressIndicator())
-                  : ListView.builder(
-                      itemCount: options.length,
-                      itemBuilder: (context, index) {
-                        final option = options[index].religion ?? '';
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context, option); // 🔁 Return selected
-                            },
-                            child: Container(
-                              height: 56,
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [Color(0xffB2D12E), Color(0xFF2B2B2B)],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                ),
-                                borderRadius: BorderRadius.circular(28),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  option,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
+                  : options.isEmpty
+                      ? const Center(child: Text("No religions available"))
+                      : ListView.builder(
+                          itemCount: options.length,
+                          itemBuilder: (context, index) {
+                            final option = options[index].religion ?? '';
+                            final isSelected = selectedOption == option;
+
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedOption = option;
+                                  });
+                                  Navigator.pop(context, option); // Return selected value
+                                },
+                                child: Container(
+                                  height: 56,
+                                  decoration: BoxDecoration(
+                                    gradient: isSelected
+                                        ? const LinearGradient(
+                                            colors: [Color(0xffB2D12E), Color(0xFF2B2B2B)],
+                                            begin: Alignment.centerLeft,
+                                            end: Alignment.centerRight,
+                                          )
+                                        : null,
+                                    color: isSelected ? null : Colors.white,
+                                    borderRadius: BorderRadius.circular(28),
+                                    border: Border.all(
+                                      color: isSelected
+                                          ? Colors.transparent
+                                          : const Color(0xffB2D12E),
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      option,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                        color: isSelected ? Colors.white : Colors.black,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                            );
+                          },
+                        ),
             ),
+
+            /// Skip Button
             Center(
               child: TextButton(
-                onPressed: () => Navigator.pop(context, null), // Skip
+                onPressed: () => Navigator.pop(context, null),
                 child: const Text(
                   'Skip',
                   style: TextStyle(

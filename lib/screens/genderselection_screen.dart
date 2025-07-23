@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'gender_display_screen.dart';
 
 class GenderSelectionScreen extends StatefulWidget {
-  
-
   const GenderSelectionScreen({super.key});
 
   @override
@@ -11,7 +9,6 @@ class GenderSelectionScreen extends StatefulWidget {
 }
 
 class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
-  
   String? entryemail;
   String? mobile;
   double? latitude;
@@ -23,24 +20,25 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
-    if (args != null ) { // Prevent overwriting selected products
+    if (args != null) {
+      // Prevent overwriting selected products
       setState(() {
-         entryemail = args['email'] ?? '';
-         mobile= args['mobile'] ?? '';
-         latitude=args['latitude'] ?? 0.0;
-         longitude=args['longitude']?? 0.0;
-         dateofbirth=args['dateofbirth'] ?? '';
-         userName=args['userName'] ?? '';
-         if (args['selectgender'] != null && args['selectgender'] is String) {
+        entryemail = args['email'] ?? '';
+        mobile = args['mobile'] ?? '';
+        latitude = args['latitude'] ?? 0.0;
+        longitude = args['longitude'] ?? 0.0;
+        dateofbirth = args['dateofbirth'] ?? '';
+        userName = args['userName'] ?? '';
+        if (args['selectgender'] != null && args['selectgender'] is String) {
           selectedGender = args['selectgender'];
         }
-     
+        print('select gender.........$selectedGender');
       });
     }
   }
-  
 
   Widget _buildGenderOption(String label) {
     final bool isSelected = selectedGender == label;
@@ -106,7 +104,6 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                 
                   // Progress bar
                   LinearProgressIndicator(
                     value: 2 / 18,
@@ -116,46 +113,47 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                     ),
                   ),
                   // const SizedBox(height: 24),
-                   Row(
-                    children: [
-                       IconButton(
-                              icon: const Icon(Icons.arrow_back_ios,),
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  '/intropage',
-                                  arguments: {
-                                    'latitude': latitude,
-                                    'longitude': longitude,
-                                    'dateofbirth':dateofbirth,
-                                    'userName':userName,
-                                    'email':entryemail,
-                                    'mobile':mobile
-                                  },);
-                              },
-                            ),
-                  const Text(
-                    "Sai Is A Great Name",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Poppins',
+                  Row(children: [
+                    IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back_ios,
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/intropage',
+                          arguments: {
+                            'latitude': latitude,
+                            'longitude': longitude,
+                            'dateofbirth': dateofbirth,
+                            'userName': userName,
+                            'email': entryemail,
+                            'mobile': mobile
+                          },
+                        );
+                      },
                     ),
-                  ),
-                    ]
-                   ),
+                    //  Text(
+                    //   "$userName",
+                    //   style: TextStyle(
+                    //     fontSize: 22,
+                    //     fontWeight: FontWeight.bold,
+                    //     fontFamily: 'Poppins',
+                    //   ),
+                    // ),
+                  ]),
                   const SizedBox(height: 12),
-                  const Text(
-                    "We Love That You're Here. Pick The Gen\n-der That Best Describes You, Then Add \n More About It If You Like.",
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontFamily: 'Inter',
-                      height: 1.5,
-                    ),
-                  ),
+                  // const Text(
+                  //   "We Love That You're Here. Pick The Gen\n-der That Best Describes You, Then Add \n More About It If You Like.",
+                  //   style: TextStyle(
+                  //     fontSize: 15,
+                  //     fontFamily: 'Inter',
+                  //     height: 1.5,
+                  //   ),
+                  // ),
                   const SizedBox(height: 28),
                   const Text(
-                    "Which Gender Best Describes You?",
+                    "Please Select Your Gender?",
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -175,7 +173,8 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.info_outline, size: 18, color: Colors.grey),
+                      const Icon(Icons.info_outline,
+                          size: 18, color: Colors.grey),
                       const SizedBox(width: 8),
                       Expanded(
                         child: RichText(
@@ -186,7 +185,8 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                               color: Colors.grey,
                             ),
                             children: [
-                              const TextSpan(text: "You Can Always Update This Later. "),
+                              const TextSpan(
+                                  text: "You Can Always Update This Later. "),
                               TextSpan(
                                 text: "A Note About Gender On Bumble.",
                                 style: TextStyle(
@@ -225,7 +225,8 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                       borderRadius: BorderRadius.circular(50),
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+                      icon: const Icon(Icons.arrow_forward_ios,
+                          color: Colors.white),
                       onPressed: () {
                         if (selectedGender.isNotEmpty) {
                           Navigator.pushNamed(
@@ -234,15 +235,17 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                             arguments: {
                               'latitude': latitude,
                               'longitude': longitude,
-                              'dateofbirth':dateofbirth,
-                              'userName':userName,
-                              'selectgender':selectedGender,
-                              'email':entryemail,
-                              'mobile':mobile
-                            },);
+                              'dateofbirth': dateofbirth,
+                              'userName': userName,
+                              'selectgender': selectedGender,
+                              'email': entryemail,
+                              'mobile': mobile
+                            },
+                          );
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Please select a gender")),
+                            const SnackBar(
+                                content: Text("Please select a gender")),
                           );
                         }
                       },

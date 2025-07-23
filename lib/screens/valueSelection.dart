@@ -284,7 +284,7 @@ class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
                   
                   // Description
                   const Text(
-                    'which qualities speak to your soul? choose 4 \n that would make a connection that much stronger.',
+                    'Choose 4 that define your kind of connection.',
                     style: TextStyle(
                       color: Colors.black87,
                       fontSize: 14,

@@ -108,7 +108,7 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
                 ),
                 const SizedBox(width: 8),
                 const Text(
-                  "Now lets Talk About You",
+                  "Let’s Talk Height",
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -121,7 +121,7 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
           const Padding(
             padding: EdgeInsets.only(left: 30, top: 20, right: 30),
             child: Text(
-              "Let's get the small talk out of the way. we'll get into the deep and meaningful later.",
+              "Quick intro now, meaningful moments later.",
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.black87,

@@ -133,6 +133,7 @@ class MyApp extends StatelessWidget {
          "messagescreen": (context) => MessagesScreen(),
          "/custombottomnav": (context) => CustomBottomNavigationBar(),
          "/completeprofile": (context) =>BumbleDateProfileScreen(),
+          "/joinscreen": (context) =>JoinPageScreen(),
       },
     );
   }

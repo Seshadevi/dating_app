@@ -181,46 +181,47 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
                         ),
                          const SizedBox(width: 8),
                         const Text(
-                            "Do You Have Kids Or\nFamily Plans?",
+                            "Family Plans?",
                             style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 22,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'Poppins'),
                           ),
                       ],
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
                     
                     Text(
                       "Let’s get deeper. Feel free to skip if you'd prefer not to say.",
                       style: TextStyle(
                         color: Colors.grey[700],
-                        fontSize: screen.width * 0.035,
+                        fontSize: screen.width * 0.038,
                       ),
                     ),
-                    Text(
-                      "Have Kids",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: screen.width * 0.045,
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        optionButton("Have Kids +", -1, bubbleSize, bubbleFont),
-                        optionButton(
-                            "Don’t Have\nKids ++", -2, bubbleSize, bubbleFont),
-                      ],
-                    ),
-                    SizedBox(height: screen.height * 0.03),
+                    // Text(
+                    //   "Have Kids",
+                    //   style: TextStyle(
+                    //     fontWeight: FontWeight.bold,
+                    //     fontSize: screen.width * 0.045,
+                    //   ),
+                    // ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    //   children: [
+                    //     optionButton("Have Kids +", -1, bubbleSize, bubbleFont),
+                    //     optionButton(
+                    //         "Don’t Have\nKids ++", -2, bubbleSize, bubbleFont),
+                    //   ],
+                    // ),
+                    SizedBox(height: screen.height * 0.08),
                     Text(
                       "Kids",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: screen.width * 0.045,
+                        fontSize: screen.width * 0.059,
                       ),
                     ),
+                     SizedBox(height: screen.height * 0.06),
                     if (kidsState.data == null || kidsState.data!.isEmpty)
                       const Center(
                         child: Padding(
@@ -232,7 +233,7 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
                       Wrap(
                         alignment: WrapAlignment.spaceAround,
                         spacing: screen.width * 0.02,
-                        runSpacing: screen.height * 0.015,
+                        runSpacing: screen.height * 0.019,
                         children: kidsState.data!.map((kid) {
                           return optionButton(kid.kids ?? '', kid.id ?? 0,
                               bubbleSize, bubbleFont);
@@ -297,7 +298,7 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
                     Row(
                       children: [
                         Text(
-                          '${selectedKidsIds.length}/2 Selected',
+                          '${selectedKidsIds.length}/1 Selected',
                           style: const TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
@@ -311,14 +312,14 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
                           height: 40,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: selectedKidsIds.length == 2
+                            gradient: selectedKidsIds.length == 1
                                 ? const LinearGradient(
                                     colors: [Color(0xFF869E23), Color(0xFF000000)],
                                     begin: Alignment.topCenter,
                                     end: Alignment.bottomCenter,
                                   )
                                 : null,
-                            color: selectedKidsIds.length != 2
+                            color: selectedKidsIds.length != 1
                                 ? Colors.grey.shade400
                                 : null,
                           ),

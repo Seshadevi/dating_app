@@ -260,9 +260,9 @@ class _ReligionSelectorWidgetState extends ConsumerState<ReligionSelectorWidget>
                       const SizedBox(width: 8),
                       const Expanded(
                         child: Text(
-                          "What's Important In your \n Life",
+                          "What's Important In your Life",
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 18,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Poppins',
                           ),
@@ -273,13 +273,13 @@ class _ReligionSelectorWidgetState extends ConsumerState<ReligionSelectorWidget>
                   const SizedBox(height: 15),
                   
                   // Description
-                  const Text(
-                    'you can answer or leave blank depanding \n on what matters most of you.',
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 15,
-                    ),
-                  ),
+                  // const Text(
+                  //   'you can answer or leave blank depanding \n on what matters most of you.',
+                  //   style: TextStyle(
+                  //     color: Colors.black87,
+                  //     fontSize: 15,
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -372,7 +372,7 @@ class _ReligionSelectorWidgetState extends ConsumerState<ReligionSelectorWidget>
                     Row(
                       children: [
                         Text(
-                          '${selectedReligions.length}/4 Selected',
+                          '${selectedReligions.length}/1 Selected',
                           style: const TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 14,
@@ -385,14 +385,14 @@ class _ReligionSelectorWidgetState extends ConsumerState<ReligionSelectorWidget>
                           height: 40,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: selectedReligions.length == 4
+                            gradient: selectedReligions.length == 1
                                 ? const LinearGradient(
                                     colors: [Color(0xFF869E23), Color(0xFF000000)],
                                     begin: Alignment.topCenter,
                                     end: Alignment.bottomCenter,
                                   )
                                 : null,
-                            color: selectedReligions.length != 4
+                            color: selectedReligions.length != 1
                                 ? Colors.grey.shade400
                                 : null,
                           ),
@@ -403,7 +403,7 @@ class _ReligionSelectorWidgetState extends ConsumerState<ReligionSelectorWidget>
                               size: 20,
                             ),
                             onPressed: () {
-                                if (selectedReligions.length == 4) {
+                                if (selectedReligions.length == 1) {
                                         
                           
                                    Navigator.pushNamed(
@@ -432,7 +432,7 @@ class _ReligionSelectorWidgetState extends ConsumerState<ReligionSelectorWidget>
                                 );
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Please select 4 options"))
+                                const SnackBar(content: Text("Please select 1 options"))
                               );
                             }
                           },      

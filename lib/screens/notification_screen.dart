@@ -82,7 +82,7 @@ class _AllowNotificationState extends State<AllowNotification> {
             ),
           ),
           const Text(
-            'Don’t Miss A Beat, Or \nA Match',
+            'Enable Notifications',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontFamily: 'Inter Tight',
@@ -93,8 +93,8 @@ class _AllowNotificationState extends State<AllowNotification> {
             ),
           ),
           const Text(
-            'Turn On Your Notifications So We \nCan Let You Know When You \nHave New Matches, Likes, Or \nMessages.',
-            textAlign: TextAlign.start,
+            'So you never miss a \nmatch, like, or message.',
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: 'Inter Tight',
               fontSize: 17.0,
@@ -102,7 +102,7 @@ class _AllowNotificationState extends State<AllowNotification> {
               fontWeight: FontWeight.w300,
             ),
           ),
-          SizedBox(height: screenHeight * 0.11),
+          SizedBox(height: screenHeight * 0.21),
           Container(
             height: screenHeight * 0.06,
             width: screenWidth * 0.88,
