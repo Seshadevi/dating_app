@@ -20,7 +20,7 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           'Profile Strength',
           style: TextStyle(
             color: Colors.black,

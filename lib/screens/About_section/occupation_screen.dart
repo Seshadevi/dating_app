@@ -1,18 +1,53 @@
+import 'package:dating/provider/moreabout/workProvider.dart';
 import 'package:dating/screens/About_section/add_job_screen.dart';
-import 'package:dating/screens/completeprofile/complete_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class OccupationScreen extends StatelessWidget {
+class OccupationScreen extends ConsumerStatefulWidget {
   const OccupationScreen({super.key});
 
   @override
+  ConsumerState<OccupationScreen> createState() => _OccupationScreenState();
+}
+
+class _OccupationScreenState extends ConsumerState<OccupationScreen> {
+  int? selectedJobId;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(workProvider.notifier).getWork());
+  }
+
+  // void _onJobSelected(int? id) async {
+  //   setState(() {
+  //     selectedJobId = id;
+  //   });
+
+  //   final work = ref.read(workProvider);
+  //   final provider = ref.read(workProvider.notifier);
+
+  //   if (id != null && work.title != null && work.company != null) {
+  //     try {
+  //       await provider.addwork(work.title, work.company);
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text("Job updated successfully")),
+  //       );
+  //     } catch (e) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text("Failed to update job: $e")),
+  //       );
+  //     }
+  //   }
+  // }
+
+  @override
   Widget build(BuildContext context) {
+    final work = ref.watch(workProvider);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Occupation',
-          style: TextStyle(color: Colors.black),
-        ),
+        title: Text('Occupation', style: TextStyle(color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
@@ -20,38 +55,64 @@ class OccupationScreen extends StatelessWidget {
           onPressed: () => Navigator.pushNamed(context, '/completeprofile'),
         ),
       ),
+      backgroundColor: Colors.white,
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
-            child: Text(
-              'You Can Only Show One Job On Your Profile At a Time',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'You Can Only Show One Job On Your Profile At a Time',
+                style: TextField.materialMisspelledTextStyle
+                // TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ),
           ),
           const Divider(),
-          ListTile(
-            title: const Text('add a job'),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {
-              // Navigate to the add job screen
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddJobScreen(), // Replace with your actual screen
+          // if (work.title != null && work.title!.isNotEmpty)
+          //   RadioListTile<int>(
+          //     value: work.id ?? 0,
+          //     groupValue: selectedJobId,
+          //     onChanged: _onJobSelected,
+          //     title: Text(work.title ?? ''),
+          //     subtitle: Text(work.company ?? ''),
+          //     activeColor: Colors.pink,
+          //   )
+          // else
+          //   const Padding(
+          //     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          //     child: Text('No job added yet.'),
+          //   ),
+          const Spacer(),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.pink,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
-              );
-            },
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const AddJobScreen()),
+                  );
+                },
+                child:  Text(
+                  'Add a Job',
+                  style: TextField.materialMisspelledTextStyle
+                  // TextStyle(fontSize: 16, color: Colors.white),
+                ),
+              ),
+            ),
           ),
-          const Divider(height: 1),
         ],
       ),
-      backgroundColor: Colors.white,
     );
   }
 }
-

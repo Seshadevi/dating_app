@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:dating/screens/settings/privacusetting_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -20,7 +22,7 @@ class ContactandfaqState extends State<Contactandfaq> {
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title:  Text(
           'Contact And FAQ',
           style: TextStyle(
             color: Colors.black,

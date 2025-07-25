@@ -420,9 +420,11 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
     List<int>? qualityId,
     String? prompt,
     File? image,
+    List<int>? languagesId,
+   List<int>? starsignId,
   }) async {
     
-    print('updated data....modeId:$modeid, modename:$modename, causedId:$causeId, intrestId:$interestId, qualityId:$qualityId, bio:$bio, prompt:$prompt, image:${image?.path}');
+    print('updated data....modeId:$modeid, modename:$modename, causedId:$causeId, intrestId:$interestId, qualityId:$qualityId, bio:$bio, prompt:$prompt, image:${image?.path},languages:$languagesId');
 
     try {
       final userid = state.data![0].user?.id

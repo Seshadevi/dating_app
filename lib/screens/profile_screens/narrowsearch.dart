@@ -1,4 +1,5 @@
-import 'package:dating/screens/profile_screens/languagesScreen.dart';
+// import 'package:dating/screens/profile_screens/languagesScreen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/languagesscreen.dart';
 import 'package:flutter/material.dart';
 
 class NarrowSearchScreen extends StatefulWidget {
@@ -179,7 +180,7 @@ class _NarrowSearchScreenState extends State<NarrowSearchScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (_) => LanguageSelectionScreen(
-                    selectedLanguages: selectedLanguages, // maintain this in your state
+                    // selectedLanguages: selectedLanguages, // maintain this in your state
                   ),
                 ),
               );

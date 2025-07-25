@@ -19,7 +19,7 @@ class OTPScreen extends ConsumerStatefulWidget {
 class _OTPScreenState extends ConsumerState<OTPScreen> {
   TextEditingController otpController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-  int _start = 9;
+  int _start = 59;
   Timer? _timer;
 
   @override

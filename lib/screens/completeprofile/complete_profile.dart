@@ -13,6 +13,7 @@ import 'package:dating/screens/completeprofile/lifeBadgesScreen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/drinking_screen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/exercise_screen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/have_kids_screen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/languagesscreen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/looking_for_screen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/new_to_area_screen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/relationship_screen.dart';
@@ -23,6 +24,7 @@ import 'package:dating/screens/completeprofile/profile_strength_detailScreen.dar
 import 'package:dating/screens/completeprofile/prompt_selection_screen.dart';
 import 'package:dating/screens/completeprofile/pronoun_screen.dart';
 import 'package:dating/screens/completeprofile/qualities.dart';
+// import 'package:dating/screens/profile_screens/languagesScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -1089,7 +1091,8 @@ class _BumbleDateProfileScreenState
                                     bio: null,
                                     modename: null,
                                     prompt: edited,
-                                    qualityId: null);
+                                    qualityId: null,
+                                    languagesId:[]);
                               });
                             }
                           },
@@ -1640,7 +1643,21 @@ class _BumbleDateProfileScreenState
                   ),
                 ),
               ),
-              Icon(Icons.arrow_forward_ios, color: Colors.grey[400], size: 16),
+              InkWell(
+  onTap: () {
+    // Navigate to another screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LanguageSelectionScreen()),
+    );
+  },
+  child: Icon(
+    Icons.arrow_forward_ios,
+    color: Colors.grey[400],
+    size: 16,
+  ),
+),
+
             ],
           ),
         ),
