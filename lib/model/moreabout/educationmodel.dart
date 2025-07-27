@@ -1,65 +1,117 @@
 class Educationmodel {
+  int? statusCode;
+  bool? success;
+  String? message;
+  List<Data>? data;
+
+  Educationmodel({this.statusCode, this.success, this.message, this.data});
+
+  factory Educationmodel.fromJson(Map<String, dynamic> json) {
+    return Educationmodel(
+      statusCode: json['statusCode'],
+      success: json['success'],
+      message: json['message'],
+      data: json['data'] != null
+          ? List<Data>.from(json['data'].map((v) => Data.fromJson(v)))
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'statusCode': statusCode,
+      'success': success,
+      'message': message,
+      if (data != null) 'data': data!.map((v) => v.toJson()).toList(),
+    };
+  }
+
+  /// CopyWith method
+  Educationmodel copyWith({
+    int? statusCode,
+    bool? success,
+    String? message,
+    List<Data>? data,
+  }) {
+    return Educationmodel(
+      statusCode: statusCode ?? this.statusCode,
+      success: success ?? this.success,
+      message: message ?? this.message,
+      data: data ?? this.data,
+    );
+  }
+
+  /// Initial method
+  factory Educationmodel.initial() {
+    return Educationmodel(
+      statusCode: 0,
+      success: false,
+      message: '',
+      data: [],
+    );
+  }
+}
+
+class Data {
   int? id;
   String? institution;
-  dynamic gradYear; // Changed from Null? to dynamic? for flexibility
+  int? gradYear;
   String? createdAt;
   String? updatedAt;
-  bool isLoading;
 
-  Educationmodel({
+  Data({
     this.id,
     this.institution,
     this.gradYear,
     this.createdAt,
     this.updatedAt,
-    this.isLoading = false,
   });
 
-  factory Educationmodel.initial() {
-    return Educationmodel(
-      id: null,
-      institution: '',
-      gradYear: null,
-      createdAt: '',
-      updatedAt: '',
-      isLoading: false,
+  factory Data.fromJson(Map<String, dynamic> json) {
+    return Data(
+      id: json['id'],
+      institution: json['institution'],
+      gradYear: json['gradYear'],
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
     );
   }
 
-  Educationmodel copyWith({
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'institution': institution,
+      'gradYear': gradYear,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+    };
+  }
+
+  /// CopyWith method
+  Data copyWith({
     int? id,
     String? institution,
-    dynamic gradYear,
+    int? gradYear,
     String? createdAt,
     String? updatedAt,
-    bool? isLoading,
   }) {
-    return Educationmodel(
+    return Data(
       id: id ?? this.id,
       institution: institution ?? this.institution,
       gradYear: gradYear ?? this.gradYear,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      isLoading: isLoading ?? this.isLoading,
     );
   }
 
-  Educationmodel.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        institution = json['institution'],
-        gradYear = json['gradYear'],
-        createdAt = json['createdAt'],
-        updatedAt = json['updatedAt'],
-        isLoading = json['isLoading'] ?? false;
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['institution'] = institution;
-    data['gradYear'] = gradYear;
-    data['createdAt'] = createdAt;
-    data['updatedAt'] = updatedAt;
-    data['isLoading'] = isLoading;
-    return data;
+  /// Initial method
+  factory Data.initial() {
+    return Data(
+      id: 0,
+      institution: '',
+      gradYear: 0,
+      createdAt: '',
+      updatedAt: '',
+    );
   }
 }
