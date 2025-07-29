@@ -99,27 +99,27 @@ class TypeofconnectionState extends ConsumerState<Typeofconnection> {
                           modeid: modeId, modename: modeName, qualityId: null);
 
                   if (context.mounted) {
-                    if (statuscode == 200 || statuscode == 201) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content:
-                              Text("Mode updated successfully to $modeName"),
-                          backgroundColor: Colors.green,
-                        ),
-                      );
+                    // if ( == 200 || statuscode == 201) {
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     SnackBar(
+                    //       content:
+                    //           Text("Mode updated successfully to $modeName"),
+                    //       backgroundColor: Colors.green,
+                    //     ),
+                    //   );
 
-                      // Delay for user to read the message before popping
-                      await Future.delayed(const Duration(milliseconds: 600));
-                      Navigator.pop(context);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content:
-                              Text("Failed to update mode. Please try again."),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    }
+                    //   // Delay for user to read the message before popping
+                    //   await Future.delayed(const Duration(milliseconds: 600));
+                    //   Navigator.pop(context);
+                    // } else {
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     SnackBar(
+                    //       content:
+                    //           Text("Failed to update mode. Please try again."),
+                    //       backgroundColor: Colors.red,
+                    //     ),
+                    //   );
+                    // }
                   }
                 },
                 style: ElevatedButton.styleFrom(

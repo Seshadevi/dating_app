@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FavoriteInterests extends ConsumerStatefulWidget {
-  final List<Map<String, dynamic>> userInteres;     // Previously selected
   final List<Map<String, dynamic>> selectedInteres; // Just selected now
 
   const FavoriteInterests({
     Key? key,
-    required this.userInteres,
     required this.selectedInteres,
   }) : super(key: key);
 
@@ -24,25 +22,18 @@ class _FavoriteInterestsState extends ConsumerState<FavoriteInterests> {
   void initState() {
     super.initState();
 
-    // ✅ Merge selected + previous, deduplicated by ID
+    // ✅ Use only selectedInteres
     final Map<int, Map<String, dynamic>> interestMap = {};
-    for (var interest in [...widget.selectedInteres, ...widget.userInteres]) {
+    for (var interest in widget.selectedInteres) {
       if (interest['id'] != null) {
         interestMap[interest['id']] = interest;
       }
     }
 
     visibleInterests = interestMap.values.toList();
+    selectInterestId = null;
 
-    // ✅ Preselect old favorite
-    if (widget.userInteres.isNotEmpty) {
-      final previousFavoriteId = widget.userInteres.first['id'];
-      if (interestMap.containsKey(previousFavoriteId)) {
-        selectInterestId = previousFavoriteId;
-      }
-    }
-
-    print("✅ Visible Interests: $visibleInterests");
+    print("✅ Visible Interests (Selected Only): $visibleInterests");
   }
 
   @override
@@ -130,20 +121,20 @@ class _FavoriteInterestsState extends ConsumerState<FavoriteInterests> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ElevatedButton(
               onPressed: () async {
-                 final List<int> interestIds = visibleInterests .map((q) => q['id'] as int).toList();
-                        print('🎯 Sending IDs only: $interestIds ');
+                final List<int> interestIds =
+                    visibleInterests.map((q) => q['id'] as int).toList();
+                print('🎯 Sending IDs only: $interestIds');
                 try {
                   await ref.read(loginProvider.notifier).updateProfile(
-                    interestId:interestIds,
-                    image: null, 
+                    interestId: interestIds,
+                    image: null,
                     modeid: null,
-                    bio: null, 
-                    modename:null, 
-                    prompt:null,
-                    qualityId:null
+                    bio: null,
+                    modename: null,
+                    prompt: null,
+                    qualityId: null,
                   );
                   print('Interest updated');
-                  
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Interest updated successfully!')),

@@ -1,14 +1,17 @@
+import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/provider/moreabout/educationprovider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AddEducationScreen extends StatefulWidget {
+class AddEducationScreen extends ConsumerStatefulWidget {
   const AddEducationScreen({super.key});
 
   @override
-  State<AddEducationScreen> createState() => _AddEducationScreenState();
+  ConsumerState<AddEducationScreen> createState() => _AddEducationScreenState();
 }
 
-class _AddEducationScreenState extends State<AddEducationScreen> {
+class _AddEducationScreenState extends ConsumerState<AddEducationScreen> {
   final TextEditingController titleController = TextEditingController();
   String selectedYear = "2025";
   bool isButtonEnabled = false;
@@ -134,11 +137,25 @@ class _AddEducationScreenState extends State<AddEducationScreen> {
               height: 48,
               child: ElevatedButton(
                 onPressed: isButtonEnabled
-                    ? () {
-                        // TODO: Call your API here
-                        print('Institution: ${titleController.text}');
-                        print('Year: $selectedYear');
-                        Navigator.pop(context); // Go back or next screen
+                    ? () async {
+                        try {
+                          final userId = ref.read(loginProvider).data![0].user?.id ?? '';
+                          final success = await ref.read(educationProvider.notifier).addEducation(
+                           institution: titleController.text.trim(),
+                            gradYear: selectedYear,
+                          );
+
+                          if (success) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Education added successfully!')),
+                            );
+                            Navigator.pop(context); // Go back after success
+                          }
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Error: ${e.toString()}')),
+                          );
+                        }
                       }
                     : null,
                 style: ElevatedButton.styleFrom(

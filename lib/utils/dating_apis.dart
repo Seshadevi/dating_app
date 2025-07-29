@@ -19,7 +19,7 @@ class Dgapi {
   static const String plans = "$baseUrl/admin/plan/get";
   static const String plansFull = "$baseUrl/admin/plans/full";
   static const String likeDislike="$baseUrl/user/like-dislike";
-  static const String updateprofile="$baseUrl/settings/updateprofile";
+  static const String updateprofile="$baseUrl/profile/updateprofile";
   static const String workAdd="$baseUrl/work";
   static const String Workget="$baseUrl/work";
   static const String eudctionAdd="$baseUrl/education";

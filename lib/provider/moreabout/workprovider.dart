@@ -85,7 +85,7 @@ class WorkProvider extends StateNotifier<List<WorkModel>> {
           // Your API returns a single WorkModel object with data array
           final workModel = WorkModel.fromJson(jsonResponse);
           state = [workModel];
-          print('Work loaded successfully: ${workModel.data?.length ?? 0} jobs');
+          print('Work added successfully: ${workModel.data?.length ?? 0} jobs');
           print('Jobs: ${workModel.data?.map((job) => job.title).toList()}');
         } catch (e) {
           print("Invalid response format: $e");
@@ -109,63 +109,86 @@ class WorkProvider extends StateNotifier<List<WorkModel>> {
     }
   }
 
-  Future<void> addwork({required String title, required String company}) async {
-    final loadingState = ref.read(loadingProvider.notifier);
-    final prefs = await SharedPreferences.getInstance();
+  Future<bool> addwork({required String title, required String company}) async {
+  final loadingState = ref.read(loadingProvider.notifier);
+  final prefs = await SharedPreferences.getInstance();
 
-    try {
-      loadingState.state = true;
+  try {
+    loadingState.state = true;
 
-      String? userDataString = prefs.getString('userData');
-      if (userDataString == null || userDataString.isEmpty) {
-        throw Exception("User token is missing. Please log in again.");
-      }
-
-      final Map<String, dynamic> userData = jsonDecode(userDataString);
-
-      String? token = userData['accessToken'] ??
-          (userData['data'] != null &&
-                  (userData['data'] as List).isNotEmpty &&
-                  userData['data'][0]['access_token'] != null
-              ? userData['data'][0]['access_token']
-              : null);
-
-      if (token == null || token.isEmpty) {
-        throw Exception("User token is invalid. Please log in again.");
-      }
-
-      final apiUrl = Uri.parse(Dgapi.workAdd);
-      final request = await http.post(
-        apiUrl,
-        headers: {
-          "Authorization": "Bearer $token",
-          "Content-Type": "application/json",
-        },
-        body: jsonEncode({
-          'title': title,
-          'company': company,
-        }),
-      );
-
-      print('Add work Status Code: ${request.statusCode}');
-      print('Add work Response Body: ${request.body}');
-
-      if (request.statusCode == 201 || request.statusCode == 200) {
-        print("Work added successfully!");
-        // Refresh the work list after adding
-        await getWork();
-      } else {
-        final errorBody = jsonDecode(request.body);
-        final errorMessage = errorBody['message'] ?? 'Unexpected error occurred.';
-        throw Exception("Error adding work: $errorMessage");
-      }
-    } catch (e) {
-      print("Failed to add work: $e");
-      rethrow;
-    } finally {
-      loadingState.state = false;
+    String? userDataString = prefs.getString('userData');
+    if (userDataString == null || userDataString.isEmpty) {
+      print("User token is missing.");
+      return false;
     }
+
+    final Map<String, dynamic> userData = jsonDecode(userDataString);
+    String? token = userData['accessToken'] ??
+        (userData['data'] != null &&
+                (userData['data'] as List).isNotEmpty &&
+                userData['data'][0]['access_token'] != null
+            ? userData['data'][0]['access_token']
+            : null);
+
+    if (token == null || token.isEmpty) {
+      print("User token is invalid.");
+      return false;
+    }
+
+    final client = RetryClient(
+      http.Client(),
+      retries: 3,
+      when: (response) =>
+          response.statusCode == 401 || response.statusCode == 400,
+      onRetry: (req, res, retryCount) async {
+        if (retryCount == 0 &&
+            (res?.statusCode == 401 || res?.statusCode == 400)) {
+          print("Token expired, refreshing...");
+          String? newAccessToken =
+              await ref.read(loginProvider.notifier).restoreAccessToken();
+
+          await prefs.setString('accessToken', newAccessToken ?? '');
+          token = newAccessToken;
+          req.headers['Authorization'] = 'Bearer $newAccessToken';
+
+          print("New Token: $newAccessToken");
+        }
+      },
+    );
+
+    final apiUrl = Uri.parse(Dgapi.workAdd);
+    final request = await client.post(
+      apiUrl,
+      headers: {
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({
+        'title': title,
+        'company': company,
+      }),
+    );
+
+    print('Add work Status Code: ${request.statusCode}');
+    print('Add work Response Body: ${request.body}');
+
+    if (request.statusCode == 201 || request.statusCode == 200) {
+      print("Work added successfully!");
+      await getWork(); // Refresh
+      return true;
+    } else {
+      final errorBody = jsonDecode(request.body);
+      final errorMessage = errorBody['message'] ?? 'Unexpected error occurred.';
+      print("Error adding work: $errorMessage");
+      return false;
+    }
+  } catch (e) {
+    print("Failed to add work: $e");
+    return false;
+  } finally {
+    loadingState.state = false;
   }
+}
 
   // New method to update selected job
   // Future<void> updateSelectedJob(int jobId) async {

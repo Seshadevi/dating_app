@@ -88,52 +88,90 @@ class EducationProvider extends StateNotifier<Educationmodel> {
     } catch (e) {
       print("Failed to fetch education: $e");
     }
-  }
-
-  Future<void> addEducation(String? institution, String? gradYear) async {
-    final loadingState = ref.read(loadingProvider.notifier);
-
-    try {
-      loadingState.state = true;
-
-      final prefs = await SharedPreferences.getInstance();
-      final token =
-          prefs.getString('token'); // Assuming token is saved with key 'token'
-
-      if (token == null) {
-        throw Exception("User token not found.");
-      }
-
-      final apiUrl =
-          Uri.parse(Dgapi.eudctionAdd); // <-- Replace with correct endpoint
-      final request = await http.post(
-        apiUrl,
-        headers: {
-          "Authorization": "Bearer $token",
-          "Content-Type": "application/json",
-        },
-        body: jsonEncode({
-          'institution':institution,
-          'gradYear':gradYear,
-        }),
-      );
-
-      if (request.statusCode == 201 || request.statusCode == 200) {
-        print("Work added successfully!");
-        // Optionally update the state with new work data here
-      } else {
-        final errorBody = jsonDecode(request.body);
-        final errorMessage =
-            errorBody['message'] ?? 'Unexpected error occurred.';
-        throw Exception("Error adding work: $errorMessage");
-      }
-    } catch (e) {
-      print("Failed to add work: $e");
-      rethrow;
-    } finally {
+    finally {
       loadingState.state = false;
     }
   }
+
+  Future<bool> addEducation({required String institution, required String gradYear}) async {
+  final loadingState = ref.read(loadingProvider.notifier);
+  final prefs = await SharedPreferences.getInstance();
+
+  try {
+    loadingState.state = true;
+
+    String? userDataString = prefs.getString('userData');
+    if (userDataString == null || userDataString.isEmpty) {
+      print("User token is missing.");
+      return false;
+    }
+
+    final Map<String, dynamic> userData = jsonDecode(userDataString);
+    String? token = userData['accessToken'] ??
+        (userData['data'] != null &&
+                (userData['data'] as List).isNotEmpty &&
+                userData['data'][0]['access_token'] != null
+            ? userData['data'][0]['access_token']
+            : null);
+
+    if (token == null || token.isEmpty) {
+      print("User token is invalid.");
+      return false;
+    }
+
+    final client = RetryClient(
+      http.Client(),
+      retries: 3,
+      when: (response) =>
+          response.statusCode == 401 || response.statusCode == 400,
+      onRetry: (req, res, retryCount) async {
+        if (retryCount == 0 &&
+            (res?.statusCode == 401 || res?.statusCode == 400)) {
+          print("Token expired, refreshing...");
+          String? newAccessToken =
+              await ref.read(loginProvider.notifier).restoreAccessToken();
+
+          await prefs.setString('accessToken', newAccessToken ?? '');
+          token = newAccessToken;
+          req.headers['Authorization'] = 'Bearer $newAccessToken';
+        }
+      },
+    );
+
+    final apiUrl = Uri.parse(Dgapi.eudctionAdd);
+    final response = await client.post(
+      apiUrl,
+      headers: {
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode({
+        'institution': institution,
+        'gradYear': gradYear,
+      }),
+    );
+
+    print("Education API Status: ${response.statusCode}");
+    print("Education API Response: ${response.body}");
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      print("Education added successfully!");
+      return true;
+    } else {
+      final errorBody = jsonDecode(response.body);
+      final errorMessage =
+          errorBody['message'] ?? 'Unexpected error occurred.';
+      print("Error adding education: $errorMessage");
+      return false;
+    }
+  } catch (e) {
+    print("Exception during education add: $e");
+    return false;
+  } finally {
+    loadingState.state = false;
+  }
+}
+
 }
 
 final educationProvider =

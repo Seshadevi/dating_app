@@ -94,7 +94,7 @@ class User {
   dynamic lastName;
   dynamic gender;
   dynamic showOnProfile;
-  dynamic headLine;
+  String? headLine;
   List<dynamic>? profilePics;
   dynamic termsAndConditions;
   dynamic mode;
@@ -108,49 +108,55 @@ class User {
   List<dynamic>? defaultMessages;
   List<dynamic>? lookingFor;
   Location? location;
+  String? pronouns;
+  List<Work>? work;
+  List<dynamic>? education;
 
-  User({
-    this.id,
-    this.mobile,
-    this.role,
-    this.email,
-    this.firstName,
-    this.lastName,
-    this.gender,
-    this.showOnProfile,
-    this.headLine,
-    this.profilePics,
-    this.termsAndConditions,
-    this.mode,
-    this.qualities,
-    this.drinking,
-    this.kids,
-    this.interests,
-    this.religions,
-    this.causesAndCommunities,
-    this.prompts,
-    this.defaultMessages,
-    this.location,
-    this.lookingFor,
-  });
+  User(
+      {this.id,
+      this.mobile,
+      this.role,
+      this.email,
+      this.firstName,
+      this.lastName,
+      this.gender,
+      this.showOnProfile,
+      this.headLine,
+      this.profilePics,
+      this.termsAndConditions,
+      this.mode,
+      this.qualities,
+      this.drinking,
+      this.kids,
+      this.interests,
+      this.religions,
+      this.causesAndCommunities,
+      this.prompts,
+      this.defaultMessages,
+      this.location,
+      this.lookingFor,
+      this.pronouns,
+      this.work,
+      this.education});
 
   factory User.initial() => User(
-        id: 0,
-        mobile: '',
-        role: '',
-        email: '',
-        profilePics: [],
-        qualities: [],
-        drinking: [],
-        kids: [],
-        religions: [],
-        interests: [],
-        causesAndCommunities: [],
-        prompts: [],
-        defaultMessages: [],
-        lookingFor: [],
-        location: Location.initial(),
-      );
+      id: 0,
+      mobile: '',
+      role: '',
+      email: '',
+      profilePics: [],
+      qualities: [],
+      drinking: [],
+      kids: [],
+      religions: [],
+      interests: [],
+      causesAndCommunities: [],
+      prompts: [],
+      defaultMessages: [],
+      lookingFor: [],
+      location: Location.initial(),
+      pronouns: '',
+      education:[]);
 
   User copyWith({
     int? id,
@@ -161,7 +167,7 @@ class User {
     dynamic lastName,
     dynamic gender,
     dynamic showOnProfile,
-    dynamic headLine,
+    String? headLine,
     List<dynamic>? profilePics,
     dynamic termsAndConditions,
     dynamic mode,
@@ -175,6 +181,9 @@ class User {
     List<dynamic>? defaultMessages,
     Location? location,
     List<dynamic>? lookingFor,
+    String? pronouns,
+    List<Work>? work,
+    List<dynamic>? education,
   }) {
     return User(
       id: id ?? this.id,
@@ -199,6 +208,9 @@ class User {
       defaultMessages: defaultMessages ?? this.defaultMessages,
       lookingFor: lookingFor ?? this.lookingFor,
       location: location ?? this.location,
+      pronouns: pronouns ?? this.pronouns,
+      work: work ?? this.work,
+      education:education ?? education
     );
   }
 
@@ -220,6 +232,8 @@ class User {
     kids = json['kids'];
     religions = json['religions'];
     interests = json['interests'];
+    pronouns = json['pronouns'];
+    work = json['work'];
     // ?.map((e) => {
     //   'id': e['id'],
     //   'interests': e['interests'],
@@ -257,7 +271,10 @@ class User {
         'prompts': prompts,
         'defaultMessages': defaultMessages,
         'location': location?.toJson(),
-        'lookingFor':lookingFor,
+        'lookingFor': lookingFor,
+        'pronouns': pronouns,
+        'work': work,
+        'education':education,
       };
 }
 
@@ -289,3 +306,39 @@ class Location {
         'longitude': longitude,
       };
 }
+class Work {
+  final int id;
+  final String title;
+  final String company;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  Work({
+    required this.id,
+    required this.title,
+    required this.company,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory Work.fromJson(Map<String, dynamic> json) {
+    return Work(
+      id: json['id'],
+      title: json['title'] ?? '',
+      company: json['company'] ?? '',
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'company': company,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+    };
+  }
+}
+

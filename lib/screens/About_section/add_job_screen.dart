@@ -100,26 +100,26 @@ class _AddJobScreenState extends ConsumerState<AddJobScreen> {
                       ? ()async {
                           
                           print('Job Added: ${titleController.text}, ${companyController.text}');
-                          //   try {
-                          //   final userId = ref.read(loginProvider).data![0].user?.id ?? '';
-                          //   final success = await ref.read(workProvider.notifier).addwork(
-                          //     // userId: userId,
-                          //     title: titleController.text.trim(),
-                          //     company: companyController.text.trim(),
+                            try {
+                            final userId = ref.read(loginProvider).data![0].user?.id ?? '';
+                            final success = await ref.read(workProvider.notifier).addwork(
+                              // userId: userId,
+                              title: titleController.text.trim(),
+                              company: companyController.text.trim(),
                               
-                          //   );
+                            );
 
-                          //   if (success) {
-                          //     ScaffoldMessenger.of(context).showSnackBar(
-                          //       const SnackBar(content: Text('Job added successfully!')),
-                          //     );
-                          //     Navigator.pop(context); // Go back after success
-                          //   }
-                          // } catch (e) {
-                          //   ScaffoldMessenger.of(context).showSnackBar(
-                          //     SnackBar(content: Text('Error: ${e.toString()}')),
-                          //   );
-                          // }
+                            if (success) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Job added successfully!')),
+                              );
+                              Navigator.pop(context); // Go back after success
+                            }
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Error: ${e.toString()}')),
+                            );
+                          }
 
 
                         }

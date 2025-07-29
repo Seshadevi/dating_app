@@ -24,6 +24,10 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
     // Load interests from provider
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(interestsProvider.notifier).getInterests();
+       final userIds = widget.usersInterets.map((e) => e['id']).whereType<int>();
+      setState(() {
+        selectedIds.addAll(userIds);
+      });
     });
   }
 
@@ -128,7 +132,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (_) => FavoriteInterests(
-                            userInteres: widget.usersInterets,
+                            // userInteres: widget.usersInterets,
                             selectedInteres: selectedInteres,
                           ),
                         ),

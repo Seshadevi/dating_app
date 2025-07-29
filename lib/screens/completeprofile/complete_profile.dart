@@ -69,6 +69,7 @@ class _BumbleDateProfileScreenState
   void initState() {
     super.initState();
     _loadUserProfileImages();
+    //  _bioController.text = serverHeadline ?? '';
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final userData = ref.read(loginProvider);
       final user =
@@ -107,6 +108,7 @@ class _BumbleDateProfileScreenState
               userReligionList[0]['religion'] != null) {
             userReligion =userReligionList[0]['religion'].toString();
           }
+
           // Add other fields if needed (smoking, starSign, etc.)
           print('lookingfor:::$userLooking');
         });
@@ -130,7 +132,7 @@ class _BumbleDateProfileScreenState
           onPressed: () => Navigator.pushNamed(context, '/custombottomnav'),
         ),
         title: Text(
-          'everquid ${user!.mode}',
+          'everquid ${user?.mode ?? ''}',
           style: TextStyle(
             color: Colors.black,
             fontSize: 18,
@@ -1092,7 +1094,7 @@ class _BumbleDateProfileScreenState
                                     modename: null,
                                     prompt: edited,
                                     qualityId: null,
-                                    languagesId:[]);
+                                    languagesId:null);
                               });
                             }
                           },
@@ -1211,145 +1213,124 @@ class _BumbleDateProfileScreenState
       ],
     );
   }
-
   Widget _buildBioSection() {
-    final userData = ref.watch(loginProvider);
-    final user =
-        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
-    final String? serverHeadline = user?.headLine;
-    final String headline =
-        _bioController.text.trim().isEmpty && serverHeadline != null
-            ? serverHeadline
-            : _bioController.text.trim();
+  final userData = ref.watch(loginProvider);
+  final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+  final String? serverHeadline = user?.headLine;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Bio',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Write a few short words about you',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
-          ),
-        ),
-        const SizedBox(height: 16),
-        if (isEditing)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFF8E1),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey[300]!),
-            ),
-            child: TextField(
-              controller: _bioController,
-              maxLines: 5,
-              textInputAction: TextInputAction.done,
-              keyboardType: TextInputType.multiline,
-              style: const TextStyle(fontSize: 16, color: Colors.black87),
-              decoration: InputDecoration(
-                hintText: 'Write about you',
-                border: InputBorder.none,
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.check, color: Colors.green),
-                  onPressed: () async {
-                    final updatedHeadline =
-                        _bioController.text.trim(); //--------------------
+ final String headline = isEditing
+    ? _bioController.text.trim()
+    : (serverHeadline?.trim() ?? '');
 
-                    // ✅ Save to API---------------------------
-                    try {
-                      await ref.read(loginProvider.notifier).updateProfile(
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'Bio',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: Colors.black,
+        ),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        'Write a few short words about you',
+        style: TextStyle(
+          fontSize: 14,
+          color: Colors.grey[600],
+        ),
+      ),
+      const SizedBox(height: 16),
+      if (isEditing)
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF8E1),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color.fromARGB(255, 151, 144, 144)),
+          ),
+          child: TextField(
+            controller: _bioController,
+            maxLines: 5,
+            textInputAction: TextInputAction.done,
+            keyboardType: TextInputType.multiline,
+            style: const TextStyle(fontSize: 16, color: Colors.black87),
+            decoration: InputDecoration(
+              hintText: 'Write about you',
+              border: InputBorder.none,
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.check, color: Color.fromARGB(255, 33, 34, 33)),
+                onPressed: () async {
+                  final updatedHeadline = _bioController.text.trim();
+
+                  try {
+                    await ref.read(loginProvider.notifier).updateProfile(
                           image: null,
                           modeid: null,
                           bio: updatedHeadline,
                           modename: null,
                           prompt: null,
-                          qualityId: null);
-                      print('headline updated');
+                          qualityId: null,
+                        );
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text('headline updated successfully!')),
-                      );
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text('Failed to upload headline: $e')),
-                      );
-                    }
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Headline updated successfully!')),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Failed to upload headline: $e')),
+                    );
+                  }
 
-                    setState(() {
-                      isEditing = false;
-                      // Do NOT reset _bioController — keep the typed value until page refresh
-                    });
-                  },
-                ),
+                  setState(() {
+                    isEditing = false;
+                  });
+                },
               ),
-            ),
-          )
-        else if (headline.isNotEmpty)
-          Container(
-            width: double.infinity,
-            margin: const EdgeInsets.only(bottom: 16),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade100,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey.shade300),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    headline,
-                    style: const TextStyle(fontSize: 16, color: Colors.black87),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.edit, size: 15),
-                  onPressed: () {
-                    setState(() {
-                      isEditing = true;
-                      _bioController.text = serverHeadline ?? '';
-                    });
-                  },
-                ),
-              ],
-            ),
-          )
-        else
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFF8E1),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey[300]!),
-            ),
-            child: TextField(
-              controller: _bioController,
-              maxLines: 5,
-              textInputAction: TextInputAction.done,
-              keyboardType: TextInputType.multiline,
-              decoration: const InputDecoration(
-                hintText: 'Write about you',
-                border: InputBorder.none,
-              ),
-              style: const TextStyle(fontSize: 16, color: Colors.black87),
             ),
           ),
-      ],
-    );
-  }
+        )
+      else
+        Container(
+          width: double.infinity,
+          margin: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  headline.isNotEmpty ? headline : 'Write about you',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: headline.isNotEmpty ? Colors.black87 : Colors.black54,
+                    fontStyle: headline.isNotEmpty ? FontStyle.normal : FontStyle.italic,
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.edit, size: 15),
+                onPressed: () {
+                  setState(() {
+                    isEditing = true;
+                    _bioController.text = serverHeadline ?? '';
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+    ],
+  );
+}
+
 
   Widget _buildSectionButton(String text, {VoidCallback? onTap}) {
     return GestureDetector(
@@ -1360,7 +1341,7 @@ class _BumbleDateProfileScreenState
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey[300]!, width: 1),
+          border: Border.all(color: const Color.fromARGB(255, 106, 104, 104), width: 1),
         ),
         child: Row(
           children: [
@@ -1381,6 +1362,13 @@ class _BumbleDateProfileScreenState
   }
 
   Widget _buildAboutYouSection() {
+    final userData = ref.watch(loginProvider);
+     final user =
+          userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+          final work = user!.work;
+final workDisplayText = work != null
+    ? work.first.title + ('at ${work.first.company}')
+    : 'Add';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1393,7 +1381,10 @@ class _BumbleDateProfileScreenState
           ),
         ),
         SizedBox(height: 16),
-        _buildProfileItem(Icons.work_outline, 'Work', 'Add', onTap: () {
+        _buildProfileItem(Icons.work_outline, 'Work',
+         workDisplayText,
+         onTap: () {
+         
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => OccupationScreen()));
         }),
@@ -1460,7 +1451,8 @@ class _BumbleDateProfileScreenState
             }
           },
         ),
-        _buildProfileItem(Icons.favorite_border, 'Relationship', 'Add',
+        _buildProfileItem(Icons.favorite_border, 'Relationship',
+         'Add',
             onTap: () {
           Navigator.push(
             context,

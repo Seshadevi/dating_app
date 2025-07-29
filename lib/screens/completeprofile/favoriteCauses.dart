@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FavoriteCauseScreen extends ConsumerStatefulWidget {
-  final List<Map<String, dynamic>> userCauses;
   final List<Map<String, dynamic>> selectedCauses;
 
   const FavoriteCauseScreen({
     Key? key,
-    required this.userCauses,
     required this.selectedCauses,
   }) : super(key: key);
 
@@ -18,35 +16,31 @@ class FavoriteCauseScreen extends ConsumerStatefulWidget {
 
 class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
   int? selectedCauseId;
-  List<Map<String, dynamic>> mergedCauses = [];
+  List<Map<String, dynamic>> visibleCauses = [];
 
   @override
   void initState() {
     super.initState();
 
-    // Merge user + selected causes by ID (remove duplicates)
-    final Map<int, Map<String, dynamic>> mergedMap = {};
-    for (var cause in [...widget.selectedCauses, ...widget.userCauses]) {
-      if (cause['id'] != null) {
-        mergedMap[cause['id']] = cause;
+    // Deduplicate by ID
+    final Map<int, Map<String, dynamic>> causeMap = {};
+    for (var item in widget.selectedCauses) {
+      if (item['id'] != null) {
+        causeMap[item['id']] = item;
       }
     }
 
-    mergedCauses = mergedMap.values.toList();
+    visibleCauses = causeMap.values.toList();
+    selectedCauseId = null;
 
-    // Pre-select previously chosen cause
-    if (widget.userCauses.isNotEmpty) {
-      selectedCauseId = widget.userCauses.first['id'];
-    }
-
-    print("✅ Merged Causes: $mergedCauses");
+    print("✅ Visible causes: $visibleCauses");
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Favorite interest'),
+        title: const Text('Favorite Cause'),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0,
@@ -57,7 +51,7 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Text(
-              'Which one of your interests is your favorite?',
+              'Which one of your causes is your favorite?',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
@@ -72,9 +66,9 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
 
           Expanded(
             child: ListView.builder(
-              itemCount: mergedCauses.length,
+              itemCount: visibleCauses.length,
               itemBuilder: (context, index) {
-                final cause = mergedCauses[index];
+                final cause = visibleCauses[index];
                 final int? causeId = cause['id'];
                 final String emoji = cause['emoji'] ?? '🌟';
                 final String name = cause['causesAndCommunities'] ?? '';
@@ -126,31 +120,7 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ElevatedButton(
-              onPressed: () async {
-                final List<int> causesIds = mergedCauses .map((q) => q['id'] as int).toList();
-                        print('🎯 Sending IDs only: $causesIds ');
-                try {
-                  await ref.read(loginProvider.notifier).updateProfile(causeId: causesIds,
-                                                                                  image: null, 
-                                                                                  modeid: null,
-                                                                                  bio: null, 
-                                                                                  modename:null, 
-                                                                                  prompt:null,
-                                                                                  qualityId: null);
-                  print('Cause updated');
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Cause updated successfully!')),
-                  );
-
-                  // Return updated cause
-                  _returnSelectedCause();
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Failed to upload cause: $e')),
-                  );
-                }
-              },
+              onPressed: _saveFavoriteCause,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 minimumSize: const Size.fromHeight(50),
@@ -163,11 +133,8 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: OutlinedButton(
               onPressed: () {
-                setState(() {
-                  selectedCauseId = null;
-                });
-
-                Navigator.pop(context, null); // Remove selection
+                setState(() => selectedCauseId = null);
+                Navigator.pop(context, null);
               },
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size.fromHeight(50),
@@ -180,9 +147,11 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
     );
   }
 
-  void _returnSelectedCause() {
-    final selected = mergedCauses.firstWhere(
-      (c) => c['id'] == selectedCauseId,
+  Future<void> _saveFavoriteCause() async {
+    print('🔘 Save button clicked');
+
+    final selected = visibleCauses.firstWhere(
+      (q) => q['id'] == selectedCauseId,
       orElse: () => {},
     );
 
@@ -193,6 +162,36 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
       return;
     }
 
-    Navigator.pop(context, selected); // Pass data back
+    final int id = selected['id'];
+    final String name = selected['causesAndCommunities'] ?? '';
+
+    print("🎯 Selected Cause -> ID: $id, Name: $name");
+    final List<int> causesIds =
+        visibleCauses.map((q) => q['id'] as int).toList();
+    // print('🎯 Sending IDs only: $qualityIds');
+
+    try {
+      await ref.read(loginProvider.notifier).updateProfile(
+        causeId:causesIds, // Pass as list of int
+        image: null,
+        modeid: null,
+        bio: null,
+        modename: null,
+        prompt: null,
+        qualityId: null,
+      );
+
+      print('✅ updateProfile completed');
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Cause updated successfully!')),
+      );
+
+      Navigator.pop(context, selected);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to upload cause: $e')),
+      );
+    }
   }
 }

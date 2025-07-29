@@ -128,7 +128,7 @@ class _QualitiesScreenState extends ConsumerState<QualitiesScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (_) => FavoriteQualities(
-                            userQualities: widget.usersQualities,
+                            // userQualities: widget.usersQualities,
                             selectedQualities: selectedQualities,
                           ),
                         ),

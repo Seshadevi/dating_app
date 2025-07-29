@@ -45,6 +45,9 @@ class LanguagesProvider extends StateNotifier<LanguagesModel> {
     } catch (e) {
       print("Failed to fetch languages: $e");
     }
+    finally {
+      loadingState.state = false;
+    }
   }
 }
 

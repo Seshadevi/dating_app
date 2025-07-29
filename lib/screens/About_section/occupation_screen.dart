@@ -1,4 +1,5 @@
 import 'package:dating/model/moreabout/work_model.dart';
+import 'package:dating/provider/loginProvider.dart';
 
 import 'package:dating/provider/moreabout/workProvider.dart';
 import 'package:dating/screens/About_section/add_job_screen.dart';
@@ -55,34 +56,55 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
 
         // Call update API with the selected job ID
         // await ref.read(workProvider.notifier).up(id);
+         try {
+                      await ref.read(loginProvider.notifier).updateProfile(
+                          image: null,
+                          modeid: null,
+                          bio: null,
+                          modename: null,
+                          prompt: null,
+                          qualityId: null,
+                          jobId:id);
+                      print('job updated');
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('job updated successfully!')),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('Failed to upload job: $e')),
+                      );
+                    }
         
         // Show success message
-        if (mounted) {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Job updated successfully"),
-              backgroundColor: Colors.green,
-              duration: Duration(seconds: 2),
-            ),
-          );
-        }
+        // if (mounted) {
+        //   ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        //   ScaffoldMessenger.of(context).showSnackBar(
+        //     const SnackBar(
+        //       content: Text("Job updated successfully"),
+        //       backgroundColor: Colors.green,
+        //       duration: Duration(seconds: 2),
+        //     ),
+        //   );
+        // }
       } catch (e) {
         // Revert selection on error
         setState(() {
           selectedJobId = null;
         });
         
-        if (mounted) {
-          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("Failed to update job: $e"),
-              backgroundColor: const Color.fromARGB(255, 42, 137, 4),
-              duration: const Duration(seconds: 3),
-            ),
-          );
-        }
+        // if (mounted) {
+        //   ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        //   ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(
+        //       content: Text("Failed to update job: $e"),
+        //       backgroundColor: const Color.fromARGB(255, 42, 137, 4),
+        //       duration: const Duration(seconds: 3),
+        //     ),
+        //   );
+        // }
       }
     }
   }

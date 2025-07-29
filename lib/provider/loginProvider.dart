@@ -411,6 +411,155 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
     }
   }
 
+  // Future<int> updateProfile(
+  //     {int? modeid,
+  //     String? modename,
+  //     List<int>? causeId,
+  //     String? bio,
+  //     List<int>? interestId,
+  //     List<int>? qualityId,
+  //     String? prompt,
+  //     File? image,
+  //     List<int>? languagesId,
+  //     List<int>? starsignId,
+  //     int? jobId,
+  //     int? eductionId}) async {
+  //   final loadingState = ref.read(loadingProvider.notifier);
+
+  //   print(
+  //       'updated data....modeId:$modeid, modename:$modename, causedId:$causeId, intrestId:$interestId, qualityId:$qualityId, bio:$bio, prompt:$prompt, image:${image?.path},languages:$languagesId,work:$jobId,education:$eductionId,starsign:$starsignId');
+
+  //   try {
+  //     final userid = state.data![0].user?.id;
+  //     print('userid::::::$userid');
+  //     final String apiUrl = "${Dgapi.updateprofile}";
+  //     final prefs = await SharedPreferences.getInstance();
+  //     String? userDataString = prefs.getString('userData');
+
+  //     if (userDataString == null || userDataString.isEmpty) {
+  //       throw Exception("User token is missing. Please log in again.");
+  //     }
+
+  //     final Map<String, dynamic> userData = jsonDecode(userDataString);
+  //     String? token = userData['accessToken'];
+
+  //     // Fallback if accessToken is nested inside data[]
+  //     if (token == null || token.isEmpty) {
+  //       token = userData['data'] != null &&
+  //               (userData['data'] as List).isNotEmpty &&
+  //               userData['data'][0]['access_token'] != null
+  //           ? userData['data'][0]['access_token']
+  //           : null;
+  //     }
+
+  //     if (token == null || token.isEmpty) {
+  //       throw Exception("User token is invalid. Please log in again.");
+  //     }
+
+  //     print('✅ Retrieved Token: $token');
+
+  //     var request = http.MultipartRequest('PUT', Uri.parse(apiUrl));
+
+  //     // Add Authorization header
+  //     request.headers['Authorization'] = 'Bearer $token';
+  //     request.headers['Accept'] = 'application/json';
+
+  //     // Add fields to request
+  //     if (modeid != null) request.fields['modeId'] = modeid.toString();
+  //     if (causeId != null)
+  //       request.fields['causesAndCommunitiesId'] = causeId.toString();
+  //     if (qualityId != null && qualityId.isNotEmpty) {
+  //       request.fields['qualities'] = qualityId.join(','); // ✅
+  //     }
+  //     if (qualityId.isNotEmpty) {
+  //       // Prompts (Map<int, String>)
+  //       qualityId.forEach((key, value) {
+  //         request.fields['qualities[$key]'] = value;
+  //       });
+  //     }
+
+  //     if (interestId != null)
+  //       request.fields['lookingForId'] = interestId.toString();
+  //     if (bio != null) request.fields['headLine'] = bio;
+  //     if (prompt != null) request.fields['promptsId'] = prompt;
+  //     if (image != null) {
+  //       request.files
+  //           .add(await http.MultipartFile.fromPath('profile_pics', image.path));
+  //     }
+  //     if (languagesId != null)
+  //       request.fields['languageId'] = languagesId.toString();
+  //     if (starsignId != null)
+  //       request.fields['starSignId'] = starsignId.toString();
+  //     if (jobId != null) request.fields['workId'] = jobId.toString();
+  //     if (eductionId != null)
+  //       request.fields['educationId'] = eductionId.toString();
+
+  //     // Send request
+  //     final response = await request.send();
+  //     final responseBody = await response.stream.bytesToString();
+
+  //     print("📨 API Response: $responseBody");
+  //     print("status code.....${response.statusCode}");
+
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       print('data updated successfully.....');
+
+  //       // Parse the response properly
+  //       final Map<String, dynamic> responseData = json.decode(responseBody);
+
+  //       // Method 1: If your UserModel expects the entire API response structure
+  //       try {
+  //         UserModel user = UserModel.fromJson(responseData);
+  //         print("✅ Updated data parsed successfully");
+  //         print("Updated User Data to Save: ${user.toJson()}");
+
+  //         // Update state
+  //         state = user;
+
+  //         // Save to SharedPreferences
+  //         // final userData = json.encode({
+  //         //   'statusCode': user.statusCode,
+  //         //   'success': user.success,
+  //         //   'messages': user.messages,
+  //         //   'data': user.data?.map((e) => e.toJson()).toList(),
+  //         // });
+
+  //         // await prefs.setString('userData', userData);
+  //       } catch (modelError) {
+  //         print("❌ UserModel parsing error: $modelError");
+
+  //         // Method 2: If the above fails, try parsing just the user data
+  //         try {
+  //           if (responseData['data'] != null &&
+  //               responseData['data'] is List &&
+  //               (responseData['data'] as List).isNotEmpty) {
+  //             final userDataFromResponse = responseData['data'][0];
+
+  //             // Create a simplified user object or update state manually
+  //             // You might need to adjust this based on your actual UserModel structure
+
+  //             // Save the raw response data to SharedPreferences as fallback
+  //             await prefs.setString('userData', responseBody);
+
+  //             print("✅ Profile updated and saved to SharedPreferences");
+  //           }
+  //         } catch (fallbackError) {
+  //           print("❌ Fallback parsing also failed: $fallbackError");
+  //           throw Exception("Failed to parse updated profile data");
+  //         }
+  //       }
+  //     } else {
+  //       print("❌ Update failed with status: ${response.statusCode}");
+  //       throw Exception(
+  //           "Profile update failed with status: ${response.statusCode}");
+  //     }
+  //   } catch (e) {
+  //     print("❗ Exception during profile update: $e");
+  //     rethrow; // Re-throw to handle in calling code
+  //   } finally {
+  //     loadingState.state = false;
+  //   }
+  // }
   Future<int> updateProfile({
     int? modeid,
     String? modename,
@@ -421,18 +570,21 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
     String? prompt,
     File? image,
     List<int>? languagesId,
-   List<int>? starsignId,
+    List<int>? starsignId,
+    int? jobId,
+    int? eductionId,
   }) async {
-    
-    print('updated data....modeId:$modeid, modename:$modename, causedId:$causeId, intrestId:$interestId, qualityId:$qualityId, bio:$bio, prompt:$prompt, image:${image?.path},languages:$languagesId');
+     print(
+        'updated data....modeId:$modeid, modename:$modename, causedId:$causeId, intrestId:$interestId, qualityId:$qualityId, bio:$bio, prompt:$prompt, image:${image?.path},languages:$languagesId,work:$jobId,education:$eductionId,starsign:$starsignId');
+    final loadingState = ref.read(loadingProvider.notifier);
+    loadingState.state = true;
 
     try {
-      final userid = state.data![0].user?.id
-;
-    final String apiUrl = "${Dgapi.updateprofile}/$userid";
+      final userid = state.data?[0].user?.id;
+      final String apiUrl = Dgapi.updateprofile;
       final prefs = await SharedPreferences.getInstance();
-      String? userDataString = prefs.getString('userData');
 
+      String? userDataString = prefs.getString('userData');
       if (userDataString == null || userDataString.isEmpty) {
         throw Exception("User token is missing. Please log in again.");
       }
@@ -440,7 +592,6 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
       final Map<String, dynamic> userData = jsonDecode(userDataString);
       String? token = userData['accessToken'];
 
-      // Fallback if accessToken is nested inside data[]
       if (token == null || token.isEmpty) {
         token = userData['data'] != null &&
                 (userData['data'] as List).isNotEmpty &&
@@ -452,49 +603,85 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
       if (token == null || token.isEmpty) {
         throw Exception("User token is invalid. Please log in again.");
       }
-
-      print('✅ Retrieved Token: $token');
+        print('✅ Retrieved Token: $token');
 
       var request = http.MultipartRequest('PUT', Uri.parse(apiUrl));
-
-      // ⬅️ Add Authorization header here
       request.headers['Authorization'] = 'Bearer $token';
       request.headers['Accept'] = 'application/json';
 
-      if (modename != null) request.fields[''] = modename;
-      if (modeid != null) request.fields[''] = modeid.toString();
-      if (causeId != null) request.fields[''] = causeId.toString();
-      if (qualityId != null) request.fields[''] = qualityId.toString();
-      if (interestId != null) request.fields[''] = interestId.toString();
-      if (bio != null) request.fields[''] = bio;
-      if (prompt != null) request.fields[''] = prompt;
-      if (image != null) {
-        request.files.add(await http.MultipartFile.fromPath('', image.path));
-      }
-      // if (qualityId != null) {
-      //   for (var id in qualityId) {
-      //     request.fields[''] = id.toString(); // or 'quality_id[index]' based on backend
-      //   }
-      // }
+      if (modeid != null) request.fields['modeId'] = modeid.toString();
       
+      if (interestId != null)
+        request.fields['lookingForId'] = interestId.toString();
+      if (bio != null) request.fields['headLine'] = bio;
+      if (prompt != null) request.fields['promptsId'] = prompt;
+      if (languagesId != null)
+        request.fields['languageId'] = languagesId.toString();
+      if (starsignId != null)
+        request.fields['starSignId'] = starsignId.toString();
+      if (jobId != null) request.fields['workId'] = jobId.toString();
+      if (eductionId != null)
+        request.fields['educationId'] = eductionId.toString();
 
-      // Send request
+     
+      if (qualityId != null && qualityId.isNotEmpty) {
+  for (int i = 0; i < qualityId.length; i++) {
+    request.fields['qualities[$i]'] = qualityId[i].toString();
+  }
+}
+
+if (causeId != null && causeId.isNotEmpty) {
+  for (int i = 0; i < causeId.length; i++) {
+    request.fields['causesAndCommunities[$i]'] = causeId[i].toString();
+  }
+}
+
+if (interestId != null && interestId.isNotEmpty) {
+  for (int i = 0; i < interestId.length; i++) {
+    request.fields['interests[$i]'] = interestId[i].toString();
+  }
+}
+
+      // if (interestId != null)
+      //   request.fields['lookingForId'] = interestId.toString();
+     
+      if (image != null) {
+        request.files
+            .add(await http.MultipartFile.fromPath('profile_pics', image.path));
+      }
+
       final response = await request.send();
       final responseBody = await response.stream.bytesToString();
+       print("📨 API Responsebody: $responseBody");
+      print("status code.....${response.statusCode}");
 
-      print("📨 API Response: $responseBody");
+      if (response.statusCode == 200 || response.statusCode == 201) {
+          print("✅ Updated data parsed successfully");
+          // print("Updated User Data to Save: ${user.toJson()}");
+        final Map<String, dynamic> responseData = json.decode(responseBody);
 
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        final userDetails = jsonDecode(responseBody);
-        print("✅ Updated data: $userDetails");
-        return response.statusCode;
+        try {
+          final user = UserModel.fromJson(responseData);
+          state = user;
+          // await prefs.setString('userData', jsonEncode(user.toJson()));
+        } catch (_) {
+          if (responseData['data'] != null && responseData['data'] is List) {
+            await prefs.setString('userData', responseBody);
+          } else {
+            throw Exception("Failed to parse updated profile data");
+          }
+        }
+
+        return response.statusCode; // ✅ Success path
       } else {
-        print("❌ Update failed with status: ${response.statusCode}");
-        return response.statusCode;
+        throw Exception(
+            "Profile update failed with status: ${response.statusCode}");
       }
     } catch (e) {
       print("❗ Exception during profile update: $e");
-      return 500;
+      throw Exception("Update failed: $e");
+    } finally {
+      loadingState.state = false;
     }
   }
 

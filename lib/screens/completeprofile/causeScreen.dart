@@ -133,7 +133,7 @@ class _CausesScreenState extends ConsumerState<CausesScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (_) => FavoriteCauseScreen(
-                            userCauses: widget.usersCauses,
+                            // userCauses: widget.usersCauses,
                             selectedCauses: selectedCauses,
                           ),
                         ),

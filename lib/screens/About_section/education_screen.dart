@@ -1,3 +1,4 @@
+import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/moreabout/educationprovider.dart';
 import 'package:dating/screens/About_section/add_eduction_screen.dart';
 // import 'package:dating/provider/educationProvider.dart';
@@ -174,12 +175,34 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
         leading: Radio<int>(
           value: education.id ?? 0,
           groupValue: selectedEducationId,
-          onChanged: (int? value) {
+          onChanged: (int? value) async {
             setState(() {
               selectedEducationId = value;
             });
             
             // Call update API when radio button is selected
+            try {
+                      await ref.read(loginProvider.notifier).updateProfile(
+                          image: null,
+                          modeid: null,
+                          bio: null,
+                          modename: null,
+                          prompt: null,
+                          qualityId: null,
+                          jobId:null,
+                          eductionId:selectedEducationId);
+                      print('education updated');
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('job updated successfully!')),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('Failed to upload job: $e')),
+                      );
+                    }
             if (value != null) {
               _updateEducation(education);
             }

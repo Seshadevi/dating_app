@@ -3,13 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FavoriteQualities extends ConsumerStatefulWidget {
-  final List<Map<String, dynamic>>
-      userQualities; // Previously selected qualities
-  final List<Map<String, dynamic>> selectedQualities; // Just selected qualities
+  final List<Map<String, dynamic>> selectedQualities;
 
   const FavoriteQualities({
     Key? key,
-    required this.userQualities,
     required this.selectedQualities,
   }) : super(key: key);
 
@@ -19,30 +16,23 @@ class FavoriteQualities extends ConsumerStatefulWidget {
 
 class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
   int? selectedQualityId;
-  List<Map<String, dynamic>> mergedQualities = [];
+  List<Map<String, dynamic>> visibleQualities = [];
 
   @override
   void initState() {
     super.initState();
 
-    // ✅ Merge unique qualities by ID
-    final Map<int, Map<String, dynamic>> uniqueMap = {};
-    for (var item in [...widget.selectedQualities, ...widget.userQualities]) {
+    // ✅ Use only selectedQualities and deduplicate by ID
+    final Map<int, Map<String, dynamic>> qualityMap = {};
+    for (var item in widget.selectedQualities) {
       if (item['id'] != null) {
-        uniqueMap[item['id']] = item;
+        qualityMap[item['id']] = item;
       }
     }
-    mergedQualities = uniqueMap.values.toList();
+    visibleQualities = qualityMap.values.toList();
+    selectedQualityId = null;
 
-    // ✅ Optional: Pre-select previously selected favorite
-    if (widget.userQualities.isNotEmpty) {
-      final previousId = widget.userQualities.first['id'];
-      if (uniqueMap.containsKey(previousId)) {
-        selectedQualityId = previousId;
-      }
-    }
-
-    print("✅ Merged qualities: $mergedQualities");
+    print("✅ Visible qualities: $visibleQualities");
   }
 
   @override
@@ -73,12 +63,11 @@ class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
           ),
           const SizedBox(height: 16),
 
-          // ✅ List of qualities
           Expanded(
             child: ListView.builder(
-              itemCount: mergedQualities.length,
+              itemCount: visibleQualities.length,
               itemBuilder: (context, index) {
-                final quality = mergedQualities[index];
+                final quality = visibleQualities[index];
                 final int? qualityId = quality['id'];
                 final String emoji = quality['emoji'] ?? '🌟';
                 final String name = quality['name'] ?? '';
@@ -129,11 +118,10 @@ class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
             ),
           ),
 
-          // ✅ Save Button
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ElevatedButton(
-              onPressed: () => _saveFavoriteQuality(),
+              onPressed: _saveFavoriteQuality,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 minimumSize: const Size.fromHeight(50),
@@ -142,14 +130,11 @@ class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
             ),
           ),
 
-          // ✅ Remove Button
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: OutlinedButton(
               onPressed: () {
-                setState(() {
-                  selectedQualityId = null;
-                });
+                setState(() => selectedQualityId = null);
                 Navigator.pop(context, null);
               },
               style: OutlinedButton.styleFrom(
@@ -164,33 +149,31 @@ class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
   }
 
   Future<void> _saveFavoriteQuality() async {
-    print('saved button clicked');
-    final selected = mergedQualities.firstWhere(
+    print('🔘 Save button clicked');
+
+    final selected = visibleQualities.firstWhere(
       (q) => q['id'] == selectedQualityId,
       orElse: () => {},
     );
-    print('selected.....$mergedQualities');
 
-    // if (selectedQualityId!= null) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(content: Text("No valid quality selected.")),
-    //   );
-    //   return;
-    // }
+    if (selected.isEmpty || selected['id'] == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("No valid quality selected.")),
+      );
+      return;
+    }
 
     final int id = selected['id'];
     final String name = selected['name'] ?? '';
 
     print("🎯 Selected Quality -> ID: $id, Name: $name");
-    // Extract only the IDs
-  final List<int> qualityIds = mergedQualities.map((q) => q['id'] as int).toList();
-  print('🎯 Sending IDs only: $qualityIds');
+
+    final List<int> qualityIds =
+        visibleQualities.map((q) => q['id'] as int).toList();
+    print('🎯 Sending IDs only: $qualityIds');
 
     try {
-      print('try exicutes....');
-      await 
-      
-      ref.read(loginProvider.notifier).updateProfile(
+      await ref.read(loginProvider.notifier).updateProfile(
             qualityId: qualityIds,
             image: null,
             modeid: null,
@@ -199,7 +182,6 @@ class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
             prompt: null,
           );
       print('✅ updateProfile completed');
-
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Qualities updated successfully!')),
