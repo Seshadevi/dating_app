@@ -37,15 +37,17 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage> {
 void initState() {
   super.initState();
   WidgetsBinding.instance.addPostFrameCallback((_) {
-    ref.read(peoplesProvider.notifier).getPeoplesAll();
+    // ref.read(peoplesProvider.notifier).getPeoplesAll();
 
     ref.read(socketUserProvider.notifier).reset();
 
     final userModel = ref.read(loginProvider); // <- use `read` instead of `watch` inside initState
 
-    final location = userModel.data?.isNotEmpty == true
-        ? userModel.data!.first.user?.location
-        : null;
+  //  final userModel = ref.read(loginProvider);
+  final location = userModel.data != null && userModel.data!.isNotEmpty
+      ? userModel.data!.first.user?.location
+      : null;
+
 
     currentUserLatitude = location?.latitude?.toDouble();
     currentUserLongitude = location?.longitude?.toDouble();
@@ -209,18 +211,18 @@ void initState() {
 
   @override
   Widget build(BuildContext context) {
-    final peoplesModel = ref.watch(peoplesProvider);
-    final users = peoplesModel.users ?? [];
-    // final users = ref.watch(socketUserProvider);
-    // print("📡 Total socket users in UI: ${users.length}");
+    // final peoplesModel = ref.watch(peoplesProvider);
+    // final users = peoplesModel.users ?? [];
+    final users = ref.watch(socketUserProvider);
+    print("📡 Total socket users in UI: ${users.length}");
     // Update allUsers when new data comes
-    // allUsers = users.map((e) => Users.fromJson(e)).toList();
-    if (users.isNotEmpty && allUsers.isEmpty) {
-      allUsers = List.from(users);
-    }
+    allUsers = users.map((e) => Users.fromJson(e)).toList();
+    // if (users.isNotEmpty && allUsers.isEmpty) {
+    //   allUsers = List.from(users);
+    // }
 
-    print("PeoplesModel: ${peoplesModel}");
-    print("Users: ${peoplesModel.users}");
+    // print("PeoplesModel: ${peoplesModel}");
+    // print("Users: ${peoplesModel.users}");
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -375,12 +377,12 @@ void initState() {
                               });
                             }
                             
-                            if (currentIndex != null && currentIndex >= allUsers.length - 3 && !isLoadingMore) {
-                              _loadMoreUsers();
-                            }
-                            // if (currentIndex != null) {
-                            //           ref.read(socketUserProvider.notifier).fetchNextPageIfNeeded(currentIndex);
-                            //         }
+                            // if (currentIndex != null && currentIndex >= allUsers.length - 3 && !isLoadingMore) {
+                            //   _loadMoreUsers();
+                            // }
+                            if (currentIndex != null) {
+                                      ref.read(socketUserProvider.notifier).fetchNextPageIfNearEnd(currentIndex);
+                                    }
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               _checkVisibility(); // ✅ This ensures visibility is rechecked after card changes
                             });
@@ -651,8 +653,8 @@ void initState() {
                     spacing: 10,
                     runSpacing: 10,
                     children: [
-                      if (user.height != null && user.height!.isNotEmpty)
-                        _buildInfoChip("📏", user.height!),
+                      // if (user.height != null && user.height!.isNotEmpty)
+                      //   _buildInfoChip("📏", user.height!),
                       if (user.education != null && user.education!.isNotEmpty)
                         _buildInfoChip("🎓", user.education!),
                       if (user.zodiac != null && user.zodiac!.isNotEmpty)
