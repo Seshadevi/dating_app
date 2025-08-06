@@ -567,12 +567,13 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
     String? bio,
     List<int>? interestId,
     List<int>? qualityId,
-    String? prompt,
+    List<Map<String, String>>? prompt,
     File? image,
     List<int>? languagesId,
     List<int>? starsignId,
     int? jobId,
     int? eductionId,
+    int? religionId
   }) async {
      print(
         'updated data....modeId:$modeid, modename:$modename, causedId:$causeId, intrestId:$interestId, qualityId:$qualityId, bio:$bio, prompt:$prompt, image:${image?.path},languages:$languagesId,work:$jobId,education:$eductionId,starsign:$starsignId');
@@ -614,7 +615,7 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
       if (interestId != null)
         request.fields['lookingForId'] = interestId.toString();
       if (bio != null) request.fields['headLine'] = bio;
-      if (prompt != null) request.fields['promptsId'] = prompt;
+      if (prompt != null) request.fields['promptsId'] = prompt.toString();
       if (languagesId != null)
         request.fields['languageId'] = languagesId.toString();
       if (starsignId != null)

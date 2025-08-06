@@ -32,11 +32,11 @@ class _ReligionScreenState extends ConsumerState<ReligionScreen> {
       if (religions != null  && religions.isNotEmpty) {
         final first = religions.first;
 
-        if (first is String) {
-          selectedOption = first;
-        } else if (first is Map && first.containsKey('religion')) {
-          selectedOption = first['religion']?.toString();
-        }
+        // if (first is String) {
+        //   selectedOption = first;
+        // } else if (first is Map && first.containsKey('religion')) {
+        //   selectedOption = first['religion']?.toString();
+        // }
 
         setState(() {});
       }
@@ -104,11 +104,38 @@ class _ReligionScreenState extends ConsumerState<ReligionScreen> {
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 12.0),
                               child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    selectedOption = option;
-                                  });
-                                  Navigator.pop(context, option); // Return selected value
+                                onTap: () async{
+                                  final religionItem = options[index];
+                                  final religionId = religionItem.id; // Assuming ID is an int
+                                  final religionName = religionItem.religion ?? '';
+                                  final isSelected = selectedOption == religionId;
+
+                                  // setState(() {
+                                  //   selectedOption = option;
+                                  // });
+                                  // Navigator.pop(context, option); // Return selected value
+                                  try {
+                                    await ref.read(loginProvider.notifier).updateProfile(causeId: null,
+                                                                                                    image: null, 
+                                                                                                    modeid: null,
+                                                                                                    bio: null, 
+                                                                                                    modename:null, 
+                                                                                                    prompt:null,
+                                                                                                    qualityId: null,
+                                                                                                    religionId:religionId);
+                                    print('religion updated');
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('religion updated successfully!')),
+                                    );
+
+                                    // Return updated cause
+                                    // _returnSelectedCause();
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Failed to upload religion: $e')),
+                                    );
+                                  }
                                 },
                                 child: Container(
                                   height: 56,

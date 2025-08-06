@@ -35,8 +35,8 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
   var first = user.profilePics!.first;
   if (first is String) {
     imageUrl = 'http://97.74.93.26:6100/${first.toString().replaceFirst(RegExp(r'^/'), '')}';
-  } else if (first is Map && first['url'] != null) {
-    imageUrl = 'http://97.74.93.26:6100/${first['url'].toString().replaceFirst(RegExp(r'^/'), '')}';
+  } else if (first is Map && first.url!= null) {
+    imageUrl = 'http://97.74.93.26:6100/${first.url.toString().replaceFirst(RegExp(r'^/'), '')}';
   }
 }
 

@@ -178,7 +178,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     final FocusNode phoneFocusNode = FocusNode();
 
                    phoneFocusNode.unfocus(); // force close
-                    await Future.delayed(const Duration(milliseconds: 10)); // slight delay
+                    await Future.delayed(const Duration(milliseconds: 1)); // slight delay
 
                     bool success = await ref
                         .read(loginProvider.notifier)

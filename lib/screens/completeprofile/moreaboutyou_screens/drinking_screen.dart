@@ -32,13 +32,20 @@ class _DrinkingScreenState extends ConsumerState<DrinkingScreen> {
       // Convert all selected drinking options to a string list
       if (user != null && user.drinking != null && user.drinking!.isNotEmpty) {
         selectedOptions = user.drinking!
-            .map((e) => e is String
-                ? e
-                : e is Map && e['preference'] != null
-                    ? e['preference'].toString()
-                    : '')
-            .where((e) => e.isNotEmpty)
-            .toList();
+    .whereType<Object>()
+    .map((e) {
+      try {
+        if (e is String) return e;
+        if (e is Map<String, dynamic> && e['preference'] != null) {
+          return e['preference'].toString();
+        }
+      } catch (_) {}
+      return '';
+    })
+    .where((e) => e.isNotEmpty)
+    .toList();
+
+
       } else if (widget.selectedDrinks != null) {
         selectedOptions = [...widget.selectedDrinks!];
       }

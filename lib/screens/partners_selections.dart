@@ -59,7 +59,7 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
   @override
   void initState() {
     super.initState();
-    ref.read(lookingProvider.notifier).getLookingFor();
+    ref.read(lookingProvider.notifier).getLookingForUser();
   }
 
  

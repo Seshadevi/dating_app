@@ -1,3 +1,4 @@
+import 'package:dating/model/loginmodel.dart';
 import 'package:dating/model/signupprocessmodels/lookingModel.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/screens/About_section/city_screen.dart';
@@ -82,31 +83,31 @@ class _BumbleDateProfileScreenState
           if (lookingForList != null &&
               lookingForList.isNotEmpty &&
               lookingForList[0] is Map &&
-              lookingForList[0]['value'] != null) {
-            userLooking = lookingForList[0]['value'].toString();
+              lookingForList[0].value != null) {
+            userLooking = lookingForList[0].value.toString();
           }
 
         final userkidList = user.kids ;
          if (userkidList != null &&
               userkidList.isNotEmpty &&
              userkidList[0] is Map &&
-              userkidList[0]['kids'] != null) {
-            userkid = userkidList[0]['kids'].toString();
+              userkidList[0].kids != null) {
+            userkid = userkidList[0].kids.toString();
           }
 
           final userDrinkList = user.drinking;
            if (userDrinkList != null &&
               userDrinkList.isNotEmpty &&
              userDrinkList[0] is Map &&
-              userDrinkList[0]['preference'] != null) {
-            userDrink = userDrinkList[0]['preference'].toString();
+              userDrinkList[0].preference != null) {
+            userDrink = userDrinkList[0].preference.toString();
           }
           final userReligionList = user.religions;
            if (userReligionList != null &&
               userReligionList.isNotEmpty &&
              userkidList![0] is Map &&
-              userReligionList[0]['religion'] != null) {
-            userReligion =userReligionList[0]['religion'].toString();
+              userReligionList[0].religion != null) {
+            userReligion =userReligionList[0].religion.toString();
           }
 
           // Add other fields if needed (smoking, starSign, etc.)
@@ -271,7 +272,7 @@ class _BumbleDateProfileScreenState
     if (user != null && user.profilePics != null) {
       final profilePics = user.profilePics!;
       for (int i = 0; i < profilePics.length && i < 6; i++) {
-        final fullUrl = "http://97.74.93.26:6100${profilePics[i]['url']}";
+        final fullUrl = "http://97.74.93.26:6100${profilePics[i].url}";
 
         selectedImages[i] = NetworkImage(fullUrl);
       }
@@ -527,168 +528,161 @@ class _BumbleDateProfileScreenState
   }
 
   Widget _buildQualitiesSection(BuildContext context) {
-    final userData = ref.watch(loginProvider);
-    final user =
-        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
-    final List<dynamic> qualities = user?.qualities ?? [];
+  final userData = ref.watch(loginProvider);
+  final user =
+      userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+  final List<Qualities> qualities = List<Qualities>.from(user?.qualities ?? []);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Qualities',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'Qualities',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: Colors.black,
         ),
-        const SizedBox(height: 8),
-        const Text(
-          'Get specific about the things you love.',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey,
-          ),
+      ),
+      const SizedBox(height: 8),
+      const Text(
+        'Get specific about the things you love.',
+        style: TextStyle(
+          fontSize: 14,
+          color: Colors.grey,
         ),
-        const SizedBox(height: 16),
+      ),
+      const SizedBox(height: 16),
 
-        // ✅ Entire content inside one Card-like container
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade300),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Favorite quality header
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => LifeBadgesScreen(),
-                    ),
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                      // border: Border(
-                      //   bottom: BorderSide(color: Colors.grey.shade300),
-                      // ),
-                      ),
-                  child: Row(
-                    children: const [
-                      Icon(Icons.bookmark_border,
-                          size: 20, color: Colors.black),
-                      SizedBox(width: 8),
-                      Text(
-                        'Favorite quality',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Spacer(),
-                      Icon(Icons.arrow_forward_ios,
-                          size: 16, color: Colors.grey),
-                    ],
+      /// Entire content inside one Card-like container
+      Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// Favorite quality header
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => LifeBadgesScreen(),
                   ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: const [
+                    Icon(Icons.bookmark_border, size: 20, color: Colors.black),
+                    SizedBox(width: 8),
+                    Text(
+                      'Favorite quality',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Spacer(),
+                    Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+                  ],
                 ),
               ),
+            ),
 
-              // Selected qualities chips
-              if (qualities.isNotEmpty)
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: qualities.map<Widget>((quality) {
-                      final name = quality['name'] ?? '';
-                      final emoji = quality['emoji'] ?? '🌟';
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(emoji),
-                            const SizedBox(width: 6),
-                            Text(
-                              name,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
+            /// Selected qualities chips
+            if (qualities.isNotEmpty)
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: qualities.map<Widget>((quality) {
+                    final name = qualities.first.name ?? '';
+                    // final emoji = quality.emoji ?? '🌟';
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Text(emoji),
+                          const SizedBox(width: 6),
+                          Text(
+                            name,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
                             ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-
-              // Add more qualities button
-              GestureDetector(
-                onTap: () {
-                  List<Map<String, dynamic>> selected =
-                      qualities.map<Map<String, dynamic>>((qualities) {
-                    return {
-                      'id': qualities[
-                          'id'], // or 'causesId' or whatever key holds the ID
-                      'name': qualities['name'],
-                    };
-                  }).toList();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => QualitiesScreen(
-                        usersQualities: selected,
-                      ),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: double.infinity,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(color: Colors.grey.shade300),
-                    ),
-                  ),
-                  child: Row(
-                    children: const [
-                      Expanded(
-                        child: Text(
-                          'Add more qualities',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
                           ),
-                        ),
+                        ],
                       ),
-                      Icon(Icons.add, size: 20),
-                    ],
-                  ),
+                    );
+                  }).toList(),
                 ),
               ),
-            ],
-          ),
+
+            /// Add more qualities button
+            GestureDetector(
+              onTap: () {
+                final selected = qualities
+                    .map<Map<String, dynamic>>((q) => {
+                          'id': q.id,
+                          'name': q.name,
+                        })
+                    .toList();
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => QualitiesScreen(
+                      usersQualities: selected,
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(color: Colors.grey.shade300),
+                  ),
+                ),
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Text(
+                        'Add more qualities',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Icon(Icons.add, size: 20),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
+
 
   Widget _buildInterestsSection(BuildContext context) {
     final userData = ref.watch(loginProvider);
@@ -858,211 +852,247 @@ class _BumbleDateProfileScreenState
   }
 
   Widget _buildCausesSection(BuildContext context) {
-    final userData = ref.watch(loginProvider);
-    final user =
-        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
-    final List<dynamic> causes = user?.causesAndCommunities ?? [];
+  final userData = ref.watch(loginProvider);
+  final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+  final List<CausesAndCommunities> causes = user?.causesAndCommunities ?? [];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Causes',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'Causes',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: Colors.black,
         ),
-        const SizedBox(height: 8),
-        const Text(
-          'Get specific about the things you love.',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey,
-          ),
+      ),
+      const SizedBox(height: 8),
+      const Text(
+        'Get specific about the things you love.',
+        style: TextStyle(
+          fontSize: 14,
+          color: Colors.grey,
         ),
-        const SizedBox(height: 16),
+      ),
+      const SizedBox(height: 16),
 
-        // ✅ Entire content inside one Card-like container
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade300),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Favorite quality header
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => LifeBadgesScreen(),
-                    ),
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                      // border: Border(
-                      //   bottom: BorderSide(color: Colors.grey.shade300),
-                      // ),
-                      ),
-                  child: Row(
-                    children: const [
-                      Icon(Icons.bookmark_border,
-                          size: 20, color: Colors.black),
-                      SizedBox(width: 8),
-                      Text(
-                        'Favorite causes',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Spacer(),
-                      Icon(Icons.arrow_forward_ios,
-                          size: 16, color: Colors.grey),
-                    ],
+      Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => LifeBadgesScreen(),
                   ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: const [
+                    Icon(Icons.bookmark_border, size: 20, color: Colors.black),
+                    SizedBox(width: 8),
+                    Text(
+                      'Favorite causes',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Spacer(),
+                    Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+                  ],
+                ),
+              ),
+            ),
+
+            // Selected causes chips
+            if (causes.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: causes.map<Widget>((cause) {
+                    final name = cause.causesAndCommunities ?? '';
+                    // final emoji = cause.emoji ?? '🌟';
+                    return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Text(emoji),
+                          const SizedBox(width: 6),
+                          Text(
+                            name,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
 
-              // Selected qualities chips
-              if (causes.isNotEmpty)
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: causes.map<Widget>((causes) {
-                      final name = causes['causesAndCommunities'] ?? '';
-                      final emoji = causes['emoji'] ?? '🌟';
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(emoji),
-                            const SizedBox(width: 6),
-                            Text(
-                              name,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
+            // Add more causes button
+            GestureDetector(
+              onTap: () {
+                List<Map<String, dynamic>> selected = causes.map((cause) {
+                  return {
+                    'id': cause.id,
+                    'causesAndCommunities': cause.causesAndCommunities,
+                  };
+                }).toList();
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CausesScreen(usersCauses: selected),
+                  ),
+                );
+              },
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(color: Colors.grey.shade300),
                   ),
                 ),
+                child: Row(
+                  children: const [
+                    Expanded(
+                      child: Text(
+                        'Add more causes',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Icon(Icons.add, size: 30),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
+}
 
-              // Add more qualities button
-              GestureDetector(
-                onTap: () {
-                  List<Map<String, dynamic>> selected =
-                      causes.map<Map<String, dynamic>>((cause) {
-                    return {
-                      'id': cause[
-                          'id'], // or 'causesId' or whatever key holds the ID
-                      'causesAndCommunities': cause['causesAndCommunities'],
-                    };
-                  }).toList();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => CausesScreen(usersCauses: selected),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: double.infinity,
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+
+  Widget _buildPromptsSection(BuildContext context) {
+  final userData = ref.watch(loginProvider);
+  final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+  final List<Prompts> serverPrompts = user?.prompts ?? [];
+  final List<dynamic> prompts = localPrompts.isNotEmpty ? localPrompts : serverPrompts;
+
+  List<TextEditingController> _editPromptControllers =
+      List.generate(3, (_) => TextEditingController());
+
+  // Prepare prompt values for editing
+  List<Map<String, String>> editablePrompts = List.generate(
+    3,
+    (i) => {
+      "prompt": i < prompts.length
+          ? (prompts[i] is Prompts ? prompts[i].prompt : prompts[i]['prompt'] ?? '')
+          : '',
+    },
+  );
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'Prompts',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
+      ),
+      const SizedBox(height: 8),
+      const Text(
+        'Add personality to your profile with prompts.',
+        style: TextStyle(fontSize: 14, color: Colors.grey),
+      ),
+      const SizedBox(height: 16),
+      Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (editingPromptIndex == null)
+              ...prompts.asMap().entries.map((entry) {
+                final int index = entry.key;
+                final String promptText = entry.value is Prompts
+                    ? entry.value.prompt
+                    : entry.value['prompt'] ?? '';
+
+                return Container(
+                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                   decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(color: Colors.grey.shade300),
-                    ),
+                    border: Border(bottom: BorderSide(color: Colors.grey.shade300)),
                   ),
                   child: Row(
-                    children: const [
+                    children: [
                       Expanded(
                         child: Text(
-                          'Add more causes',
-                          style: TextStyle(
-                            fontSize: 16,
+                          promptText,
+                          style: const TextStyle(
+                            fontSize: 15,
                             fontWeight: FontWeight.w600,
+                            color: Colors.black,
                           ),
                         ),
                       ),
-                      Icon(Icons.add, size: 30),
+                      IconButton(
+                        icon: const Icon(Icons.edit, color: Colors.black, size: 15),
+                        onPressed: () {
+                          setState(() {
+                            editingPromptIndex = 0;
+                            _editPromptControllers = List.generate(
+                              3,
+                              (i) => TextEditingController(
+                                text: i < prompts.length
+                                    ? (prompts[i] is Prompts
+                                        ? prompts[i].prompt
+                                        : prompts[i]['prompt'] ?? '')
+                                    : '',
+                              ),
+                            );
+                          });
+                        },
+                      )
                     ],
                   ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPromptsSection(BuildContext context) {
-    final userData = ref.watch(loginProvider);
-    final user =
-        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
-    final List<dynamic> serverPrompts = user?.prompts ?? [];
-
-    final List<dynamic> prompts =
-        localPrompts.isNotEmpty ? localPrompts : serverPrompts;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Prompts',
-          style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
-        ),
-        const SizedBox(height: 8),
-        const Text(
-          'Add personality to your profile with prompts.',
-          style: TextStyle(fontSize: 14, color: Colors.grey),
-        ),
-        const SizedBox(height: 16),
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade300),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ...prompts.asMap().entries.map((entry) {
-                final int index = entry.key;
-                final prompt = entry.value;
-                final String promptText = prompt['prompt'] ?? '';
-
-                if (editingPromptIndex == index) {
-                  _editPromptController.text = promptText;
-
+                );
+              }).toList()
+            else
+              Column(
+                children: List.generate(3, (i) {
                   return Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
                       color: const Color(0xFFFFF8E1),
                       border: Border(
@@ -1070,149 +1100,130 @@ class _BumbleDateProfileScreenState
                       ),
                     ),
                     child: TextField(
-                      controller: _editPromptController,
+                      controller: _editPromptControllers[i],
                       maxLines: 2,
                       style: const TextStyle(fontSize: 15),
                       decoration: InputDecoration(
-                        hintText: 'Edit your prompt...',
+                        hintText: 'Prompt ${i + 1}',
                         border: InputBorder.none,
-                        suffixIcon: IconButton(
-                          icon: const Icon(Icons.check, color: Colors.green),
-                          onPressed: () {
-                            final edited = _editPromptController.text.trim();
-                            if (edited.isNotEmpty) {
-                              setState(() {
-                                prompts[index]['prompt'] = edited;
-                                localPrompts = List.from(prompts);
-                                editingPromptIndex = null;
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            if (editingPromptIndex != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          editingPromptIndex = null;
+                        });
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      onPressed: () {
+                        final updatedPrompts = _editPromptControllers
+                            .map((c) => c.text.trim())
+                            .where((text) => text.isNotEmpty)
+                            .map((text) => {'prompt': text})
+                            .toList();
 
-                                // 🔁 Optional: Call API to update backend
-                                ref.read(loginProvider.notifier).updateProfile(
-                                    image: null,
-                                    modeid: null,
-                                    bio: null,
-                                    modename: null,
-                                    prompt: edited,
-                                    qualityId: null,
-                                    languagesId:null);
-                              });
-                            }
-                          },
-                        ),
-                      ),
+                        setState(() {
+                          localPrompts = updatedPrompts;
+                          editingPromptIndex = null;
+                        });
+
+                        ref.read(loginProvider.notifier).updateProfile(
+                              image: null,
+                              modeid: null,
+                              bio: null,
+                              modename: null,
+                              prompt: updatedPrompts,
+                              qualityId: null,
+                              languagesId: null,
+                            );
+                      },
+                      child: const Text('Save All'),
                     ),
-                  );
-                } else {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 12),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: Colors.grey.shade300),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            promptText,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(
-                            Icons.edit,
-                            color: Colors.black,
-                            size: 15,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              editingPromptIndex = index;
-                              _editPromptController.text = promptText;
-                            });
-                          },
-                        )
-                      ],
-                    ),
-                  );
-                }
-              }).toList(),
-              if (isAddingPrompt)
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  ],
+                ),
+              )
+            else if (prompts.length < 3)
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isAddingPrompt = true;
+                    _promptController.clear();
+                  });
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF8E1),
-                    border:
-                        Border(top: BorderSide(color: Colors.grey.shade300)),
+                    border: Border(top: BorderSide(color: Colors.grey.shade300)),
                   ),
-                  child: TextField(
-                    controller: _promptController,
-                    maxLines: 2,
-                    style: const TextStyle(fontSize: 15, color: Colors.black87),
-                    decoration: InputDecoration(
-                      hintText: 'Write your prompt...',
-                      border: InputBorder.none,
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.check, color: Colors.green),
-                        onPressed: () {
-                          final promptText = _promptController.text.trim();
-                          if (promptText.isNotEmpty) {
-                            setState(() {
-                              localPrompts = [
-                                ...prompts,
-                                {"prompt": promptText}
-                              ];
-                              _promptController.clear();
-                              isAddingPrompt = false;
-                            });
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                )
-              else if (prompts.length < 3)
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isAddingPrompt = true;
-                      _promptController.clear();
-                    });
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 12),
-                    decoration: BoxDecoration(
-                      border: Border(
-                        top: BorderSide(color: Colors.grey.shade300),
-                      ),
-                    ),
-                    child: Row(
-                      children: const [
-                        Expanded(
-                          child: Text(
-                            'Add Prompt',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w600),
-                          ),
+                  child: Row(
+                    children: const [
+                      Expanded(
+                        child: Text(
+                          'Add Prompt',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                         ),
-                        Icon(Icons.add, size: 20),
-                      ],
+                      ),
+                      Icon(Icons.add, size: 20),
+                    ],
+                  ),
+                ),
+              ),
+            if (isAddingPrompt)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF8E1),
+                  border: Border(top: BorderSide(color: Colors.grey.shade300)),
+                ),
+                child: TextField(
+                  controller: _promptController,
+                  maxLines: 2,
+                  style: const TextStyle(fontSize: 15, color: Colors.black87),
+                  decoration: InputDecoration(
+                    hintText: 'Write your prompt...',
+                    border: InputBorder.none,
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.check, color: Colors.green),
+                      onPressed: () {
+                        final promptText = _promptController.text.trim();
+                        if (promptText.isNotEmpty) {
+                          setState(() {
+                            localPrompts = [
+                              ...prompts.map((p) => p is Prompts
+                                  ? {"prompt": p.prompt}
+                                  : {"prompt": p['prompt']}),
+                              {"prompt": promptText},
+                            ];
+                            _promptController.clear();
+                            isAddingPrompt = false;
+                          });
+                        }
+                      },
                     ),
                   ),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
+
+
   Widget _buildBioSection() {
   final userData = ref.watch(loginProvider);
   final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
@@ -1365,10 +1376,10 @@ class _BumbleDateProfileScreenState
     final userData = ref.watch(loginProvider);
      final user =
           userData.data?.isNotEmpty == true ? userData.data![0].user : null;
-          final work = user!.work;
-final workDisplayText = work != null
-    ? work.first.title + ('at ${work.first.company}')
-    : 'Add';
+          Work? work = user!.work;
+          final workDisplayText = work != null? work.title! + ('at ${work.company}'): 'Add';
+          Education? education = user.education;
+          final educationText = education != null? education.institution! + ('in ${education.gradYear}'): 'Add';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1382,17 +1393,18 @@ final workDisplayText = work != null
         ),
         SizedBox(height: 16),
         _buildProfileItem(Icons.work_outline, 'Work',
-         workDisplayText,
+        //  workDisplayText,
+        workDisplayText ,
          onTap: () {
          
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => OccupationScreen()));
         }),
-        _buildProfileItem(Icons.school_outlined, 'Education', 'Add', onTap: () {
+        _buildProfileItem(Icons.school_outlined, 'Education', educationText , onTap: () {
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => EducationScreen()));
         }),
-        _buildProfileItem(Icons.person_outline, 'Gender', selectedGender,
+        _buildProfileItem(Icons.person_outline, 'Gender', selectedGender ,
             onTap: () {
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => UpdateGenderScreen()));
@@ -1413,6 +1425,16 @@ final workDisplayText = work != null
   }
 
   Widget _buildMoreAboutYouSection() {
+     final userData = ref.watch(loginProvider);
+     final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+  
+    final List<LookingFor> lookingfor = user?.lookingFor?? [].first;
+    final List<Religions> religion = user?.religions?? [];
+    final List<Kids> kids = user?.kids?? [];
+    final List<Drinking> drinking = user?.drinking?? [];
+    final List<StarSign> starsign = user?.starSign?? [].first;
+   
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1436,9 +1458,7 @@ final workDisplayText = work != null
         _buildProfileItem(
           Icons.search,
           'Looking For',
-          selectedLooking?.isNotEmpty == true
-          ? selectedLooking!
-          : (userLooking?.isNotEmpty == true ? userLooking! : 'Add'),
+           lookingfor as String?,
            onTap: () async {
             final result = await Navigator.push(
               context,
@@ -1460,9 +1480,7 @@ final workDisplayText = work != null
           );
         }),
         _buildProfileItem(Icons.child_care, 'Have A Kids', 
-        selectedkid?.isNotEmpty == true
-        ? selectedkid!
-        : (userkid?.isNotEmpty == true ? userkid! : 'Add'),
+        kids as String?,
             onTap: () async {
           final result = await Navigator.push(
             context,
@@ -1474,17 +1492,15 @@ final workDisplayText = work != null
             });
           }
         }),
-        _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', 'Add',
-            onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => SmokingScreen()),
-          );
-        }),
+        // _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', 'Add',
+        //     onTap: () {
+        //   Navigator.push(
+        //     context,
+        //     MaterialPageRoute(builder: (context) => SmokingScreen()),
+        //   );
+        // }),
         _buildProfileItem(
-            Icons.local_drink_outlined, 'Drinking',  selectedDrink?.isNotEmpty == true
-                                                     ? selectedDrink!
-                                                     : (userDrink?.isNotEmpty == true ? userDrink! : 'Add'),
+            Icons.local_drink_outlined, 'Drinking',drinking as String?,
             onTap: () async {
           final result = await Navigator.push(
             context,
@@ -1496,7 +1512,7 @@ final workDisplayText = work != null
             });
           }
         }),
-        _buildProfileItem(Icons.fitness_center_outlined, 'Exercise', 'Add',
+        _buildProfileItem(Icons.fitness_center_outlined, 'Exercise', 'Add' ,
             onTap: () {
           Navigator.push(
             context,
@@ -1510,16 +1526,14 @@ final workDisplayText = work != null
             MaterialPageRoute(builder: (context) => NewToAreaScreen()),
           );
         }),
-        _buildProfileItem(Icons.star_border, 'Star Sign', 'Add', onTap: () {
+        _buildProfileItem(Icons.star_border, 'Star Sign', starsign as String?, onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => StarSignScreen()),
           );
         }),
         _buildProfileItem(
-            Icons.place_outlined, 'Religion',selectedReligion?.isNotEmpty == true
-                                                     ? selectedReligion!
-                                                     : (userReligion?.isNotEmpty == true ? userReligion! : 'Add'),
+            Icons.place_outlined, 'Religion', religion as String?,
             onTap: () async {
           final result = await Navigator.push(
             context,
@@ -1753,7 +1767,7 @@ final workDisplayText = work != null
     );
   }
 
-  Widget _buildProfileItem(IconData icon, String title, String value,
+  Widget _buildProfileItem(IconData icon, String title, String? value,
       {required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
@@ -1775,7 +1789,7 @@ final workDisplayText = work != null
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               )),
-              Text(value,
+              Text(value!,
                   style: const TextStyle(fontSize: 16, color: Colors.grey)),
               const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
             ],

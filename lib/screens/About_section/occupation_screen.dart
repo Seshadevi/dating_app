@@ -120,7 +120,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
     final List<Data> allJobs = <Data>[];
     for (final workModel in workList) {
       if (workModel.data != null) {
-        allJobs.addAll(workModel.data! as List<Data>);
+        allJobs.addAll(workModel.data as List<Data>);
 
       }
     }

@@ -19,7 +19,7 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
     super.initState();
     Future.microtask(() async {
       // 1. Fetch options
-      await ref.read(lookingProvider.notifier).getLookingFor();
+      await ref.read(lookingProvider.notifier).getLookingForUser();
 
       // 2. Get user saved data
       final userState = ref.read(loginProvider);
@@ -36,11 +36,11 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
         final first = lookingForList.first;
 
         // Check if it's a string or a map with 'value'
-        if (first is Map && first.containsKey('value')) {
-          selectedOption = first['value'].toString().trim();
-        } else {
-          selectedOption = first.toString().trim();
-        }
+        // if (first is Map && first.containsKey('value')) {
+        //   selectedOption = first.value.toString().trim();
+        // } else {
+        //   selectedOption = first.toString().trim();
+        // }
 
         debugPrint('Pre-selected from user data: $selectedOption');
         setState(() {});

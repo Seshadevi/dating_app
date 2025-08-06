@@ -1,13 +1,13 @@
-class LookingFor {
+class LookingForUser {
   bool? success;
   String? message;
   List<Data>? data;
 
- LookingFor({this.success, this.message, this.data});
+ LookingForUser({this.success, this.message, this.data});
 
   /// Factory constructor for initial/default state
-  factory LookingFor.initial() {
-    return LookingFor(
+  factory LookingForUser.initial() {
+    return LookingForUser(
       success: false,
       message: '',
       data: [],
@@ -15,19 +15,19 @@ class LookingFor {
   }
 
   /// CopyWith method
- LookingFor copyWith({
+ LookingForUser copyWith({
     bool? success,
     String? message,
     List<Data>? data,
   }) {
-    return LookingFor(
+    return LookingForUser(
       success: success ?? this.success,
       message: message ?? this.message,
       data: data ?? this.data,
     );
   }
 
- LookingFor.fromJson(Map<String, dynamic> json) {
+ LookingForUser.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     message = json['message'];
     if (json['data'] != null) {
