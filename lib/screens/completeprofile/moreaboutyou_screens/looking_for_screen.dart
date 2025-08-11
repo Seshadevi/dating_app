@@ -111,11 +111,33 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 12.0),
                               child: GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    selectedOption = option;
-                                  });
-                                  Navigator.pop(context, option); // Return selected value
+                                onTap: () async{
+                                  
+                                final optionId = options[index].id; // Assuming each option has an 'id'
+                                
+                                // Update the state so UI shows selection immediately
+                                setState(() {
+                                  selectedOption = option;
+                                });
+
+                                // Send to API
+                                await ref.read(loginProvider.notifier).updateProfile(
+                                  interestId: null, // keep null for others
+                                  image: null,
+                                  modeid: null,
+                                  bio: null,
+                                  modename: null,
+                                  prompt: null,
+                                  qualityId: null,
+                                  causeId: null,
+                                  lookingfor: optionId != null ? [optionId] : null,
+                                
+                                );
+
+                                // Go back after successful update
+                                Navigator.pop(context, option);
+
+                              // Return selected value
                                 },
                                 child: Container(
                                   height: 56,

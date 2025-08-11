@@ -123,7 +123,7 @@ class User {
   StarSign? starSign;
   Education? education;
   Work? work;
-  StarSign? language;
+  List<Language>? spokenLanguages;
   Location? location;
   String? educationLevel;
   String? exercise;
@@ -160,7 +160,7 @@ class User {
     this.starSign,
     this.education,
     this.work,
-    this.language,
+    this.spokenLanguages,
     this.location,
     this.educationLevel,
     this.exercise,
@@ -245,11 +245,22 @@ class User {
         profilePics!.add(ProfilePics.fromJson(v));
       });
     }
-    starSign = json['starSign'] != null ? StarSign.fromJson(json['starSign']) : null;
-    education = json['education'] != null ? Education.fromJson(json['education']) : null;
+    starSign =
+        json['starSign'] != null ? StarSign.fromJson(json['starSign']) : null;
+    education = json['education'] != null
+        ? Education.fromJson(json['education'])
+        : null;
     work = json['work'] != null ? Work.fromJson(json['work']) : null;
-    language = json['language'] != null ? StarSign.fromJson(json['language']) : null;
-    location = json['location'] != null ? Location.fromJson(json['location']) : null;
+    // spokenLanguages =
+    //     json['spokenLanguages'] != null ? Language.fromJson(json['spokenLanguages']) : null;
+        if (json['spokenLanguages'] != null) {
+      spokenLanguages = <Language>[];
+      json['spokenLanguages'].forEach((v) {
+        spokenLanguages!.add(Language.fromJson(v));
+      });
+    }
+    location =
+        json['location'] != null ? Location.fromJson(json['location']) : null;
     educationLevel = json['educationLevel'];
     exercise = json['exercise'];
     haveKids = json['haveKids'];
@@ -298,13 +309,15 @@ class User {
       data['lookingFor'] = lookingFor!.map((v) => v.toJson()).toList();
     }
     if (causesAndCommunities != null) {
-      data['causesAndCommunities'] = causesAndCommunities!.map((v) => v.toJson()).toList();
+      data['causesAndCommunities'] =
+          causesAndCommunities!.map((v) => v.toJson()).toList();
     }
     if (prompts != null) {
       data['prompts'] = prompts!.map((v) => v.toJson()).toList();
     }
     if (defaultMessages != null) {
-      data['defaultMessages'] = defaultMessages!.map((v) => v.toJson()).toList();
+      data['defaultMessages'] =
+          defaultMessages!.map((v) => v.toJson()).toList();
     }
     if (profilePics != null) {
       data['profile_pics'] = profilePics!.map((v) => v.toJson()).toList();
@@ -318,8 +331,8 @@ class User {
     if (work != null) {
       data['work'] = work!.toJson();
     }
-    if (language != null) {
-      data['language'] = language!.toJson();
+    if (spokenLanguages != null) {
+      data['language'] = spokenLanguages!.map((v) => v.toJson()).toList();
     }
     if (location != null) {
       data['location'] = location!.toJson();
@@ -328,7 +341,8 @@ class User {
     data['exercise'] = exercise;
     data['haveKids'] = haveKids;
     if (genderIdentities != null) {
-      data['genderIdentities'] = genderIdentities!.map((v) => v.toJson()).toList();
+      data['genderIdentities'] =
+          genderIdentities!.map((v) => v.toJson()).toList();
     }
     data['smoking'] = smoking;
     data['politics'] = politics;
@@ -400,7 +414,7 @@ class User {
       starSign: starSign ?? this.starSign,
       education: education ?? this.education,
       work: work ?? this.work,
-      language: language ?? this.language,
+      spokenLanguages: spokenLanguages ?? this.spokenLanguages,
       location: location ?? this.location,
       educationLevel: educationLevel ?? this.educationLevel,
       exercise: exercise ?? this.exercise,
@@ -425,14 +439,17 @@ class Qualities {
   String? updatedAt;
   UserQualities? userQualities;
 
-  Qualities({this.id, this.name, this.createdAt, this.updatedAt, this.userQualities});
+  Qualities(
+      {this.id, this.name, this.createdAt, this.updatedAt, this.userQualities});
 
   Qualities.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
-    userQualities = json['user_qualities'] != null ? UserQualities.fromJson(json['user_qualities']) : null;
+    userQualities = json['user_qualities'] != null
+        ? UserQualities.fromJson(json['user_qualities'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -508,14 +525,21 @@ class Drinking {
   String? updatedAt;
   UserDrinking? userDrinking;
 
-  Drinking({this.id, this.preference, this.createdAt, this.updatedAt, this.userDrinking});
+  Drinking(
+      {this.id,
+      this.preference,
+      this.createdAt,
+      this.updatedAt,
+      this.userDrinking});
 
   Drinking.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     preference = json['preference'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
-    userDrinking = json['user_drinking'] != null ? UserDrinking.fromJson(json['user_drinking']) : null;
+    userDrinking = json['user_drinking'] != null
+        ? UserDrinking.fromJson(json['user_drinking'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -598,7 +622,8 @@ class Kids {
     kids = json['kids'];
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
-    userKids = json['user_kids'] != null ? UserKids.fromJson(json['user_kids']) : null;
+    userKids =
+        json['user_kids'] != null ? UserKids.fromJson(json['user_kids']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -677,7 +702,9 @@ class Religions {
   Religions.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     religion = json['religion'];
-    userReligion = json['user_religion'] != null ? UserReligion.fromJson(json['user_religion']) : null;
+    userReligion = json['user_religion'] != null
+        ? UserReligion.fromJson(json['user_religion'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -750,7 +777,9 @@ class Interests {
   Interests.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     interests = json['interests'];
-    userInterest = json['user_interest'] != null ? UserInterest.fromJson(json['user_interest']) : null;
+    userInterest = json['user_interest'] != null
+        ? UserInterest.fromJson(json['user_interest'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -823,7 +852,9 @@ class LookingFor {
   LookingFor.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     value = json['value'];
-    userLookingFor = json['user_lookingFor'] != null ? UserLookingFor.fromJson(json['user_lookingFor']) : null;
+    userLookingFor = json['user_lookingFor'] != null
+        ? UserLookingFor.fromJson(json['user_lookingFor'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -886,9 +917,7 @@ class UserLookingFor {
   }
 }
 
-
-
-  class GenderIdentities {
+class GenderIdentities {
   int? id;
   String? value;
   String? createdAt;
@@ -978,6 +1007,7 @@ class UserGenders {
     return UserGenders();
   }
 }
+
 class CausesAndCommunities {
   int? id;
   String? causesAndCommunities;
@@ -1027,7 +1057,8 @@ class CausesAndCommunities {
       causesAndCommunities: causesAndCommunities ?? this.causesAndCommunities,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      userCauseAndCommunities: userCauseAndCommunities ?? this.userCauseAndCommunities,
+      userCauseAndCommunities:
+          userCauseAndCommunities ?? this.userCauseAndCommunities,
     );
   }
 
@@ -1060,7 +1091,8 @@ class UserCauseAndCommunities {
   }) {
     return UserCauseAndCommunities(
       userId: userId ?? this.userId,
-      causesAndCommunitiesId: causesAndCommunitiesId ?? this.causesAndCommunitiesId,
+      causesAndCommunitiesId:
+          causesAndCommunitiesId ?? this.causesAndCommunitiesId,
     );
   }
 
@@ -1106,6 +1138,7 @@ class Prompts {
     return Prompts();
   }
 }
+
 class Language {
   int? id;
   String? name;
@@ -1122,7 +1155,6 @@ class Language {
         'name': name,
       };
 }
-
 
 class DefaultMessages {
   int? id;

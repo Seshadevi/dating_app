@@ -1,3 +1,4 @@
+import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/signupprocessProviders/kidsProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -85,9 +86,29 @@ class _HaveKidsScreenState extends ConsumerState<HaveKidsScreen> {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 12.0),
                           child: GestureDetector(
-                            onTap: () {
-                              toggleOption(option);
-                              Navigator.pop(context, option); // Go back with selected value
+                            
+                             onTap: () async {
+                                final optionId = kidsState.data![index].id; // Assuming API needs ID, not text
+
+                                toggleOption(option);
+
+                                // Call API to update
+                                await ref.read(loginProvider.notifier).updateProfile(
+                                  
+                                  interestId: null,
+                                  image: null,
+                                  modeid: null,
+                                  bio: null,
+                                  modename: null,
+                                  prompt: null,
+                                  qualityId: null,
+                                  causeId: null,
+                                  kidsId: optionId != null ? [optionId] : null, // wrap int? in a list
+                                );
+
+                                Navigator.pop(context, option); // Go back with selected value
+
+                              // Go back with selected value
                             },
                             child: Container(
                               height: 56,

@@ -74,60 +74,62 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
     }
   }
 
- Future<Map<String, dynamic>> verifyPhoneNumber(String phoneNumber, WidgetRef ref) async {
-  print('Phone number: $phoneNumber');
-  final auth = ref.read(firebaseAuthProvider);
-  var loader = ref.read(loadingProvider.notifier);
-  var pref = await SharedPreferences.getInstance();
+  Future<Map<String, dynamic>> verifyPhoneNumber(
+      String phoneNumber, WidgetRef ref) async {
+    print('Phone number: $phoneNumber');
+    final auth = ref.read(firebaseAuthProvider);
+    var loader = ref.read(loadingProvider.notifier);
+    var pref = await SharedPreferences.getInstance();
 
-  Completer<Map<String, dynamic>> completer = Completer<Map<String, dynamic>>();
+    Completer<Map<String, dynamic>> completer =
+        Completer<Map<String, dynamic>>();
 
-  try {
-    print('Starting phone verification...');
-    await auth.verifyPhoneNumber(
-      phoneNumber: phoneNumber,
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        print('Verification completed automatically.');
-        await auth.signInWithCredential(credential);
-        if (!completer.isCompleted) {
-          completer.complete({'success': true});
-        }
-      },
-      verificationFailed: (FirebaseAuthException e) {
-        print("Verification failed: ${e.message}");
-        if (!completer.isCompleted) {
-          completer.complete({
-            'success': false,
-            'message': e.message ?? 'Verification failed. Please try again.'
-          });
-        }
-      },
-      codeSent: (String verificationId, int? resendToken) {
-        print("Code sent. Verification ID: $verificationId");
-        pref.setString("verificationid", verificationId);
-        ref.read(verificationIdProvider.notifier).state = verificationId;
-        if (!completer.isCompleted) {
-          completer.complete({'success': true});
-        }
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {
-        print("Auto-retrieval timeout. Verification ID: $verificationId");
-      },
-    );
+    try {
+      print('Starting phone verification...');
+      await auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          print('Verification completed automatically.');
+          await auth.signInWithCredential(credential);
+          if (!completer.isCompleted) {
+            completer.complete({'success': true});
+          }
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          print("Verification failed: ${e.message}");
+          if (!completer.isCompleted) {
+            completer.complete({
+              'success': false,
+              'message': e.message ?? 'Verification failed. Please try again.'
+            });
+          }
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          print("Code sent. Verification ID: $verificationId");
+          pref.setString("verificationid", verificationId);
+          ref.read(verificationIdProvider.notifier).state = verificationId;
+          if (!completer.isCompleted) {
+            completer.complete({'success': true});
+          }
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          print("Auto-retrieval timeout. Verification ID: $verificationId");
+        },
+      );
 
-    return await completer.future;
-  } catch (e) {
-    loader.state = false;
-    print("Error during phone verification: $e");
-    if (!completer.isCompleted) {
-      completer.complete({
-        'success': false,
-        'message': 'Something went wrong: ${e.toString()}'
-      });
+      return await completer.future;
+    } catch (e) {
+      loader.state = false;
+      print("Error during phone verification: $e");
+      if (!completer.isCompleted) {
+        completer.complete({
+          'success': false,
+          'message': 'Something went wrong: ${e.toString()}'
+        });
+      }
+      return await completer.future;
     }
-    return await completer.future;
   }
-}
 
   // Future<void> signInWithPhoneNumber(String smsCode, WidgetRef ref) async {
   //   final auth = ref.read(firebaseAuthProvider);
@@ -566,131 +568,335 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
   //     loadingState.state = false;
   //   }
   // }
-  Future<int> updateProfile({
-    int? modeid,
-    String? modename,
-    List<int>? causeId,
-    String? bio,
-    List<int>? interestId,
-    List<int>? qualityId,
-    List<Map<String, String>>? prompt,
-    File? image,
-    List<int>? languagesId,
-    List<int>? starsignId,
-    int? jobId,
-    int? eductionId,
-    int? religionId
-  }) async {
-     print(
-        'updated data....modeId:$modeid, modename:$modename, causedId:$causeId, intrestId:$interestId, qualityId:$qualityId, bio:$bio, prompt:$prompt, image:${image?.path},languages:$languagesId,work:$jobId,education:$eductionId,starsign:$starsignId');
-    final loadingState = ref.read(loadingProvider.notifier);
-    loadingState.state = true;
+//   Future<int> updateProfile(
+//       {int? modeid,
+//       String? modename,
+//       List<int>? causeId,
+//       String? bio,
+//       List<int>? interestId,
+//       List<int>? qualityId,
+//       List<Map<String, String>>? prompt,
+//       List<File>? image,
+//       List<int>? languagesId,
+//       int? starsignId,
+//       int? jobId,
+//       int? eductionId,
+//       int? religionId,
+//       List<int>? lookingfor,
+//       List<int>? kidsId,
+//       List<int>? drinkingId}) async {
+//     print(
+//         'updated data....modeId:$modeid, modename:$modename, causedId:$causeId, intrestId:$interestId, qualityId:$qualityId, bio:$bio, prompt:$prompt, image:${image?.length},languages:$languagesId,work:$jobId,education:$eductionId,starsign:$starsignId');
+//     final loadingState = ref.read(loadingProvider.notifier);
+//     loadingState.state = true;
 
-    try {
-      final userid = state.data?[0].user?.id;
-      final String apiUrl = Dgapi.updateprofile;
-      final prefs = await SharedPreferences.getInstance();
+//     try {
+//       final userid = state.data?[0].user?.id;
+//       final String apiUrl = Dgapi.updateprofile;
+//       final prefs = await SharedPreferences.getInstance();
 
-      String? userDataString = prefs.getString('userData');
-      if (userDataString == null || userDataString.isEmpty) {
-        throw Exception("User token is missing. Please log in again.");
-      }
+//       String? userDataString = prefs.getString('userData');
+//       if (userDataString == null || userDataString.isEmpty) {
+//         throw Exception("User token is missing. Please log in again.");
+//       }
 
-      final Map<String, dynamic> userData = jsonDecode(userDataString);
-      String? token = userData['accessToken'];
+//       final Map<String, dynamic> userData = jsonDecode(userDataString);
+//       String? token = userData['accessToken'];
 
-      if (token == null || token.isEmpty) {
-        token = userData['data'] != null &&
-                (userData['data'] as List).isNotEmpty &&
-                userData['data'][0]['access_token'] != null
-            ? userData['data'][0]['access_token']
-            : null;
-      }
+//       if (token == null || token.isEmpty) {
+//         token = userData['data'] != null &&
+//                 (userData['data'] as List).isNotEmpty &&
+//                 userData['data'][0]['access_token'] != null
+//             ? userData['data'][0]['access_token']
+//             : null;
+//       }
 
-      if (token == null || token.isEmpty) {
-        throw Exception("User token is invalid. Please log in again.");
-      }
-        print('✅ Retrieved Token: $token');
+//       if (token == null || token.isEmpty) {
+//         throw Exception("User token is invalid. Please log in again.");
+//       }
+//       print('✅ Retrieved Token: $token');
 
-      var request = http.MultipartRequest('PUT', Uri.parse(apiUrl));
-      request.headers['Authorization'] = 'Bearer $token';
-      request.headers['Accept'] = 'application/json';
+//       var request = http.MultipartRequest('PUT', Uri.parse(apiUrl));
+//       request.headers['Authorization'] = 'Bearer $token';
+//       request.headers['Accept'] = 'application/json';
 
-      if (modeid != null) request.fields['modeId'] = modeid.toString();
-      
-      if (interestId != null)
-        request.fields['lookingForId'] = interestId.toString();
-      if (bio != null) request.fields['headLine'] = bio;
-      if (prompt != null) request.fields['promptsId'] = prompt.toString();
-      if (languagesId != null)
-        request.fields['languageId'] = languagesId.toString();
-      if (starsignId != null)
-        request.fields['starSignId'] = starsignId.toString();
-      if (jobId != null) request.fields['workId'] = jobId.toString();
-      if (eductionId != null)
-        request.fields['educationId'] = eductionId.toString();
+//       if (modeid != null) request.fields['mode'] = modeid.toString();
 
-     
-      if (qualityId != null && qualityId.isNotEmpty) {
-  for (int i = 0; i < qualityId.length; i++) {
-    request.fields['qualities[$i]'] = qualityId[i].toString();
-  }
-}
+//       if (interestId != null)
+//         request.fields['lookingFor'] = interestId.toString();
 
-if (causeId != null && causeId.isNotEmpty) {
-  for (int i = 0; i < causeId.length; i++) {
-    request.fields['causesAndCommunities[$i]'] = causeId[i].toString();
-  }
-}
+//       if (bio != null) request.fields['headLine'] = bio;
 
-if (interestId != null && interestId.isNotEmpty) {
-  for (int i = 0; i < interestId.length; i++) {
-    request.fields['interests[$i]'] = interestId[i].toString();
-  }
-}
+//       if (prompt != null) request.fields['prompts'] = prompt.toString();
 
-      // if (interestId != null)
-      //   request.fields['lookingForId'] = interestId.toString();
-     
-      if (image != null) {
-        request.files
-            .add(await http.MultipartFile.fromPath('profile_pics', image.path));
-      }
+//       if (languagesId != null && languagesId.isNotEmpty) {
+//         for (int i = 0; i < languagesId.length; i++) {
+//           request.fields['languageId[$i]'] = languagesId[i].toString();
+//         }
+//       }
 
-      final response = await request.send();
-      final responseBody = await response.stream.bytesToString();
-       print("📨 API Responsebody: $responseBody");
-      print("status code.....${response.statusCode}");
+//       // if (starsignId != null)
+//         request.fields['starSignId'] = starsignId.toString();
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-          print("✅ Updated data parsed successfully");
-          // print("Updated User Data to Save: ${user.toJson()}");
-        final Map<String, dynamic> responseData = json.decode(responseBody);
+//       if (jobId != null) request.fields['workId'] = jobId.toString();
+//       if (eductionId != null)
+//         request.fields['educationId'] = eductionId.toString();
 
-        try {
-          final user = UserModel.fromJson(responseData);
-          state = user;
-          // await prefs.setString('userData', jsonEncode(user.toJson()));
-        } catch (_) {
-          if (responseData['data'] != null && responseData['data'] is List) {
-            await prefs.setString('userData', responseBody);
-          } else {
-            throw Exception("Failed to parse updated profile data");
-          }
-        }
+//       if (qualityId != null && qualityId.isNotEmpty) {
+//         for (int i = 0; i < qualityId.length; i++) {
+//           request.fields['qualities[$i]'] = qualityId[i].toString();
+//         }
+//       }
+//       if (lookingfor != null && lookingfor.isNotEmpty) {
+//         for (int i = 0; i < lookingfor.length; i++) {
+//           request.fields['lookingFor[$i]'] = lookingfor[i].toString();
+//         }
+//       }
+//       if (drinkingId != null && drinkingId.isNotEmpty) {
+//         for (int i = 0; i < drinkingId.length; i++) {
+//           request.fields['drinking[$i]'] = drinkingId[i].toString();
+//         }
+//       }
+//       if (kidsId != null && kidsId.isNotEmpty) {
+//         for (int i = 0; i < kidsId.length; i++) {
+//           request.fields['kids[$i]'] = kidsId[i].toString();
+//         }
+//       }
 
-        return response.statusCode; // ✅ Success path
-      } else {
-        throw Exception(
-            "Profile update failed with status: ${response.statusCode}");
-      }
-    } catch (e) {
-      print("❗ Exception during profile update: $e");
-      throw Exception("Update failed: $e");
-    } finally {
-      loadingState.state = false;
+//       if (causeId != null && causeId.isNotEmpty) {
+//         for (int i = 0; i < causeId.length; i++) {
+//           request.fields['causesAndCommunities[$i]'] = causeId[i].toString();
+//         }
+//       }
+
+//       if (interestId != null && interestId.isNotEmpty) {
+//         for (int i = 0; i < interestId.length; i++) {
+//           request.fields['interests[$i]'] = interestId[i].toString();
+//         }
+//       }
+
+//       // if (interestId != null)
+//       //   request.fields['lookingForId'] = interestId.toString();
+
+//       // if (image != null) {
+//       //   request.files
+//       //       .add(await http.MultipartFile.fromPath('profile_pics', image.path));
+//       // }
+//        // Upload images (only jpg/png/jpeg)
+//       for (int i = 0; i < image!.length; i++) {
+//   final file = image[i];
+
+//   if ( await file.exists()) {
+//     final filePath = file.path;
+//     final fileExtension = filePath.split('.').last.toLowerCase();
+
+//     MediaType? contentType;
+//     if (fileExtension == 'jpg' || fileExtension == 'jpeg') {
+//       contentType = MediaType('image', 'jpeg');
+//     } else if (fileExtension == 'png') {
+//       contentType = MediaType('image', 'png');
+//     } else {
+//       print('❌ Unsupported file type: $filePath');
+//       continue;
+//     }
+
+//     final multipartFile = await http.MultipartFile.fromPath(
+//       'profilePic',
+//       filePath,
+//       contentType: contentType,
+//     );
+
+//     request.files.add(multipartFile);
+//   }
+// }
+
+
+//       final response = await request.send();
+//       final responseBody = await response.stream.bytesToString();
+//       print("📨 API Responsebody: $responseBody");
+//       print("status code.....${response.statusCode}");
+
+//       if (response.statusCode == 200 || response.statusCode == 201) {
+//         print("✅ Updated data parsed successfully");
+//         // print("Updated User Data to Save: ${user.toJson()}");
+//         // final Map<String, dynamic> responseData = json.decode(responseBody);
+//         final userDetails = jsonDecode(responseBody);
+
+//         try {
+          
+//         final userModel = UserModel.fromJson(userDetails);
+//         state = userModel;
+
+//         final userData = json.encode(userDetails);
+//         await prefs.setString('userData', userData);
+//         print('User data saved in SharedPreferences.');
+//         } catch (_) {
+//           if (userDetails['data'] != null && userDetails['data'] is List) {
+//             await prefs.setString('userData', responseBody);
+//           } else {
+//             throw Exception("Failed to parse updated profile data");
+//           }
+//         }
+
+//         return response.statusCode; // ✅ Success path
+//       } else {
+//         throw Exception(
+//             "Profile update failed with status: ${response.statusCode}");
+//       }
+//     } catch (e) {
+//       print("❗ Exception during profile update: $e");
+//       throw Exception("Update failed: $e");
+//     } finally {
+//       loadingState.state = false;
+//     }
+//   }
+Future<int> updateProfile({
+  int? modeid,
+  String? modename,
+  List<int>? causeId,
+  String? bio,
+  List<int>? interestId,
+  List<int>? qualityId,
+  List<Map<String, String>>? prompt,
+  List<File>? image,
+  List<int>? languagesId,
+  int? starsignId,
+  int? jobId,
+  int? educationId,
+  int? religionId,
+  List<int>? lookingfor,
+  List<int>? kidsId,
+  List<int>? drinkingId,
+  int? eductionId,
+}) async {
+  final loadingState = ref.read(loadingProvider.notifier);
+  loadingState.state = true;
+
+  try {
+    final String apiUrl = Dgapi.updateprofile;
+    final prefs = await SharedPreferences.getInstance();
+
+    String? userDataString = prefs.getString('userData');
+    if (userDataString == null || userDataString.isEmpty) {
+      throw Exception("User token is missing. Please log in again.");
     }
+
+    final Map<String, dynamic> userData = jsonDecode(userDataString);
+    String? token = userData['accessToken'];
+
+    if (token == null || token.isEmpty) {
+      token = userData['data'] != null &&
+              (userData['data'] as List).isNotEmpty &&
+              userData['data'][0]['access_token'] != null
+          ? userData['data'][0]['access_token']
+          : null;
+    }
+
+    if (token == null || token.isEmpty) {
+      throw Exception("User token is invalid. Please log in again.");
+    }
+    print('✅ Retrieved Token: $token');
+
+    var request = http.MultipartRequest('PUT', Uri.parse(apiUrl));
+    request.headers['Authorization'] = 'Bearer $token';
+    request.headers['Accept'] = 'application/json';
+
+    // Add simple fields if not null
+    if (modeid != null) request.fields['mode'] = modeid.toString();
+    if (modename != null) request.fields['modename'] = modename;
+    if (bio != null) request.fields['headLine'] = bio;
+    if (religionId != null) request.fields['religionId'] = religionId.toString();
+    if (jobId != null) request.fields['workId'] = jobId.toString();
+    if (educationId != null) request.fields['educationId'] = educationId.toString();
+    if (starsignId != null) request.fields['starSignId'] = starsignId.toString();
+
+    // Add list fields as indexed keys
+    void addListField(String key, List<int>? values) {
+      if (values != null && values.isNotEmpty) {
+        for (int i = 0; i < values.length; i++) {
+          request.fields['$key[$i]'] = values[i].toString();
+        }
+      }
+    }
+
+    addListField('causesAndCommunities', causeId);
+    addListField('interests', interestId);
+    addListField('qualities', qualityId);
+    addListField('lookingFor', lookingfor);
+    addListField('kids', kidsId);
+    addListField('drinking', drinkingId);
+    addListField('languageId', languagesId);
+
+    // Handle prompt (List<Map<String,String>>) as JSON string if needed
+    if (prompt != null && prompt.isNotEmpty) {
+      request.fields['prompts'] = jsonEncode(prompt);
+    }
+
+    // Upload images if any
+    if (image != null && image.isNotEmpty) {
+      for (int i = 0; i < image.length; i++) {
+        final file = image[i];
+        if (await file.exists()) {
+          final filePath = file.path;
+          final fileExtension = filePath.split('.').last.toLowerCase();
+
+          MediaType? contentType;
+          if (fileExtension == 'jpg' || fileExtension == 'jpeg') {
+            contentType = MediaType('image', 'jpeg');
+          } else if (fileExtension == 'png') {
+            contentType = MediaType('image', 'png');
+          } else {
+            print('❌ Unsupported file type: $filePath');
+            continue;
+          }
+
+          final multipartFile = await http.MultipartFile.fromPath(
+            'profilePic', // confirm this field name with your backend
+            filePath,
+            contentType: contentType,
+          );
+
+          request.files.add(multipartFile);
+        }
+      }
+    }
+
+    final response = await request.send();
+    final responseBody = await response.stream.bytesToString();
+    print("📨 API Responsebody: $responseBody");
+    print("Status code: ${response.statusCode}");
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      print("✅ Updated data parsed successfully");
+
+      final userDetails = jsonDecode(responseBody);
+
+      try {
+        final userModel = UserModel.fromJson(userDetails);
+        state = userModel;
+
+        final userData = json.encode(userDetails);
+        await prefs.setString('userData', userData);
+        print('User data saved in SharedPreferences.');
+      } catch (_) {
+        if (userDetails['data'] != null && userDetails['data'] is List) {
+          await prefs.setString('userData', responseBody);
+        } else {
+          throw Exception("Failed to parse updated profile data");
+        }
+      }
+
+      return response.statusCode;
+    } else {
+      throw Exception("Profile update failed with status: ${response.statusCode}");
+    }
+  } catch (e) {
+    print("❗ Exception during profile update: $e");
+    throw Exception("Update failed: $e");
+  } finally {
+    loadingState.state = false;
   }
+}
 
   Future<String> restoreAccessToken() async {
     const url = Dgapi.refreshToken;

@@ -1,15 +1,10 @@
-import 'dart:ui';
-
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/signupprocessProviders/drinkingProvider.dart';
-// import 'package:dating/provider/userProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DrinkingScreen extends ConsumerStatefulWidget {
-  final List<String>? selectedDrinks;
-
-  const DrinkingScreen({super.key, this.selectedDrinks});
+  const DrinkingScreen({super.key});
 
   @override
   ConsumerState<DrinkingScreen> createState() => _DrinkingScreenState();
@@ -17,41 +12,59 @@ class DrinkingScreen extends ConsumerStatefulWidget {
 
 class _DrinkingScreenState extends ConsumerState<DrinkingScreen> {
   List<String> selectedOptions = [];
+  List<int> selectedDrinkIds = [];
 
   @override
   void initState() {
     super.initState();
 
     Future.microtask(() async {
-      // Load options from API
+      // Load available drink options
       await ref.read(drinkingProvider.notifier).getdrinking();
 
-      // Get saved user data
+      // Get logged in user data
       final user = ref.read(loginProvider).data?.first.user;
 
-      // Convert all selected drinking options to a string list
       if (user != null && user.drinking != null && user.drinking!.isNotEmpty) {
+        // Extract preferences for preselection
         selectedOptions = user.drinking!
-    .whereType<Object>()
-    .map((e) {
-      try {
-        if (e is String) return e;
-        if (e is Map<String, dynamic> && e['preference'] != null) {
-          return e['preference'].toString();
-        }
-      } catch (_) {}
-      return '';
-    })
-    .where((e) => e.isNotEmpty)
-    .toList();
+            .map((drink) => drink.preference ?? '')
+            .where((pref) => pref.isNotEmpty)
+            .toList();
 
-
-      } else if (widget.selectedDrinks != null) {
-        selectedOptions = [...widget.selectedDrinks!];
+        // Extract IDs for updating later
+        selectedDrinkIds = user.drinking!
+            .map((drink) => drink.id)
+            .whereType<int>()
+            .toList();
       }
 
       setState(() {});
     });
+  }
+
+  Future<void> _updateDrinkingSelection(int? optionId, String option) async {
+    setState(() {
+      // Single choice, replace with new
+      selectedOptions = [option];
+      selectedDrinkIds = optionId != null ? [optionId] : [];
+    });
+
+    // Send update to API
+    await ref.read(loginProvider.notifier).updateProfile(
+      interestId: null,
+      image: null,
+      modeid: null,
+      bio: null,
+      modename: null,
+      prompt: null,
+      qualityId: null,
+      causeId: null,
+      drinkingId: selectedDrinkIds.isNotEmpty ? selectedDrinkIds : null,
+    );
+
+    // Close and return selected options
+    Navigator.pop(context, selectedOptions);
   }
 
   @override
@@ -68,15 +81,6 @@ class _DrinkingScreenState extends ConsumerState<DrinkingScreen> {
           icon: const Icon(Icons.close, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, selectedOptions),
-            child: const Text(
-              "Done",
-              style: TextStyle(color: Colors.black),
-            ),
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -84,7 +88,6 @@ class _DrinkingScreenState extends ConsumerState<DrinkingScreen> {
           children: [
             const SizedBox(height: 20),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
                   width: 40,
@@ -104,11 +107,15 @@ class _DrinkingScreenState extends ConsumerState<DrinkingScreen> {
             ),
             const SizedBox(height: 30),
 
-            /// Show options
+            // Loading state
             if (drinkingState.data == null)
-              const CircularProgressIndicator()
+              const Center(child: CircularProgressIndicator())
+
+            // No options
             else if (options.isEmpty)
-              const Text("No options available")
+              const Center(child: Text("No options available"))
+
+            // List of options
             else
               Expanded(
                 child: ListView.builder(
@@ -116,29 +123,18 @@ class _DrinkingScreenState extends ConsumerState<DrinkingScreen> {
                   itemBuilder: (context, index) {
                     final option = options[index].preference ?? '';
                     final isSelected = selectedOptions.contains(option);
+                    final optionId = options[index].id;
 
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
                       child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            if (isSelected) {
-                              selectedOptions.remove(option);
-                            } else {
-                              selectedOptions.add(option);
-                            }
-                          });
-                        },
+                        onTap: () => _updateDrinkingSelection(optionId, option),
                         child: Container(
-                          width: double.infinity,
                           height: 56,
                           decoration: BoxDecoration(
                             gradient: isSelected
                                 ? const LinearGradient(
-                                    colors: [
-                                      Color(0xFFB2D12E),
-                                      Color(0xFF2B2B2B)
-                                    ],
+                                    colors: [Color(0xFFB2D12E), Color(0xFF2B2B2B)],
                                     begin: Alignment.centerLeft,
                                     end: Alignment.centerRight,
                                   )
