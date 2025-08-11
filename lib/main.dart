@@ -23,7 +23,7 @@ import 'package:dating/screens/mode_screen.dart';
 import 'package:dating/screens/notification_screen.dart';
 import 'package:dating/screens/openingMoveScreen.dart';
 import 'package:dating/screens/partners_selections.dart';
-import 'package:dating/screens/profile_screens/chat_pay_Screen.dart';
+import 'package:dating/screens/profile_screens/message_screen.dart';
 import 'package:dating/screens/profile_screens/discover_screen.dart';
 import 'package:dating/screens/profile_screens/heartsync_screen.dart';
 import 'package:dating/screens/profile_screens/liked_Screen.dart';
@@ -37,6 +37,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart'; // ✅ Add this
 // import 'Views/auth/join_page.dart'; // or the correct path to your starting screen
 // import 'screens/joinpage.dart';
 import 'package:dating/screens/joinpage.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

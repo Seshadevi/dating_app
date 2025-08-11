@@ -363,7 +363,7 @@ class User {
     StarSign? starSign,
     Education? education,
     Work? work,
-    StarSign? language,
+    List<Language>? spokenLanguages,
     Location? location,
     String? educationLevel,
     String? exercise,
@@ -1106,6 +1106,23 @@ class Prompts {
     return Prompts();
   }
 }
+class Language {
+  int? id;
+  String? name;
+
+  Language({this.id, this.name});
+
+  Language.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+      };
+}
+
 
 class DefaultMessages {
   int? id;

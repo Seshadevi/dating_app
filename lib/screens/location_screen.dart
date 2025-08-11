@@ -216,7 +216,4 @@ class LocationScreen extends StatefulWidget {
       ),
     );
   }
-  
- 
-
 }

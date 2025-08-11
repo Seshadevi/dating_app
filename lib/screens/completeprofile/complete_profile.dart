@@ -26,6 +26,7 @@ import 'package:dating/screens/completeprofile/prompt_selection_screen.dart';
 import 'package:dating/screens/completeprofile/pronoun_screen.dart';
 import 'package:dating/screens/completeprofile/qualities.dart';
 // import 'package:dating/screens/profile_screens/languagesScreen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -57,9 +58,9 @@ class _BumbleDateProfileScreenState
   String? selectedkid;
   String? selectedDrink;
   String? selectedReligion;
- String? userLooking;
- String? userkid;
- String? userDrink;
+  String? userLooking;
+  String? userkid;
+  String? userDrink;
   String? userReligion;
   bool hasUserUpdatedDrink = false;
 
@@ -688,7 +689,7 @@ class _BumbleDateProfileScreenState
     final userData = ref.watch(loginProvider);
     final user =
         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
-    final List<dynamic> interests = user?.interests ?? [];
+    final List<Interests> interests = user?.interests ?? [];
     print('interests...........$interests');
 
     return Column(
@@ -769,8 +770,8 @@ class _BumbleDateProfileScreenState
                     spacing: 8,
                     runSpacing: 8,
                     children: interests.map<Widget>((interests) {
-                      final name = interests['interests'] ?? '';
-                      final emoji = interests['emoji'] ?? '🌟';
+                      final name = interests.interests ?? '';
+                      final emoji = '🌟';
                       return Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 8),
@@ -803,10 +804,9 @@ class _BumbleDateProfileScreenState
                   List<Map<String, dynamic>> selected =
                       interests.map<Map<String, dynamic>>((interest) {
                     return {
-                      'id': interest['id'],
-                      'interests': interest['interests'],
-                      'emoji': interest[
-                          'emoji'], // ✅ Include emoji if you use it later
+                      'id': interest.id,
+                      'interests': interest.interests,
+                      'emoji': '🌟' // ✅ Include emoji if you use it later
                     };
                   }).toList();
 
@@ -1006,8 +1006,7 @@ class _BumbleDateProfileScreenState
   final List<Prompts> serverPrompts = user?.prompts ?? [];
   final List<dynamic> prompts = localPrompts.isNotEmpty ? localPrompts : serverPrompts;
 
-  List<TextEditingController> _editPromptControllers =
-      List.generate(3, (_) => TextEditingController());
+  List<TextEditingController> _editPromptControllers = List.generate(3, (_) => TextEditingController());
 
   // Prepare prompt values for editing
   List<Map<String, String>> editablePrompts = List.generate(
@@ -1428,12 +1427,25 @@ class _BumbleDateProfileScreenState
      final userData = ref.watch(loginProvider);
      final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
   
-    final List<LookingFor> lookingfor = user?.lookingFor?? [].first;
-    final List<Religions> religion = user?.religions?? [];
-    final List<Kids> kids = user?.kids?? [];
-    final List<Drinking> drinking = user?.drinking?? [];
-    final List<StarSign> starsign = user?.starSign?? [].first;
-   
+    final lookingfor = user?.lookingFor?.isNotEmpty == true
+        ? user!.lookingFor!.first.value ?? 'Add'
+        : 'Add';
+
+    final String religion = (user?.religions != null && user!.religions!.isNotEmpty)
+        ? user.religions!.first.religion ?? 'Add'
+        : 'Add';
+
+    final String kids = (user?.kids != null && user!.kids!.isNotEmpty)
+        ? user.kids!.first.kids ?? 'Add'
+        : 'Add';
+
+    final String drinking = (user?.drinking != null && user!.drinking!.isNotEmpty)
+        ? user.drinking!.first.preference ?? 'Add'
+        : 'Add';
+
+    final String starsign = user?.starSign?.name ?? 'Add';
+
+
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1492,13 +1504,13 @@ class _BumbleDateProfileScreenState
             });
           }
         }),
-        // _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', 'Add',
-        //     onTap: () {
-        //   Navigator.push(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => SmokingScreen()),
-        //   );
-        // }),
+        _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', 'Add',
+            onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SmokingScreen()),
+          );
+        }),
         _buildProfileItem(
             Icons.local_drink_outlined, 'Drinking',drinking as String?,
             onTap: () async {
@@ -1650,19 +1662,19 @@ class _BumbleDateProfileScreenState
                 ),
               ),
               InkWell(
-  onTap: () {
-    // Navigate to another screen
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => LanguageSelectionScreen()),
-    );
-  },
-  child: Icon(
-    Icons.arrow_forward_ios,
-    color: Colors.grey[400],
-    size: 16,
-  ),
-),
+              onTap: () {
+                // Navigate to another screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LanguageSelectionScreen()),
+                );
+              },
+              child: Icon(
+                Icons.arrow_forward_ios,
+                color: Colors.grey[400],
+                size: 16,
+              ),
+            ),
 
             ],
           ),

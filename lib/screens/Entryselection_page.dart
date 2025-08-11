@@ -139,9 +139,9 @@ class _SelectPageState extends ConsumerState<SelectPage> {
                             MaterialPageRoute(builder: (_) => CustomBottomNavigationBar()),
                             (route) => false, // remove all previous screens
                           );
-                } else if (statusCode == 400) {
+                } else if (statusCode == 404) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Invalid user.Please signup.")),
+                    const SnackBar(content: Text("user not found,Please signup.")),
                   );
                    Navigator.pushNamed(
                         context,
@@ -203,9 +203,9 @@ class _SelectPageState extends ConsumerState<SelectPage> {
                             MaterialPageRoute(builder: (_) => CustomBottomNavigationBar()),
                             (route) => false, // remove all previous screens
                           );
-                        } else if (statusCode == 400) {
+                        } else if (statusCode == 404) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Invalid user. Please signup.")),
+                            const SnackBar(content: Text("user not found,Please signup.")),
                           );
                           Navigator.push(context, MaterialPageRoute(builder: (context) => LocationScreen()));
                         } else {

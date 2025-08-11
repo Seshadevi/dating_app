@@ -32,6 +32,9 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage> {
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _imageKey = GlobalKey();
   bool _hideFixedImage = false;
+  CardSwiperDirection? _swipeDirection;
+  bool _showOverlay = false;
+
 
   @override
 void initState() {
@@ -94,7 +97,7 @@ void initState() {
   //   currentUserLatitude = 17.3850; // Hyderabad latitude
   //   currentUserLongitude = 78.4867; // Hyderabad longitude
   // }
-
+  
   Future<String> _getPlaceName(double latitude, double longitude) async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
@@ -357,16 +360,28 @@ void initState() {
                         CardSwiper(
                           controller: controller,
                           cardsCount: allUsers.length,
-                          numberOfCardsDisplayed: 1,
+                          numberOfCardsDisplayed: 2,
                           isLoop: false, // Disable loop when tracking progress
                           allowedSwipeDirection: const AllowedSwipeDirection.symmetric(horizontal: true),
-                          backCardOffset: const Offset(0, 0),
+                          backCardOffset: const Offset(0, 20),
                           padding: EdgeInsets.zero,
+                          
                           onSwipe: (previousIndex, currentIndex, direction) {
-                            setState(() {
-                              currentCardIndex = currentIndex ?? 0;
-                            });
-                            
+                             setState(() {
+                            currentCardIndex = currentIndex ?? 0;
+                            _swipeDirection = direction;
+                            _showOverlay = true;
+                          });
+
+                          // Hide overlay after 300ms
+                          Future.delayed(const Duration(milliseconds: 300), () {
+                            if (mounted) {
+                              setState(() {
+                                _showOverlay = false;
+                              });
+                            }
+                          });
+                                                    
                             // Update progress
                             _updateProgress();
                             
@@ -383,7 +398,7 @@ void initState() {
                             if (currentIndex != null) {
                                       ref.read(socketUserProvider.notifier).fetchNextPageIfNearEnd(currentIndex);
                                     }
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
                               _checkVisibility(); // ✅ This ensures visibility is rechecked after card changes
                             });
 
@@ -395,10 +410,37 @@ void initState() {
                             
                             return true;
                           },
+                          // cardBuilder: (BuildContext context, int index, int hOffset, int vOffset) {
+                          //   if (index >= allUsers.length) return Container();
+                          //   return _buildUserCard(allUsers[index % allUsers.length]);
+                          // },
                           cardBuilder: (BuildContext context, int index, int hOffset, int vOffset) {
                             if (index >= allUsers.length) return Container();
-                            return _buildUserCard(allUsers[index % allUsers.length]);
+
+                            return Stack(
+                              children: [
+                                _buildUserCard(allUsers[index % allUsers.length]),
+
+                               if (_showOverlay && _swipeDirection != null)
+                              Positioned(
+                                top: 250,
+                                left: _swipeDirection == CardSwiperDirection.right ? 140 : null,
+                                right: _swipeDirection == CardSwiperDirection.left ? 140 : null,
+                                child: Icon(
+                                  _swipeDirection == CardSwiperDirection.right
+                                      ? Icons.check_circle
+                                      : Icons.cancel,
+                                  size: 80,
+                                  color: _swipeDirection == CardSwiperDirection.right
+                                      ? Colors.green
+                                      : Colors.red,
+                                ),
+                              ),
+
+                              ],
+                            );
                           },
+
                         ),
                       
                       // Show completion screen when all users are viewed
@@ -457,7 +499,7 @@ void initState() {
                       if (!_hideFixedImage && !allUsersCompleted)
                         Positioned(
                           right: 30,
-                          top: 540,
+                          top: 500,
                           child: AnimatedOpacity(
                             opacity: _hideFixedImage ? 0.0 : 1.0,
                             duration: const Duration(milliseconds: 300),
@@ -554,31 +596,31 @@ void initState() {
                   ),
                   
                   // Action buttons
-                  Positioned(
-                    top: 545,
-                    left: 40,
-                    child: SizedBox(
-                      width: 250,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              if (!allUsersCompleted) {
-                                print("Like tapped");
-                              }
-                            },
-                            child: Image.asset(
-                              "assets/userslike.png",
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // Positioned(
+                  //   top: 545,
+                  //   left: 40,
+                  //   child: SizedBox(
+                  //     width: 250,
+                  //     child: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //       children: [
+                  //         GestureDetector(
+                  //           onTap: () {
+                  //             if (!allUsersCompleted) {
+                  //               print("Like tapped");
+                  //             }
+                  //           },
+                  //           child: Image.asset(
+                  //             "assets/userslike.png",
+                  //             width: 50,
+                  //             height: 50,
+                  //             fit: BoxFit.cover,
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   
                   // User name and age overlay
                   Positioned(
@@ -981,21 +1023,21 @@ void initState() {
           ),
 
           // 👇 Positioned icon (your action icon like "userslike.png")
-          Positioned(
-            bottom: 8,
-            right: 230,
-            child: GestureDetector(
-              onTap: () {
-                // TODO: handle tap
-                print("Icon tapped on image $index");
-              },
-              child: Image.asset(
-                "assets/userslike.png", // replace with your asset path
-                width: 76,
-                height: 76,
-              ),
-            ),
-          ),
+          // Positioned(
+          //   bottom: 8,
+          //   right: 230,
+          //   child: GestureDetector(
+          //     onTap: () {
+          //       // TODO: handle tap
+          //       print("Icon tapped on image $index");
+          //     },
+          //     child: Image.asset(
+          //       "assets/userslike.png", // replace with your asset path
+          //       width: 76,
+          //       height: 76,
+          //     ),
+          //   ),
+          // ),
         ],
       );
     },

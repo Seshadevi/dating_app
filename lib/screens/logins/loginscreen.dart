@@ -86,12 +86,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   
                   onTap: () {
                    
-                    FocusScope.of(context).unfocus(); // ✅ Hide keyboard before showing dialog
+                    // FocusScope.of(context).unfocus(); // ✅ Hide keyboard before showing dialog
                     if (phoneNumber.isNotEmpty) {
                       Future.delayed(const Duration(milliseconds: 100), () {
                         showDialog(
                           context: context,
                           builder: (_) => _buildVerifyDialog(context, phoneNumber),
+
                         );
                       });
                     }
@@ -175,23 +176,30 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 TextButton(
                   onPressed: () async {
-                    final FocusNode phoneFocusNode = FocusNode();
+                  //   final FocusNode phoneFocusNode = FocusNode();
 
-                   phoneFocusNode.unfocus(); // force close
-                    await Future.delayed(const Duration(milliseconds: 1)); // slight delay
+                  //  phoneFocusNode.unfocus(); // force close
+                  //   await Future.delayed(const Duration(milliseconds: 1)); // slight delay
+                  Navigator.pop(context); // Close popup regardless
 
-                    bool success = await ref
-                        .read(loginProvider.notifier)
-                        .verifyPhoneNumber(phoneNumber, ref);
+                  final result = await ref.read(loginProvider.notifier).verifyPhoneNumber(phoneNumber, ref);
+                
+                  if (result['success'] == true) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => OTPScreen(phoneNumber: phoneNumber),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(result['message'] ?? "Failed to send OTP."),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
 
-                    if (success) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => OTPScreen(phoneNumber: phoneNumber),
-                        ),
-                      );
-                    }
                   },
                   child: const Text(
                     "Confirm",

@@ -13,7 +13,7 @@ class GlitchScreen extends StatelessWidget {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
         title: const Text(
-          'Ever Qupid',
+          'Ever Qpid',
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,

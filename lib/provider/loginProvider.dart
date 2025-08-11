@@ -74,54 +74,60 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
     }
   }
 
-  Future<bool> verifyPhoneNumber(String phoneNumber, WidgetRef ref) async {
-    print('Phone number: $phoneNumber');
-    final auth = ref.read(firebaseAuthProvider);
-    var loader = ref.read(loadingProvider.notifier);
-    var codeSentNotifier = ref.read(codeSentProvider.notifier);
-    var pref = await SharedPreferences.getInstance();
-    // Use a Completer to handle the async callbacks
-    Completer<bool> completer = Completer<bool>();
-    try {
-      print('Starting phone verification...');
-      await auth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          print('Verification completed automatically.');
-          await auth.signInWithCredential(credential);
-          if (!completer.isCompleted) {
-            completer.complete(true);
-          }
-        },
-        verificationFailed: (FirebaseAuthException e) {
-          print("Verification failed: ${e.message}");
-          if (!completer.isCompleted) {
-            completer.complete(false);
-          }
-        },
-        codeSent: (String verificationId, int? resendToken) {
-          print("Code sent. Verification ID: $verificationId");
-          pref.setString("verificationid", verificationId);
-          ref.read(verificationIdProvider.notifier).state = verificationId;
-          //codeSentNotifier.state = true;
-          if (!completer.isCompleted) {
-            completer.complete(true);
-          }
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {
-          print("Auto-retrieval timeout. Verification ID: $verificationId");
-        },
-      );
-      return await completer.future;
-    } catch (e) {
-      loader.state = false;
-      print("Error during phone verification: $e");
-      if (!completer.isCompleted) {
-        completer.complete(false);
-      }
-      return false;
+ Future<Map<String, dynamic>> verifyPhoneNumber(String phoneNumber, WidgetRef ref) async {
+  print('Phone number: $phoneNumber');
+  final auth = ref.read(firebaseAuthProvider);
+  var loader = ref.read(loadingProvider.notifier);
+  var pref = await SharedPreferences.getInstance();
+
+  Completer<Map<String, dynamic>> completer = Completer<Map<String, dynamic>>();
+
+  try {
+    print('Starting phone verification...');
+    await auth.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        print('Verification completed automatically.');
+        await auth.signInWithCredential(credential);
+        if (!completer.isCompleted) {
+          completer.complete({'success': true});
+        }
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        print("Verification failed: ${e.message}");
+        if (!completer.isCompleted) {
+          completer.complete({
+            'success': false,
+            'message': e.message ?? 'Verification failed. Please try again.'
+          });
+        }
+      },
+      codeSent: (String verificationId, int? resendToken) {
+        print("Code sent. Verification ID: $verificationId");
+        pref.setString("verificationid", verificationId);
+        ref.read(verificationIdProvider.notifier).state = verificationId;
+        if (!completer.isCompleted) {
+          completer.complete({'success': true});
+        }
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        print("Auto-retrieval timeout. Verification ID: $verificationId");
+      },
+    );
+
+    return await completer.future;
+  } catch (e) {
+    loader.state = false;
+    print("Error during phone verification: $e");
+    if (!completer.isCompleted) {
+      completer.complete({
+        'success': false,
+        'message': 'Something went wrong: ${e.toString()}'
+      });
     }
+    return await completer.future;
   }
+}
 
   // Future<void> signInWithPhoneNumber(String smsCode, WidgetRef ref) async {
   //   final auth = ref.read(firebaseAuthProvider);

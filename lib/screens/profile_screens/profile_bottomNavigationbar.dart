@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 // Import your actual screens here
 import 'package:flutter/services.dart'; 
-import 'package:dating/screens/profile_screens/chat_pay_Screen.dart';
+import 'package:dating/screens/profile_screens/message_screen.dart';
 import 'package:dating/screens/profile_screens/discover_screen.dart';
 import 'package:dating/screens/profile_screens/heartsync_screen.dart';
 import 'package:dating/screens/profile_screens/liked_Screen.dart';
@@ -27,14 +27,14 @@ class _CustomBottomNavigationBarState
         LikedYouScreen(),
         MessagesScreen(),
   ];
-
+  
   void _onItemTapped(int index) {
     if (index == _selectedIndex) return;
     setState(() {
       _selectedIndex = index;
     });
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return PopScope(
