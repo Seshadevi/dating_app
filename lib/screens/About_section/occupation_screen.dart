@@ -27,6 +27,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
   void _onJobSelected(int? id) async {
     if (selectedJobId == id) return; // Don't update if same job is selected
     
+    
     setState(() {
       selectedJobId = id;
     });
@@ -71,6 +72,9 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
                         SnackBar(
                             content: Text('job updated successfully!')),
                       );
+                      // Navigator.of(context).pop(); // works if pushed via Navigator.push()
+                      
+
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -135,7 +139,15 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-          onPressed: () => Navigator.pushNamed(context, '/completeprofile'),
+          onPressed: () 
+          => 
+          //Navigator.pushNamed(context, '/completeprofile'),
+          Navigator.pushNamed(
+                context,
+                '/completeprofile',
+                arguments: 'work_section', // could be any identifier
+              )
+
         ),
       ),
       backgroundColor: Colors.white,

@@ -195,7 +195,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
 
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                            content: Text('job updated successfully!')),
+                            content: Text('education updated successfully!')),
                       );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -203,11 +203,11 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
                             content: Text('Failed to upload job: $e')),
                       );
                     }
-            if (value != null) {
-              _updateEducation(education);
-            }
+            // if (value != null) {
+            //   _updateEducation(education);
+            // }
           },
-          activeColor: Colors.pink,
+          activeColor: const Color.fromARGB(255, 23, 136, 36),
         ),
         title: Text(
           education.institution ?? 'Unknown Institution',
@@ -265,7 +265,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
               value: 'delete',
               child: Row(
                 children: [
-                  Icon(Icons.delete, size: 18, color: Colors.red),
+                  Icon(Icons.delete, size: 18, color: Color.fromARGB(255, 99, 91, 90)),
                   SizedBox(width: 8),
                   Text('Delete'),
                 ],
@@ -288,38 +288,38 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
     }
   }
 
-  void _updateEducation(Data education) {
-    // Show confirmation dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Select Education'),
-          content: Text(
-            'Do you want to show "${education.institution}" on your profile?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                setState(() {
-                  selectedEducationId = null;
-                });
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _performUpdate(education);
-              },
-              child: const Text('Confirm'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // void _updateEducation(Data education) {
+  //   // Show confirmation dialog
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: const Text('Select Education'),
+  //         content: Text(
+  //           'Do you want to show "${education.institution}" on your profile?',
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //               setState(() {
+  //                 selectedEducationId = null;
+  //               });
+  //             },
+  //             child: const Text('Cancel'),
+  //           ),
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //               _performUpdate(education);
+  //             },
+  //             child: const Text('Confirm'),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   void _performUpdate(Data education) {
     // Here you would call your update API

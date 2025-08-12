@@ -50,9 +50,11 @@ class _BumbleDateProfileScreenState
   final TextEditingController _bioController = TextEditingController();
   bool isAddingPrompt = false;
   final TextEditingController _promptController = TextEditingController();
-  List<Map<String, dynamic>> localPrompts = [];
+  List<String> localPrompts = [];
   int? editingPromptIndex; // Track which prompt is being edited
   TextEditingController _editPromptController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
   late File image;
   String? selectedLooking;
   String? selectedkid;
@@ -67,6 +69,21 @@ class _BumbleDateProfileScreenState
   final ImagePicker _picker = ImagePicker();
   // final TextEditingController _bioController = TextEditingController();
   String selectedGender = 'Man';
+   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args == 'work_section') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollController.animateTo(
+          500, // <-- pixel position of your "middle" section
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      });
+    }
+  }
   @override
   void initState() {
     super.initState();
@@ -1051,243 +1068,233 @@ class _BumbleDateProfileScreenState
     );
   }
 
-  Widget _buildPromptsSection(BuildContext context) {
-    final userData = ref.watch(loginProvider);
-    final user =
-        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
-    final List<Prompts> serverPrompts = user?.prompts ?? [];
-    final List<dynamic> prompts =
-        localPrompts.isNotEmpty ? localPrompts : serverPrompts;
+Widget _buildPromptsSection(BuildContext context) {
+  final userData = ref.watch(loginProvider);
+  final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
 
-    List<TextEditingController> _editPromptControllers =
-        List.generate(3, (_) => TextEditingController());
+  // Always store and work with List<String>
+  final List<String> serverPrompts = user?.prompts
+          ?.map((p) => p.prompt)
+          .toList()
+          .cast<String>() ??
+      [];
 
-    // Prepare prompt values for editing
-    List<Map<String, String>> editablePrompts = List.generate(
-      3,
-      (i) => {
-        "prompt": i < prompts.length
-            ? (prompts[i] is Prompts
-                ? prompts[i].prompt
-                : prompts[i]['prompt'] ?? '')
-            : '',
-      },
-    );
+  final List<String> prompts =
+      localPrompts.isNotEmpty ? localPrompts : serverPrompts;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Prompts',
-          style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
+  List<TextEditingController> _editPromptControllers = List.generate(
+    3,
+    (i) => TextEditingController(
+      text: i < prompts.length ? prompts[i] : '',
+    ),
+  );
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'Prompts',
+        style: TextStyle(
+            fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
+      ),
+      const SizedBox(height: 8),
+      const Text(
+        'Add personality to your profile with prompts.',
+        style: TextStyle(fontSize: 14, color: Colors.grey),
+      ),
+      const SizedBox(height: 10),
+      Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color.fromARGB(255, 239, 241, 239)),
         ),
-        const SizedBox(height: 8),
-        const Text(
-          'Add personality to your profile with prompts.',
-          style: TextStyle(fontSize: 14, color: Colors.grey),
-        ),
-        const SizedBox(height: 16),
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade300),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (editingPromptIndex == null)
-                ...prompts.asMap().entries.map((entry) {
-                  final int index = entry.key;
-                  final String promptText = entry.value is Prompts
-                      ? entry.value.prompt
-                      : entry.value['prompt'] ?? '';
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (editingPromptIndex == null)
+              ...prompts.asMap().entries.map((entry) {
+                final promptText = entry.value;
 
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 12),
-                    decoration: BoxDecoration(
-                      border: Border(
-                          bottom: BorderSide(color: Colors.grey.shade300)),
+                return Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color:const Color.fromARGB(255, 239, 241, 239)),
                     ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            promptText,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                            ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          promptText,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
                           ),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.edit,
-                              color: Colors.black, size: 15),
-                          onPressed: () {
-                            setState(() {
-                              editingPromptIndex = 0;
-                              _editPromptControllers = List.generate(
-                                3,
-                                (i) => TextEditingController(
-                                  text: i < prompts.length
-                                      ? (prompts[i] is Prompts
-                                          ? prompts[i].prompt
-                                          : prompts[i]['prompt'] ?? '')
-                                      : '',
-                                ),
-                              );
-                            });
-                          },
-                        )
-                      ],
-                    ),
-                  );
-                }).toList()
-              else
-                Column(
-                  children: List.generate(3, (i) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFFF8E1),
-                        border: Border(
-                          bottom: BorderSide(color: Colors.grey.shade300),
-                        ),
                       ),
-                      child: TextField(
-                        controller: _editPromptControllers[i],
-                        maxLines: 2,
-                        style: const TextStyle(fontSize: 15),
-                        decoration: InputDecoration(
-                          hintText: 'Prompt ${i + 1}',
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    );
-                  }),
-                ),
-              if (editingPromptIndex != null)
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
+                      IconButton(
+                        icon: const Icon(Icons.edit,
+                            color: Colors.black, size: 15),
                         onPressed: () {
                           setState(() {
-                            editingPromptIndex = null;
+                            editingPromptIndex = 0;
+                            _editPromptControllers = List.generate(
+                              3,
+                              (i) => TextEditingController(
+                                text: i < prompts.length ? prompts[i] : '',
+                              ),
+                            );
                           });
                         },
-                        child: const Text('Cancel'),
-                      ),
-                      const SizedBox(width: 8),
-                      ElevatedButton(
-                        onPressed: () {
-                          final updatedPrompts = _editPromptControllers
-                              .map((c) => c.text.trim())
-                              .where((text) => text.isNotEmpty)
-                              .map((text) => {'prompt': text})
-                              .toList();
-
-                          setState(() {
-                            localPrompts = updatedPrompts;
-                            editingPromptIndex = null;
-                          });
-
-                          ref.read(loginProvider.notifier).updateProfile(
-                                image: null,
-                                modeid: null,
-                                bio: null,
-                                modename: null,
-                                prompt: updatedPrompts,
-                                qualityId: null,
-                                languagesId: null,
-                              );
-                        },
-                        child: const Text('Save All'),
-                      ),
+                      )
                     ],
                   ),
-                )
-              else if (prompts.length < 3)
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isAddingPrompt = true;
-                      _promptController.clear();
-                    });
-                  },
-                  child: Container(
-                    width: double.infinity,
+                );
+              }).toList()
+            else
+              Column(
+                children: List.generate(3, (i) {
+                  return Container(
                     padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 12),
+                        horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
-                      border:
-                          Border(top: BorderSide(color: Colors.grey.shade300)),
+                      color: const Color(0xFFFFF8E1),
+                      border: Border(
+                        bottom: BorderSide(color: Colors.grey.shade300),
+                      ),
                     ),
-                    child: Row(
-                      children: const [
-                        Expanded(
-                          child: Text(
-                            'Add Prompt',
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        Icon(Icons.add, size: 20),
-                      ],
+                    child: TextField(
+                      controller: _editPromptControllers[i],
+                      maxLines: 2,
+                      style: const TextStyle(fontSize: 15),
+                      decoration: InputDecoration(
+                        hintText: 'Prompt ${i + 1}',
+                        border: InputBorder.none,
+                      ),
                     ),
-                  ),
+                  );
+                }),
+              ),
+            if (editingPromptIndex != null)
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          editingPromptIndex = null;
+                        });
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      onPressed: () {
+                        final updatedPrompts = _editPromptControllers
+                            .map((c) => c.text.trim())
+                            .where((text) => text.isNotEmpty)
+                            .take(3)
+                            .toList();
+
+                        setState(() {
+                          localPrompts = updatedPrompts;
+                          editingPromptIndex = null;
+                        });
+
+                        ref.read(loginProvider.notifier).updateProfile(
+                              image: null,
+                              modeid: null,
+                              bio: null,
+                              modename: null,
+                              prompt: updatedPrompts,
+                              qualityId: null,
+                              languagesId: null,
+                            );
+                      },
+                      child: const Text('Save All'),
+                    ),
+                  ],
                 ),
-              if (isAddingPrompt)
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              )
+            else if (prompts.length < 3)
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isAddingPrompt = true;
+                    _promptController.clear();
+                  });
+                },
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 16, horizontal: 12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF8E1),
                     border:
                         Border(top: BorderSide(color: Colors.grey.shade300)),
                   ),
-                  child: TextField(
-                    controller: _promptController,
-                    maxLines: 2,
-                    style: const TextStyle(fontSize: 15, color: Colors.black87),
-                    decoration: InputDecoration(
-                      hintText: 'Write your prompt...',
-                      border: InputBorder.none,
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.check, color: Colors.green),
-                        onPressed: () {
-                          final promptText = _promptController.text.trim();
-                          if (promptText.isNotEmpty) {
-                            setState(() {
-                              localPrompts = [
-                                ...prompts.map((p) => p is Prompts
-                                    ? {"prompt": p.prompt}
-                                    : {"prompt": p['prompt']}),
-                                {"prompt": promptText},
-                              ];
-                              _promptController.clear();
-                              isAddingPrompt = false;
-                            });
-                          }
-                        },
+                  child: Row(
+                    children: const [
+                      Expanded(
+                        child: Text(
+                          'Add Prompt',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
                       ),
+                      Icon(Icons.add, size: 20),
+                    ],
+                  ),
+                ),
+              ),
+            if (isAddingPrompt)
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 233, 231, 226),
+                  border: Border(top: BorderSide(color: Colors.grey.shade300)),
+                ),
+                child: TextField(
+                  controller: _promptController,
+                  maxLines: 2,
+                  style: const TextStyle(fontSize: 15, color: Colors.black87),
+                  decoration: InputDecoration(
+                    hintText: 'Write your prompt...',
+                    border: InputBorder.none,
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.check, color: Colors.green),
+                      onPressed: () {
+                        final promptText = _promptController.text.trim();
+                        if (promptText.isNotEmpty) {
+                          setState(() {
+                            localPrompts = [
+                              ...prompts,
+                              promptText,
+                            ].take(3).toList(); // limit to 3
+                            _promptController.clear();
+                            isAddingPrompt = false;
+                          });
+                        }
+                      },
                     ),
                   ),
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
+
 
   Widget _buildBioSection() {
     final userData = ref.watch(loginProvider);
@@ -1317,10 +1324,10 @@ class _BumbleDateProfileScreenState
             color: Colors.grey[600],
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 10),
         if (isEditing)
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
               color: const Color(0xFFFFF8E1),
               borderRadius: BorderRadius.circular(12),
@@ -1449,10 +1456,10 @@ class _BumbleDateProfileScreenState
         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
     Work? work = user!.work;
     final workDisplayText =
-        work != null ? work.title! + ('at ${work.company}') : 'Add';
+        work != null ? work.title! + (' at ${work.company}') : 'Add';
     Education? education = user.education;
     final educationText = education != null
-        ? education.institution! + ('in ${education.gradYear}')
+        ? education.institution! + (' in ${education.gradYear}')
         : 'Add';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -757,7 +757,7 @@ Future<int> updateProfile({
   String? bio,
   List<int>? interestId,
   List<int>? qualityId,
-  List<Map<String, String>>? prompt,
+  List<String>? prompt,
   List<File>? image,
   List<int>? languagesId,
   int? starsignId,
@@ -768,9 +768,14 @@ Future<int> updateProfile({
   List<int>? kidsId,
   List<int>? drinkingId,
   int? eductionId,
+  String? smoking,
+  String? gender,
+  bool? showOnProfile
 }) async {
   final loadingState = ref.read(loadingProvider.notifier);
   loadingState.state = true;
+   print(
+        'updated data....modeId:$modeid,smoking:$smoking, modename:$modename, causedId:$causeId, intrestId:$interestId, qualityId:$qualityId, bio:$bio, prompt:$prompt, image:${image?.length},languages:$languagesId,work:$jobId,education:$eductionId,starsign:$starsignId');
 
   try {
     final String apiUrl = Dgapi.updateprofile;
@@ -809,6 +814,9 @@ Future<int> updateProfile({
     if (jobId != null) request.fields['workId'] = jobId.toString();
     if (educationId != null) request.fields['educationId'] = educationId.toString();
     if (starsignId != null) request.fields['starSignId'] = starsignId.toString();
+    if (smoking != null) request.fields['smoking'] = smoking.toString();
+    if (gender != null) request.fields['gender'] = gender.toString();
+    if (showOnProfile != null) request.fields['showOnProfile'] = showOnProfile.toString();
 
     // Add list fields as indexed keys
     void addListField(String key, List<int>? values) {
@@ -826,11 +834,17 @@ Future<int> updateProfile({
     addListField('kids', kidsId);
     addListField('drinking', drinkingId);
     addListField('languageId', languagesId);
+    // addListField('languageId', languagesId);
 
     // Handle prompt (List<Map<String,String>>) as JSON string if needed
+    // if (prompt != null && prompt.isNotEmpty) {
+    //   request.fields['prompts'] = jsonEncode(prompt);
+    // }
     if (prompt != null && prompt.isNotEmpty) {
-      request.fields['prompts'] = jsonEncode(prompt);
-    }
+        for (int i = 0; i < prompt.length; i++) {
+          request.fields['prompts[$i]'] = prompt[i].toString();
+        }
+      }
 
     // Upload images if any
     if (image != null && image.isNotEmpty) {

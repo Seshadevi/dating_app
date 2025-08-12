@@ -106,7 +106,7 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
                             final option = options[index].value?.toString().trim() ?? '';
                             final isSelected = selectedOption?.trim() == option;
 
-                            debugPrint('Comparing: selectedOption="$selectedOption" | option="$option" | isSelected=$isSelected');
+                            debugPrint('Comparing: selectedOption="$selectedOption" | option=."$option" | isSelected=$isSelected');
 
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 12.0),

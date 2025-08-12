@@ -15,7 +15,7 @@ class LearnMoreScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          'Gender On  Bumble',
+          'Gender On  Everqid',
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
