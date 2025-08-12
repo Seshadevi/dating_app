@@ -90,11 +90,11 @@ class _UpdateGenderScreenState extends ConsumerState<UpdateGenderScreen> {
                 fontSize: 16,
               ),
             ),
-            Icon(
-              isSelected ? Icons.toggle_on : Icons.toggle_off_outlined,
-              color: isSelected ? Colors.white : const Color(0xFF89A000),
-              size: 32,
-            ),
+            // Icon(
+            //   isSelected ? Icons.toggle_on : Icons.toggle_off_outlined,
+            //   color: isSelected ? Colors.white : const Color(0xFF89A000),
+            //   size: 32,
+            // ),
           ],
         ),
       ),
@@ -111,6 +111,7 @@ class _UpdateGenderScreenState extends ConsumerState<UpdateGenderScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
+          // onPressed: () => Navigator.pushNamed(context, '/completeprofile'),
         ),
       ),
       backgroundColor: Colors.white,

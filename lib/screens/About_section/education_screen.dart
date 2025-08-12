@@ -39,7 +39,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-          onPressed: () => Navigator.pushNamed(context, '/completeprofile'),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: Column(
@@ -196,7 +196,9 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                             content: Text('education updated successfully!')),
+                            
                       );
+                      Navigator.pop(context);
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(

@@ -65,22 +65,29 @@ class _BumbleDateProfileScreenState
   String? userDrink;
   String? userReligion;
   bool hasUserUpdatedDrink = false;
+  final GlobalKey _workSectionKey = GlobalKey();
 
   final ImagePicker _picker = ImagePicker();
   // final TextEditingController _bioController = TextEditingController();
-  String selectedGender = 'Man';
+  // String selectedGender = 'Man';
    @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args == 'work_section') {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollController.animateTo(
-          500, // <-- pixel position of your "middle" section
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeInOut,
-        );
+        final contextForSection = _workSectionKey.currentContext;
+        if (contextForSection != null) {
+          Scrollable.ensureVisible(
+            contextForSection,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          );
+          debugPrint("✅ Scrolled to Work Section");
+        } else {
+          debugPrint("⚠ Work section not found in widget tree");
+        }
       });
     }
   }
@@ -167,54 +174,54 @@ class _BumbleDateProfileScreenState
           children: [
             // Profile Strength Section
             _buildProfileStrengthSection(),
-            SizedBox(height: 24),
+            SizedBox(height: 15),
 
             // Photos and Videos Section
             _buildPhotosVideosSection(),
-            SizedBox(height: 24),
+            SizedBox(height: 15),
 
             // Get Verified Section
             _buildGetVerifiedSection(),
-            SizedBox(height: 24),
+            SizedBox(height: 15),
 
             // My Life Section
             _buildQualitiesSection(context),
-            SizedBox(height: 24),
+            SizedBox(height: 15),
 
             // Interests Section
             _buildInterestsSection(context),
-            SizedBox(height: 24),
+            SizedBox(height: 15),
             // Interests Section
             _buildCausesSection(context),
-            SizedBox(height: 24),
+            SizedBox(height: 15),
 
             // Prompts Section
             _buildPromptsSection(context),
-            SizedBox(height: 24),
+            SizedBox(height: 15),
 
             // Bio Section
             _buildBioSection(),
-            SizedBox(height: 24),
+            SizedBox(height: 15),
 
             // About You Section
             _buildAboutYouSection(),
-            SizedBox(height: 24),
+            SizedBox(height: 15),
 
             // More About You Section
             _buildMoreAboutYouSection(),
-            SizedBox(height: 24),
+            SizedBox(height: 15),
 
             // Pronouns Section
             _buildPronounsSection(),
-            SizedBox(height: 24),
+            SizedBox(height: 15),
 
             // Languages Section
             _buildLanguagesSection(),
-            SizedBox(height: 24),
+            SizedBox(height: 15),
 
             // Connected Accounts Section
             _buildConnectedAccountsSection(),
-            SizedBox(height: 24),
+            SizedBox(height: 15),
           ],
         ),
       ),
@@ -254,9 +261,9 @@ class _BumbleDateProfileScreenState
             ),
             padding: EdgeInsets.all(2), // This simulates the border thickness
             child: Container(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: Color.fromARGB(255, 247, 245, 247),
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(
                     14), // Slightly smaller for inner container
               ),
@@ -301,7 +308,7 @@ class _BumbleDateProfileScreenState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Photos And Videos',
+          'Select Photos',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -1068,233 +1075,232 @@ class _BumbleDateProfileScreenState
     );
   }
 
-Widget _buildPromptsSection(BuildContext context) {
-  final userData = ref.watch(loginProvider);
-  final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+  Widget _buildPromptsSection(BuildContext context) {
+    final userData = ref.watch(loginProvider);
+    final user =
+        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
 
-  // Always store and work with List<String>
-  final List<String> serverPrompts = user?.prompts
-          ?.map((p) => p.prompt)
-          .toList()
-          .cast<String>() ??
-      [];
+    // Always store and work with List<String>
+    final List<String> serverPrompts =
+        user?.prompts?.map((p) => p.prompt).toList().cast<String>() ?? [];
 
-  final List<String> prompts =
-      localPrompts.isNotEmpty ? localPrompts : serverPrompts;
+    final List<String> prompts =
+        localPrompts.isNotEmpty ? localPrompts : serverPrompts;
 
-  List<TextEditingController> _editPromptControllers = List.generate(
-    3,
-    (i) => TextEditingController(
-      text: i < prompts.length ? prompts[i] : '',
-    ),
-  );
-
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'Prompts',
-        style: TextStyle(
-            fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
+    List<TextEditingController> _editPromptControllers = List.generate(
+      3,
+      (i) => TextEditingController(
+        text: i < prompts.length ? prompts[i] : '',
       ),
-      const SizedBox(height: 8),
-      const Text(
-        'Add personality to your profile with prompts.',
-        style: TextStyle(fontSize: 14, color: Colors.grey),
-      ),
-      const SizedBox(height: 10),
-      Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color.fromARGB(255, 239, 241, 239)),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Prompts',
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (editingPromptIndex == null)
-              ...prompts.asMap().entries.map((entry) {
-                final promptText = entry.value;
+        const SizedBox(height: 8),
+        const Text(
+          'Add personality to your profile with prompts.',
+          style: TextStyle(fontSize: 14, color: Colors.grey),
+        ),
+        const SizedBox(height: 10),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color.fromARGB(255, 239, 241, 239)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (editingPromptIndex == null)
+                ...prompts.asMap().entries.map((entry) {
+                  final promptText = entry.value;
 
-                return Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color:const Color.fromARGB(255, 239, 241, 239)),
+                  return Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                            color: const Color.fromARGB(255, 239, 241, 239)),
+                      ),
                     ),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          promptText,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            promptText,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.edit,
-                            color: Colors.black, size: 15),
-                        onPressed: () {
-                          setState(() {
-                            editingPromptIndex = 0;
-                            _editPromptControllers = List.generate(
-                              3,
-                              (i) => TextEditingController(
-                                text: i < prompts.length ? prompts[i] : '',
-                              ),
-                            );
-                          });
-                        },
-                      )
-                    ],
-                  ),
-                );
-              }).toList()
-            else
-              Column(
-                children: List.generate(3, (i) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFF8E1),
-                      border: Border(
-                        bottom: BorderSide(color: Colors.grey.shade300),
-                      ),
-                    ),
-                    child: TextField(
-                      controller: _editPromptControllers[i],
-                      maxLines: 2,
-                      style: const TextStyle(fontSize: 15),
-                      decoration: InputDecoration(
-                        hintText: 'Prompt ${i + 1}',
-                        border: InputBorder.none,
-                      ),
+                        IconButton(
+                          icon: const Icon(Icons.edit,
+                              color: Colors.black, size: 15),
+                          onPressed: () {
+                            setState(() {
+                              editingPromptIndex = 0;
+                              _editPromptControllers = List.generate(
+                                3,
+                                (i) => TextEditingController(
+                                  text: i < prompts.length ? prompts[i] : '',
+                                ),
+                              );
+                            });
+                          },
+                        )
+                      ],
                     ),
                   );
-                }),
-              ),
-            if (editingPromptIndex != null)
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          editingPromptIndex = null;
-                        });
-                      },
-                      child: const Text('Cancel'),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: () {
-                        final updatedPrompts = _editPromptControllers
-                            .map((c) => c.text.trim())
-                            .where((text) => text.isNotEmpty)
-                            .take(3)
-                            .toList();
-
-                        setState(() {
-                          localPrompts = updatedPrompts;
-                          editingPromptIndex = null;
-                        });
-
-                        ref.read(loginProvider.notifier).updateProfile(
-                              image: null,
-                              modeid: null,
-                              bio: null,
-                              modename: null,
-                              prompt: updatedPrompts,
-                              qualityId: null,
-                              languagesId: null,
-                            );
-                      },
-                      child: const Text('Save All'),
-                    ),
-                  ],
+                }).toList()
+              else
+                Column(
+                  children: List.generate(3, (i) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFF8E1),
+                        border: Border(
+                          bottom: BorderSide(color: Colors.grey.shade300),
+                        ),
+                      ),
+                      child: TextField(
+                        controller: _editPromptControllers[i],
+                        maxLines: 2,
+                        style: const TextStyle(fontSize: 15),
+                        decoration: InputDecoration(
+                          hintText: 'Prompt ${i + 1}',
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    );
+                  }),
                 ),
-              )
-            else if (prompts.length < 3)
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    isAddingPrompt = true;
-                    _promptController.clear();
-                  });
-                },
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 16, horizontal: 12),
+              if (editingPromptIndex != null)
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            editingPromptIndex = null;
+                          });
+                        },
+                        child: const Text('Cancel'),
+                      ),
+                      const SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () {
+                          final updatedPrompts = _editPromptControllers
+                              .map((c) => c.text.trim())
+                              .where((text) => text.isNotEmpty)
+                              .take(3)
+                              .toList();
+
+                          setState(() {
+                            localPrompts = updatedPrompts;
+                            editingPromptIndex = null;
+                          });
+
+                          ref.read(loginProvider.notifier).updateProfile(
+                                image: null,
+                                modeid: null,
+                                bio: null,
+                                modename: null,
+                                prompt: updatedPrompts,
+                                qualityId: null,
+                                languagesId: null,
+                              );
+                        },
+                        child: const Text('Save All'),
+                      ),
+                    ],
+                  ),
+                )
+              else if (prompts.length < 3)
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      isAddingPrompt = true;
+                      _promptController.clear();
+                    });
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 12),
+                    decoration: BoxDecoration(
+                      border:
+                          Border(top: BorderSide(color: Colors.grey.shade300)),
+                    ),
+                    child: Row(
+                      children: const [
+                        Expanded(
+                          child: Text(
+                            'Add Prompt',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        Icon(Icons.add, size: 20),
+                      ],
+                    ),
+                  ),
+                ),
+              if (isAddingPrompt)
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 233, 231, 226),
                     border:
                         Border(top: BorderSide(color: Colors.grey.shade300)),
                   ),
-                  child: Row(
-                    children: const [
-                      Expanded(
-                        child: Text(
-                          'Add Prompt',
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w600),
-                        ),
+                  child: TextField(
+                    controller: _promptController,
+                    maxLines: 2,
+                    style: const TextStyle(fontSize: 15, color: Colors.black87),
+                    decoration: InputDecoration(
+                      hintText: 'Write your prompt...',
+                      border: InputBorder.none,
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.check, color: Colors.green),
+                        onPressed: () {
+                          final promptText = _promptController.text.trim();
+                          if (promptText.isNotEmpty) {
+                            setState(() {
+                              localPrompts = [
+                                ...prompts,
+                                promptText,
+                              ].take(3).toList(); // limit to 3
+                              _promptController.clear();
+                              isAddingPrompt = false;
+                            });
+                          }
+                        },
                       ),
-                      Icon(Icons.add, size: 20),
-                    ],
-                  ),
-                ),
-              ),
-            if (isAddingPrompt)
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 233, 231, 226),
-                  border: Border(top: BorderSide(color: Colors.grey.shade300)),
-                ),
-                child: TextField(
-                  controller: _promptController,
-                  maxLines: 2,
-                  style: const TextStyle(fontSize: 15, color: Colors.black87),
-                  decoration: InputDecoration(
-                    hintText: 'Write your prompt...',
-                    border: InputBorder.none,
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.check, color: Colors.green),
-                      onPressed: () {
-                        final promptText = _promptController.text.trim();
-                        if (promptText.isNotEmpty) {
-                          setState(() {
-                            localPrompts = [
-                              ...prompts,
-                              promptText,
-                            ].take(3).toList(); // limit to 3
-                            _promptController.clear();
-                            isAddingPrompt = false;
-                          });
-                        }
-                      },
                     ),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
-      ),
-    ],
-  );
-}
-
+      ],
+    );
+  }
 
   Widget _buildBioSection() {
     final userData = ref.watch(loginProvider);
@@ -1327,9 +1333,9 @@ Widget _buildPromptsSection(BuildContext context) {
         const SizedBox(height: 10),
         if (isEditing)
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF8E1),
+              color:  Colors.white,
               borderRadius: BorderRadius.circular(12),
               border:
                   Border.all(color: const Color.fromARGB(255, 151, 144, 144)),
@@ -1339,7 +1345,7 @@ Widget _buildPromptsSection(BuildContext context) {
               maxLines: 5,
               textInputAction: TextInputAction.done,
               keyboardType: TextInputType.multiline,
-              style: const TextStyle(fontSize: 16, color: Colors.black87),
+              style: const TextStyle(fontSize: 12, color: Colors.black87),
               decoration: InputDecoration(
                 hintText: 'Write about you',
                 border: InputBorder.none,
@@ -1461,6 +1467,8 @@ Widget _buildPromptsSection(BuildContext context) {
     final educationText = education != null
         ? education.institution! + (' in ${education.gradYear}')
         : 'Add';
+    // Education? education = user.education;
+    final selectgender = user.gender != null ? user.gender : 'Add';
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1478,29 +1486,26 @@ Widget _buildPromptsSection(BuildContext context) {
             'Work',
             //  workDisplayText,
             workDisplayText, onTap: () {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => OccupationScreen()));
+          Navigator.pushNamed(context, '/occupationscreen');
         }),
         _buildProfileItem(Icons.school_outlined, 'Education', educationText,
             onTap: () {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => EducationScreen()));
+          
+               Navigator.pushNamed(context, '/educationscreen');
         }),
-        _buildProfileItem(Icons.person_outline, 'Gender', selectedGender,
+        _buildProfileItem(Icons.person_outline, 'Gender', selectgender,
             onTap: () {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => UpdateGenderScreen()));
+         
+               Navigator.pushNamed(context, '/updategenderscreen');
         }),
         _buildProfileItem(Icons.location_on_outlined, 'Location', 'Add',
             onTap: () {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => CitySearchPage()));
+          
+               Navigator.pushNamed(context, '/citysearchpage');
         }),
         _buildProfileItem(Icons.home_outlined, 'Hometown', 'Add', onTap: () {
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => HomeTownSelectionScreen()));
+         
+                   Navigator.pushNamed(context, '/hometownscreen');
         }),
       ],
     );
@@ -1648,62 +1653,81 @@ Widget _buildPromptsSection(BuildContext context) {
   }
 
   Widget _buildPronounsSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Pronouns',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
-        ),
-        SizedBox(height: 8),
-        Text(
-          'Let People See Your Pronouns',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
-          ),
-        ),
-        SizedBox(height: 16),
-        Container(
-          width: double.infinity,
-          padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[300]!, width: 1),
-          ),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      const GenderPronounsScreen(), // your target screen
-                ),
-              );
-            },
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Add Your Pronouns',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                Icon(Icons.arrow_forward_ios,
-                    color: Colors.grey[400], size: 16),
-              ],
+    final userData = ref.watch(loginProvider);
+    final user =
+        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+    final pronoun = user!.pronouns;
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Pronouns',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
             ),
           ),
-        ),
-      ],
+          SizedBox(height: 8),
+          Text(
+            'Let People See Your Pronouns',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[600],
+            ),
+          ),
+          if (pronoun!.isNotEmpty)
+  Chip(
+    label: Text(pronoun),
+    backgroundColor: Colors.blue[50],
+  )
+else
+  Text(
+    'No pronouns added yet.',
+    style: TextStyle(color: Colors.grey[500]),
+  ),
+
+
+          SizedBox(height: 6),
+          // SizedBox(height: 16),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey[300]!, width: 1),
+            ),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const GenderPronounsScreen(), // your target screen
+                  ),
+                );
+              },
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Select Your Pronouns',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  Icon(Icons.arrow_forward_ios,
+                      color: Colors.grey[400], size: 16),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -1738,7 +1762,7 @@ Widget _buildPromptsSection(BuildContext context) {
             color: Colors.grey[600],
           ),
         ),
-        SizedBox(height: 16),
+        SizedBox(height: 6),
 
         // Show selected languages here
         if (languages.isNotEmpty)
@@ -1758,7 +1782,7 @@ Widget _buildPromptsSection(BuildContext context) {
             style: TextStyle(color: Colors.grey[500]),
           ),
 
-        SizedBox(height: 16),
+        SizedBox(height: 6),
 
         // Add Your Languages Row
         Container(
@@ -1903,7 +1927,7 @@ Widget _buildPromptsSection(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.grey)),
         ),
@@ -1930,39 +1954,39 @@ Widget _buildPromptsSection(BuildContext context) {
     );
   }
 
-  void _showGenderDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Select Gender'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildGenderOption('Man'),
-              _buildGenderOption('Woman'),
-              _buildGenderOption('Non-binary'),
-              _buildGenderOption('Other'),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  // void _showGenderDialog() {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text('Select Gender'),
+  //         content: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             _buildGenderOption('Man'),
+  //             _buildGenderOption('Woman'),
+  //             _buildGenderOption('Non-binary'),
+  //             _buildGenderOption('Other'),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
-  Widget _buildGenderOption(String gender) {
-    return RadioListTile<String>(
-      title: Text(gender),
-      value: gender,
-      groupValue: selectedGender,
-      onChanged: (String? value) {
-        setState(() {
-          selectedGender = value!;
-        });
-        Navigator.pop(context);
-      },
-    );
-  }
+  // Widget _buildGenderOption(String gender) {
+  //   return RadioListTile<String>(
+  //     title: Text(gender),
+  //     value: gender,
+  //     groupValue: selectedGender,
+  //     onChanged: (String? value) {
+  //       setState(() {
+  //         selectedGender = value!;
+  //       });
+  //       Navigator.pop(context);
+  //     },
+  //   );
+  // }
 }
 
 // Extension to add this screen to the original profile screen

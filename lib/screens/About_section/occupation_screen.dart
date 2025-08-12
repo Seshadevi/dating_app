@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dating/provider/loader.dart' as loader;
 
-
 class OccupationScreen extends ConsumerStatefulWidget {
   const OccupationScreen({super.key});
 
@@ -26,8 +25,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
 
   void _onJobSelected(int? id) async {
     if (selectedJobId == id) return; // Don't update if same job is selected
-    
-    
+
     setState(() {
       selectedJobId = id;
     });
@@ -57,31 +55,27 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
 
         // Call update API with the selected job ID
         // await ref.read(workProvider.notifier).up(id);
-         try {
-                      await ref.read(loginProvider.notifier).updateProfile(
-                          image: null,
-                          modeid: null,
-                          bio: null,
-                          modename: null,
-                          prompt: null,
-                          qualityId: null,
-                          jobId:id);
-                      print('job updated');
+        try {
+          await ref.read(loginProvider.notifier).updateProfile(
+              image: null,
+              modeid: null,
+              bio: null,
+              modename: null,
+              prompt: null,
+              qualityId: null,
+              jobId: id);
+          print('job updated');
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text('job updated successfully!')),
-                      );
-                      // Navigator.of(context).pop(); // works if pushed via Navigator.push()
-                      
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('job updated successfully!')),
+          );
+          Navigator.pop(context);
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to upload job: $e')),
+          );
+        }
 
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text('Failed to upload job: $e')),
-                      );
-                    }
-        
         // Show success message
         // if (mounted) {
         //   ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -98,7 +92,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
         setState(() {
           selectedJobId = null;
         });
-        
+
         // if (mounted) {
         //   ScaffoldMessenger.of(context).hideCurrentSnackBar();
         //   ScaffoldMessenger.of(context).showSnackBar(
@@ -119,36 +113,29 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
     // final isLoading = ref.watch(loadingProvider);
     final isLoading = ref.watch(loader.loadingProvider);
 
-
     // Get all jobs from the work models
     final List<Data> allJobs = <Data>[];
     for (final workModel in workList) {
       if (workModel.data != null) {
         allJobs.addAll(workModel.data as List<Data>);
-
       }
     }
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Occupation', 
-          style: TextStyle(color: Color.fromARGB(255, 130, 118, 118), fontWeight: FontWeight.w600),
+          'Occupation',
+          style: TextStyle(
+              color: Color.fromARGB(255, 130, 118, 118),
+              fontWeight: FontWeight.w600),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-          onPressed: () 
-          => 
-          //Navigator.pushNamed(context, '/completeprofile'),
-          Navigator.pushNamed(
-                context,
-                '/completeprofile',
-                arguments: 'work_section', // could be any identifier
-              )
-
-        ),
+            icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+            onPressed: () =>
+                //Navigator.pushNamed(context, '/completeprofile'),
+                Navigator.pop(context)),
       ),
       backgroundColor: Colors.white,
       body: Column(
@@ -160,7 +147,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
               child: Text(
                 'You Can Only Show One Job On Your Profile At a Time',
                 style: TextStyle(
-                  fontSize: 14, 
+                  fontSize: 14,
                   color: Colors.grey,
                   fontStyle: FontStyle.italic,
                 ),
@@ -168,118 +155,126 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
             ),
           ),
           const Divider(height: 1),
-          
+
           // Jobs List
           Expanded(
-            child: isLoading 
-              ? const Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(  Color.fromARGB(255, 42, 137, 4),),
-                  ),
-                )
-              : allJobs.isEmpty
+            child: isLoading
                 ? const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.work_outline,
-                            size: 64,
-                            color: Colors.grey,
-                          ),
-                          SizedBox(height: 16),
-                          Text(
-                            'No jobs added yet',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Add your first job to get started',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Color.fromARGB(255, 42, 137, 4),
                       ),
                     ),
                   )
-                : ListView.separated(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    itemCount: allJobs.length,
-                    separatorBuilder: (context, index) => const Divider(
-                      height: 1,
-                      indent: 16,
-                      endIndent: 16,
-                    ),
-                    itemBuilder: (context, index) {
-                      final job = allJobs[index];
-                      return Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 8, 
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: selectedJobId == job.id 
-                            ? Border.all(color: const Color.fromARGB(255, 42, 137, 4), width: 2)
-                            : null,
-                        ),
-                        child: RadioListTile<int>(
-                          value: job.id ?? 0,
-                          groupValue: selectedJobId,
-                          onChanged: _onJobSelected,
-                          activeColor:  const Color.fromARGB(255, 42, 137, 4),
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16, 
-                            vertical: 8,
+                : allJobs.isEmpty
+                    ? const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(20),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.work_outline,
+                                size: 64,
+                                color: Colors.grey,
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                'No jobs added yet',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'Add your first job to get started',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
                           ),
-                          title: Text(
-                            job.title ?? 'Unknown Title',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
+                        ),
+                      )
+                    : ListView.separated(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        itemCount: allJobs.length,
+                        separatorBuilder: (context, index) => const Divider(
+                          height: 1,
+                          indent: 16,
+                          endIndent: 16,
+                        ),
+                        itemBuilder: (context, index) {
+                          final job = allJobs[index];
+                          return Container(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
                             ),
-                          ),
-                          subtitle: job.company != null && job.company!.isNotEmpty
-                            ? Padding(
-                                padding: const EdgeInsets.only(top: 4),
-                                child: Text(
-                                  job.company!,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey,
-                                  ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              border: selectedJobId == job.id
+                                  ? Border.all(
+                                      color:
+                                          const Color.fromARGB(255, 42, 137, 4),
+                                      width: 2)
+                                  : null,
+                            ),
+                            child: RadioListTile<int>(
+                              value: job.id ?? 0,
+                              groupValue: selectedJobId,
+                              onChanged: _onJobSelected,
+                              activeColor:
+                                  const Color.fromARGB(255, 42, 137, 4),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              title: Text(
+                                job.title ?? 'Unknown Title',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
                                 ),
-                              )
-                            : null,
-                          secondary: selectedJobId == job.id
-                            ? Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: const BoxDecoration(
-                                  color: const Color.fromARGB(255, 42, 137, 4),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.check,
-                                  color: Colors.white,
-                                  size: 16,
-                                ),
-                              )
-                            : null,
-                        ),
-                      );
-                    },
-                  ),
+                              ),
+                              subtitle: job.company != null &&
+                                      job.company!.isNotEmpty
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(top: 4),
+                                      child: Text(
+                                        job.company!,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    )
+                                  : null,
+                              secondary: selectedJobId == job.id
+                                  ? Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: const BoxDecoration(
+                                        color: const Color.fromARGB(
+                                            255, 42, 137, 4),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(
+                                        Icons.check,
+                                        color: Colors.white,
+                                        size: 16,
+                                      ),
+                                    )
+                                  : null,
+                            ),
+                          );
+                        },
+                      ),
           ),
-          
+
           // Add Job Button
           Container(
             padding: const EdgeInsets.all(16.0),
@@ -313,7 +308,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
                       builder: (_) => const AddJobScreen(),
                     ),
                   );
-                  
+
                   // Refresh the job list if a job was added
                   if (result == true) {
                     ref.read(workProvider.notifier).getWork();
@@ -327,7 +322,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
                     Text(
                       'Add a Job',
                       style: TextStyle(
-                        fontSize: 16, 
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),

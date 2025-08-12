@@ -770,7 +770,9 @@ Future<int> updateProfile({
   int? eductionId,
   String? smoking,
   String? gender,
-  bool? showOnProfile
+  bool? showOnProfile,
+  String? pronoun,
+  String?exercise
 }) async {
   final loadingState = ref.read(loadingProvider.notifier);
   loadingState.state = true;
@@ -817,7 +819,8 @@ Future<int> updateProfile({
     if (smoking != null) request.fields['smoking'] = smoking.toString();
     if (gender != null) request.fields['gender'] = gender.toString();
     if (showOnProfile != null) request.fields['showOnProfile'] = showOnProfile.toString();
-
+    if (pronoun != null) request.fields['pronouns'] = pronoun.toString();
+    if (exercise != null) request.fields['exercise'] =exercise.toString();
     // Add list fields as indexed keys
     void addListField(String key, List<int>? values) {
       if (values != null && values.isNotEmpty) {

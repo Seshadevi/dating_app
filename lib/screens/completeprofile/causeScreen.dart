@@ -42,8 +42,9 @@ class _CausesScreenState extends ConsumerState<CausesScreen> {
     final causes = causeState.data ?? [];
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Causes"),
+        title: const Text("Causes & Communities"),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
@@ -60,10 +61,10 @@ class _CausesScreenState extends ConsumerState<CausesScreen> {
               style: const TextStyle(fontWeight: FontWeight.w500),
             ),
             const SizedBox(height: 12),
-            const Text(
-              "Causes & Communities",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+            // const Text(
+            //   "Causes & Communities",
+            //   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            // ),
             const SizedBox(height: 12),
             Expanded(
               child: causes.isEmpty

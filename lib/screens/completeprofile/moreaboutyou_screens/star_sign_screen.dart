@@ -18,13 +18,43 @@ class _StarSignScreenState extends ConsumerState<StarSignScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch star signs when screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(starSignProvider.notifier).getStarsign();
     });
   }
 
+  Future<void> _selectStarSign(int id, String name) async {
+    setState(() {
+      selectedOptionId = id;
+      selectedOptionName = name;
+    });
 
+    try {
+      await ref.read(loginProvider.notifier).updateProfile(
+        causeId: null,
+        image: null,
+        modeid: null,
+        bio: null,
+        modename: null,
+        prompt: null,
+        qualityId: null,
+        starsignId: id,
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$name updated successfully!')),
+        );
+        Navigator.pop(context, selectedOptionName);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update starsign: $e')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,48 +80,23 @@ class _StarSignScreenState extends ConsumerState<StarSignScreen> {
         ),
         centerTitle: true,
       ),
-      body: _buildContent(starSignState, isLoading),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _buildOptions(starSignState),
     );
   }
 
-  Widget _buildContent(dynamic starSignState, bool isLoading) {
-    if (isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-
-    // Check if API call was successful
+  Widget _buildOptions(dynamic starSignState) {
     if (starSignState.success != true || starSignState.data == null) {
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.error_outline,
-              size: 50,
-              color: Colors.red,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              starSignState.message ?? 'Failed to load zodiac signs',
-              style: const TextStyle(fontSize: 16, color: Colors.grey),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                ref.read(starSignProvider.notifier).getStarsign();
-              },
-              child: const Text('Try Again'),
-            ),
-          ],
+        child: ElevatedButton(
+          onPressed: () => ref.read(starSignProvider.notifier).getStarsign(),
+          child: const Text('Try Again'),
         ),
       );
     }
 
     final starSigns = starSignState.data;
-
     if (starSigns == null || starSigns.isEmpty) {
       return const Center(
         child: Text(
@@ -101,97 +106,58 @@ class _StarSignScreenState extends ConsumerState<StarSignScreen> {
       );
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: starSigns.length,
-      itemBuilder: (context, index) {
-        final starSign = starSigns[index];
-        
-        // Handle null values safely
-        final id = starSign?.id;
-        final name = starSign?.name;
-        
-        // Skip items with null essential data
-        if (id == null || name == null || name.isEmpty) {
-          return const SizedBox.shrink();
-        }
-        
-        final isSelected = selectedOptionId == id;
-        
-        return Container(
-          margin: const EdgeInsets.only(bottom: 12),
-          child: ListTile(
-            onTap: () async {
-              // Match the religion screen pattern exactly
-              try {
-                setState(() {
-                  selectedOptionId = id;
-                  selectedOptionName = name;
-                });
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      child: Column(
+        children: [
+          const SizedBox(height: 40),
+          ...starSigns.map<Widget>((starSign) {
+            final id = starSign?.id;
+            final name = starSign?.name ?? '';
+            if (id == null || name.isEmpty) return const SizedBox.shrink();
 
-                print('About to update profile with:');
-                print('- starsignId: $id');
-                print('- All other parameters: null');
-                
-                // Add null safety check
-                final loginNotifier = ref.read(loginProvider.notifier);
-                if (loginNotifier == null) {
-                  throw Exception('Login provider notifier is null');
-                }
+            final isSelected = selectedOptionId == id;
 
-                await loginNotifier.updateProfile(
-                  causeId: null,
-                  image: null, 
-                  modeid: null,
-                  bio: null, 
-                  modename: null, 
-                  prompt: null,
-                  qualityId: null,
-                  starsignId: id
-                );
-                
-                print('Starsign updated successfully');
-
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Starsign updated successfully!')),
-                  );
-                  Navigator.pop(context);
-                }
-                
-              } catch (e) {
-                print('Detailed error: $e');
-                print('Error type: ${e.runtimeType}');
-                
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Failed to upload starsign: $e')),
-                  );
-                }
-              }
-            },
-            title: Text(
-              name,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: GestureDetector(
+                onTap: () => _selectStarSign(id, name),
+                child: Container(
+                  width: double.infinity,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    gradient: isSelected
+                        ? const LinearGradient(
+                            colors: [Color(0xFFB2D12E), Color(0xFF2B2B2B)],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                          )
+                        : null,
+                    color: isSelected ? null : Colors.white,
+                    borderRadius: BorderRadius.circular(28),
+                    border: Border.all(
+                      color: isSelected
+                          ? Colors.transparent
+                          : const Color(0xFFB2D12E),
+                      width: 2,
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      name,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: isSelected ? Colors.white : Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
               ),
-            ),
-            
-            trailing: isSelected 
-                ? const Icon(Icons.check_circle, color: Colors.green)
-                : const Icon(Icons.radio_button_unchecked, color: Colors.grey),
-            tileColor: isSelected ? Colors.green.withOpacity(0.1) : null,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-              side: BorderSide(
-                color: isSelected ? Colors.green : Colors.grey.withOpacity(0.3),
-                width: 1,
-              ),
-            ),
-          ),
-        );
-      },
+            );
+          }).toList(),
+        ],
+      ),
     );
   }
 }

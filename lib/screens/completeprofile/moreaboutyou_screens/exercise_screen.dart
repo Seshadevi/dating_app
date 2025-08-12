@@ -1,31 +1,56 @@
+import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/new_to_area_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ExerciseScreen extends StatefulWidget {
+class ExerciseScreen extends ConsumerStatefulWidget {
   const ExerciseScreen({super.key});
 
   @override
-  State<ExerciseScreen> createState() => _ExerciseScreenState();
+  ConsumerState<ExerciseScreen> createState() => _ExerciseScreenState();
 }
 
-class _ExerciseScreenState extends State<ExerciseScreen> {
-  List<String> selectedOptions = [];
-  
+class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
+  String? selectedOption; // only one selection
+
   final List<String> options = [
     'Active',
     'Sometimes',
     'Almost Never',
-    
   ];
 
-  void toggleOption(String option) {
+  Future<void> selectOption(String option) async {
     setState(() {
-      if (selectedOptions.contains(option)) {
-        selectedOptions.remove(option);
-      } else {
-        selectedOptions.add(option);
-      }
+      selectedOption = option;
     });
+
+    try {
+      await ref.read(loginProvider.notifier).updateProfile(
+            image: null,
+            modeid: null,
+            bio: null,
+            modename: null,
+            prompt: null,
+            qualityId: null,
+            jobId: null,
+            exercise: option,
+          );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Exercise updated successfully!')),
+      );
+      Navigator.pop(context,selectedOption);
+
+      // Navigate immediately to the next screen
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => const NewToAreaScreen()),
+      // );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update exercise: $e')),
+      );
+    }
   }
 
   @override
@@ -45,7 +70,6 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
         child: Column(
           children: [
             const SizedBox(height: 150),
-            // Header with icon and title
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -74,37 +98,28 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
               ],
             ),
             const SizedBox(height: 50),
-            // Options list
             ...options.map((option) {
-              final isSelected = selectedOptions.contains(option);
-              final isFirstOption = option == 'Active';
-              
+              final isSelected = selectedOption == option;
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: GestureDetector(
-                  onTap: () => toggleOption(option),
+                  onTap: () => selectOption(option), // Direct API call
                   child: Container(
                     width: double.infinity,
                     height: 56,
                     decoration: BoxDecoration(
                       gradient: isSelected
-                          ? (isFirstOption 
-                              ? const LinearGradient(
-                                  colors: [Color(0xFFB2D12E), Color(0xFF2B2B2B)],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                )
-                              : const LinearGradient(
-                                  colors: [Color(0xFFB2D12E), Color(0xFF2B2B2B)],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                ))
+                          ? const LinearGradient(
+                              colors: [Color(0xFFB2D12E), Color(0xFF2B2B2B)],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            )
                           : null,
                       color: isSelected ? null : Colors.white,
                       borderRadius: BorderRadius.circular(28),
                       border: Border.all(
-                        color: isSelected 
-                            ? Colors.transparent 
+                        color: isSelected
+                            ? Colors.transparent
                             : const Color(0xFFB2D12E),
                         width: 2,
                       ),
@@ -124,11 +139,14 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
               );
             }).toList(),
             const Spacer(),
-            // Skip button
             Center(
               child: TextButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => NewToAreaScreen(),));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const NewToAreaScreen()),
+                  );
                 },
                 child: const Text(
                   'Skip',

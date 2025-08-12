@@ -48,6 +48,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
     }
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Interests'),
         backgroundColor: Colors.white,

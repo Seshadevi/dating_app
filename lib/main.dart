@@ -1,5 +1,10 @@
 import 'package:dating/firebase_options.dart';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/screens/About_section/city_screen.dart';
+import 'package:dating/screens/About_section/education_screen.dart';
+import 'package:dating/screens/About_section/gender_screen.dart';
+import 'package:dating/screens/About_section/hometown_screen.dart';
+import 'package:dating/screens/About_section/occupation_screen.dart';
 import 'package:dating/screens/FriendOnboardingScreen.dart';
 import 'package:dating/screens/addHeadlineScreen.dart';
 import 'package:dating/screens/beKindScreen.dart';
@@ -135,6 +140,11 @@ class MyApp extends StatelessWidget {
          "/custombottomnav": (context) => CustomBottomNavigationBar(),
          "/completeprofile": (context) =>BumbleDateProfileScreen(),
           "/joinscreen": (context) =>JoinPageScreen(),
+          "/occupationscreen": (context) =>OccupationScreen(),
+          "/educationscreen": (context) =>EducationScreen(),
+          "/updategenderscreen": (context) =>UpdateGenderScreen(),
+          "/citysearchpage": (context) =>CitySearchPage(),
+          "/hometownscreen": (context) =>HomeTownSelectionScreen(),
       },
     );
   }

@@ -15,7 +15,6 @@ class FavoriteCauseScreen extends ConsumerStatefulWidget {
 }
 
 class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
-  int? selectedCauseId;
   List<Map<String, dynamic>> visibleCauses = [];
 
   @override
@@ -29,9 +28,7 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
         causeMap[item['id']] = item;
       }
     }
-
     visibleCauses = causeMap.values.toList();
-    selectedCauseId = null;
 
     print("✅ Visible causes: $visibleCauses");
   }
@@ -51,14 +48,14 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Text(
-              'Which one of your causes is your favorite?',
+              'Your selected causes',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              'It’ll stand out on your profile, and you can change it any time.',
+              'These causes will be sent to your profile.',
               style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
           ),
@@ -69,48 +66,31 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
               itemCount: visibleCauses.length,
               itemBuilder: (context, index) {
                 final cause = visibleCauses[index];
-                final int? causeId = cause['id'];
                 final String emoji = cause['emoji'] ?? '🌟';
                 final String name = cause['causesAndCommunities'] ?? '';
-                final bool isSelected = selectedCauseId == causeId;
 
-                return GestureDetector(
-                  onTap: () {
-                    if (causeId != null) {
-                      setState(() {
-                        selectedCauseId = causeId;
-                      });
-                    }
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: isSelected ? Colors.black : Colors.transparent,
-                        width: 2,
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: const Color(0xFF869E23),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Text(emoji, style: const TextStyle(fontSize: 20)),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          name,
+                          style: const TextStyle(fontSize: 16),
+                        ),
                       ),
-                    ),
-                    child: Row(
-                      children: [
-                        Text(emoji, style: const TextStyle(fontSize: 20)),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            name,
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ),
-                        Icon(
-                          isSelected
-                              ? Icons.radio_button_checked
-                              : Icons.radio_button_off,
-                          color: isSelected ? Colors.black : Colors.grey,
-                        ),
-                      ],
-                    ),
+                    ],
                   ),
                 );
               },
@@ -120,26 +100,12 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ElevatedButton(
-              onPressed: _saveFavoriteCause,
+              onPressed: _saveAllCauses,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
+                backgroundColor: const Color(0xFF869E23),
                 minimumSize: const Size.fromHeight(50),
               ),
-              child: const Text('Save'),
-            ),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: OutlinedButton(
-              onPressed: () {
-                setState(() => selectedCauseId = null);
-                Navigator.pop(context, null);
-              },
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size.fromHeight(50),
-              ),
-              child: const Text('Remove'),
+              child: const Text('Save All'),
             ),
           ),
         ],
@@ -147,32 +113,26 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
     );
   }
 
-  Future<void> _saveFavoriteCause() async {
-    print('🔘 Save button clicked');
+  Future<void> _saveAllCauses() async {
+    print('🔘 Save button clicked — sending all causes');
 
-    final selected = visibleCauses.firstWhere(
-      (q) => q['id'] == selectedCauseId,
-      orElse: () => {},
-    );
-
-    if (selected.isEmpty || selected['id'] == null) {
+    if (visibleCauses.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("No valid cause selected.")),
+        const SnackBar(content: Text("No causes to save.")),
       );
       return;
     }
 
-    final int id = selected['id'];
-    final String name = selected['causesAndCommunities'] ?? '';
+    final List<int> causeIds = visibleCauses
+        .where((q) => q['id'] != null)
+        .map((q) => q['id'] as int)
+        .toList();
 
-    print("🎯 Selected Cause -> ID: $id, Name: $name");
-    final List<int> causesIds =
-        visibleCauses.map((q) => q['id'] as int).toList();
-    // print('🎯 Sending IDs only: $qualityIds');
+    print("🎯 Sending Cause IDs: $causeIds");
 
     try {
       await ref.read(loginProvider.notifier).updateProfile(
-        causeId:causesIds, // Pass as list of int
+        causeId: causeIds,
         image: null,
         modeid: null,
         bio: null,
@@ -182,15 +142,14 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
       );
 
       print('✅ updateProfile completed');
-
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Cause updated successfully!')),
+        const SnackBar(content: Text('Causes updated successfully!')),
       );
 
-      Navigator.pop(context, selected);
+      Navigator.pop(context, visibleCauses);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to upload cause: $e')),
+        SnackBar(content: Text('Failed to upload causes: $e')),
       );
     }
   }

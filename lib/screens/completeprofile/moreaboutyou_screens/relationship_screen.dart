@@ -70,7 +70,7 @@ class _RelationshipScreenState extends State<RelationshipScreen> {
                 const Text(
                   'What Is Your Relationship Status',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 15,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
                   ),

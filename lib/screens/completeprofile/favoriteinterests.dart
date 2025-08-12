@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class FavoriteInterests extends ConsumerStatefulWidget {
-  final List<Map<String, dynamic>> selectedInteres; // Just selected now
+  final List<Map<String, dynamic>> selectedInteres;
 
   const FavoriteInterests({
     Key? key,
@@ -15,23 +15,20 @@ class FavoriteInterests extends ConsumerStatefulWidget {
 }
 
 class _FavoriteInterestsState extends ConsumerState<FavoriteInterests> {
-  int? selectInterestId;
   List<Map<String, dynamic>> visibleInterests = [];
 
   @override
   void initState() {
     super.initState();
 
-    // ✅ Use only selectedInteres
+    // ✅ Deduplicate by ID
     final Map<int, Map<String, dynamic>> interestMap = {};
     for (var interest in widget.selectedInteres) {
       if (interest['id'] != null) {
         interestMap[interest['id']] = interest;
       }
     }
-
     visibleInterests = interestMap.values.toList();
-    selectInterestId = null;
 
     print("✅ Visible Interests (Selected Only): $visibleInterests");
   }
@@ -51,14 +48,14 @@ class _FavoriteInterestsState extends ConsumerState<FavoriteInterests> {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Text(
-              'Which one of your interests is your favorite?',
+              'Your selected interests',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              'It’ll stand out on your profile, and you can change it any time.',
+              'These will be saved to your profile.',
               style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
           ),
@@ -69,48 +66,31 @@ class _FavoriteInterestsState extends ConsumerState<FavoriteInterests> {
               itemCount: visibleInterests.length,
               itemBuilder: (context, index) {
                 final item = visibleInterests[index];
-                final int? id = item['id'];
                 final String emoji = item['emoji'] ?? '🌟';
                 final String name = item['interests'] ?? '';
-                final bool isSelected = selectInterestId == id;
 
-                return GestureDetector(
-                  onTap: () {
-                    if (id != null) {
-                      setState(() {
-                        selectInterestId = id;
-                      });
-                    }
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: isSelected ? Colors.black : Colors.transparent,
-                        width: 2,
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: const Color(0xFF869E23),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Text(emoji, style: const TextStyle(fontSize: 20)),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          name,
+                          style: const TextStyle(fontSize: 16),
+                        ),
                       ),
-                    ),
-                    child: Row(
-                      children: [
-                        Text(emoji, style: const TextStyle(fontSize: 20)),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            name,
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ),
-                        Icon(
-                          isSelected
-                              ? Icons.radio_button_checked
-                              : Icons.radio_button_off,
-                          color: isSelected ? Colors.black : Colors.grey,
-                        ),
-                      ],
-                    ),
+                    ],
                   ),
                 );
               },
@@ -120,52 +100,12 @@ class _FavoriteInterestsState extends ConsumerState<FavoriteInterests> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ElevatedButton(
-              onPressed: () async {
-                final List<int> interestIds =
-                    visibleInterests.map((q) => q['id'] as int).toList();
-                print('🎯 Sending IDs only: $interestIds');
-                try {
-                  await ref.read(loginProvider.notifier).updateProfile(
-                    interestId: interestIds,
-                    image: null,
-                    modeid: null,
-                    bio: null,
-                    modename: null,
-                    prompt: null,
-                    qualityId: null,
-                  );
-                  print('Interest updated');
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Interest updated successfully!')),
-                  );
-
-                  _returnSelectedInterest(); // Return selected interest
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Failed to upload interest: $e')),
-                  );
-                }
-              },
+              onPressed: _saveAllInterests,
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
+                backgroundColor:const Color(0xFF869E23),
                 minimumSize: const Size.fromHeight(50),
               ),
-              child: const Text('Save'),
-            ),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: OutlinedButton(
-              onPressed: () {
-                setState(() => selectInterestId = null);
-                Navigator.pop(context, null); // Remove interest
-              },
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size.fromHeight(50),
-              ),
-              child: const Text('Remove'),
+              child: const Text('Save All'),
             ),
           ),
         ],
@@ -173,28 +113,44 @@ class _FavoriteInterestsState extends ConsumerState<FavoriteInterests> {
     );
   }
 
-  void _returnSelectedInterest() {
-    final selected = visibleInterests.firstWhere(
-      (item) => item['id'] == selectInterestId,
-      orElse: () => {},
-    );
+  Future<void> _saveAllInterests() async {
+    print('🔘 Save button clicked — sending all interests');
 
-    if (selected.isEmpty || selected['id'] == null) {
+    if (visibleInterests.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("No valid interest selected.")),
+        const SnackBar(content: Text("No interests to save.")),
       );
       return;
     }
 
-    final id = selected['id'];
-    final name = selected['interests'] ?? '';
+    final List<int> interestIds = visibleInterests
+        .where((q) => q['id'] != null)
+        .map((q) => q['id'] as int)
+        .toList();
 
-    print("🎯 Saving Favorite Interest: ID = $id, Name = $name");
+    print("🎯 Sending Interest IDs: $interestIds");
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Favorite interest '$name' saved!")),
-    );
+    try {
+      await ref.read(loginProvider.notifier).updateProfile(
+        interestId: interestIds,
+        image: null,
+        modeid: null,
+        bio: null,
+        modename: null,
+        prompt: null,
+        qualityId: null,
+      );
 
-    Navigator.pop(context, selected);
+      print('✅ updateProfile completed');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Interests updated successfully!')),
+      );
+
+      Navigator.pop(context, visibleInterests);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to upload interests: $e')),
+      );
+    }
   }
 }
