@@ -1,173 +1,151 @@
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/moreabout/educationprovider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AddEducationScreen extends ConsumerStatefulWidget {
-  const AddEducationScreen({super.key});
+  const AddEducationScreen({Key? key}) : super(key: key);
 
   @override
   ConsumerState<AddEducationScreen> createState() => _AddEducationScreenState();
 }
 
 class _AddEducationScreenState extends ConsumerState<AddEducationScreen> {
-  final TextEditingController titleController = TextEditingController();
-  String selectedYear = "2025";
-  bool isButtonEnabled = false;
-
+  final TextEditingController _institutionController = TextEditingController();
+  String _selectedYear = "2025";
+  int? _editingId; // null = adding mode
   @override
   void initState() {
     super.initState();
-    titleController.addListener(_checkInput);
+    // Initialize with default values
+    // We'll get the arguments in didChangeDependencies
   }
 
-  void _checkInput() {
-    setState(() {
-      isButtonEnabled = titleController.text.trim().isNotEmpty;
-    });
-  }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-  void _showYearPicker() {
-    final List<String> years = [
-      for (int year = 2020; year <= 2030; year++) year.toString()
-    ];
+    // Get arguments only once when the route is first built
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
-    int initialIndex = years.indexOf(selectedYear);
-
-    showCupertinoModalPopup(
-      context: context,
-      builder: (_) => Container(
-        height: 300,
-        color: Colors.white,
-        child: Column(
-          children: [
-            const SizedBox(height: 16),
-            const Text(
-              'Graduation year',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            Expanded(
-              child: CupertinoPicker(
-                scrollController: FixedExtentScrollController(initialItem: initialIndex),
-                itemExtent: 40,
-                onSelectedItemChanged: (index) {
-                  setState(() {
-                    selectedYear = years[index];
-                  });
-                },
-                children: years.map((year) => Center(child: Text(year))).toList(),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.grey.shade300,
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  ),
-                  child: const Text('Cancel', style: TextStyle(color: Colors.black)),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: TextButton.styleFrom(
-                    backgroundColor: const Color(0xFF9DA200),
-                    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 8),
-                  ),
-                  child: const Text('Ok', style: TextStyle(color: Colors.white)),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-          ],
-        ),
-      ),
-    );
+    if (args != null && _editingId == null) { // Only set if not already set
+      _editingId = args['id'] as int?;
+      _institutionController.text = args['institution'] ?? '';
+      _selectedYear = args['gradYear'] ?? "2025";
+    }
   }
 
   @override
   void dispose() {
-    titleController.dispose();
+    _institutionController.dispose();
     super.dispose();
+  }
+
+  void _showYearPicker() {
+    final years = [for (int y = 2010; y <= 2035; y++) y.toString()];
+
+    final initialIndex = years.indexOf(_selectedYear);
+
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return SizedBox(
+          height: 250,
+          child: ListView.builder(
+            itemCount: years.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(years[index]),
+                onTap: () {
+                  setState(() {
+                    _selectedYear = years[index];
+                  });
+                  Navigator.pop(context);
+                },
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _handleSubmit() async {
+    final institution = _institutionController.text.trim();
+
+    if (institution.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter an institution")),
+      );
+      return;
+    }
+
+    try {
+      if (_editingId == null) {
+        // ADD
+        await ref.read(educationProvider.notifier).addEducation(
+              institution: institution,
+              gradYear: _selectedYear,
+            );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Education added successfully")),
+        );
+      } else {
+        // UPDATE
+        await ref.read(educationProvider.notifier).updateSelectededucation(
+              _editingId!,
+              institution,
+              _selectedYear,
+            );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Education updated successfully")),
+        );
+      }
+
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: ${e.toString()}")),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = _editingId != null;
+
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
-          'Add Education',
-          style: TextStyle(color: Colors.black),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
-        ),
+        title: Text(isEditing ? "Edit Education" : "Add Education"),
       ),
-      body: Column(
-        children: [
-          const Divider(height: 1),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
-            child: TextField(
-              controller: titleController,
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            TextField(
+              controller: _institutionController,
               decoration: const InputDecoration(
                 labelText: 'Institution',
-                border: InputBorder.none,
+                border: OutlineInputBorder(),
               ),
             ),
-          ),
-          const Divider(height: 1),
-          ListTile(
-            title: Text('Graduation year: $selectedYear'),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: _showYearPicker,
-          ),
-          const Divider(height: 1),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: SizedBox(
+            const SizedBox(height: 16),
+            ListTile(
+              title: Text('Graduation Year: $_selectedYear'),
+              trailing: const Icon(Icons.arrow_drop_down),
+              onTap: _showYearPicker,
+            ),
+            const Spacer(),
+            SizedBox(
               width: double.infinity,
               height: 48,
               child: ElevatedButton(
-                onPressed: isButtonEnabled
-                    ? () async {
-                        try {
-                          final userId = ref.read(loginProvider).data![0].user?.id ?? '';
-                          final success = await ref.read(educationProvider.notifier).addEducation(
-                           institution: titleController.text.trim(),
-                            gradYear: selectedYear,
-                          );
-
-                          if (success) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Education added successfully!')),
-                            );
-                            Navigator.pop(context); // Go back after success
-                          }
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Error: ${e.toString()}')),
-                          );
-                        }
-                      }
-                    : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      isButtonEnabled ? const Color(0xFF9DA200) : Colors.grey.shade400,
-                  disabledBackgroundColor: Colors.grey.shade300,
-                ),
-                child: const Text('Continue', style: TextStyle(color: Colors.white)),
+                onPressed: _handleSubmit,
+                child: Text(isEditing ? "Update" : "Add"),
               ),
-            ),
-          ),
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

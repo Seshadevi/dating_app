@@ -105,7 +105,7 @@ class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
                 backgroundColor:const Color(0xFF869E23),
                 minimumSize: const Size.fromHeight(50),
               ),
-              child: const Text('Save All'),
+              child: const Text('Save All',style:TextStyle(color:Colors.white),),
             ),
           ),
         ],

@@ -12,37 +12,24 @@ class LookingForScreen extends ConsumerStatefulWidget {
 }
 
 class _LookingForScreenState extends ConsumerState<LookingForScreen> {
-  String? selectedOption;
+  List<int> selectedOptionIds = []; // store selected option IDs
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() async {
-      // 1. Fetch options
       await ref.read(lookingProvider.notifier).getLookingForUser();
 
-      // 2. Get user saved data
       final userState = ref.read(loginProvider);
       final user = userState.data != null && userState.data!.isNotEmpty
           ? userState.data![0].user
           : null;
 
       final lookingForList = user?.lookingFor;
-
-      // 3. Extract value from nested map if necessary
-      if (lookingForList != null &&
-          lookingForList is List &&
-          lookingForList.isNotEmpty) {
-        final first = lookingForList.first;
-
-        // Check if it's a string or a map with 'value'
-        // if (first is Map && first.containsKey('value')) {
-        //   selectedOption = first.value.toString().trim();
-        // } else {
-        //   selectedOption = first.toString().trim();
-        // }
-
-        debugPrint('Pre-selected from user data: $selectedOption');
+      if (lookingForList != null && lookingForList.isNotEmpty) {
+        selectedOptionIds = lookingForList
+            .map((item) => item.id as int) // assuming id is int
+            .toList();
         setState(() {});
       }
     });
@@ -94,7 +81,7 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
             ),
             const SizedBox(height: 30),
 
-            /// Looking options
+            /// Options List
             Expanded(
               child: lookingState.data == null
                   ? const Center(child: CircularProgressIndicator())
@@ -103,48 +90,43 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
                       : ListView.builder(
                           itemCount: options.length,
                           itemBuilder: (context, index) {
-                            final option = options[index].value?.toString().trim() ?? '';
-                            final isSelected = selectedOption?.trim() == option;
-
-                            debugPrint('Comparing: selectedOption="$selectedOption" | option=."$option" | isSelected=$isSelected');
+                            final option = options[index];
+                            final optionId = option.id as int;
+                            final optionValue =
+                                option.value?.toString().trim() ?? '';
+                            final isSelected =
+                                selectedOptionIds.contains(optionId);
 
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 12.0),
                               child: GestureDetector(
-                                onTap: () async{
-                                  
-                                final optionId = options[index].id; // Assuming each option has an 'id'
-                                
-                                // Update the state so UI shows selection immediately
-                                setState(() {
-                                  selectedOption = option;
-                                });
-
-                                // Send to API
-                                await ref.read(loginProvider.notifier).updateProfile(
-                                  interestId: null, // keep null for others
-                                  image: null,
-                                  modeid: null,
-                                  bio: null,
-                                  modename: null,
-                                  prompt: null,
-                                  qualityId: null,
-                                  causeId: null,
-                                  lookingfor: optionId != null ? [optionId] : null,
-                                
-                                );
-
-                                // Go back after successful update
-                                Navigator.pop(context, option);
-
-                              // Return selected value
+                                onTap: () {
+                                  setState(() {
+                                    if (isSelected) {
+                                      selectedOptionIds.remove(optionId);
+                                    } else {
+                                      if (selectedOptionIds.length < 2) {
+                                        selectedOptionIds.add(optionId);
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                              content: Text(
+                                                  'You can select up to 2 options only')),
+                                        );
+                                      }
+                                    }
+                                  });
                                 },
                                 child: Container(
                                   height: 56,
                                   decoration: BoxDecoration(
                                     gradient: isSelected
                                         ? const LinearGradient(
-                                            colors: [Color(0xffB2D12E), Color(0xFF2B2B2B)],
+                                            colors: [
+                                              Color(0xffB2D12E),
+                                              Color(0xFF2B2B2B)
+                                            ],
                                             begin: Alignment.centerLeft,
                                             end: Alignment.centerRight,
                                           )
@@ -160,11 +142,13 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
                                   ),
                                   child: Center(
                                     child: Text(
-                                      option,
+                                      optionValue,
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500,
-                                        color: isSelected ? Colors.white : Colors.black,
+                                        color: isSelected
+                                            ? Colors.white
+                                            : Colors.black,
                                       ),
                                     ),
                                   ),
@@ -175,13 +159,55 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
                         ),
             ),
 
+            /// Update Button (only when selection is not empty)
+            if (selectedOptionIds.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xffB2D12E),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                    minimumSize: const Size(double.infinity, 50),
+                  ),
+                  onPressed: () async {
+                    await ref.read(loginProvider.notifier).updateProfile(
+                          lookingfor: selectedOptionIds,
+                          interestId: null,
+                          image: null,
+                          modeid: null,
+                          bio: null,
+                          modename: null,
+                          prompt: null,
+                          qualityId: null,
+                          causeId: null,
+                        );
+
+                    // if (context.mounted) {
+                    //   ref.invalidate(loginProvider); // refresh profile data
+                      Navigator.pop(context);
+                    // }
+                  },
+                  child: const Text(
+                    'Update',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+
             /// Skip Button
             Center(
               child: TextButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const RelationshipScreen()),
+                    MaterialPageRoute(
+                        builder: (_) => const RelationshipScreen()),
                   );
                 },
                 child: const Text(

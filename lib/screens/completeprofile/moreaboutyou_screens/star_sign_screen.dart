@@ -20,7 +20,8 @@ class _StarSignScreenState extends ConsumerState<StarSignScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(starSignProvider.notifier).getStarsign();
-    });
+    }
+    );
   }
 
   Future<void> _selectStarSign(int id, String name) async {

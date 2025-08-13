@@ -1,11 +1,9 @@
 import 'package:dating/model/moreabout/work_model.dart';
 import 'package:dating/provider/loginProvider.dart';
-
 import 'package:dating/provider/moreabout/workProvider.dart';
 import 'package:dating/screens/About_section/add_job_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dating/provider/loader.dart' as loader;
 
 class OccupationScreen extends ConsumerStatefulWidget {
   const OccupationScreen({super.key});
@@ -23,97 +21,11 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
     Future.microtask(() => ref.read(workProvider.notifier).getWork());
   }
 
-  void _onJobSelected(int? id) async {
-    if (selectedJobId == id) return; // Don't update if same job is selected
-
-    setState(() {
-      selectedJobId = id;
-    });
-
-    if (id != null) {
-      try {
-        // Show loading indicator
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Row(
-              children: [
-                SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
-                ),
-                SizedBox(width: 16),
-                Text("Updating job selection..."),
-              ],
-            ),
-            duration: Duration(seconds: 2),
-          ),
-        );
-
-        // Call update API with the selected job ID
-        // await ref.read(workProvider.notifier).up(id);
-        try {
-          await ref.read(loginProvider.notifier).updateProfile(
-              image: null,
-              modeid: null,
-              bio: null,
-              modename: null,
-              prompt: null,
-              qualityId: null,
-              jobId: id);
-          print('job updated');
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('job updated successfully!')),
-          );
-          Navigator.pop(context);
-        } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to upload job: $e')),
-          );
-        }
-
-        // Show success message
-        // if (mounted) {
-        //   ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        //   ScaffoldMessenger.of(context).showSnackBar(
-        //     const SnackBar(
-        //       content: Text("Job updated successfully"),
-        //       backgroundColor: Colors.green,
-        //       duration: Duration(seconds: 2),
-        //     ),
-        //   );
-        // }
-      } catch (e) {
-        // Revert selection on error
-        setState(() {
-          selectedJobId = null;
-        });
-
-        // if (mounted) {
-        //   ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        //   ScaffoldMessenger.of(context).showSnackBar(
-        //     SnackBar(
-        //       content: Text("Failed to update job: $e"),
-        //       backgroundColor: const Color.fromARGB(255, 42, 137, 4),
-        //       duration: const Duration(seconds: 3),
-        //     ),
-        //   );
-        // }
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final workList = ref.watch(workProvider);
-    // final isLoading = ref.watch(loadingProvider);
-    final isLoading = ref.watch(loader.loadingProvider);
 
-    // Get all jobs from the work models
+    // Flatten all jobs from different work models
     final List<Data> allJobs = <Data>[];
     for (final workModel in workList) {
       if (workModel.data != null) {
@@ -125,157 +37,52 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
       appBar: AppBar(
         title: const Text(
           'Occupation',
-          style: TextStyle(
-              color: Color.fromARGB(255, 130, 118, 118),
-              fontWeight: FontWeight.w600),
+          style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-            onPressed: () =>
-                //Navigator.pushNamed(context, '/completeprofile'),
-                Navigator.pop(context)),
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
-      backgroundColor: Colors.white,
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'You Can Only Show One Job On Your Profile At a Time',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                  fontStyle: FontStyle.italic,
-                ),
+            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
+            child: Text(
+              'You Can Only Show One Job On Your Profile At a Time',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
               ),
             ),
           ),
-          const Divider(height: 1),
-
-          // Jobs List
+          const Divider(),
           Expanded(
-            child: isLoading
+            child: allJobs.isEmpty
                 ? const Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color.fromARGB(255, 42, 137, 4),
+                    child: Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: Text(
+                        'No jobs found.\nAdd your first job above.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   )
-                : allJobs.isEmpty
-                    ? const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.work_outline,
-                                size: 64,
-                                color: Colors.grey,
-                              ),
-                              SizedBox(height: 16),
-                              Text(
-                                'No jobs added yet',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Add your first job to get started',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    : ListView.separated(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        itemCount: allJobs.length,
-                        separatorBuilder: (context, index) => const Divider(
-                          height: 1,
-                          indent: 16,
-                          endIndent: 16,
-                        ),
-                        itemBuilder: (context, index) {
-                          final job = allJobs[index];
-                          return Container(
-                            margin: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              border: selectedJobId == job.id
-                                  ? Border.all(
-                                      color:
-                                          const Color.fromARGB(255, 42, 137, 4),
-                                      width: 2)
-                                  : null,
-                            ),
-                            child: RadioListTile<int>(
-                              value: job.id ?? 0,
-                              groupValue: selectedJobId,
-                              onChanged: _onJobSelected,
-                              activeColor:
-                                  const Color.fromARGB(255, 42, 137, 4),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 8,
-                              ),
-                              title: Text(
-                                job.title ?? 'Unknown Title',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              subtitle: job.company != null &&
-                                      job.company!.isNotEmpty
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(top: 4),
-                                      child: Text(
-                                        job.company!,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    )
-                                  : null,
-                              secondary: selectedJobId == job.id
-                                  ? Container(
-                                      padding: const EdgeInsets.all(4),
-                                      decoration: const BoxDecoration(
-                                        color: const Color.fromARGB(
-                                            255, 42, 137, 4),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: const Icon(
-                                        Icons.check,
-                                        color: Colors.white,
-                                        size: 16,
-                                      ),
-                                    )
-                                  : null,
-                            ),
-                          );
-                        },
-                      ),
+                : ListView.builder(
+                    itemCount: allJobs.length,
+                    itemBuilder: (context, index) {
+                      final job = allJobs[index];
+                      return _buildJobItem(job);
+                    },
+                  ),
           ),
-
-          // Add Job Button
           Container(
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
@@ -308,8 +115,6 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
                       builder: (_) => const AddJobScreen(),
                     ),
                   );
-
-                  // Refresh the job list if a job was added
                   if (result == true) {
                     ref.read(workProvider.notifier).getWork();
                   }
@@ -333,6 +138,159 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
           ),
         ],
       ),
+      backgroundColor: Colors.white,
+    );
+  }
+
+  Widget _buildJobItem(Data job) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: ListTile(
+        leading: Radio<int>(
+          value: job.id ?? 0,
+          groupValue: selectedJobId,
+          onChanged: (int? value) async {
+            setState(() {
+              selectedJobId = value;
+            });
+            try {
+              await ref.read(loginProvider.notifier).updateProfile(
+                    image: null,
+                    modeid: null,
+                    bio: null,
+                    modename: null,
+                    prompt: null,
+                    qualityId: null,
+                    jobId: selectedJobId,
+                  );
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Job updated successfully!')),
+              );
+              Navigator.pop(context);
+            } catch (e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Failed to update job: $e')),
+              );
+            }
+          },
+          activeColor: const Color.fromARGB(255, 42, 137, 4),
+        ),
+        title: Text(
+          job.title ?? 'Unknown Job',
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+          ),
+        ),
+        subtitle: job.company != null
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 4),
+                  Text(
+                    'Company: ${job.company}',
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              )
+            : null,
+        trailing: PopupMenuButton<String>(
+          onSelected: (String action) {
+            switch (action) {
+              case 'edit':
+                _editJob(job);
+                break;
+              case 'delete':
+                _deleteJob(job);
+                break;
+            }
+          },
+          itemBuilder: (BuildContext context) => [
+            const PopupMenuItem<String>(
+              value: 'edit',
+              child: Row(
+                children: [
+                  Icon(Icons.edit, size: 18, color: Colors.blue),
+                  SizedBox(width: 8),
+                  Text('Edit'),
+                ],
+              ),
+            ),
+            const PopupMenuItem<String>(
+              value: 'delete',
+              child: Row(
+                children: [
+                  Icon(Icons.delete, size: 18, color: Colors.red),
+                  SizedBox(width: 8),
+                  Text('Delete'),
+                ],
+              ),
+            ),
+          ],
+          child: const Icon(Icons.more_vert),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      ),
+    );
+  }
+
+  void _editJob(Data job) {
+    Navigator.pushNamed(
+      context,
+      '/addoccupation',
+      arguments: {
+        'id': job.id,
+        'title': job.title,
+        'company': job.company,
+      },
+    );
+  }
+
+  void _deleteJob(Data job) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Job'),
+          content: Text(
+            'Are you sure you want to delete "${job.title}"?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                try {
+                  await ref.read(workProvider.notifier)
+                      .deleteLanguages(job.id ?? 0);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Job deleted successfully'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  ref.read(workProvider.notifier).getWork();
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to delete: $e')),
+                  );
+                }
+              },
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
     );
   }
 }

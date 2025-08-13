@@ -190,135 +190,126 @@ class WorkProvider extends StateNotifier<List<WorkModel>> {
   }
 }
 
-  // New method to update selected job
-  // Future<void> updateSelectedJob(int jobId) async {
-  //   final loadingState = ref.read(loadingProvider.notifier);
-  //   final prefs = await SharedPreferences.getInstance();
 
-  //   try {
-  //     loadingState.state = true;
+Future<void> updateSelectedwork(
+      int workId, String? company, String? role) async {
+    final loadingState = ref.read(loadingProvider.notifier);
+    final prefs = await SharedPreferences.getInstance();
+    print('data education $workId,$company,$role');
 
-  //     String? userDataString = prefs.getString('userData');
-  //     if (userDataString == null || userDataString.isEmpty) {
-  //       throw Exception("User token is missing. Please log in again.");
-  //     }
-
-  //     final Map<String, dynamic> userData = jsonDecode(userDataString);
-
-  //     String? token = userData['accessToken'] ??
-  //         (userData['data'] != null &&
-  //                 (userData['data'] as List).isNotEmpty &&
-  //                 userData['data'][0]['access_token'] != null
-  //             ? userData['data'][0]['access_token']
-  //             : null);
-
-  //     if (token == null || token.isEmpty) {
-  //       throw Exception("User token is invalid. Please log in again.");
-  //     }
-
-  //     // You'll need to add this API endpoint to your Dgapi class
-  //     final apiUrl = Uri.parse(Dgapi.workUpdate); // Add this to your API constants
-  //     final request = await http.put( // or patch, depending on your API
-  //       apiUrl,
-  //       headers: {
-  //         "Authorization": "Bearer $token",
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: jsonEncode({
-  //         'selectedJobId': jobId,
-  //       }),
-  //     );
-
-  //     print('Update selected job Status Code: ${request.statusCode}');
-  //     print('Update selected job Response Body: ${request.body}');
-
-  //     if (request.statusCode == 200 || request.statusCode == 201) {
-  //       print("Selected job updated successfully!");
-  //       // Optionally refresh the work list to get updated data
-  //       // await getWork();
-  //     } else {
-  //       final errorBody = request.body.isNotEmpty ? jsonDecode(request.body) : {};
-  //       final errorMessage = errorBody['message'] ?? 'Failed to update selected job.';
-  //       throw Exception("Error updating selected job: $errorMessage");
-  //     }
-  //   } catch (e) {
-  //     print("Failed to update selected job: $e");
-  //     rethrow;
-  //   } finally {
-  //     loadingState.state = false;
-  //   }
-  // }
-
-  // Alternative method if you need to update by job details instead of ID
-  // Future<void> updateSelectedJobByDetails({required String title, required String company}) async {
-  //   final loadingState = ref.read(loadingProvider.notifier);
-
-  //   try {
-  //     loadingState.state = true;
-
-  //     final prefs = await SharedPreferences.getInstance();
-  //     final token = prefs.getString('token');
-
-  //     if (token == null) {
-  //       throw Exception("User token not found.");
-  //     }
-
-  //     final apiUrl = Uri.parse(Dgapi.workUpdate);
-  //     final request = await http.put(
-  //       apiUrl,
-  //       headers: {
-  //         "Authorization": "Bearer $token",
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: jsonEncode({
-  //         'title': title,
-  //         'company': company,
-  //       }),
-  //     );
-
-  //     print('Update selected job Status Code: ${request.statusCode}');
-  //     print('Update selected job Response Body: ${request.body}');
-
-  //     if (request.statusCode == 200 || request.statusCode == 201) {
-  //       print("Selected job updated successfully!");
-  //     } else {
-  //       final errorBody = request.body.isNotEmpty ? jsonDecode(request.body) : {};
-  //       final errorMessage = errorBody['message'] ?? 'Failed to update selected job.';
-  //       throw Exception("Error updating selected job: $errorMessage");
-  //     }
-  //   } catch (e) {
-  //     print("Failed to update selected job: $e");
-  //     rethrow;
-  //   } finally {
-  //     loadingState.state = false;
-  //   }
-  // }
-
-  // Helper method to get all jobs from all work models
-  List<Data> getAllJobs() {
-    final List<Data> allJobs = [];
-    for (final workModel in state) {
-      if (workModel.data != null) {
-        allJobs.addAll(workModel.data!);
-      }
-    }
-    return allJobs;
-  }
-
-  // Helper method to check if jobs are loading
-  bool get isLoading {
-    return state.any((workModel) => workModel.isLoading);
-  }
-
-  // Helper method to find a job by ID
-  Data? getJobById(int id) {
-    final allJobs = getAllJobs();
     try {
-      return allJobs.firstWhere((job) => job.id == id);
+      loadingState.state = true;
+
+      String? userDataString = prefs.getString('userData');
+      if (userDataString == null || userDataString.isEmpty) {
+        throw Exception("User token is missing. Please log in again.");
+      }
+
+      final Map<String, dynamic> userData = jsonDecode(userDataString);
+
+      String? token = userData['accessToken'] ??
+          (userData['data'] != null &&
+                  (userData['data'] as List).isNotEmpty &&
+                  userData['data'][0]['access_token'] != null
+              ? userData['data'][0]['access_token']
+              : null);
+
+      if (token == null || token.isEmpty) {
+        throw Exception("User token is invalid. Please log in again.");
+      }
+
+      // You'll need to add this API endpoint to your Dgapi class
+      final apiUrl = Uri.parse("${Dgapi.workUpdate}/$workId");
+ // Add this to your API constants
+      final request = await http.put(
+        // or patch, depending on your API
+        apiUrl,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          'company': company,
+          'title': role,
+        }),
+      );
+
+      print('Update selected job Status Code: ${request.statusCode}');
+      print('Update selected job Response Body: ${request.body}');
+
+      if (request.statusCode == 200 || request.statusCode == 201) {
+        print("Selected job updated successfully!");
+        // Optionally refresh the work list to get updated data
+        await getWork();
+      } else {
+        final errorBody =
+            request.body.isNotEmpty ? jsonDecode(request.body) : {};
+        final errorMessage =
+            errorBody['message'] ?? 'Failed to update selected job.';
+        throw Exception("Error updating selected job: $errorMessage");
+      }
     } catch (e) {
-      return null;
+      print("Failed to update selected job: $e");
+      rethrow;
+    } finally {
+      loadingState.state = false;
     }
   }
+
+  Future<int> deleteLanguages(int? workId) async {
+    final loadingState = ref.read(loadingProvider.notifier);
+    loadingState.state = true;
+    final prefs = await SharedPreferences.getInstance();
+
+    try {
+      final String deleteUrl = "${Dgapi.workdelete}/$workId";
+      // loadingState.state = true;
+
+      String? userDataString = prefs.getString('userData');
+      if (userDataString == null || userDataString.isEmpty) {
+        throw Exception("User token is missing. Please log in again.");
+      }
+
+      final Map<String, dynamic> userData = jsonDecode(userDataString);
+
+      String? token = userData['accessToken'] ??
+          (userData['data'] != null &&
+                  (userData['data'] as List).isNotEmpty &&
+                  userData['data'][0]['access_token'] != null
+              ? userData['data'][0]['access_token']
+              : null);
+
+      if (token == null || token.isEmpty) {
+        throw Exception("User token is invalid. Please log in again.");
+      }
+
+
+      final response = await http.delete(
+        Uri.parse(deleteUrl),
+        headers: {
+          'Accept': 'application/json',
+        },
+      );
+
+      print("🗑️ Delete response: ${response.body}");
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        print("✅ Deleted successfully");
+        await getWork();
+        return response.statusCode;
+      } else {
+        throw Exception("Delete failed: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("❗ Delete error: $e");
+      throw Exception("Delete error: $e");
+    } finally {
+      loadingState.state = false;
+    }
+  }
+
+
+
 }
 
 final workProvider = StateNotifierProvider<WorkProvider, List<WorkModel>>((ref) {

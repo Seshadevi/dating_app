@@ -3,67 +3,91 @@ import 'package:dating/screens/completeprofile/moreaboutyou_screens/drinking_scr
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// StateProvider to hold single selected option
 final selectedOptionProvider = StateProvider<String?>((ref) => null);
 
-class SmokingScreen extends ConsumerWidget {
-  SmokingScreen({super.key});
-
-  final List<String> options = [
-    'I Smoke Sometimes',
-    'No Idont Smoke',
-    'Yes, I Smoke',
-    'Im Trying To Quit',
-  ];
+class SmokingScreen extends ConsumerStatefulWidget {
+  const SmokingScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final selectedOption = ref.watch(selectedOptionProvider);
-    final loginNotifier = ref.read(loginProvider.notifier);
-
-    Future<void> toggleOption(String option) async {
-      try {
-        // If already selected, deselect; else select the new option
-        ref.read(selectedOptionProvider.notifier).update((state) =>
-            state == option
-                ? null
-                : option);
-
-        // Debug print
-        print('About to update profile with: $option');
-
-        await loginNotifier.updateProfile(
-          causeId: null,
-          image: null,
-          modeid: null,
-          bio: null,
-          modename: null,
-          prompt: null,
-          qualityId: null,
-          smoking: option, // sending single string now
-        );
-
-        print('Smoking updated successfully');
-
-       if (context.mounted) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('Smoking status updated successfully!')),
-  );
-  await Future.delayed(const Duration(milliseconds: 300)); // give snackbar time to show
-  Navigator.pop(context);
+  ConsumerState<SmokingScreen> createState() => _SmokingScreenState();
 }
 
-      } catch (e) {
-        print('Detailed error: $e');
-        print('Error type: ${e.runtimeType}');
+class _SmokingScreenState extends ConsumerState<SmokingScreen> {
+  final List<String> options = [
+    'I Smoke Sometimes',
+    'No I don\'t Smoke',
+    'Yes, I Smoke',
+    'I\'m Trying To Quit',
+  ];
 
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to upload smoking status: $e')),
-          );
-        }
+@override
+void initState() {
+  super.initState();
+
+  Future.microtask(() {
+    final user = ref.read(loginProvider).data?.first.user;
+
+    if (user != null && user.smoking != null) {
+      String? preselected;
+
+      // If smoking is a Map with a name field
+      if (user.smoking is Map) {
+        preselected = (user.smoking ?? '').toString();
+      }
+
+      // If smoking is already a String
+      else if (user.smoking is String) {
+        preselected = user.smoking.toString();
+      }
+
+      if (preselected != null && preselected.isNotEmpty) {
+        ref.read(selectedOptionProvider.notifier).state = preselected;
       }
     }
+  });
+}
+
+
+  Future<void> toggleOption(String option) async {
+    final loginNotifier = ref.read(loginProvider.notifier);
+
+    try {
+      // Select or deselect
+      ref.read(selectedOptionProvider.notifier).update(
+            (state) => state == option ? null : option,
+          );
+
+      // Update API
+      await loginNotifier.updateProfile(
+        causeId: null,
+        image: null,
+        modeid: null,
+        bio: null,
+        modename: null,
+        prompt: null,
+        qualityId: null,
+        smoking: option,
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Smoking status updated successfully!')),
+        );
+        await Future.delayed(const Duration(milliseconds: 300));
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update smoking status: $e')),
+        );
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedOption = ref.watch(selectedOptionProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -80,7 +104,6 @@ class SmokingScreen extends ConsumerWidget {
         child: Column(
           children: [
             const SizedBox(height: 150),
-            // Header with icon and title
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -109,11 +132,8 @@ class SmokingScreen extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 50),
-            // Options list
             ...options.map((option) {
               final isSelected = selectedOption == option;
-              final isFirstOption = option == 'I Smoke Sometimes';
-
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: GestureDetector(
@@ -123,22 +143,18 @@ class SmokingScreen extends ConsumerWidget {
                     height: 56,
                     decoration: BoxDecoration(
                       gradient: isSelected
-                          ? (isFirstOption
-                              ? const LinearGradient(
-                                  colors: [Color(0xFFB2D12E), Color(0xFF2B2B2B)],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                )
-                              : const LinearGradient(
-                                  colors: [Color(0xFFB2D12E), Color(0xFF2B2B2B)],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                ))
+                          ? const LinearGradient(
+                              colors: [Color(0xFFB2D12E), Color(0xFF2B2B2B)],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            )
                           : null,
                       color: isSelected ? null : Colors.white,
                       borderRadius: BorderRadius.circular(28),
                       border: Border.all(
-                        color: isSelected ? Colors.transparent : const Color(0xFFB2D12E),
+                        color: isSelected
+                            ? Colors.transparent
+                            : const Color(0xFFB2D12E),
                         width: 2,
                       ),
                     ),
@@ -157,13 +173,14 @@ class SmokingScreen extends ConsumerWidget {
               );
             }).toList(),
             const Spacer(),
-            // Skip button
             Center(
               child: TextButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const DrinkingScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => const DrinkingScreen(),
+                    ),
                   );
                 },
                 child: const Text(

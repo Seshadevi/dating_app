@@ -17,12 +17,30 @@ class _AddJobScreenState extends ConsumerState<AddJobScreen> {
   final TextEditingController companyController = TextEditingController();
 
   bool isButtonEnabled = false;
+  int? _editingId; // null = adding mode, not null = editing mode
 
   @override
   void initState() {
     super.initState();
     titleController.addListener(_checkInput);
     companyController.addListener(_checkInput);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Get arguments only once when the route is first built
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null && _editingId == null) { // Only set if not already set
+      _editingId = args['id'] as int?;
+      titleController.text = args['title'] ?? '';
+      companyController.text = args['company'] ?? '';
+      
+      // Check input after setting initial values
+      _checkInput();
+    }
   }
 
   void _checkInput() {
@@ -35,6 +53,51 @@ class _AddJobScreenState extends ConsumerState<AddJobScreen> {
     }
   }
 
+  Future<void> _handleSubmit() async {
+    final title = titleController.text.trim();
+    final company = companyController.text.trim();
+
+    if (title.isEmpty || company.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please fill in all fields")),
+      );
+      return;
+    }
+
+    try {
+      if (_editingId == null) {
+        // ADD MODE
+        final userId = ref.read(loginProvider).data![0].user?.id ?? '';
+        final success = await ref.read(workProvider.notifier).addwork(
+          title: title,
+          company: company,
+        );
+
+        if (success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Job added successfully!')),
+          );
+          Navigator.pop(context);
+        }
+      } else {
+        // EDIT MODE - Replace with your actual update method
+        await ref.read(workProvider.notifier).updateSelectedwork(
+          _editingId!,
+          title,
+          company,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Job updated successfully!')),
+        );
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
+  }
+
   @override
   void dispose() {
     titleController.dispose();
@@ -44,12 +107,14 @@ class _AddJobScreenState extends ConsumerState<AddJobScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = _editingId != null;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
-          'Add Job',
-          style: TextStyle(color: Colors.black),
+        title: Text(
+          isEditing ? 'Edit Job' : 'Add Job',
+          style: const TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -96,43 +161,16 @@ class _AddJobScreenState extends ConsumerState<AddJobScreen> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: isButtonEnabled
-                      ? ()async {
-                          
-                          print('Job Added: ${titleController.text}, ${companyController.text}');
-                            try {
-                            final userId = ref.read(loginProvider).data![0].user?.id ?? '';
-                            final success = await ref.read(workProvider.notifier).addwork(
-                              // userId: userId,
-                              title: titleController.text.trim(),
-                              company: companyController.text.trim(),
-                              
-                            );
-
-                            if (success) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Job added successfully!')),
-                              );
-                              Navigator.pop(context); // Go back after success
-                            }
-                          } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Error: ${e.toString()}')),
-                            );
-                          }
-
-
-                        }
-                      : null, // Disable button if fields empty
+                  onPressed: isButtonEnabled ? _handleSubmit : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: isButtonEnabled ? const Color.fromARGB(255, 21, 127, 4) : Colors.grey,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: const Text(
-                    'ADD',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  child: Text(
+                    isEditing ? 'UPDATE' : 'ADD',
+                    style: const TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ),
               ),

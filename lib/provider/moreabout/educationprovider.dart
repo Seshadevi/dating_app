@@ -173,6 +173,123 @@ class EducationProvider extends StateNotifier<Educationmodel> {
       loadingState.state = false;
     }
   }
+
+  Future<void> updateSelectededucation(
+      int educationId, String? institute, String? year) async {
+    final loadingState = ref.read(loadingProvider.notifier);
+    final prefs = await SharedPreferences.getInstance();
+    print('data education $educationId,$institute,$year');
+
+    try {
+      loadingState.state = true;
+
+      String? userDataString = prefs.getString('userData');
+      if (userDataString == null || userDataString.isEmpty) {
+        throw Exception("User token is missing. Please log in again.");
+      }
+
+      final Map<String, dynamic> userData = jsonDecode(userDataString);
+
+      String? token = userData['accessToken'] ??
+          (userData['data'] != null &&
+                  (userData['data'] as List).isNotEmpty &&
+                  userData['data'][0]['access_token'] != null
+              ? userData['data'][0]['access_token']
+              : null);
+
+      if (token == null || token.isEmpty) {
+        throw Exception("User token is invalid. Please log in again.");
+      }
+
+      // You'll need to add this API endpoint to your Dgapi class
+      final apiUrl = Uri.parse("${Dgapi.educationUpdate}/$educationId");
+ // Add this to your API constants
+      final request = await http.put(
+        // or patch, depending on your API
+        apiUrl,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          'institution': institute,
+          'gradYear': year,
+        }),
+      );
+
+      print('Update selected education Status Code: ${request.statusCode}');
+      print('Update selected education Response Body: ${request.body}');
+
+      if (request.statusCode == 200 || request.statusCode == 201) {
+        print("Selected education updated successfully!");
+        // Optionally refresh the work list to get updated data
+        await geteducation();
+      } else {
+        final errorBody =
+            request.body.isNotEmpty ? jsonDecode(request.body) : {};
+        final errorMessage =
+            errorBody['message'] ?? 'Failed to update selected education.';
+        throw Exception("Error updating selected education: $errorMessage");
+      }
+    } catch (e) {
+      print("Failed to update selected education: $e");
+      rethrow;
+    } finally {
+      loadingState.state = false;
+    }
+  }
+
+  Future<int> deleteeducation(int? educationId) async {
+    final loadingState = ref.read(loadingProvider.notifier);
+    loadingState.state = true;
+    final prefs = await SharedPreferences.getInstance();
+
+    try {
+      final String deleteUrl = "${Dgapi.educationdelete}/$educationId";
+      // loadingState.state = true;
+
+      String? userDataString = prefs.getString('userData');
+      if (userDataString == null || userDataString.isEmpty) {
+        throw Exception("User token is missing. Please log in again.");
+      }
+
+      final Map<String, dynamic> userData = jsonDecode(userDataString);
+
+      String? token = userData['accessToken'] ??
+          (userData['data'] != null &&
+                  (userData['data'] as List).isNotEmpty &&
+                  userData['data'][0]['access_token'] != null
+              ? userData['data'][0]['access_token']
+              : null);
+
+      if (token == null || token.isEmpty) {
+        throw Exception("User token is invalid. Please log in again.");
+      }
+
+
+      final response = await http.delete(
+        Uri.parse(deleteUrl),
+        headers: {
+          'Accept': 'application/json',
+        },
+      );
+
+      print("🗑️ Delete response: ${response.body}");
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        print("✅ Deleted successfully");
+        await geteducation();
+        return response.statusCode;
+      } else {
+        throw Exception("Delete failed: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("❗ Delete error: $e");
+      throw Exception("Delete error: $e");
+    } finally {
+      loadingState.state = false;
+    }
+  }
 }
 
 final educationProvider =

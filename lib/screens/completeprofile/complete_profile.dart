@@ -295,8 +295,8 @@ class _BumbleDateProfileScreenState
         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
 
     if (user != null && user.profilePics != null) {
-      final profilePics = user.profilePics!;
-      for (int i = 0; i < profilePics.length && i < 6; i++) {
+      final profilePics = user.profilePics;
+      for (int i = 0; i < profilePics!.length && i < 6; i++) {
         final fullUrl = "http://97.74.93.26:6100${profilePics[i].url}";
         selectedImages[i] = NetworkImage(fullUrl);
       }
@@ -1457,206 +1457,125 @@ class _BumbleDateProfileScreenState
   }
 
   Widget _buildAboutYouSection() {
-    final userData = ref.watch(loginProvider);
-    final user =
-        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
-    Work? work = user!.work;
-    final workDisplayText =
-        work != null ? work.title! + (' at ${work.company}') : 'Add';
-    Education? education = user.education;
+  final userData = ref.watch(loginProvider);
+  final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+
+  final workTitle = user?.work?.title ?? '';
+  final workCompany = user?.work?.company ?? '';
+  final workDisplayText = (workTitle.isNotEmpty || workCompany.isNotEmpty)
+      ? '$workTitle${workCompany.isNotEmpty ? ' at $workCompany' : ''}'
+      : 'Add';
+ Education? education = user?.education;
     final educationText = education != null
         ? education.institution! + (' in ${education.gradYear}')
         : 'Add';
-    // Education? education = user.education;
-    final selectgender = user.gender != null ? user.gender : 'Add';
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'About You',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
-        ),
-        SizedBox(height: 16),
-        _buildProfileItem(
-            Icons.work_outline,
-            'Work',
-            //  workDisplayText,
-            workDisplayText, onTap: () {
-          Navigator.pushNamed(context, '/occupationscreen');
-        }),
-        _buildProfileItem(Icons.school_outlined, 'Education', educationText,
-            onTap: () {
-          
-               Navigator.pushNamed(context, '/educationscreen');
-        }),
-        _buildProfileItem(Icons.person_outline, 'Gender', selectgender,
-            onTap: () {
-         
-               Navigator.pushNamed(context, '/updategenderscreen');
-        }),
-        _buildProfileItem(Icons.location_on_outlined, 'Location', 'Add',
-            onTap: () {
-          
-               Navigator.pushNamed(context, '/citysearchpage');
-        }),
-        _buildProfileItem(Icons.home_outlined, 'Hometown', 'Add', onTap: () {
-         
-                   Navigator.pushNamed(context, '/hometownscreen');
-        }),
-      ],
-    );
-  }
 
-  Widget _buildMoreAboutYouSection() {
-    final userData = ref.watch(loginProvider);
-    final user =
-        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+  final selectGender = user?.gender ?? 'Add';
 
-    final lookingfor = user?.lookingFor?.isNotEmpty == true
-        ? user!.lookingFor!.first.value ?? 'Add'
-        : 'Add';
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'About You',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
+      ),
+      const SizedBox(height: 16),
+      _buildProfileItem(Icons.work_outline, 'Work', workDisplayText, onTap: () {
+        Navigator.pushNamed(context, '/occupationscreen');
+      }),
+      _buildProfileItem(Icons.school_outlined, 'Education', educationText, onTap: () {
+        Navigator.pushNamed(context, '/educationscreen');
+      }),
+      _buildProfileItem(Icons.person_outline, 'Gender', selectGender, onTap: () {
+        Navigator.pushNamed(context, '/updategenderscreen');
+      }),
+      _buildProfileItem(Icons.location_on_outlined, 'Location', 'Add', onTap: () {
+        Navigator.pushNamed(context, '/citysearchpage');
+      }),
+      _buildProfileItem(Icons.home_outlined, 'Hometown', 'Add', onTap: () {
+        Navigator.pushNamed(context, '/hometownscreen');
+      }),
+    ],
+  );
+}
 
-    final String religion =
-        (user?.religions != null && user!.religions!.isNotEmpty)
-            ? user.religions!.first.religion ?? 'Add'
-            : 'Add';
+Widget _buildMoreAboutYouSection() {
+  final userData = ref.watch(loginProvider);
+  final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
 
-    final String kids = (user?.kids != null && user!.kids!.isNotEmpty)
-        ? user.kids!.first.kids ?? 'Add'
-        : 'Add';
+  final lookingfor = (user?.lookingFor?.isNotEmpty ?? false)
+      ? (user?.lookingFor?.first.value ?? 'Add')
+      : 'Add';
 
-    final String drinking =
-        (user?.drinking != null && user!.drinking!.isNotEmpty)
-            ? user.drinking!.first.preference ?? 'Add'
-            : 'Add';
-    final String smoking = (user?.smoking != null && user!.smoking!.isNotEmpty)
-        ? user.smoking!
-        : 'Add';
+  final religion = (user?.religions?.isNotEmpty ?? false)
+      ? (user?.religions?.first.religion ?? 'Add')
+      : 'Add';
 
-    final String starsign = user?.starSign?.name ?? 'Add';
-    final String exercise = user?.exercise ?? 'Add';
+  final kids = (user?.kids?.isNotEmpty ?? false)
+      ? (user?.kids?.first.kids ?? 'Add')
+      : 'Add';
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'More About You',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
-        ),
-        SizedBox(height: 8),
-        Text(
-          'Share More Details About Yourself Are Curious About',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
-          ),
-        ),
-        SizedBox(height: 16),
-        _buildProfileItem(
-          Icons.search,
-          'Looking For',
-          lookingfor as String?,
-          onTap: () async {
-            final result = await Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => LookingForScreen()),
-            );
-            if (result != null) {
-              setState(() {
-                selectedLooking = result;
-              });
-            }
-          },
-        ),
-        _buildProfileItem(Icons.favorite_border, 'Relationship', 'Add',
-            onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => RelationshipScreen()),
-          );
-        }),
-        _buildProfileItem(Icons.child_care, 'Have A Kids', kids as String?,
-            onTap: () async {
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => HaveKidsScreen()),
-          );
-          if (result != null) {
-            setState(() {
-              selectedkid = result;
-            });
-          }
-        }),
-        _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', smoking,
-            onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => SmokingScreen()),
-          );
-        }),
-        _buildProfileItem(
-            Icons.local_drink_outlined, 'Drinking', drinking as String?,
-            onTap: () async {
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => DrinkingScreen()),
-          );
-          if (result != null) {
-            setState(() {
-              selectedDrink = result;
-            });
-          }
-        }),
-        _buildProfileItem(Icons.fitness_center_outlined, 'Exercise', exercise,
-            onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ExerciseScreen()),
-          );
-        }),
-        _buildProfileItem(Icons.location_city_outlined, 'New To Area', 'Add',
-            onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => NewToAreaScreen()),
-          );
-        }),
-        _buildProfileItem(Icons.star_border, 'Star Sign', starsign as String?,
-            onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => StarSignScreen()),
-          );
-        }),
-        _buildProfileItem(Icons.place_outlined, 'Religion', religion as String?,
-            onTap: () async {
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ReligionScreen()),
-          );
-          if (result != null) {
-            setState(() {
-              selectedReligion = result;
-            });
-          }
-        }),
-      ],
-    );
-  }
+  final drinking = (user?.drinking?.isNotEmpty ?? false)
+      ? (user?.drinking?.first.preference ?? 'Add')
+      : 'Add';
+
+  final  smoking = (user?.smoking?.isNotEmpty ?? false)
+      ? user?.smoking
+      : 'Add';
+
+  final starsign = user?.starSign?.name ?? 'Add';
+  final exercise = user?.exercise ?? 'Add';
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'More About You',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        'Share More Details About Yourself Are Curious About',
+        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+      ),
+      const SizedBox(height: 16),
+      _buildProfileItem(Icons.search, 'Looking For', lookingfor, onTap: () {
+        Navigator.pushNamed(context,'/lookingforscreen');
+      }),
+      _buildProfileItem(Icons.favorite_border, 'Relationship', 'Add', onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => RelationshipScreen()));
+      }),
+      _buildProfileItem(Icons.child_care, 'Have A Kids', kids, onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => HaveKidsScreen()));
+      }),
+      _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', smoking!, onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => SmokingScreen()));
+      }),
+      _buildProfileItem(Icons.local_drink_outlined, 'Drinking', drinking, onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => DrinkingScreen()));
+      }),
+      _buildProfileItem(Icons.fitness_center_outlined, 'Exercise', exercise, onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => ExerciseScreen()));
+      }),
+      _buildProfileItem(Icons.location_city_outlined, 'New To Area', 'Add', onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => NewToAreaScreen()));
+      }),
+      _buildProfileItem(Icons.star_border, 'Star Sign', starsign, onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => StarSignScreen()));
+      }),
+      _buildProfileItem(Icons.place_outlined, 'Religion', religion, onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (_) => ReligionScreen()));
+      }),
+    ],
+  );
+}
+
 
   Widget _buildPronounsSection() {
     final userData = ref.watch(loginProvider);
     final user =
         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
-    final pronoun = user!.pronouns;
+    final pronoun = user?.pronouns;
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1677,7 +1596,7 @@ class _BumbleDateProfileScreenState
               color: Colors.grey[600],
             ),
           ),
-          if (pronoun!.isNotEmpty)
+          if (pronoun!=null)
   Chip(
     label: Text(pronoun),
     backgroundColor: Colors.blue[50],
@@ -1697,7 +1616,7 @@ else
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey[300]!, width: 1),
+              border: Border.all(color: Colors.white, width: 1),
             ),
             child: GestureDetector(
               onTap: () {
@@ -1791,7 +1710,7 @@ else
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[300]!, width: 1),
+            border: Border.all(color: Colors.grey, width: 1),
           ),
           child: Row(
             children: [
@@ -1852,7 +1771,7 @@ else
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[300]!, width: 1),
+            border: Border.all(color: Colors.grey, width: 1),
           ),
           child: Column(
             children: [
@@ -1922,7 +1841,7 @@ else
     );
   }
 
-  Widget _buildProfileItem(IconData icon, String title, String? value,
+  Widget _buildProfileItem(IconData icon, String title, String value,
       {required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
@@ -1944,8 +1863,7 @@ else
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               )),
-              Text(value!,
-                  style: const TextStyle(fontSize: 16, color: Colors.grey)),
+              Text(value,style: const TextStyle(fontSize: 16, color: Colors.grey)),
               const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
             ],
           ),

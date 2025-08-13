@@ -26,4 +26,9 @@ class Dgapi {
   static const String educationGet="$baseUrl/education";
   static const String laguagesGet="$baseUrl/language";
   static const String starsignGet="$baseUrl/starsign";
+  static const String workUpdate="$baseUrl/work";
+  static const String workdelete="$baseUrl/work";
+  
+  static const String educationUpdate="$baseUrl/education";
+  static const String educationdelete="$baseUrl/education";
 }

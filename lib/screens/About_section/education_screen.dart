@@ -1,7 +1,6 @@
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/moreabout/educationprovider.dart';
 import 'package:dating/screens/About_section/add_eduction_screen.dart';
-// import 'package:dating/provider/educationProvider.dart';
 import 'package:dating/model/moreabout/Educationmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +18,6 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch education data when screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(educationProvider.notifier).geteducation();
     });
@@ -28,7 +26,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
   @override
   Widget build(BuildContext context) {
     final educationState = ref.watch(educationProvider);
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -56,27 +54,10 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
             ),
           ),
           const Divider(),
-          
-          // Add Education Option
-          // ListTile(
-          //   title: const Text('Add a Education'),
-          //   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-          //   onTap: () {
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(
-          //         builder: (context) => AddEducationScreen(),
-          //       ),
-          //     );
-          //   },
-          // ),
-          // const Divider(height: 1),
-          
-          // Education List
           Expanded(
             child: _buildEducationList(educationState),
           ),
-           Container(
+          Container(
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -108,8 +89,6 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
                       builder: (_) => const AddEducationScreen(),
                     ),
                   );
-                  
-                  // Refresh the job list if a job was added
                   if (result == true) {
                     ref.read(educationProvider.notifier).geteducation();
                   }
@@ -122,7 +101,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
                     Text(
                       'Add a Education',
                       style: TextStyle(
-                        fontSize: 16, 
+                        fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -133,7 +112,6 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
           ),
         ],
       ),
-      
       backgroundColor: Colors.white,
     );
   }
@@ -179,35 +157,27 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
             setState(() {
               selectedEducationId = value;
             });
-            
-            // Call update API when radio button is selected
             try {
-                      await ref.read(loginProvider.notifier).updateProfile(
-                          image: null,
-                          modeid: null,
-                          bio: null,
-                          modename: null,
-                          prompt: null,
-                          qualityId: null,
-                          jobId:null,
-                          eductionId:selectedEducationId);
-                      print('education updated');
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text('education updated successfully!')),
-                            
-                      );
-                      Navigator.pop(context);
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text('Failed to upload job: $e')),
-                      );
-                    }
-            // if (value != null) {
-            //   _updateEducation(education);
-            // }
+              await ref.read(loginProvider.notifier).updateProfile(
+                    image: null,
+                    modeid: null,
+                    bio: null,
+                    modename: null,
+                    prompt: null,
+                    qualityId: null,
+                    jobId: null,
+                    educationId: selectedEducationId,
+                  );
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content: Text('Education updated successfully!')),
+              );
+              Navigator.pop(context);
+            } catch (e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Failed to update education: $e')),
+              );
+            }
           },
           activeColor: const Color.fromARGB(255, 23, 136, 36),
         ),
@@ -229,16 +199,6 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
                 fontSize: 14,
               ),
             ),
-            // if (education.createdAt != null) ...[
-            //   const SizedBox(height: 2),
-            //   Text(
-            //     'Added: ${_formatDate(education.createdAt!)}',
-            //     style: TextStyle(
-            //       color: Colors.grey.shade500,
-            //       fontSize: 12,
-            //     ),
-            //   ),
-            // ],
           ],
         ),
         trailing: PopupMenuButton<String>(
@@ -267,7 +227,8 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
               value: 'delete',
               child: Row(
                 children: [
-                  Icon(Icons.delete, size: 18, color: Color.fromARGB(255, 99, 91, 90)),
+                  Icon(Icons.delete,
+                      size: 18, color: Color.fromARGB(255, 99, 91, 90)),
                   SizedBox(width: 8),
                   Text('Delete'),
                 ],
@@ -281,76 +242,21 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
     );
   }
 
-  String _formatDate(String dateString) {
-    try {
-      final date = DateTime.parse(dateString);
-      return '${date.day}/${date.month}/${date.year}';
-    } catch (e) {
-      return dateString;
-    }
-  }
-
-  // void _updateEducation(Data education) {
-  //   // Show confirmation dialog
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: const Text('Select Education'),
-  //         content: Text(
-  //           'Do you want to show "${education.institution}" on your profile?',
-  //         ),
-  //         actions: [
-  //           TextButton(
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //               setState(() {
-  //                 selectedEducationId = null;
-  //               });
-  //             },
-  //             child: const Text('Cancel'),
-  //           ),
-  //           TextButton(
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //               _performUpdate(education);
-  //             },
-  //             child: const Text('Confirm'),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
-
-  void _performUpdate(Data education) {
-    // Here you would call your update API
-    // You'll need to add an update method to your EducationProvider
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Selected "${education.institution}" as primary education'),
-        backgroundColor: Colors.green,
-      ),
-    );
-    
-    // TODO: Call the actual update API
-    // ref.read(educationProvider.notifier).updateEducation(education.id);
-  }
-
   void _editEducation(Data education) {
-    // Navigate to edit screen with education data
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => AddEducationScreen(
-          // education: education, // Pass education data for editing
-        ),
-      ),
-    ).then((_) {
-      // Refresh data when returning from edit screen
-      ref.read(educationProvider.notifier).geteducation();
-    });
+    Navigator.pushNamed(
+  context,
+  '/addeductionscreen',
+  arguments: {
+    'id': education.id,
+    'institution': education.institution,
+    'gradYear': education.gradYear.toString(),
+  },
+);
+
+      // if (result == true) {
+      //   ref.read(educationProvider.notifier).geteducation();
+      // }
+    
   }
 
   void _deleteEducation(Data education) {
@@ -368,17 +274,23 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 Navigator.of(context).pop();
-                // TODO: Call delete API
-                // ref.read(educationProvider.notifier).deleteEducation(education.id);
-                
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Education deleted successfully'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
+                try {
+                  await ref.read(educationProvider.notifier)
+                  .deleteeducation(education.id ?? 0);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Education deleted successfully'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                  ref.read(educationProvider.notifier).geteducation();
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to delete: $e')),
+                  );
+                }
               },
               child: const Text('Delete', style: TextStyle(color: Colors.red)),
             ),

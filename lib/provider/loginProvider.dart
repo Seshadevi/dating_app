@@ -767,7 +767,7 @@ Future<int> updateProfile({
   List<int>? lookingfor,
   List<int>? kidsId,
   List<int>? drinkingId,
-  int? eductionId,
+  // int? eductionId,
   String? smoking,
   String? gender,
   bool? showOnProfile,
@@ -777,7 +777,7 @@ Future<int> updateProfile({
   final loadingState = ref.read(loadingProvider.notifier);
   loadingState.state = true;
    print(
-        'updated data....modeId:$modeid,smoking:$smoking, modename:$modename, causedId:$causeId, intrestId:$interestId, qualityId:$qualityId, bio:$bio, prompt:$prompt, image:${image?.length},languages:$languagesId,work:$jobId,education:$eductionId,starsign:$starsignId');
+        'updated data....lookingfor:$lookingfor,mode:$modeid,smoking:$smoking, modename:$modename, causedId:$causeId, intrestId:$interestId, qualityId:$qualityId, bio:$bio, prompt:$prompt, image:${image?.length},languages:$languagesId,work:$jobId,education:$educationId,starsign:$starsignId');
 
   try {
     final String apiUrl = Dgapi.updateprofile;

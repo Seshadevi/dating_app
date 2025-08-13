@@ -13,11 +13,35 @@ class HaveKidsScreen extends ConsumerStatefulWidget {
 class _HaveKidsScreenState extends ConsumerState<HaveKidsScreen> {
   List<String> selectedOptions = [];
 
-  @override
+   @override
   void initState() {
     super.initState();
-    Future.microtask(() => ref.read(kidsProvider.notifier).getKids());
+
+    Future.microtask(() async {
+      // Load available drink options
+      await ref.read(kidsProvider.notifier).getKids();
+
+      // Get logged in user data
+      final user = ref.read(loginProvider).data?.first.user;
+
+      if (user != null && user.drinking != null && user.drinking!.isNotEmpty) {
+        // Extract preferences for preselection
+        selectedOptions = user.kids!
+            .map((drink) => drink.kids ?? '')
+            .where((pref) => pref.isNotEmpty)
+            .toList();
+
+        // Extract IDs for updating later
+        // selectedOptions = user.kids!
+        //     .map((drink) => drink.id)
+        //     .whereType<int>()
+        //     .toList();
+      }
+
+      setState(() {});
+    });
   }
+
 
   void toggleOption(String option) {
     setState(() {
