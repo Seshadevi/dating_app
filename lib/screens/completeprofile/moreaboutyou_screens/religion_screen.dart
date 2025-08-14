@@ -11,7 +11,8 @@ class ReligionScreen extends ConsumerStatefulWidget {
 }
 
 class _ReligionScreenState extends ConsumerState<ReligionScreen> {
-  String? selectedOption;
+  int? selectedReligionId;
+  String? selectedReligionName;
 
   @override
   void initState() {
@@ -20,7 +21,7 @@ class _ReligionScreenState extends ConsumerState<ReligionScreen> {
       // Fetch religion options
       await ref.read(religionProvider.notifier).getReligions();
 
-      // Get user saved data
+      // Get user saved data from loginProvider
       final userState = ref.read(loginProvider);
       final user = userState.data != null && userState.data!.isNotEmpty
           ? userState.data![0].user
@@ -28,19 +29,51 @@ class _ReligionScreenState extends ConsumerState<ReligionScreen> {
 
       final religions = user?.religions;
 
-      // Extract default religion from List<dynamic>
-      if (religions != null  && religions.isNotEmpty) {
+      // If user has at least one religion, preselect it
+      if (religions != null && religions.isNotEmpty) {
         final first = religions.first;
-
-        // if (first is String) {
-        //   selectedOption = first;
-        // } else if (first is Map && first.containsKey('religion')) {
-        //   selectedOption = first['religion']?.toString();
-        // }
-
-        setState(() {});
+        if (first != null) {
+          // Adjust based on your model type
+          setState(() {
+            selectedReligionId = first.id; // assuming `id` exists
+            selectedReligionName = first.religion; // assuming `religion` string exists
+          });
+        }
       }
     });
+  }
+
+  Future<void> _updateReligion(int id, String name) async {
+    setState(() {
+      selectedReligionId = id;
+      selectedReligionName = name;
+    });
+
+    try {
+      await ref.read(loginProvider.notifier).updateProfile(
+            causeId: null,
+            image: null,
+            modeid: null,
+            bio: null,
+            modename: null,
+            prompt: null,
+            qualityId: null,
+            religionId: id,
+          );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$name updated successfully!')),
+        );
+        Navigator.pop(context, selectedReligionName);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update religion: $e')),
+        );
+      }
+    }
   }
 
   @override
@@ -98,45 +131,15 @@ class _ReligionScreenState extends ConsumerState<ReligionScreen> {
                       : ListView.builder(
                           itemCount: options.length,
                           itemBuilder: (context, index) {
-                            final option = options[index].religion ?? '';
-                            final isSelected = selectedOption == option;
+                            final religionItem = options[index];
+                            final religionId = religionItem.id ?? -1;
+                            final religionName = religionItem.religion ?? '';
+                            final isSelected = selectedReligionId == religionId;
 
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 12.0),
                               child: GestureDetector(
-                                onTap: () async{
-                                  final religionItem = options[index];
-                                  final religionId = religionItem.id; // Assuming ID is an int
-                                  final religionName = religionItem.religion ?? '';
-                                  final isSelected = selectedOption == religionId;
-
-                                  // setState(() {
-                                  //   selectedOption = option;
-                                  // });
-                                  // Navigator.pop(context, option); // Return selected value
-                                  try {
-                                    await ref.read(loginProvider.notifier).updateProfile(causeId: null,
-                                                                                                    image: null, 
-                                                                                                    modeid: null,
-                                                                                                    bio: null, 
-                                                                                                    modename:null, 
-                                                                                                    prompt:null,
-                                                                                                    qualityId: null,
-                                                                                                    religionId:religionId);
-                                    print('religion updated');
-
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('religion updated successfully!')),
-                                    );
-
-                                    // Return updated cause
-                                    // _returnSelectedCause();
-                                  } catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Failed to upload religion: $e')),
-                                    );
-                                  }
-                                },
+                                onTap: () => _updateReligion(religionId, religionName),
                                 child: Container(
                                   height: 56,
                                   decoration: BoxDecoration(
@@ -158,7 +161,7 @@ class _ReligionScreenState extends ConsumerState<ReligionScreen> {
                                   ),
                                   child: Center(
                                     child: Text(
-                                      option,
+                                      religionName,
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500,

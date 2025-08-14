@@ -20,42 +20,40 @@ class _SmokingScreenState extends ConsumerState<SmokingScreen> {
     'I\'m Trying To Quit',
   ];
 
-@override
-void initState() {
-  super.initState();
+  @override
+  void initState() {
+    super.initState();
 
-  Future.microtask(() {
-    final user = ref.read(loginProvider).data?.first.user;
+    Future.microtask(() {
+      final user = ref.read(loginProvider).data?.first.user;
 
-    if (user != null && user.smoking != null) {
-      String? preselected;
+      if (user != null && user.smoking != null) {
+        String? preselected;
 
-      // If smoking is a Map with a name field
-      if (user.smoking is Map) {
-        preselected = (user.smoking ?? '').toString();
+        // Case 1: smoking stored as Map with a name field
+        if (user.smoking is Map && (user.smoking as Map).containsKey('name')) {
+          preselected = user.smoking?.toString();
+        }
+        // Case 2: smoking is already a String
+        else if (user.smoking is String) {
+          preselected = user.smoking;
+        }
+
+        if (preselected != null &&
+            preselected.isNotEmpty &&
+            options.contains(preselected)) {
+          ref.read(selectedOptionProvider.notifier).state = preselected;
+        }
       }
-
-      // If smoking is already a String
-      else if (user.smoking is String) {
-        preselected = user.smoking.toString();
-      }
-
-      if (preselected != null && preselected.isNotEmpty) {
-        ref.read(selectedOptionProvider.notifier).state = preselected;
-      }
-    }
-  });
-}
-
+    });
+  }
 
   Future<void> toggleOption(String option) async {
     final loginNotifier = ref.read(loginProvider.notifier);
 
     try {
-      // Select or deselect
-      ref.read(selectedOptionProvider.notifier).update(
-            (state) => state == option ? null : option,
-          );
+      // Select only one option at a time
+      ref.read(selectedOptionProvider.notifier).state = option;
 
       // Update API
       await loginNotifier.updateProfile(

@@ -6,10 +6,12 @@ class GenderPronounsScreen extends ConsumerStatefulWidget {
   const GenderPronounsScreen({super.key});
 
   @override
-  ConsumerState<GenderPronounsScreen> createState() => _GenderPronounsScreenState();
+  ConsumerState<GenderPronounsScreen> createState() =>
+      _GenderPronounsScreenState();
 }
 
-class _GenderPronounsScreenState extends ConsumerState<GenderPronounsScreen> {
+class _GenderPronounsScreenState
+    extends ConsumerState<GenderPronounsScreen> {
   final List<String> allPronouns = [
     'She/Her',
     'He/Him',
@@ -22,7 +24,22 @@ class _GenderPronounsScreenState extends ConsumerState<GenderPronounsScreen> {
     'Per/Per',
   ];
 
-  String? selectedPronoun; // Only one pronoun now
+  String? selectedPronoun;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Pre-select user's pronoun if available
+    Future.microtask(() {
+      final user = ref.read(loginProvider).data?.first.user;
+      if (user?.pronouns != null && user!.pronouns!.isNotEmpty) {
+        setState(() {
+          selectedPronoun = user.pronouns;
+        });
+      }
+    });
+  }
 
   void selectPronoun(String pronoun) {
     setState(() {
@@ -33,23 +50,24 @@ class _GenderPronounsScreenState extends ConsumerState<GenderPronounsScreen> {
   Future<void> updatePronounToApi() async {
     if (selectedPronoun == null) return;
 
-    // Example API call (replace with your own)
     try {
       await ref.read(loginProvider.notifier).updateProfile(
             pronoun: selectedPronoun,
-            
           );
 
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('pronoun updated successfully')),
+        const SnackBar(content: Text('Pronoun updated successfully')),
       );
 
-      Navigator.pop(context,selectedPronoun); // Go back after save
+      Navigator.pop(context, selectedPronoun);
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to update pronoun: $e')),
       );
-    } 
+    }
   }
 
   @override
@@ -81,7 +99,7 @@ class _GenderPronounsScreenState extends ConsumerState<GenderPronounsScreen> {
               ),
               const SizedBox(height: 6),
               const Text(
-                "Pick pronoun and we'll add it to your profile.",
+                "Pick a pronoun and we'll add it to your profile.",
                 style: TextStyle(fontSize: 14),
               ),
               const SizedBox(height: 4),
@@ -92,7 +110,7 @@ class _GenderPronounsScreenState extends ConsumerState<GenderPronounsScreen> {
               const Divider(thickness: 1),
               const SizedBox(height: 8),
               const Text(
-                "Pick  Pronoun",
+                "Pick Pronoun",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),
@@ -104,9 +122,7 @@ class _GenderPronounsScreenState extends ConsumerState<GenderPronounsScreen> {
                   return ChoiceChip(
                     label: Text(pronoun),
                     selected: isSelected,
-                    onSelected: (_) {
-                      selectPronoun(pronoun);
-                    },
+                    onSelected: (_) => selectPronoun(pronoun),
                     selectedColor: const Color.fromARGB(255, 15, 104, 5),
                     labelStyle: TextStyle(
                       color: isSelected ? Colors.white : Colors.black,

@@ -11,13 +11,32 @@ class ExerciseScreen extends ConsumerStatefulWidget {
 }
 
 class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
-  String? selectedOption; // only one selection
+  String? selectedOption; // Preselected from user profile
 
   final List<String> options = [
     'Active',
     'Sometimes',
     'Almost Never',
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Load preselected data from loginProvider after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userState = ref.read(loginProvider);
+      final user = userState.data != null && userState.data!.isNotEmpty
+          ? userState.data![0].user
+          : null;
+
+      if (user != null && user.exercise != null && user.exercise!.isNotEmpty) {
+        setState(() {
+          selectedOption = user.exercise; // Match exact string
+        });
+      }
+    });
+  }
 
   Future<void> selectOption(String option) async {
     setState(() {
@@ -36,17 +55,14 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
             exercise: option,
           );
 
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Exercise updated successfully!')),
+        const SnackBar(content: Text('Exercise updated successfully!')),
       );
-      Navigator.pop(context,selectedOption);
 
-      // Navigate immediately to the next screen
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => const NewToAreaScreen()),
-      // );
+      Navigator.pop(context, selectedOption);
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to update exercise: $e')),
       );
@@ -103,7 +119,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: GestureDetector(
-                  onTap: () => selectOption(option), // Direct API call
+                  onTap: () => selectOption(option),
                   child: Container(
                     width: double.infinity,
                     height: 56,

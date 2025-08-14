@@ -19,9 +19,21 @@ class _StarSignScreenState extends ConsumerState<StarSignScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Fetch star sign list
       ref.read(starSignProvider.notifier).getStarsign();
-    }
-    );
+
+      // Preselect from user profile
+      final userData = ref.read(loginProvider).data;
+      if (userData != null && userData.isNotEmpty) {
+        final user = userData[0].user;
+        if (user?.starSign != null) {
+          setState(() {
+            selectedOptionId = user?.starSign?.id;
+            selectedOptionName = user?.starSign?.name; // if available
+          });
+        }
+      }
+    });
   }
 
   Future<void> _selectStarSign(int id, String name) async {
