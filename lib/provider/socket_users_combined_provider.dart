@@ -5,6 +5,7 @@ import 'package:dating/provider/loginProvider.dart';
 final socketUserProvider =
     StateNotifierProvider<SocketUserNotifier, List<Map<String, dynamic>>>((ref) {
   final accessToken = ref.read(loginProvider).data?.first.accessToken;
+  print("from socket-----$accessToken");
   if (accessToken == null) {
     throw Exception("Access token is null");
   }
