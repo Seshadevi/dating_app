@@ -145,7 +145,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
                   IconButton(
                     icon: const Icon(Icons.arrow_back_ios),
                     onPressed: (){
-                        if(modename == "DATE"){
+                        if(modeid == 4){
                               Navigator.pushNamed(
                                         context,
                                         '/defaultmessagesScreen',
@@ -174,22 +174,22 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
                                         },);
                           
                         }
-                        else if(modename == "BFF" || modename == "BIZZ"){
-                               Navigator.pushNamed(
-                                        context,
-                                        '/modescreen',
-                                        arguments: {
-                                          'latitude': latitude,
-                                          'longitude': longitude,
-                                          'dateofbirth':dateofbirth,
-                                          'userName':userName,
-                                          'selectgender':selectedgender,
-                                          "showonprofile":showonprofile,
-                                          "modeid":modeid,
-                                          "modename":modename,
-                                          'email':email,
-                                          'mobile':mobile
-                                    },);
+                        else if(modeid == 5 || modeid == 6){
+                              Navigator.pushNamed(
+                                  context,
+                                  '/modescreen',
+                                  arguments: {
+                                    'latitude': latitude,
+                                    'longitude': longitude,
+                                    'dateofbirth':dateofbirth,
+                                    'userName':userName,
+                                    'selectgender':selectedgender,
+                                    "showonprofile":showonprofile,
+                                    "modeid":modeid,
+                                    "modename":modename,
+                                    'email':email,
+                                    'mobile':mobile
+                            },);
                           
                         }
                     },
