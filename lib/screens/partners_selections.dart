@@ -1,13 +1,11 @@
+import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/signupprocessProviders/lookingProvider.dart';
 import 'package:dating/screens/height_selection_screen.dart';
 import 'package:dating/screens/meet_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
-
 class InrtoPartneroption extends ConsumerStatefulWidget {
-
   const InrtoPartneroption({super.key});
 
   @override
@@ -15,120 +13,121 @@ class InrtoPartneroption extends ConsumerStatefulWidget {
 }
 
 class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
-
-   List<String>? selectedGenderIds;
-   String? mobile;
-   double? latitude;
-   double? longitude;
-   String? dateofbirth;
-   String? userName;
-   String? selectedgender;
-   bool? showonprofile;
-   String? email;
-   int? modeid;
-   String? modename;
-   List<int> selectedOptionIds = [];
+  List<String>? selectedGenderIds;
+  String? mobile;
+  double? latitude;
+  double? longitude;
+  String? dateofbirth;
+  String? userName;
+  String? selectedgender;
+  bool? showonprofile;
+  String? email;
+  int? modeid;
+  String? modename;
+  List<int> selectedOptionIds = [];
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
-    if (args != null ) { // Prevent overwriting selected products
+    if (args != null) {
+      // Prevent overwriting selected products
       setState(() {
-          email= args['email'] ??'';
-          mobile = args['mobile'] ?? '';
-          latitude = args['latitude'] ?? 0.0 ;
-          longitude = args['longitude'] ?? 0.0 ;
-          dateofbirth = args['dateofbirth'] ?? '';
-          userName = args['userName'] ?? '';
-          selectedgender = args['selectgender'] ?? '';
-          showonprofile = args['showonprofile'] ?? true;
-          modeid=args['modeid'] ?? 0;
-          modename =args['modename'] ?? '';
-          selectedGenderIds=args['selectedGenderIds'] ?? [];
-          if (args.containsKey('selectedoptionIds') &&
-              args['selectedoptionIds'] != null &&
-              args['selectedoptionIds'] is List) {
-            selectedOptionIds = List<int>.from(args['selectedoptionIds']);
-          }
-
+        email = args['email'] ?? '';
+        mobile = args['mobile'] ?? '';
+        latitude = args['latitude'] ?? 0.0;
+        longitude = args['longitude'] ?? 0.0;
+        dateofbirth = args['dateofbirth'] ?? '';
+        userName = args['userName'] ?? '';
+        selectedgender = args['selectgender'] ?? '';
+        showonprofile = args['showonprofile'] ?? true;
+        modeid = args['modeid'] ?? 0;
+        modename = args['modename'] ?? '';
+        selectedGenderIds = args['selectedGenderIds'] ?? [];
+        if (args.containsKey('selectedoptionIds') &&
+            args['selectedoptionIds'] != null &&
+            args['selectedoptionIds'] is List) {
+          selectedOptionIds = List<int>.from(args['selectedoptionIds']);
+        }
       });
     }
   }
+
   @override
   void initState() {
     super.initState();
     ref.read(lookingProvider.notifier).getLookingForUser();
   }
 
- 
-
-
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final lookingData = ref.watch(lookingProvider).data ?? [];
+    
+    // Filter looking data based on current user's mode id
+    final filteredLookingData = lookingData.where((item) {
+      return item.modeId == modeid;
+    }).toList();
 
-    return 
-    Scaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
-      body:
-       Column(
+      body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 40),
           // Padding(
           //       padding: const EdgeInsets.symmetric(horizontal: 16),
-          //       child: 
-                LinearProgressIndicator(
-                  value: 8 / 18,
-                  backgroundColor: Colors.grey[300],
-                  valueColor: const AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 147, 179, 3)),
+          //       child:
+          LinearProgressIndicator(
+            value: 8 / 18,
+            backgroundColor: Colors.grey[300],
+            valueColor: const AlwaysStoppedAnimation<Color>(
+                Color.fromARGB(255, 147, 179, 3)),
+          ),
+          // ),
+          const SizedBox(height: 15),
+          // Back button and title
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              children: [
+                IconButton(
+                    icon: const Icon(Icons.arrow_back_ios),
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/intromeetgender',
+                        arguments: {
+                          'latitude': latitude,
+                          'longitude': longitude,
+                          'dateofbirth': dateofbirth,
+                          'userName': userName,
+                          'selectgender': selectedgender,
+                          "showonprofile": showonprofile,
+                          "modeid": modeid,
+                          "modename": modename,
+                          "selectedGenderIds": selectedGenderIds,
+                          'email': email,
+                          'mobile': mobile
+                        },
+                      );
+                    }),
+                // const SizedBox(width: 8),
+                const Text(
+                  "What Are You Find?",
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Poppins',
+                  ),
                 ),
-              // ),
-              const SizedBox(height: 15),
-              // Back button and title
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: 
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back_ios),
-                      onPressed: () {
-                         Navigator.pushNamed(
-                                    context,
-                                    '/intromeetgender',
-                                    arguments: {
-                                      'latitude': latitude,
-                                      'longitude': longitude,
-                                      'dateofbirth':dateofbirth,
-                                      'userName':userName,
-                                      'selectgender':selectedgender,
-                                      "showonprofile":showonprofile,
-                                      "modeid":modeid,
-                                      "modename":modename,
-                                      "selectedGenderIds":selectedGenderIds,
-                                      'email':email,
-                                      'mobile':mobile
-                                    },
-                                );
-                      }),
-                    // const SizedBox(width: 8),
-                    const Text(
-                      "What Are You Find?",
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Poppins',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-               SizedBox(height: screenHeight * 0.020),
+              ],
+            ),
+          ),
+          SizedBox(height: screenHeight * 0.020),
           Container(
             height: screenHeight * 0.1,
             width: screenWidth,
@@ -150,7 +149,6 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      
                       // Text(
                       //   textAlign: TextAlign.start,
                       //   'Select 1 or 2 options that reflect you',
@@ -174,74 +172,81 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40.0),
-              child:
-               lookingData.isEmpty
-                ? Center(child: CircularProgressIndicator())
-                :ListView.builder(
-                physics: BouncingScrollPhysics(),
-                itemCount: lookingData.length,
-                itemBuilder: (context, index) {
-                  final item = lookingData[index];
-                final isSelected = selectedOptionIds.contains(item.id);
-
-
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 24.0),
-                    child: GestureDetector(
-                      onTap: () {
-                          setState(() {
-                            if (selectedOptionIds.contains(item.id)) {
-                              selectedOptionIds.remove(item.id);
-                            } else {
-                              if (selectedOptionIds.length < 2) {
-                                selectedOptionIds.add(item.id!);
-                              }
-                            }
-                          });
-                        },
-
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                             item.value ?? '',
+              child: filteredLookingData.isEmpty
+                  ? Center(
+                      child: lookingData.isEmpty 
+                        ? CircularProgressIndicator()
+                        : Text(
+                            'No options available for selected mode',
                             style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w400,
-                              color: isSelected
-                                  ? Color(0xff92AB26)
-                                  : Colors.black87,
+                              fontSize: 16,
+                              color: Colors.grey[600],
+                            ),
+                          )
+                    )
+                  : ListView.builder(
+                      physics: BouncingScrollPhysics(),
+                      itemCount: filteredLookingData.length,
+                      itemBuilder: (context, index) {
+                        final item = filteredLookingData[index];
+                        final isSelected = selectedOptionIds.contains(item.id);
+
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 24.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (selectedOptionIds.contains(item.id)) {
+                                  selectedOptionIds.remove(item.id);
+                                } else {
+                                  if (selectedOptionIds.length < 2) {
+                                    selectedOptionIds.add(item.id!);
+                                  }
+                                }
+                              });
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  item.value ?? '',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w400,
+                                    color: isSelected
+                                        ? Color(0xff92AB26)
+                                        : Colors.black87,
+                                  ),
+                                ),
+                                Container(
+                                  width: 28,
+                                  height: 28,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: isSelected
+                                        ? Color(0xff92AB26)
+                                        : Colors.transparent,
+                                    border: Border.all(
+                                      color: isSelected
+                                          ? Color(0xff92AB26)
+                                          : Colors.grey[400]!,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: isSelected
+                                      ? Icon(
+                                          Icons.check,
+                                          size: 18,
+                                          color: Colors.white,
+                                        )
+                                      : null,
+                                ),
+                              ],
                             ),
                           ),
-                          Container(
-                            width: 28,
-                            height: 28,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: isSelected
-                                  ? Color(0xff92AB26)
-                                  : Colors.transparent,
-                              border: Border.all(
-                                color: isSelected
-                                    ? Color(0xff92AB26)
-                                    : Colors.grey[400]!,
-                                width: 2,
-                              ),
-                            ),
-                            child: isSelected
-                                ? Icon(
-                                    Icons.check,
-                                    size: 18,
-                                    color: Colors.white,
-                                  )
-                                : null,
-                          ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             ),
           ),
 
@@ -287,14 +292,13 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                
               ],
             ),
           ),
-           Align(
+          Align(
             alignment: Alignment.bottomRight,
             child: Padding(
-               padding: const EdgeInsets.only(right: 24, bottom: 24),
+              padding: const EdgeInsets.only(right: 24, bottom: 24),
               child: Material(
                 elevation: 10,
                 borderRadius: BorderRadius.circular(50),
@@ -310,7 +314,8 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                     borderRadius: BorderRadius.circular(50),
                   ),
                   child: IconButton(
-                    icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+                    icon: const Icon(Icons.arrow_forward_ios,
+                        color: Colors.white),
                     onPressed: () {
                       if (selectedOptionIds.length < 3) {
                         print("✅ Proceeding with:");
@@ -321,36 +326,36 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                         print("DOB: $dateofbirth");
                         print("Gender: $selectedgender");
                         print("Show Gender: $showonprofile");
-                        // print("Selected Mode: ${showmode.value} (ID: ${showmode.id})");
-                        print("Selected options: ${selectedOptionIds.toList()}");
-                      
-                    
-                    //     // Navigator.push(...) your next screen here
+                        print("Mode ID: $modeid");
+                        print("Mode Name: $modename");
+                        print(
+                            "Selected options: ${selectedOptionIds.toList()}");
+
+                        //     // Navigator.push(...) your next screen here
                         Navigator.pushNamed(
-                                    context,
-                                    '/heightscreen',
-                                    arguments: {
-                                      'latitude': latitude,
-                                      'longitude': longitude,
-                                      'dateofbirth':dateofbirth,
-                                      'userName':userName,
-                                      'selectgender':selectedgender,
-                                      "showonprofile":showonprofile,
-                                      "modeid":modeid,
-                                      "modename":modename,
-                                      "selectedGenderIds":selectedGenderIds,
-                                      "selectedoptionIds":selectedOptionIds,
-                                      'email':email,
-                                      'mobile':mobile
-                                    },
-                                );
+                          context,
+                          '/heightscreen',
+                          arguments: {
+                            'latitude': latitude,
+                            'longitude': longitude,
+                            'dateofbirth': dateofbirth,
+                            'userName': userName,
+                            'selectgender': selectedgender,
+                            "showonprofile": showonprofile,
+                            "modeid": modeid,
+                            "modename": modename,
+                            "selectedGenderIds": selectedGenderIds,
+                            "selectedoptionIds": selectedOptionIds,
+                            'email': email,
+                            'mobile': mobile
+                          },
+                        );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Please select 2 options"))
-                        );
+                            const SnackBar(
+                                content: Text("Please select 2 options")));
                       }
                     },
-                   
                   ),
                 ),
               ),

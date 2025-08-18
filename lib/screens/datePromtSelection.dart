@@ -1,5 +1,5 @@
-import 'package:dating/screens/editprompt_screen.dart';
 import 'package:dating/screens/face_screen.dart';
+import 'package:dating/screens/editprompt_screen.dart';
 import 'package:flutter/material.dart';
 
 class DatePromptScreen extends StatefulWidget {

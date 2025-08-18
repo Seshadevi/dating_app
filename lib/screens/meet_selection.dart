@@ -1,14 +1,9 @@
 import 'package:dating/provider/signupprocessProviders/genderProvider.dart';
-import 'package:dating/screens/mode_screen.dart';
-import 'package:dating/screens/partners_selections.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../model/signupprocessmodels/genderModel.dart';
-// import '../../provider/signupproviders/gender_provider.dart'; // adjust your import if needed
 
 class IntroMeetselection extends ConsumerStatefulWidget {
-
-
   const IntroMeetselection({super.key});
 
   @override
@@ -16,47 +11,46 @@ class IntroMeetselection extends ConsumerStatefulWidget {
 }
 
 class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
-  // String? selectedMode;
   bool isOpenToEveryone = false;
   List<String> selectedGenderIds = [];
-   String? mobile;
-   double? latitude;
-   double? longitude;
-   String? dateofbirth;
-   String? userName;
-   String? selectedgender;
-   bool? showonprofile;
-   String? email;
-   int? modeid;
-   String? modename;
+  String? mobile;
+  double? latitude;
+  double? longitude;
+  String? dateofbirth;
+  String? userName;
+  String? selectedgender;
+  bool? showonprofile;
+  String? email;
+  int? modeid;
+  String? modename;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
-    if (args != null ) { // Prevent overwriting selected products
+    if (args != null) {
       setState(() {
-          email= args['email'] ??'';
-          mobile = args['mobile'] ?? '';
-          latitude = args['latitude'] ?? 0.0 ;
-          longitude = args['longitude'] ?? 0.0;
-          dateofbirth = args['dateofbirth'] ?? '';
-          userName = args['userName'] ?? '';
-          selectedgender = args['selectgender'] ?? '';
-          showonprofile = args['showonprofile'] ?? true;
-          modeid=args['modeid'] ?? 0;
-          modename =args['modename'] ?? '';
-          if (args.containsKey('selectedGenderIds') &&
-              args['selectedGenderIds'] is List &&
-              args['selectedGenderIds'] != null) {
-            selectedGenderIds = List<String>.from(args['selectedGenderIds']);
-          }
-
+        email = args['email'] ?? '';
+        mobile = args['mobile'] ?? '';
+        latitude = args['latitude'] ?? 0.0;
+        longitude = args['longitude'] ?? 0.0;
+        dateofbirth = args['dateofbirth'] ?? '';
+        userName = args['userName'] ?? '';
+        selectedgender = args['selectgender'] ?? '';
+        showonprofile = args['showonprofile'] ?? true;
+        modeid = args['modeid'] ?? 0;
+        modename = args['modename'] ?? '';
+        if (args.containsKey('selectedGenderIds') &&
+            args['selectedGenderIds'] is List &&
+            args['selectedGenderIds'] != null) {
+          selectedGenderIds = List<String>.from(args['selectedGenderIds']);
+        }
       });
     }
   }
-  
+
   @override
   void initState() {
     super.initState();
@@ -67,6 +61,14 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
   Widget build(BuildContext context) {
     final genderState = ref.watch(genderProvider);
     final screenWidth = MediaQuery.of(context).size.width;
+
+    /// ✅ Auto-select all genders if toggle is ON and data is now available
+    if (isOpenToEveryone &&
+        genderState.data != null &&
+        selectedGenderIds.length != genderState.data!.length) {
+      selectedGenderIds =
+          genderState.data!.map((e) => e.id.toString()).toList();
+    }
 
     return Scaffold(
       body: Column(
@@ -91,18 +93,16 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                _buildToggleOption(genderState),
+                _buildToggleOption(),
                 const SizedBox(height: 20),
                 if (genderState.data != null)
-                  ...genderState.data!.map((gender) =>
-                    _buildGenderOption(gender)
-                  ),
+                  ...genderState.data!.map((gender) => _buildGenderOption(gender)),
                 const SizedBox(height: 20),
                 _buildVisibilityNote(),
               ],
             ),
           ),
-          _buildNextButton(screenWidth, genderState),
+          _buildNextButton(screenWidth),
         ],
       ),
     );
@@ -114,8 +114,8 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
       child: LinearProgressIndicator(
         value: 7 / 18,
         backgroundColor: Colors.grey[300],
-        valueColor: const AlwaysStoppedAnimation<Color>(
-            Color.fromARGB(255, 147, 179, 3)),
+        valueColor:
+            const AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 147, 179, 3)),
       ),
     );
   }
@@ -129,21 +129,21 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
             icon: const Icon(Icons.arrow_back_ios),
             onPressed: () {
               Navigator.pushNamed(
-                        context,
-                        '/modescreen',
-                        arguments: {
-                          'latitude': latitude,
-                          'longitude': longitude,
-                          'dateofbirth':dateofbirth,
-                          'userName':userName,
-                          'selectgender':selectedgender,
-                          "showonprofile":showonprofile,
-                          "modeid":modeid,
-                          "modename":modename,
-                          'email':email,
-                          'mobile':mobile
-                        },
-                    );
+                context,
+                '/modescreen',
+                arguments: {
+                  'latitude': latitude,
+                  'longitude': longitude,
+                  'dateofbirth': dateofbirth,
+                  'userName': userName,
+                  'selectgender': selectedgender,
+                  "showonprofile": showonprofile,
+                  "modeid": modeid,
+                  "modename": modename,
+                  'email': email,
+                  'mobile': mobile
+                },
+              );
             },
           ),
           const SizedBox(width: 8),
@@ -160,7 +160,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
     );
   }
 
-  Widget _buildToggleOption(genderState) {
+  Widget _buildToggleOption() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -169,15 +169,8 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
           onChanged: (value) {
             setState(() {
               isOpenToEveryone = value;
-              if (value) {
+              if (!value) {
                 selectedGenderIds.clear();
-                // selectedMode = null;
-                // Add all gender IDs from API
-                if (genderState.data != null) {
-                  selectedGenderIds = genderState.data!.map((e) => e.id.toString()).toList();
-                }
-              } else {
-                selectedGenderIds.clear(); // reset on turning off toggle
               }
             });
           },
@@ -214,58 +207,57 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
                 }
               });
             },
-      child: Opacity(
-        opacity: isOpenToEveryone ? 0.5 : 1.0,
-        child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 8),
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          height: 70,
-          decoration: BoxDecoration(
-            color: isSelected ? const Color(0xff92AB26) : const Color(0xffE9F1C4),
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              width: 2,
-              color: isSelected ? const Color(0xffE9F1C4) : Colors.transparent,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        height: 70,
+        decoration: BoxDecoration(
+          color:
+              isSelected ? const Color(0xff92AB26) : const Color(0xffE9F1C4),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            width: 2,
+            color: isSelected ? const Color(0xffE9F1C4) : Colors.transparent,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              gender.value ?? '',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 22,
+                color: isSelected ? Colors.white : const Color(0xFF5A7651),
+                fontWeight: FontWeight.w400,
+              ),
             ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                gender.value ?? '',
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 22,
+            Container(
+              width: 24,
+              height: 24,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
                   color: isSelected ? Colors.white : const Color(0xFF5A7651),
-                  fontWeight: FontWeight.w400,
+                  width: 2,
                 ),
+                color:
+                    isSelected ? const Color(0xFF5A7651) : Colors.transparent,
               ),
-              Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: isSelected ? Colors.white : const Color(0xFF5A7651),
-                    width: 2,
-                  ),
-                  color: isSelected ? const Color(0xFF5A7651) : Colors.transparent,
-                ),
-                child: isSelected
-                    ? Center(
-                        child: Container(
-                          width: 12,
-                          height: 12,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
+              child: isSelected
+                  ? Center(
+                      child: Container(
+                        width: 12,
+                        height: 12,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
                         ),
-                      )
-                    : null,
-              ),
-            ],
-          ),
+                      ),
+                    )
+                  : null,
+            ),
+          ],
         ),
       ),
     );
@@ -274,7 +266,8 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
   Widget _buildVisibilityNote() {
     return Row(
       children: [
-        Icon(Icons.remove_red_eye_outlined, color: Colors.grey[600], size: 24),
+        Icon(Icons.remove_red_eye_outlined,
+            color: Colors.grey[600], size: 24),
         const SizedBox(width: 12),
         const Text(
           "You'll Only Be Shown To People In The \nSame Mode As You.",
@@ -289,7 +282,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
     );
   }
 
-  Widget _buildNextButton(double screenWidth, genderState) {
+  Widget _buildNextButton(double screenWidth) {
     return Align(
       alignment: Alignment.bottomRight,
       child: Padding(
@@ -313,25 +306,27 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
               onPressed: () {
                 if (selectedGenderIds.isNotEmpty) {
                   Navigator.pushNamed(
-                        context,
-                        '/partnersSelection',
-                        arguments: {
-                          'latitude': latitude,
-                          'longitude': longitude,
-                          'dateofbirth':dateofbirth,
-                          'userName':userName,
-                          'selectgender':selectedgender,
-                          "showonprofile":showonprofile,
-                          "modeid":modeid,
-                          "modename":modename,
-                          "selectedGenderIds":selectedGenderIds,
-                          'email':email,
-                          'mobile':mobile
-                        },
-                    );
+                    context,
+                    '/partnersSelection',
+                    arguments: {
+                      'latitude': latitude,
+                      'longitude': longitude,
+                      'dateofbirth': dateofbirth,
+                      'userName': userName,
+                      'selectgender': selectedgender,
+                      "showonprofile": showonprofile,
+                      "modeid": modeid,
+                      "modename": modename,
+                      "selectedGenderIds": selectedGenderIds,
+                      'email': email,
+                      'mobile': mobile
+                    },
+                  );
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Please select at least one gender preference")),
+                    const SnackBar(
+                        content: Text(
+                            "Please select at least one gender preference")),
                   );
                 }
               },
