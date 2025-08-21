@@ -282,6 +282,7 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
         'sign in data.........email:$email,mobile:$mobile,latitude:$latitude,longitude:$longitude,Name:$userName,dob:$dateOfBirth,selectedgender:$selectedGender:');
     print(
         'data.......show:$showGenderOnProfile,height:$selectedHeight,headline:$finalheadline,images:${choosedimages.length},');
+    print("intrests -$selectedInterestIds,   defaultmessages--$defaultmessages");    
 
     try {
       var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
@@ -809,7 +810,7 @@ Future<int> updateProfile({
     request.headers['Accept'] = 'application/json';
 
     // Add simple fields if not null
-    if (modeid != null) request.fields['mode'] = modeid.toString();
+    if (modeid != null) request.fields['modeId'] = modeid.toString();
     if (modename != null) request.fields['modename'] = modename;
     if (bio != null) request.fields['headLine'] = bio;
     if (religionId != null) request.fields['religionId'] = religionId.toString();

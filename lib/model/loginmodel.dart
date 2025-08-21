@@ -133,6 +133,12 @@ class User {
   String? politics;
   String? hometown;
   int? height;
+  List<Modes>? modes;
+  List<Relationships>? relationships;
+  List<Industries>? industries;
+  String? newToArea;
+  List<Experiences>? experiences;
+
 
   User({
     this.id,
@@ -170,6 +176,11 @@ class User {
     this.politics,
     this.hometown,
     this.height,
+    this.modes,
+    this.relationships,
+    this.industries,
+    this.newToArea,
+    this.experiences
   });
 
   User.fromJson(Map<String, dynamic> json) {
@@ -274,6 +285,31 @@ class User {
     politics = json['politics'];
     hometown = json['hometown'];
     height = json['height'];
+    if (json['modes'] != null) {
+      modes = <Modes>[];
+      json['modes'].forEach((v) {
+        modes!.add(Modes.fromJson(v));
+      });
+    }
+    if (json['relationships'] != null) {
+      relationships = <Relationships>[];
+      json['relationships'].forEach((v) {
+        relationships!.add(Relationships.fromJson(v));
+      });
+    }
+    if (json['industries'] != null) {
+      industries = <Industries>[];
+      json['industries'].forEach((v) {
+        industries!.add(Industries.fromJson(v));
+      });
+    }
+    newToArea = json['newToArea'];
+    if (json['experiences'] != null) {
+      experiences = <Experiences>[];
+      json['experiences'].forEach((v) {
+        experiences!.add(Experiences.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -348,7 +384,21 @@ class User {
     data['politics'] = politics;
     data['hometown'] = hometown;
     data['height'] = height;
-    return data;
+    if (modes != null) {
+      data['modes'] = modes!.map((v) => v.toJson()).toList();
+    }
+    if (relationships != null) {
+      data['relationships'] = relationships!.map((v) => v.toJson()).toList();
+    }
+    if (industries != null) {
+      data['industries'] = industries!.map((v) => v.toJson()).toList();
+    }
+    data['newToArea'] = newToArea;
+   
+    if (  experiences!= null) {
+      data['experiences'] = experiences!.map((v) => v.toJson()).toList();
+    }  
+     return data;
   }
 
   User copyWith({
@@ -387,6 +437,11 @@ class User {
     String? politics,
     String? hometown,
     int? height,
+    List<Modes>? modes,
+    List<Relationships>? relationships,
+    List<Industries>? industries,
+    String? newToArea,
+    List<Experiences>? experiences
   }) {
     return User(
       id: id ?? this.id,
@@ -424,6 +479,14 @@ class User {
       politics: politics ?? this.politics,
       hometown: hometown ?? this.hometown,
       height: height ?? this.height,
+      modes: modes ?? (this.modes != null ? this.modes!.map((e) => e.copyWith()).toList() : null),
+      relationships: relationships ??
+          (this.relationships != null ? this.relationships!.map((e) => e.copyWith()).toList() : null),
+      industries: industries ??
+          (this.industries != null ? this.industries!.map((e) => e.copyWith()).toList() : null),
+      newToArea: newToArea ?? this.newToArea,
+      experiences: experiences ??
+          (this.experiences != null ? this.experiences!.map((e) => e.copyWith()).toList() : null),
     );
   }
 
@@ -1447,5 +1510,101 @@ class Location {
 
   static Location initial() {
     return Location();
+  }
+}
+
+
+class Modes {
+  int? id;
+  String? value;
+
+  Modes({this.id, this.value});
+
+  factory Modes.initial() => Modes(id: 0, value: '');
+
+  Modes copyWith({int? id, String? value}) => Modes(id: id ?? this.id, value: value ?? this.value);
+
+  Modes.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    value = json['value'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['value'] = value;
+    return data;
+  }
+}
+
+class Relationships {
+  int? id;
+  String? relation;
+
+  Relationships({this.id, this.relation});
+
+  factory Relationships.initial() => Relationships(id: 0, relation: '');
+
+  Relationships copyWith({int? id, String? relation}) =>
+      Relationships(id: id ?? this.id, relation: relation ?? this.relation);
+
+  Relationships.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    relation = json['relation'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['relation'] = relation;
+    return data;
+  }
+}
+
+class Industries {
+  int? id;
+  String? industry;
+
+  Industries({this.id, this.industry});
+
+  factory Industries.initial() => Industries(id: 0, industry: '');
+
+  Industries copyWith({int? id, String? industry}) =>
+      Industries(id: id ?? this.id, industry: industry ?? this.industry);
+
+  Industries.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    industry = json['industry'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['industry'] = industry;
+    return data;
+  }
+}
+
+class Experiences {
+  int? id;
+  String? experience;
+
+  Experiences({this.id, this.experience});
+
+  factory Experiences.initial() => Experiences(id: 0, experience: '');
+
+  Experiences copyWith({int? id, String? experience}) =>
+      Experiences(id: id ?? this.id, experience: experience ?? this.experience);
+
+  Experiences.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    experience = json['experience'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['experience'] = experience;
+    return data;
   }
 }

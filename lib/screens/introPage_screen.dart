@@ -209,7 +209,7 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                           onChanged: (value) {
                             setState(() {
                               _month = value;
-                              dateOfBirth = '$_month/$_day/$_year';
+                              dateOfBirth = '$_day/$_month/$_year';
                             });
                           },
                         ),
@@ -223,7 +223,7 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                           onChanged: (value) {
                             setState(() {
                               _day = value;
-                              dateOfBirth = '$_month/$_day/$_year';
+                              dateOfBirth = '$_day/$_month/$_year';
                             });
                           },
                         ),
@@ -237,7 +237,7 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                           onChanged: (value) {
                             setState(() {
                               _year = value;
-                              dateOfBirth = '$_month/$_day/$_year';
+                              dateOfBirth = '$_day/$_month/$_year';
                             });
                           },
                         ),
