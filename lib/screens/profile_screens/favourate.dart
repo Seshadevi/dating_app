@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 
 class FavoritesScreen extends StatelessWidget {
@@ -6,18 +7,19 @@ class FavoritesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 1,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black87),
+          icon: const Icon(Icons.arrow_back_ios, color: DatingColors.black
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           'My Favourite',
           style: TextStyle(
-            color: Colors.black87,
+            color: DatingColors.black,
             fontSize: 18,
             fontWeight: FontWeight.w600,
           ),
@@ -94,7 +96,7 @@ class ProfileCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
                     gradient: const LinearGradient(
-                      colors: [Color(0xFF869E23), Color(0xFF000000)],
+                      colors: [DatingColors.primaryGreen, DatingColors.black],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                     ),
@@ -129,8 +131,8 @@ class ProfileCard extends StatelessWidget {
           padding: const EdgeInsets.all(8), // Keep original padding
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(25),
-              color: const Color(0xFFE9F1C4),
-              border: Border.all(width: 2, color: const Color(0xFF869E23))),
+              color: DatingColors.lightGreen,
+              border: Border.all(width: 2, color: DatingColors.primaryGreen)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -145,7 +147,7 @@ class ProfileCard extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 14, // Keep original font size
                         fontWeight: FontWeight.w600,
-                        color: Colors.black87,
+                        color: DatingColors.black,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -159,12 +161,12 @@ class ProfileCard extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(2),
                           decoration: const BoxDecoration(
-                            color: Colors.green,
+                            color: DatingColors.primaryGreen,
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(
                             Icons.check,
-                            color: Colors.white,
+                            color: DatingColors.white,
                             size: 10, // Keep original icon size
                           ),
                         ),
@@ -179,14 +181,14 @@ class ProfileCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     width: 1,
-                    color: const Color(0xFF869E23),
+                    color: DatingColors.darkGreen,
                   ),
                 ),
                 child: Text(
                   profile.distance,
                   style: TextStyle(
                     fontSize: 12, // Keep original font size
-                    color: Colors.grey.shade600,
+                    color: DatingColors.middlegrey,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -196,7 +198,7 @@ class ProfileCard extends StatelessWidget {
                 profile.profession,
                 style: TextStyle(
                   fontSize: 10, // Keep original font size
-                  color: Colors.grey.shade500,
+                  color: DatingColors.middlegrey,
                   fontWeight: FontWeight.w500,
                 ),
                 overflow: TextOverflow.ellipsis,

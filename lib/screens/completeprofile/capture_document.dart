@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:io';
@@ -80,7 +81,7 @@ class _CaptureDocumentsScreenState extends State<CaptureDocumentsScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Please capture both selfie and ID photo'),
-          backgroundColor: Colors.red,
+          backgroundColor: DatingColors.errorRed,
         ),
       );
     }
@@ -89,18 +90,18 @@ class _CaptureDocumentsScreenState extends State<CaptureDocumentsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Capture Documents',
           style: TextStyle(
-            color: Colors.black,
+            color: DatingColors.black,
             fontSize: 18,
             fontWeight: FontWeight.w500,
           ),
@@ -117,7 +118,7 @@ class _CaptureDocumentsScreenState extends State<CaptureDocumentsScreen> {
                 'Please capture both documents for verification',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.grey[600],
+                  color: DatingColors.lightgrey,
                 ),
               ),
               SizedBox(height: 32),
@@ -128,7 +129,7 @@ class _CaptureDocumentsScreenState extends State<CaptureDocumentsScreen> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: Colors.black,
+                  color: DatingColors.black,
                 ),
               ),
               SizedBox(height: 16),
@@ -136,9 +137,9 @@ class _CaptureDocumentsScreenState extends State<CaptureDocumentsScreen> {
                 width: double.infinity,
                 height: 200,
                 decoration: BoxDecoration(
-                  color: Colors.grey[100],
+                  color: DatingColors.surfaceGrey,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[300]!),
+                  border: Border.all(color: DatingColors.surfaceGrey),
                 ),
                 child: _selfieImage != null
                     ? ClipRRect(
@@ -154,13 +155,13 @@ class _CaptureDocumentsScreenState extends State<CaptureDocumentsScreen> {
                           Icon(
                             Icons.camera_alt,
                             size: 48,
-                            color: Colors.grey[400],
+                            color:DatingColors.lightgrey,
                           ),
                           SizedBox(height: 8),
                           Text(
                             'No selfie captured',
                             style: TextStyle(
-                              color: Colors.grey[600],
+                              color: DatingColors.lightgrey,
                               fontSize: 14,
                             ),
                           ),
@@ -176,8 +177,8 @@ class _CaptureDocumentsScreenState extends State<CaptureDocumentsScreen> {
                       icon: Icon(Icons.camera_alt, size: 20),
                       label: Text('Take Selfie'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF84CC16),
-                        foregroundColor: Colors.white,
+                        backgroundColor: DatingColors.darkGreen,
+                        foregroundColor: DatingColors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -191,8 +192,8 @@ class _CaptureDocumentsScreenState extends State<CaptureDocumentsScreen> {
                       icon: Icon(Icons.photo_library, size: 20),
                       label: Text('Gallery'),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: Color(0xFF84CC16),
-                        side: BorderSide(color: Color(0xFF84CC16)),
+                        foregroundColor: DatingColors.darkGreen,
+                        side: BorderSide(color: DatingColors.darkGreen),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -210,7 +211,7 @@ class _CaptureDocumentsScreenState extends State<CaptureDocumentsScreen> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: Colors.black,
+                  color: DatingColors.black,
                 ),
               ),
               SizedBox(height: 16),
@@ -218,9 +219,9 @@ class _CaptureDocumentsScreenState extends State<CaptureDocumentsScreen> {
                 width: double.infinity,
                 height: 200,
                 decoration: BoxDecoration(
-                  color: Colors.grey[100],
+                  color: DatingColors.surfaceGrey,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[300]!),
+                  border: Border.all(color: DatingColors.surfaceGrey),
                 ),
                 child: _idImage != null
                     ? ClipRRect(
@@ -236,13 +237,13 @@ class _CaptureDocumentsScreenState extends State<CaptureDocumentsScreen> {
                           Icon(
                             Icons.credit_card,
                             size: 48,
-                            color: Colors.grey[400],
+                            color: DatingColors.surfaceGrey,
                           ),
                           SizedBox(height: 8),
                           Text(
                             'No ID document captured',
                             style: TextStyle(
-                              color: Colors.grey[600],
+                              color: DatingColors.lightgrey,
                               fontSize: 14,
                             ),
                           ),
@@ -258,8 +259,8 @@ class _CaptureDocumentsScreenState extends State<CaptureDocumentsScreen> {
                       icon: Icon(Icons.camera_alt, size: 20),
                       label: Text('Capture ID'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF84CC16),
-                        foregroundColor: Colors.white,
+                        backgroundColor: DatingColors.darkGreen,
+                        foregroundColor: DatingColors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -273,8 +274,8 @@ class _CaptureDocumentsScreenState extends State<CaptureDocumentsScreen> {
                       icon: Icon(Icons.photo_library, size: 20),
                       label: Text('Gallery'),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: Color(0xFF84CC16),
-                        side: BorderSide(color: Color(0xFF84CC16)),
+                        foregroundColor: DatingColors.darkGreen,
+                        side: BorderSide(color:DatingColors.primaryGreen),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -294,8 +295,8 @@ class _CaptureDocumentsScreenState extends State<CaptureDocumentsScreen> {
                   onPressed: _submitDocuments,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: (_selfieImage != null && _idImage != null)
-                        ? Color(0xFF84CC16)
-                        : Colors.grey[400],
+                        ? DatingColors.primaryGreen
+                        : DatingColors.lightgrey,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
@@ -303,7 +304,7 @@ class _CaptureDocumentsScreenState extends State<CaptureDocumentsScreen> {
                   child: Text(
                     'Submit Documents',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: DatingColors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),

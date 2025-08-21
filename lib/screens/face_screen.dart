@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/openingMoveScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -126,7 +127,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
     int imageCount = selectedImages.where((img) => img != null).length;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -135,9 +136,9 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
             children: [
               LinearProgressIndicator(
                 value: 18 / 18,
-                backgroundColor: Colors.grey[300],
+                backgroundColor: DatingColors.surfaceGrey,
                 valueColor: const AlwaysStoppedAnimation<Color>(
-                    Color.fromARGB(255, 147, 179, 3)),
+                    DatingColors.darkGreen),
               ),
               const SizedBox(height: 16),
               Row(
@@ -258,7 +259,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.camera_alt, color: Colors.green, size: 20),
+                  Icon(Icons.camera_alt, color: DatingColors.darkGreen, size: 20),
                   SizedBox(width: 8),
                   Text(
                     "Want To Make Sure You Really Shine?",
@@ -299,13 +300,13 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
                       height: screen.width * 0.125,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xffB2D12E), Color(0xff000000)],
+                          colors: [DatingColors.primaryGreen, DatingColors.black],
                         ),
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: IconButton(
                         icon: const Icon(Icons.arrow_forward_ios,
-                            color: Colors.white),
+                            color: DatingColors.white),
                         onPressed: () {
                           if (imageCount >= 4) {
                            Navigator.pushNamed(

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
 import 'package:dating/screens/profile_screens/profile_screen.dart';
@@ -124,7 +125,7 @@ class _FriendOnboardingScreenState extends ConsumerState<FriendOnboardingScreen>
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: DatingColors.black,
                     ),
                     textAlign: TextAlign.start,
                   ),
@@ -136,7 +137,7 @@ class _FriendOnboardingScreenState extends ConsumerState<FriendOnboardingScreen>
                     'BFF will help you find new friendships, whether you’re new to a city or just looking to expand your social circle.',
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.black87,
+                      color: DatingColors.black,
                     ),
                     textAlign: TextAlign.start,
                   ),
@@ -192,13 +193,13 @@ class _FriendOnboardingScreenState extends ConsumerState<FriendOnboardingScreen>
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        backgroundColor: Colors.transparent,
+                        backgroundColor:DatingColors.brown,
                         elevation: 0,
                       ),
                       child: Ink(
                         decoration: const BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [Color(0xFFB6D96E), Color(0xFF000000)],
+                            colors: [DatingColors.primaryGreen,DatingColors.black],
                           ),
                           borderRadius: BorderRadius.all(Radius.circular(12)),
                         ),
@@ -206,7 +207,7 @@ class _FriendOnboardingScreenState extends ConsumerState<FriendOnboardingScreen>
                           child: Text(
                             'Got It',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: DatingColors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

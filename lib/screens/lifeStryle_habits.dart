@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/signupprocessProviders/drinkingProvider.dart';
 import 'package:dating/screens/familyPlaneScreen.dart';
 import 'package:flutter/material.dart';
@@ -107,7 +108,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF869E23), Color(0xFF000000)],
+                colors: [DatingColors.primaryGreen, DatingColors.black],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -119,7 +120,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
                 Text(
                   quality,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: DatingColors.white,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -167,18 +168,18 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
           shape: BoxShape.circle,
           gradient: isSelected
               ? const LinearGradient(
-                  colors: [Color(0xFF869E23), Color(0xFF000000)],
+                  colors: [DatingColors.primaryGreen, DatingColors.black],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 )
               : const LinearGradient(
-                  colors: [Color(0xFFF3F7DA), Color(0xFFE6EBA4)],
+                  colors: [DatingColors.surfaceGrey, DatingColors.lightyellow,],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
           boxShadow: const [
             BoxShadow(
-              color: Colors.black12,
+              color: DatingColors.black,
               blurRadius: 4,
               offset: Offset(2, 2),
             ),
@@ -192,7 +193,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
             style: TextStyle(
               fontSize: text.length > 8 ? 10 : 11,
               fontWeight: FontWeight.bold,
-              color: isSelected ? Colors.white : Colors.black87,
+              color: isSelected ? DatingColors.white : DatingColors.black,
             ),
           ),
         ),
@@ -227,7 +228,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
     final drinkingData = drinkingState.data ?? [];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -240,9 +241,9 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
                   // Progress indicator
                   LinearProgressIndicator(
                     value: 12 / 18,
-                    backgroundColor: Colors.grey[300],
+                    backgroundColor: DatingColors.lightgrey,
                     valueColor: const AlwaysStoppedAnimation<Color>(
-                        Color.fromARGB(255, 147, 179, 3)),
+                       DatingColors.primaryGreen),
                   ),
                   const SizedBox(height: 15),
                   
@@ -294,7 +295,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
                   const Text(
                     "Share your habits — only what you’re comfortable with.",
                     style: TextStyle(
-                      color: Colors.black87,
+                      color: DatingColors.black,
                       fontSize: 14,
                     ),
                   ),
@@ -338,10 +339,10 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: DatingColors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: DatingColors.black.withOpacity(0.1),
                     blurRadius: 10,
                     offset: const Offset(0, -5),
                   ),
@@ -380,7 +381,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
                         'Skip',
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.black54,
+                          color: DatingColors.black,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -404,7 +405,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
                             shape: BoxShape.circle,
                             gradient: selectedhabbits.length == 1
                                 ? const LinearGradient(
-                                    colors: [Color(0xFF869E23), Color(0xFF000000)],
+                                    colors: [DatingColors.primaryGreen,DatingColors.black],
                                     begin: Alignment.topCenter,
                                     end: Alignment.bottomCenter,
                                   )

@@ -1,6 +1,6 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/signupprocessProviders/choosr_foodies_provider.dart';
-import 'package:dating/screens/valueSelection.dart';
-import 'package:dating/screens/height_selection_screen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -98,7 +98,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF869E23), Color(0xFF000000)],
+                colors: [DatingColors.darkGreen, DatingColors.black],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -110,7 +110,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                 Text(
                   quality,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: DatingColors.white,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -158,12 +158,12 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
           shape: BoxShape.circle,
           gradient: isSelected
               ? const LinearGradient(
-                  colors: [Color(0xFF869E23), Color(0xFF000000)],
+                  colors: [DatingColors.primaryGreen, DatingColors.black],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 )
               : const LinearGradient(
-                  colors: [Color(0xFFF3F7DA), Color(0xFFE6EBA4)],
+                  colors: [DatingColors.surfaceGrey, DatingColors.lightyellow,],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
@@ -183,7 +183,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
             style: TextStyle(
               fontSize: text.length > 8 ? 10 : 11,
               fontWeight: FontWeight.bold,
-              color: isSelected ? Colors.white : Colors.black87,
+              color: isSelected ? DatingColors.white : DatingColors.black,
             ),
           ),
         ),
@@ -231,7 +231,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                     value: 10 / 18,
                     backgroundColor: Colors.grey[300],
                     valueColor: const AlwaysStoppedAnimation<Color>(
-                        Color.fromARGB(255, 147, 179, 3)),
+                      DatingColors.darkGreen),
                   ),
                   const SizedBox(height: 15),
                   
@@ -281,7 +281,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                   const Text(
                     'Foodie or climber? Add interests to find your match.',
                     style: TextStyle(
-                      color: Colors.black87,
+                      color: DatingColors.black,
                       fontSize: 14,
                     ),
                   ),
@@ -325,10 +325,10 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: DatingColors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: DatingColors.black.withOpacity(0.1),
                     blurRadius: 10,
                     offset: const Offset(0, -5),
                   ),
@@ -365,7 +365,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                         'Skip',
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.black54,
+                          color: DatingColors.black,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -388,19 +388,19 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                             shape: BoxShape.circle,
                             gradient: selectedInterests.length == 5
                                 ? const LinearGradient(
-                                    colors: [Color(0xFF869E23), Color(0xFF000000)],
+                                    colors: [DatingColors.primaryGreen, DatingColors.black],
                                     begin: Alignment.topCenter,
                                     end: Alignment.bottomCenter,
                                   )
                                 : null,
                             color: selectedInterests.length != 5
-                                ? Colors.grey.shade400
+                                ? DatingColors.surfaceGrey
                                 : null,
                           ),
                           child: IconButton(
                             icon: const Icon(
                               Icons.arrow_forward_ios,
-                              color: Colors.white,
+                              color: DatingColors.white,
                               size: 20,
                             ),
                             onPressed: () {

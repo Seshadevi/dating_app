@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/model/peoples_all_model.dart';
 import 'package:dating/provider/likedislikeprovider.dart';
 import 'package:dating/provider/loginProvider.dart';
@@ -228,7 +229,7 @@ void initState() {
     // print("Users: ${peoplesModel.users}");
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       body: allUsers.isEmpty
           ? const Center(
               child: Column(
@@ -236,7 +237,7 @@ void initState() {
                 children: [
                   CircularProgressIndicator(),
                   SizedBox(height: 10),
-                  Text("Loading users...", style: TextStyle(fontSize: 18, color: Colors.grey))
+                  Text("Loading users...", style: TextStyle(fontSize: 18, color: DatingColors.mediumGrey))
                 ],
               ),
             )
@@ -250,16 +251,16 @@ void initState() {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.arrow_back, color: Colors.black),
+                            const Icon(Icons.arrow_back, color: DatingColors.black),
                             const SizedBox(width: 16),
                             const Expanded(
                               child: Text(
                                 'Heart Sync',
-                                style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
+                                style: TextStyle(color: DatingColors.black, fontSize: 18, fontWeight: FontWeight.w500),
                               ),
                             ),
                              IconButton(
-                                icon: const Icon(Icons.tune, color: Colors.black),
+                                icon: const Icon(Icons.tune, color: DatingColors.black),
                                 onPressed: () {
                                     Navigator.pushNamed(context,'/narrowsearch');
                                 },
@@ -272,7 +273,7 @@ void initState() {
                           width: double.infinity,
                           height: 8,
                           decoration: BoxDecoration(
-                            color: Colors.grey[300],
+                            color: DatingColors.mediumGrey,
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: Stack(
@@ -283,7 +284,7 @@ void initState() {
                                     (viewedUsersCount / allUsers.length),
                                 height: 8,
                                 decoration: BoxDecoration(
-                                  color: allUsersCompleted ? const Color.fromARGB(255, 237, 38, 3) : Color(0xffB2D12E),
+                                  color: allUsersCompleted ? DatingColors.errorRed: DatingColors.primaryGreen,
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                               ),
@@ -299,7 +300,7 @@ void initState() {
                               'Viewed: $viewedUsersCount/${allUsers.length}',
                               style: const TextStyle(
                                 fontSize: 12,
-                                color: Colors.grey,
+                                color: DatingColors.mediumGrey,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -307,7 +308,7 @@ void initState() {
                               allUsersCompleted ? 'Completed!' : '${(viewedUsersCount / allUsers.length * 100).toInt()}%',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: allUsersCompleted ? Colors.green : Colors.pink,
+                                color: allUsersCompleted ? DatingColors.primaryGreen :DatingColors.lightpink,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
@@ -325,19 +326,19 @@ void initState() {
                     padding: const EdgeInsets.all(16),
                     margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.green[50],
+                      color: DatingColors.lightGreen,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.green.shade200),
+                      border: Border.all(color: DatingColors.lightGreen),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.check_circle, color: Colors.green, size: 24),
+                        const Icon(Icons.check_circle, color: DatingColors.darkGreen, size: 24),
                         const SizedBox(width: 12),
                         const Expanded(
                           child: Text(
                             'All users viewed! No more cards to swipe.',
                             style: TextStyle(
-                              color: Colors.green,
+                              color: DatingColors.darkGreen,
                               fontWeight: FontWeight.w600,
                               fontSize: 14,
                             ),
@@ -432,8 +433,8 @@ void initState() {
                                       : Icons.cancel,
                                   size: 80,
                                   color: _swipeDirection == CardSwiperDirection.right
-                                      ? Colors.green
-                                      : Colors.red,
+                                      ? DatingColors.primaryGreen
+                                      : DatingColors.errorRed,
                                 ),
                               ),
 
@@ -455,7 +456,7 @@ void initState() {
                               const Icon(
                                 Icons.favorite,
                                 size: 80,
-                                color: Colors.pink,
+                                color: DatingColors.lightpink,
                               ),
                               const SizedBox(height: 20),
                               const Text(
@@ -472,15 +473,15 @@ void initState() {
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: Colors.grey,
+                                  color: DatingColors.lightgrey,
                                 ),
                               ),
                               const SizedBox(height: 30),
                               ElevatedButton(
                                 onPressed: _resetProgress,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF869E23),
-                                  foregroundColor: Colors.white,
+                                  backgroundColor: DatingColors.darkGreen,
+                                  foregroundColor: DatingColors.white,
                                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12),
@@ -586,9 +587,9 @@ void initState() {
                                 fit: BoxFit.cover,
                               )
                             : Container(
-                                color: Colors.grey[300],
+                                color: DatingColors.lightgrey,
                                 child: const Center(
-                                  child: Icon(Icons.person, size: 80, color: Colors.grey),
+                                  child: Icon(Icons.person, size: 80, color: DatingColors.lightgrey),
                                 ),
                               ),
                       ),

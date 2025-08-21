@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -89,7 +90,7 @@ class LocationScreen extends StatefulWidget {
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       body: SafeArea(
         child: Stack(
           children: [
@@ -113,7 +114,7 @@ class LocationScreen extends StatefulWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: height * 0.022,
-                      color: Colors.black54,
+                      color: DatingColors.black,
                       height: 1.5,
                     ),
                   ),
@@ -136,7 +137,7 @@ class LocationScreen extends StatefulWidget {
                       child: Ink(
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [Color(0xFFB9D83F), Colors.black],
+                            colors: [DatingColors.primaryGreen, DatingColors.black],
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                           ),
@@ -146,7 +147,7 @@ class LocationScreen extends StatefulWidget {
                           child: Text(
                             "Set Location Services",
                             style: TextStyle(
-                              color: Colors.white,
+                              color: DatingColors.white,
                               fontSize: height * 0.022,
                             ),
                           ),
@@ -183,7 +184,7 @@ class LocationScreen extends StatefulWidget {
                       "Not Now",
                       style: TextStyle(
                         fontSize: height * 0.018,
-                        color: Colors.black,
+                        color: DatingColors.black,
                       ),
                     ),
                   ),
@@ -200,7 +201,7 @@ class LocationScreen extends StatefulWidget {
                 height: height * 0.18,
                 width: height * 0.18,
                 decoration: const BoxDecoration(
-                  color: Color(0xFFF0F0F0),
+                  color: DatingColors.surfaceGrey,
                   shape: BoxShape.circle,
                 ),
                 child: Image.asset(

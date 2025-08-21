@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 
 class SuperswipePage extends StatefulWidget {
@@ -41,18 +42,18 @@ class _SuperswipePageState extends State<SuperswipePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: DatingColors.mediumGrey,
       appBar: AppBar(
-        backgroundColor: Colors.grey[50],
+        backgroundColor: DatingColors.lightgrey,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           'Superswipe',
           style: TextStyle(
-            color: Colors.black,
+            color: DatingColors.black,
             fontSize: 18,
             fontWeight: FontWeight.w500,
           ),
@@ -70,12 +71,12 @@ class _SuperswipePageState extends State<SuperswipePage> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.black,
+                    color: DatingColors.black,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(
                     Icons.star,
-                    color: Colors.white,
+                    color: DatingColors.white,
                     size: 20,
                   ),
                 ),
@@ -85,7 +86,7 @@ class _SuperswipePageState extends State<SuperswipePage> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: Colors.black,
+                    color: DatingColors.black,
                   ),
                 ),
               ],
@@ -95,7 +96,7 @@ class _SuperswipePageState extends State<SuperswipePage> {
               'Someone Caught Your Eyes Let Them Know With A Superswipe It May Help You Match',
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey,
+                color: DatingColors.lightgrey,
                 height: 1.4,
               ),
             ),
@@ -134,7 +135,7 @@ class _SuperswipePageState extends State<SuperswipePage> {
                     'One-Time Payment By Purchasing You Agree To This Transaction And Our Terms',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.grey,
+                      color: DatingColors.lightgrey,
                       height: 1.3,
                     ),
                   ),
@@ -148,7 +149,7 @@ class _SuperswipePageState extends State<SuperswipePage> {
               height: 56,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                   colors: [Color(0xFFB6E11D), Color(0xFF2B2B2B)],
+                   colors: [DatingColors.primaryGreen, DatingColors.black],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
               ),
@@ -171,7 +172,7 @@ class _SuperswipePageState extends State<SuperswipePage> {
                 child: Text(
                   'Get ${packages[selectedPackageIndex]['superswipe']} Superswipe${packages[selectedPackageIndex]['superswipe'] > 1 ? 's' : ''} For ${packages[selectedPackageIndex]['price'].toStringAsFixed(0)} INR',
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: DatingColors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
@@ -198,15 +199,15 @@ class _SuperswipePageState extends State<SuperswipePage> {
       child: Container(
         padding: const EdgeInsets.all(25),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: DatingColors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? const Color(0xFF8BC34A) : Colors.grey[300]!,
+            color: isSelected ? DatingColors.primaryGreen : DatingColors.lightgrey,
             width: isSelected ? 2 : 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: DatingColors.black,
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -220,7 +221,7 @@ class _SuperswipePageState extends State<SuperswipePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                    gradient: const LinearGradient(
-                  colors: [Color(0xFFB6E11D), Color(0xFF2B2B2B)],
+                  colors: [DatingColors.darkGreen, DatingColors.black],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -229,7 +230,7 @@ class _SuperswipePageState extends State<SuperswipePage> {
                 child: const Text(
                   'Most\nPopular',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: DatingColors.white,
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                     height: 1.2,
@@ -247,7 +248,7 @@ class _SuperswipePageState extends State<SuperswipePage> {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: Colors.black,
+                  color: DatingColors.black,
                 ),
               ),
             ),
@@ -258,7 +259,7 @@ class _SuperswipePageState extends State<SuperswipePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                    gradient: const LinearGradient(
-                  colors: [Color(0xFFB6E11D), Color(0xFF2B2B2B)],
+                  colors: [DatingColors.primaryGreen, DatingColors.black],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -267,7 +268,7 @@ class _SuperswipePageState extends State<SuperswipePage> {
                 child: Text(
                   savings,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: DatingColors.white,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),

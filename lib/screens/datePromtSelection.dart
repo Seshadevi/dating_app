@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/face_screen.dart';
 import 'package:dating/screens/editprompt_screen.dart';
 import 'package:flutter/material.dart';
@@ -80,7 +81,7 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
     final screen = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -90,9 +91,9 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
               // Progress bar
               LinearProgressIndicator(
                 value: 16 / 18,
-                backgroundColor: Colors.grey[300],
+                backgroundColor: DatingColors.surfaceGrey,
                 valueColor: const AlwaysStoppedAnimation<Color>(
-                  Color.fromARGB(255, 147, 179, 3),
+                  DatingColors.darkGreen,
                 ),
               ),
               const SizedBox(height: 10),
@@ -164,7 +165,7 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
                     child: const Text(
                       'Skip',
                       style: TextStyle(
-                        color: Colors.grey,
+                        color: DatingColors.surfaceGrey,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -188,7 +189,7 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
               Text(
                 "A Joy, Obviously, But Go Ahead \n And Answer In Your Own Words.",
                 style: TextStyle(
-                  color: Colors.grey[700],
+                  color: DatingColors.darkGrey,
                   height: 1.4,
                   fontSize: 16,
                 ),
@@ -223,16 +224,16 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
                             decoration: BoxDecoration(
                               gradient: selectedPrompts.length >= 2
                                   ? const LinearGradient(
-                                      colors: [Color(0xffB2D12E), Color(0xff000000)],
+                                      colors: [DatingColors.primaryGreen, DatingColors.black],
                                     )
                                   : LinearGradient(
-                                      colors: [Colors.grey[400]!, Colors.grey[600]!],
+                                      colors: [DatingColors.surfaceGrey, DatingColors.lightyellow,],
                                     ),
                               borderRadius: BorderRadius.circular(50),
                             ),
                             child: IconButton(
                               icon: const Icon(Icons.arrow_forward_ios,
-                                  color: Colors.white),
+                                  color: DatingColors.white),
                               onPressed: () {
                                       if(selectedPrompts.length >= 2){
                                               
@@ -296,7 +297,7 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         gradient: const LinearGradient(
-          colors: [Color(0xFF869E23), Color(0xFF000000)],
+          colors: [DatingColors.darkGreen,DatingColors.black],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -311,7 +312,7 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
                 Text(
                   label,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: DatingColors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -340,11 +341,11 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color:DatingColors.white,
                       borderRadius: BorderRadius.circular(50),
                       boxShadow: const [
                         BoxShadow(
-                          color: Colors.black26,
+                          color: DatingColors.black,
                           offset: Offset(0, 2),
                           blurRadius: 4,
                         )
@@ -354,7 +355,7 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
                       "Edit",
                      style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color:DatingColors.black,
                       ),
                     ),
                   ),
@@ -366,11 +367,11 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: DatingColors.white,
                       borderRadius: BorderRadius.circular(50),
                       boxShadow: const [
                         BoxShadow(
-                          color: Colors.black26,
+                          color: DatingColors.black,
                           offset: Offset(0, 2),
                           blurRadius: 4,
                         )
@@ -380,7 +381,7 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
                       "Delete",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color:DatingColors.black,
                       ),
                     ),
                   ),
@@ -392,11 +393,11 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color:DatingColors.white,
                       borderRadius: BorderRadius.circular(50),
                       boxShadow: const [
                         BoxShadow(
-                          color: Colors.black26,
+                          color: DatingColors.black,
                           offset: Offset(0, 2),
                           blurRadius: 4,
                         )
@@ -406,7 +407,7 @@ class _DatePromptScreenState extends State<DatePromptScreen> {
                       "Add",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+                        color: DatingColors.black,
                       ),
                     ),
                   ),

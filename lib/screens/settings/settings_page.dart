@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/logout_notitifier.dart';
 import 'package:dating/provider/signupprocessProviders/modeProvider.dart';
@@ -24,14 +25,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
-        title: const Text("settings", style: TextStyle(color: Colors.black)),
+        title: const Text("settings", style: TextStyle(color: DatingColors.black)),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: DatingColors.black),
           onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context)=> ProfileScreen()));
           }
@@ -135,11 +136,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             const SizedBox(height: 16),
             GestureDetector(
               onTap: ()=> _showLogoutDialog(context),
-              child: _button("Log Out",const Color.fromARGB(255, 59, 124, 18),Colors.white),),
+              child: _button("Log Out",DatingColors.primaryGreen,DatingColors.white),),
             const SizedBox(height: 10),
               GestureDetector(
               onTap: () => _showDeleteAccountDialog(context),
-              child: _button("Delete Account",  Color(0xffE9F1C4), Colors.black)
+              child: _button("Delete Account",  DatingColors.lightGreen, DatingColors.black)
             ),
             const SizedBox(height: 20),
             const Text("Ever Qupid", style: TextStyle(fontWeight: FontWeight.bold)),
@@ -163,7 +164,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 59, 124, 18),
+              color: DatingColors.primaryGreen,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(
@@ -173,7 +174,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const Text(
                   "We'll Be Here If You Need Us Again",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: DatingColors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -183,7 +184,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const Text(
                   "You Can Use Any Of Your Linked Login Methods To Come Back Anytime",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: DatingColors.white,
                     fontSize: 14,
                   ),
                   textAlign: TextAlign.center,
@@ -194,12 +195,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: DatingColors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(
                         Icons.g_mobiledata,
-                        color: Colors.white,
+                        color: DatingColors.white,
                         size: 24,
                       ),
                     ),
@@ -207,7 +208,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     const Text(
                       "Google\nKrish",
                       style: TextStyle(
-                        color: Colors.white,
+                        color: DatingColors.white,
                         fontSize: 14,
                       ),
                     ),
@@ -221,8 +222,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       // Add new login method functionality
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white.withOpacity(0.2),
-                      foregroundColor: Colors.white,
+                      backgroundColor: DatingColors.white.withOpacity(0.2),
+                      foregroundColor: DatingColors.white,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(0),
@@ -240,7 +241,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   child: const Text(
                     "Log Out",
                     style: TextStyle(
-                      color: Colors.red,
+                      color: DatingColors.errorRed,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -267,7 +268,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 59, 124, 18),
+              color:DatingColors.primaryGreen,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(
@@ -277,7 +278,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const Text(
                   "Ready To Say Good Bye?",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: DatingColors.white,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -287,7 +288,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const Text(
                   "No Problem, But We'd Love To Know Why You're Leaving Us.",
                   style: TextStyle(
-                    color: Colors.white,
+                    color: DatingColors.white,
                     fontSize: 16,
                   ),
                   textAlign: TextAlign.center,
@@ -334,7 +335,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             child: TextButton(
             onPressed: onPressed,
             style: TextButton.styleFrom(
-            foregroundColor: Colors.white,               
+            foregroundColor: DatingColors.white,               
             ),
             child: Text(text),
           ),
@@ -370,9 +371,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: const Color(0xFFE4F1C8),
+        color: DatingColors.lightGreen,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color.fromARGB(255, 59, 124, 18)),
+        border: Border.all(color: DatingColors.primaryGreen),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -388,7 +389,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget _tileWithTextArrow(String title, String value) {
     return ListTile(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      tileColor: const Color(0xFFF5F5F5),
+      tileColor: DatingColors.lightGreen,
       title: Text(title),
       trailing: Text(value),
     );
@@ -398,9 +399,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
+        color: DatingColors.lightGreen,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color.fromARGB(255, 59, 124, 18)),
+        border: Border.all(color: DatingColors.primaryGreen),
       ),
       child: Row(
         children: [
@@ -424,15 +425,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
+        color: DatingColors.lightGreen,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color.fromARGB(255, 59, 124, 18)),
+        border: Border.all(color: DatingColors.primaryGreen),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title),
-          Text(value, style: const TextStyle(color: Colors.grey)),
+          Text(value, style: const TextStyle(color: DatingColors.mediumGrey)),
         ],
       ),
     );
@@ -442,16 +443,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
+        color: DatingColors.lightGreen,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color.fromARGB(255, 59, 124, 18)),
+        border: Border.all(color: DatingColors.primaryGreen),
       ),
       child: Row(
         children: [
           const CircleAvatar(
             radius: 18,
-            backgroundColor: Colors.green,
-            child: Icon(Icons.travel_explore, size: 20, color: Colors.white),
+            backgroundColor: DatingColors.primaryGreen,
+            child: Icon(Icons.travel_explore, size: 20, color: DatingColors.white),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -477,9 +478,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         margin: const EdgeInsets.only(top: 8),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
         decoration: BoxDecoration(
-          color: const Color(0xFFF5F5F5),
+          color: DatingColors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color.fromARGB(255, 59, 124, 18)),
+          border: Border.all(color: DatingColors.darkGreen),
         ),
         child: Row(
           children: [
@@ -498,7 +499,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color.fromARGB(255, 59, 124, 18)),
+        border: Border.all(color: DatingColors.primaryGreen),
       ),
       child: Center(
         child: Text(text, style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),

@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/introPage_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -109,7 +110,7 @@ class _AllowNotificationState extends State<AllowNotification> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               gradient: const LinearGradient(
-                colors: [Color(0xffB2D12E), Color(0xff000000)],
+                colors: [DatingColors.primaryGreen,DatingColors.black ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -128,7 +129,7 @@ class _AllowNotificationState extends State<AllowNotification> {
                 'Allow Notifications',
                 style: TextStyle(
                   fontSize: screenWidth * 0.045,
-                  color: Colors.white,
+                  color: DatingColors.white,
                 ),
               ),
             ),
@@ -152,7 +153,7 @@ class _AllowNotificationState extends State<AllowNotification> {
                 'Not Now',
                 style: TextStyle(
                   fontSize: screenWidth * 0.045,
-                  color: Colors.black,
+                  color: DatingColors.black,
                 ),
               ),
             ),

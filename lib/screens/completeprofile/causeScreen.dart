@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/signupprocessProviders/causesProvider.dart';
 import 'package:dating/screens/completeprofile/favoriteCauses.dart';
 import 'package:flutter/material.dart';
@@ -42,13 +43,13 @@ class _CausesScreenState extends ConsumerState<CausesScreen> {
     final causes = causeState.data ?? [];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
         title: const Text("Causes & Communities"),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: DatingColors.white,
+        foregroundColor: DatingColors.black,
         leading: const BackButton(),
       ),
       body: Padding(
@@ -89,9 +90,9 @@ class _CausesScreenState extends ConsumerState<CausesScreen> {
                               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? const Color.fromARGB(255, 218, 217, 215)
-                                    : Colors.white,
-                                border: Border.all(color: Colors.grey.shade300),
+                                    ? DatingColors.surfaceGrey
+                                    : DatingColors.white,
+                                border: Border.all(color: DatingColors.lightgrey),
                                 borderRadius: BorderRadius.circular(24),
                               ),
                               child: Row(
@@ -100,7 +101,7 @@ class _CausesScreenState extends ConsumerState<CausesScreen> {
                                   Text(
                                     cause.causesAndCommunities ?? '',
                                     style: const TextStyle(
-                                      color: Colors.black,
+                                      color: DatingColors.black,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -108,7 +109,7 @@ class _CausesScreenState extends ConsumerState<CausesScreen> {
                                   Icon(
                                     isSelected ? Icons.close : Icons.add,
                                     size: 18,
-                                    color: Colors.black87,
+                                    color: DatingColors.black,
                                   ),
                                 ],
                               ),
@@ -142,12 +143,12 @@ class _CausesScreenState extends ConsumerState<CausesScreen> {
                     }
                   : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF869E23),
+                backgroundColor: DatingColors.darkGreen,
                 minimumSize: const Size.fromHeight(50),
               ),
               child: const Text(
                 "Continue",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: DatingColors.white),
               ),
             ),
           ],

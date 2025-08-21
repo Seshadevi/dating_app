@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/moreabout/workprovider.dart';
 import 'package:flutter/material.dart';
@@ -110,16 +111,16 @@ class _AddJobScreenState extends ConsumerState<AddJobScreen> {
     final isEditing = _editingId != null;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
         title: Text(
           isEditing ? 'Edit Job' : 'Add Job',
           style: const TextStyle(color: Colors.black),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios_new, color: DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -163,14 +164,14 @@ class _AddJobScreenState extends ConsumerState<AddJobScreen> {
                 child: ElevatedButton(
                   onPressed: isButtonEnabled ? _handleSubmit : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: isButtonEnabled ? const Color.fromARGB(255, 21, 127, 4) : Colors.grey,
+                    backgroundColor: isButtonEnabled ? DatingColors.darkGreen : DatingColors.lightgrey,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   child: Text(
                     isEditing ? 'UPDATE' : 'ADD',
-                    style: const TextStyle(fontSize: 16, color: Colors.white),
+                    style: const TextStyle(fontSize: 16, color: DatingColors.white),
                   ),
                 ),
               ),

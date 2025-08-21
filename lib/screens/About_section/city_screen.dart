@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -184,7 +185,7 @@ class _CitySearchPageState extends State<CitySearchPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("Selected: $cityName"),
-        backgroundColor: Colors.green,
+        backgroundColor: DatingColors.darkGreen,
         duration: Duration(seconds: 2),
       ),
     );
@@ -224,28 +225,28 @@ class _CitySearchPageState extends State<CitySearchPage> {
             child: TextField(
               controller: _searchController,
               onChanged: _onSearchChanged,
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: DatingColors.white),
               decoration: InputDecoration(
                 hintText: 'Search for your city',
-                hintStyle: TextStyle(color: Colors.white70),
-                prefixIcon: Icon(Icons.search, color: Colors.white),
+                hintStyle: TextStyle(color: DatingColors.white),
+                prefixIcon: Icon(Icons.search, color: DatingColors.white),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
-                        icon: Icon(Icons.clear, color: Colors.white),
+                        icon: Icon(Icons.clear, color: DatingColors.white),
                         onPressed: _clearSearch,
                       )
                     : null,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: BorderSide(color: DatingColors.white),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.white),
+                  borderSide: BorderSide(color: DatingColors.white),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.white, width: 2),
+                  borderSide: BorderSide(color: DatingColors.white, width: 2),
                 ),
               ),
             ),
@@ -291,7 +292,7 @@ class _CitySearchPageState extends State<CitySearchPage> {
         }
         
         return ListTile(
-          leading: Icon(iconData, color: Colors.grey[600]),
+          leading: Icon(iconData, color: DatingColors.lightgrey),
           title: Text(
             place.name,
             style: TextStyle(
@@ -302,7 +303,7 @@ class _CitySearchPageState extends State<CitySearchPage> {
           subtitle: place.types.isNotEmpty 
               ? Text(
                   place.types.join(', '),
-                  style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                  style: TextStyle(fontSize: 12, color: DatingColors.lightgrey),
                 )
               : null,
           onTap: () => _selectCity(place.name),
@@ -317,13 +318,13 @@ class _CitySearchPageState extends State<CitySearchPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.location_city, size: 64, color: Colors.grey[400]),
+            Icon(Icons.location_city, size: 64, color: DatingColors.lightgrey),
             SizedBox(height: 16),
             Text(
               'No recent cities',
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey[600],
+                color: DatingColors.lightgrey,
               ),
             ),
             SizedBox(height: 8),
@@ -331,7 +332,7 @@ class _CitySearchPageState extends State<CitySearchPage> {
               'Start typing to search for cities',
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey[500],
+                color: DatingColors.lightgrey,
               ),
             ),
           ],
@@ -345,7 +346,7 @@ class _CitySearchPageState extends State<CitySearchPage> {
       itemBuilder: (context, index) {
         final place = _recentCities[index];
         return ListTile(
-          leading: Icon(Icons.location_city, color: Colors.grey[600]),
+          leading: Icon(Icons.location_city, color: DatingColors.lightgrey),
           title: Text(
             place.name,
             style: TextStyle(
@@ -353,7 +354,7 @@ class _CitySearchPageState extends State<CitySearchPage> {
               fontWeight: FontWeight.w500,
             ),
           ),
-          trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey[400]),
+          trailing: Icon(Icons.arrow_forward_ios, size: 16, color: DatingColors.lightgrey),
           onTap: () => _selectCity(place.name),
         );
       },

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/beKindScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -86,11 +87,11 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
     final verticalSpacing = screen.height * 0.02;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.backgroundWhite,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.backgroundWhite,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: DatingColors.black),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -127,7 +128,7 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
         title: Text(
           'Ever Qupid',
           style: TextStyle(
-            color: Colors.black,
+            color: DatingColors.black,
             fontWeight: FontWeight.bold,
             fontSize: screen.width * 0.045,
           ),
@@ -138,7 +139,7 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
         child: Container(
           padding: EdgeInsets.all(padding),
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.black),
+            border: Border.all(color: DatingColors.black),
             borderRadius: BorderRadius.circular(12),
           ),
           child: SingleChildScrollView(
@@ -167,7 +168,7 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                 Icon(
                   Icons.keyboard_arrow_down_rounded,
                   size: screen.width * 0.12,
-                  color: const Color.fromARGB(255, 249, 225, 9),
+                  color: DatingColors.yellow,
                 ),
                 SizedBox(height: verticalSpacing),
                 Align(
@@ -207,7 +208,7 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                       height: screen.height * 0.06,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xFF869E23), Color(0xFF000000)],
+                          colors: [DatingColors.darkGreen, DatingColors.black],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                         ),
@@ -217,7 +218,7 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                       child: Text(
                         "Add Headline",
                         style: TextStyle(
-                          color: Colors.white,
+                          color:DatingColors.white,
                           fontSize: screen.width * 0.042,
                           fontWeight: FontWeight.w600,
                         ),
@@ -247,7 +248,7 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 89, 172, 164),
+                      backgroundColor: DatingColors.yellow,
                       padding: EdgeInsets.symmetric(
                         vertical: screen.height * 0.015,
                         horizontal: screen.width * 0.2,
@@ -285,7 +286,7 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                       height: screen.height * 0.06,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xFF869E23), Color(0xFF000000)],
+                          colors: [DatingColors.primaryGreen,DatingColors.black],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                         ),
@@ -295,7 +296,7 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                       child: Text(
                         "Edit Headline",
                         style: TextStyle(
-                          color: Colors.white,
+                          color: DatingColors.white,
                           fontSize: screen.width * 0.042,
                           fontWeight: FontWeight.w600,
                         ),
@@ -341,7 +342,7 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                       height: screen.height * 0.06,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xFF869E23), Color(0xFF000000)],
+                          colors: [DatingColors.primaryGreen, DatingColors.black],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                         ),
@@ -351,7 +352,7 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                       child: Text(
                         "Next",
                         style: TextStyle(
-                          color: Colors.white,
+                          color: DatingColors.white,
                           fontSize: screen.width * 0.042,
                           fontWeight: FontWeight.w600,
                         ),

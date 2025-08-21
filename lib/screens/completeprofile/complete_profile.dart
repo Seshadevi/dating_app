@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/model/loginmodel.dart';
 import 'package:dating/model/signupprocessmodels/lookingModel.dart';
 import 'package:dating/provider/loginProvider.dart';
@@ -149,18 +150,18 @@ class _BumbleDateProfileScreenState
         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: DatingColors.black),
           onPressed: () => Navigator.pushNamed(context, '/custombottomnav'),
         ),
         title: Text(
           'everquid ${user?.mode ?? ''}',
           style: TextStyle(
-            color: Colors.black,
+            color: DatingColors.black,
             fontSize: 18,
             fontWeight: FontWeight.w600,
           ),
@@ -237,7 +238,7 @@ class _BumbleDateProfileScreenState
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: Colors.black,
+            color: DatingColors.black,
           ),
         ),
         SizedBox(height: 12),
@@ -253,7 +254,7 @@ class _BumbleDateProfileScreenState
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF869E23), Color(0xFF000000)],
+                colors: [DatingColors.primaryGreen, DatingColors.black],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -263,7 +264,7 @@ class _BumbleDateProfileScreenState
             child: Container(
               padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: DatingColors.white,
                 borderRadius: BorderRadius.circular(
                     14), // Slightly smaller for inner container
               ),
@@ -274,12 +275,12 @@ class _BumbleDateProfileScreenState
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black,
+                      color: DatingColors.black,
                     ),
                   ),
                   Spacer(),
                   Icon(Icons.arrow_forward_ios,
-                      color: Colors.grey[600], size: 16),
+                      color: DatingColors.lightgrey, size: 16),
                 ],
               ),
             ),
@@ -320,7 +321,7 @@ class _BumbleDateProfileScreenState
           'Choose A Few That Truly Represent You',
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey[600],
+            color: DatingColors.lightgrey,
           ),
         ),
         SizedBox(height: 16),
@@ -357,7 +358,7 @@ class _BumbleDateProfileScreenState
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFF869E23), Color(0xFF000000)],
+              colors: [DatingColors.primaryGreen, DatingColors.black],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -366,7 +367,7 @@ class _BumbleDateProfileScreenState
           padding: EdgeInsets.all(2),
           child: Container(
             decoration: BoxDecoration(
-              color: image != null ? Colors.grey[200] : Colors.white,
+              color: image != null ? DatingColors.surfaceGrey : DatingColors.white,
               borderRadius: BorderRadius.circular(10),
             ),
             child: image != null
@@ -388,12 +389,12 @@ class _BumbleDateProfileScreenState
                           width: 14,
                           height: 14,
                           decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 20, 109, 23),
+                            color: DatingColors.darkGreen,
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
                             Icons.check,
-                            color: Colors.white,
+                            color: DatingColors.white,
                             size: 10,
                           ),
                         ),
@@ -404,7 +405,7 @@ class _BumbleDateProfileScreenState
                     child: Icon(
                       Icons.add,
                       size: 30,
-                      color: Colors.grey[400],
+                      color: DatingColors.lightgrey,
                     ),
                   ),
           ),
@@ -438,9 +439,9 @@ class _BumbleDateProfileScreenState
               ),
               if (selectedImages[index] != null)
                 ListTile(
-                  leading: Icon(Icons.delete, color: Colors.red),
+                  leading: Icon(Icons.delete, color: DatingColors.errorRed),
                   title:
-                      Text('Remove Photo', style: TextStyle(color: Colors.red)),
+                      Text('Remove Photo', style: TextStyle(color: DatingColors.errorRed)),
                   onTap: () {
                     Navigator.pop(context);
                     setState(() {
@@ -558,33 +559,33 @@ class _BumbleDateProfileScreenState
         child: Row(
           children: [
             Icon(Icons.verified_user_outlined,
-                color: Colors.grey[600], size: 20),
+                color: DatingColors.middlegrey, size: 20),
             SizedBox(width: 12),
             Expanded(
               child: Text(
                 'Get Verified',
                 style: TextStyle(
                   fontSize: 16,
-                  color: Colors.black,
+                  color: DatingColors.black,
                 ),
               ),
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.grey[100],
+                color: DatingColors.surfaceGrey,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
                 'Not ID Verified',
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey[600],
+                  color: DatingColors.middlegrey,
                 ),
               ),
             ),
             SizedBox(width: 8),
-            Icon(Icons.arrow_forward_ios, color: Colors.grey[400], size: 16),
+            Icon(Icons.arrow_forward_ios, color: DatingColors.lightgrey, size: 16),
           ],
         ),
       ),
@@ -607,7 +608,7 @@ class _BumbleDateProfileScreenState
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: Colors.black,
+            color: DatingColors.black,
           ),
         ),
         const SizedBox(height: 8),
@@ -615,7 +616,7 @@ class _BumbleDateProfileScreenState
           'Get specific about the things you love.',
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey,
+            color: DatingColors.lightgrey,
           ),
         ),
         const SizedBox(height: 16),
@@ -624,9 +625,9 @@ class _BumbleDateProfileScreenState
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: DatingColors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade300),
+            border: Border.all(color: DatingColors.mediumGrey),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -646,7 +647,7 @@ class _BumbleDateProfileScreenState
                   child: Row(
                     children: const [
                       Icon(Icons.bookmark_border,
-                          size: 20, color: Colors.black),
+                          size: 20, color: DatingColors.black),
                       SizedBox(width: 8),
                       Text(
                         'Favorite quality',
@@ -657,7 +658,7 @@ class _BumbleDateProfileScreenState
                       ),
                       Spacer(),
                       Icon(Icons.arrow_forward_ios,
-                          size: 16, color: Colors.grey),
+                          size: 16, color: DatingColors.lightgrey),
                     ],
                   ),
                 ),
@@ -678,7 +679,7 @@ class _BumbleDateProfileScreenState
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
+                          color: DatingColors.surfaceGrey,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Row(
@@ -725,7 +726,7 @@ class _BumbleDateProfileScreenState
                       const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                   decoration: BoxDecoration(
                     border: Border(
-                      top: BorderSide(color: Colors.grey.shade300),
+                      top: BorderSide(color: DatingColors.surfaceGrey),
                     ),
                   ),
                   child: Row(
@@ -775,7 +776,7 @@ class _BumbleDateProfileScreenState
           'Get specific about the things you love',
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey,
+            color: DatingColors.lightgrey,
           ),
         ),
         const SizedBox(height: 16),
@@ -784,9 +785,9 @@ class _BumbleDateProfileScreenState
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: DatingColors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade300),
+            border: Border.all(color: DatingColors.mediumGrey),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -811,7 +812,7 @@ class _BumbleDateProfileScreenState
                   child: Row(
                     children: const [
                       Icon(Icons.bookmark_border,
-                          size: 20, color: Colors.black),
+                          size: 20, color: DatingColors.black),
                       SizedBox(width: 8),
                       Text(
                         'Favorite Interests',
@@ -822,7 +823,7 @@ class _BumbleDateProfileScreenState
                       ),
                       Spacer(),
                       Icon(Icons.arrow_forward_ios,
-                          size: 16, color: Colors.grey),
+                          size: 16, color: DatingColors.lightgrey),
                     ],
                   ),
                 ),
@@ -843,7 +844,7 @@ class _BumbleDateProfileScreenState
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
+                          color: DatingColors.surfaceGrey,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Row(
@@ -892,7 +893,7 @@ class _BumbleDateProfileScreenState
                       const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                   decoration: BoxDecoration(
                     border: Border(
-                      top: BorderSide(color: Colors.grey.shade300),
+                      top: BorderSide(color: DatingColors.surfaceGrey),
                     ),
                   ),
                   child: Row(
@@ -936,7 +937,7 @@ class _BumbleDateProfileScreenState
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: Colors.black,
+            color: DatingColors.black,
           ),
         ),
         const SizedBox(height: 8),
@@ -944,16 +945,16 @@ class _BumbleDateProfileScreenState
           'Get specific about the things you love.',
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey,
+            color: DatingColors.lightgrey,
           ),
         ),
         const SizedBox(height: 16),
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: DatingColors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade300),
+            border: Border.all(color: DatingColors.mediumGrey),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -972,7 +973,7 @@ class _BumbleDateProfileScreenState
                   child: Row(
                     children: const [
                       Icon(Icons.bookmark_border,
-                          size: 20, color: Colors.black),
+                          size: 20, color: DatingColors.black),
                       SizedBox(width: 8),
                       Text(
                         'Favorite causes',
@@ -983,7 +984,7 @@ class _BumbleDateProfileScreenState
                       ),
                       Spacer(),
                       Icon(Icons.arrow_forward_ios,
-                          size: 16, color: Colors.grey),
+                          size: 16, color: DatingColors.lightgrey),
                     ],
                   ),
                 ),
@@ -1004,7 +1005,7 @@ class _BumbleDateProfileScreenState
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
+                          color: DatingColors.surfaceGrey,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Row(
@@ -1049,7 +1050,7 @@ class _BumbleDateProfileScreenState
                       const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                   decoration: BoxDecoration(
                     border: Border(
-                      top: BorderSide(color: Colors.grey.shade300),
+                      top: BorderSide(color: DatingColors.surfaceGrey),
                     ),
                   ),
                   child: Row(
@@ -1100,20 +1101,20 @@ class _BumbleDateProfileScreenState
         const Text(
           'Prompts',
           style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
+              fontSize: 18, fontWeight: FontWeight.w600, color: DatingColors.black),
         ),
         const SizedBox(height: 8),
         const Text(
           'Add personality to your profile with prompts.',
-          style: TextStyle(fontSize: 14, color: Colors.grey),
+          style: TextStyle(fontSize: 14, color: DatingColors.lightgrey),
         ),
         const SizedBox(height: 10),
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: DatingColors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color.fromARGB(255, 239, 241, 239)),
+            border: Border.all(color: DatingColors.mediumGrey),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1128,7 +1129,7 @@ class _BumbleDateProfileScreenState
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
-                            color: const Color.fromARGB(255, 239, 241, 239)),
+                            color: DatingColors.lightgrey),
                       ),
                     ),
                     child: Row(
@@ -1139,13 +1140,13 @@ class _BumbleDateProfileScreenState
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
-                              color: Colors.black,
+                              color: DatingColors.black,
                             ),
                           ),
                         ),
                         IconButton(
                           icon: const Icon(Icons.edit,
-                              color: Colors.black, size: 15),
+                              color: DatingColors.black, size: 15),
                           onPressed: () {
                             setState(() {
                               editingPromptIndex = 0;
@@ -1169,9 +1170,9 @@ class _BumbleDateProfileScreenState
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFF8E1),
+                        color: DatingColors.lightGreen,
                         border: Border(
-                          bottom: BorderSide(color: Colors.grey.shade300),
+                          bottom: BorderSide(color: DatingColors.surfaceGrey),
                         ),
                       ),
                       child: TextField(
@@ -1244,7 +1245,7 @@ class _BumbleDateProfileScreenState
                         vertical: 16, horizontal: 12),
                     decoration: BoxDecoration(
                       border:
-                          Border(top: BorderSide(color: Colors.grey.shade300)),
+                          Border(top: BorderSide(color: DatingColors.surfaceGrey)),
                     ),
                     child: Row(
                       children: const [
@@ -1265,19 +1266,19 @@ class _BumbleDateProfileScreenState
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 233, 231, 226),
+                    color: DatingColors.lightGreen,
                     border:
-                        Border(top: BorderSide(color: Colors.grey.shade300)),
+                        Border(top: BorderSide(color: DatingColors.surfaceGrey)),
                   ),
                   child: TextField(
                     controller: _promptController,
                     maxLines: 2,
-                    style: const TextStyle(fontSize: 15, color: Colors.black87),
+                    style: const TextStyle(fontSize: 15, color: DatingColors.black),
                     decoration: InputDecoration(
                       hintText: 'Write your prompt...',
                       border: InputBorder.none,
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.check, color: Colors.green),
+                        icon: const Icon(Icons.check, color: DatingColors.primaryGreen),
                         onPressed: () {
                           final promptText = _promptController.text.trim();
                           if (promptText.isNotEmpty) {
@@ -1319,7 +1320,7 @@ class _BumbleDateProfileScreenState
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: Colors.black,
+            color: DatingColors.black,
           ),
         ),
         const SizedBox(height: 8),
@@ -1327,7 +1328,7 @@ class _BumbleDateProfileScreenState
           'Write a few short words about you',
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey[600],
+            color: DatingColors.middlegrey,
           ),
         ),
         const SizedBox(height: 10),
@@ -1335,23 +1336,23 @@ class _BumbleDateProfileScreenState
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
             decoration: BoxDecoration(
-              color:  Colors.white,
+              color:  DatingColors.white,
               borderRadius: BorderRadius.circular(12),
               border:
-                  Border.all(color: const Color.fromARGB(255, 151, 144, 144)),
+                  Border.all(color: DatingColors.middlegrey),
             ),
             child: TextField(
               controller: _bioController,
               maxLines: 5,
               textInputAction: TextInputAction.done,
               keyboardType: TextInputType.multiline,
-              style: const TextStyle(fontSize: 12, color: Colors.black87),
+              style: const TextStyle(fontSize: 12, color: DatingColors.black),
               decoration: InputDecoration(
                 hintText: 'Write about you',
                 border: InputBorder.none,
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.check,
-                      color: Color.fromARGB(255, 33, 34, 33)),
+                      color: DatingColors.black),
                   onPressed: () async {
                     final updatedHeadline = _bioController.text.trim();
 
@@ -1390,9 +1391,9 @@ class _BumbleDateProfileScreenState
             margin: const EdgeInsets.only(bottom: 16),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.grey.shade100,
+              color: DatingColors.surfaceGrey,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey.shade300),
+              border: Border.all(color: DatingColors.mediumGrey),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1403,7 +1404,7 @@ class _BumbleDateProfileScreenState
                     style: TextStyle(
                       fontSize: 16,
                       color:
-                          headline.isNotEmpty ? Colors.black87 : Colors.black54,
+                          headline.isNotEmpty ? DatingColors.black : DatingColors.black,
                       fontStyle: headline.isNotEmpty
                           ? FontStyle.normal
                           : FontStyle.italic,
@@ -1433,10 +1434,10 @@ class _BumbleDateProfileScreenState
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: DatingColors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-              color: const Color.fromARGB(255, 106, 104, 104), width: 1),
+              color: DatingColors.mediumGrey, width: 1),
         ),
         child: Row(
           children: [
@@ -1449,7 +1450,7 @@ class _BumbleDateProfileScreenState
                 ),
               ),
             ),
-            Icon(Icons.arrow_forward_ios, color: Colors.grey[400], size: 16),
+            Icon(Icons.arrow_forward_ios, color: DatingColors.middlegrey, size: 16),
           ],
         ),
       ),
@@ -1477,7 +1478,7 @@ class _BumbleDateProfileScreenState
     children: [
       const Text(
         'About You',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: DatingColors.black),
       ),
       const SizedBox(height: 16),
       _buildProfileItem(Icons.work_outline, 'Work', workDisplayText, onTap: () {
@@ -1599,12 +1600,12 @@ Widget _buildMoreAboutYouSection() {
           if (pronoun!=null)
   Chip(
     label: Text(pronoun),
-    backgroundColor: Colors.blue[50],
+    backgroundColor: DatingColors.primaryGreen,
   )
 else
   Text(
     'No pronouns added yet.',
-    style: TextStyle(color: Colors.grey[500]),
+    style: TextStyle(color: DatingColors.middlegrey),
   ),
 
 
@@ -1614,9 +1615,9 @@ else
             width: double.infinity,
             padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: DatingColors.white,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.white, width: 1),
+              border: Border.all(color: DatingColors.mediumGrey, width: 1),
             ),
             child: GestureDetector(
               onTap: () {
@@ -1635,12 +1636,12 @@ else
                       'Select Your Pronouns',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.black,
+                        color: DatingColors.black,
                       ),
                     ),
                   ),
                   Icon(Icons.arrow_forward_ios,
-                      color: Colors.grey[400], size: 16),
+                      color: DatingColors.lightgrey, size: 16),
                 ],
               ),
             ),
@@ -1670,7 +1671,7 @@ else
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: Colors.black,
+            color: DatingColors.black,
           ),
         ),
         SizedBox(height: 8),
@@ -1678,7 +1679,7 @@ else
           'Choose The Languages You Know',
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey[600],
+            color: DatingColors.middlegrey,
           ),
         ),
         SizedBox(height: 6),
@@ -1691,14 +1692,14 @@ else
             children: languages
                 .map((lang) => Chip(
                       label: Text(lang.name ?? ''),
-                      backgroundColor: Colors.blue[50],
+                      backgroundColor: DatingColors.primaryGreen,
                     ))
                 .toList(),
           )
         else
           Text(
             'No languages added yet.',
-            style: TextStyle(color: Colors.grey[500]),
+            style: TextStyle(color: DatingColors.lightgrey),
           ),
 
         SizedBox(height: 6),
@@ -1708,9 +1709,9 @@ else
           width: double.infinity,
           padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: DatingColors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey, width: 1),
+            border: Border.all(color: DatingColors.mediumGrey, width: 1),
           ),
           child: Row(
             children: [
@@ -1734,7 +1735,7 @@ else
                 },
                 child: Icon(
                   Icons.arrow_forward_ios,
-                  color: Colors.grey[400],
+                  color: DatingColors.lightgrey,
                   size: 16,
                 ),
               ),
@@ -1754,7 +1755,7 @@ else
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: Colors.black,
+            color: DatingColors.black,
           ),
         ),
         SizedBox(height: 8),
@@ -1762,16 +1763,16 @@ else
           'Show Off Your Favourite Music',
           style: TextStyle(
             fontSize: 14,
-            color: Colors.grey[600],
+            color: DatingColors.middlegrey,
           ),
         ),
         SizedBox(height: 16),
         Container(
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: DatingColors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey, width: 1),
+            border: Border.all(color: DatingColors.mediumGrey, width: 1),
           ),
           child: Column(
             children: [
@@ -1781,12 +1782,12 @@ else
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: Colors.green,
+                      color: DatingColors.darkGreen,
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
                       Icons.music_note,
-                      color: Colors.white,
+                      color: DatingColors.white,
                       size: 24,
                     ),
                   ),
@@ -1797,12 +1798,12 @@ else
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: Colors.black,
+                        color: DatingColors.black,
                       ),
                     ),
                   ),
                   Icon(Icons.arrow_forward_ios,
-                      color: Colors.grey[400], size: 16),
+                      color: DatingColors.middlegrey, size: 16),
                 ],
               ),
               SizedBox(height: 16),
@@ -1810,7 +1811,7 @@ else
                 'Show Your Recently Played Songs On Your Profile And Allow The Songs You Listen To Recommendation Conversation Starters Based On Shared Music Tastes',
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.grey[600],
+                  color: DatingColors.middlegrey,
                   height: 1.4,
                 ),
               ),
@@ -1823,12 +1824,12 @@ else
                     width: 50,
                     height: 50,
                     decoration: BoxDecoration(
-                      color: Colors.grey[200],
+                      color: DatingColors.primaryGreen,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
                       Icons.music_note,
-                      color: Colors.grey[400],
+                      color: DatingColors.middlegrey,
                       size: 24,
                     ),
                   );
@@ -1848,13 +1849,13 @@ else
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
         decoration: const BoxDecoration(
-          border: Border(bottom: BorderSide(color: Colors.grey)),
+          border: Border(bottom: BorderSide(color: DatingColors.middlegrey)),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Row(
             children: [
-              Icon(icon, color: Colors.black),
+              Icon(icon, color: DatingColors.black),
               const SizedBox(width: 16),
               Expanded(
                   child: Text(
@@ -1863,8 +1864,8 @@ else
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               )),
-              Text(value,style: const TextStyle(fontSize: 16, color: Colors.grey)),
-              const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+              Text(value,style: const TextStyle(fontSize: 16, color: DatingColors.middlegrey)),
+              const Icon(Icons.arrow_forward_ios, size: 16, color: DatingColors.middlegrey),
             ],
           ),
         ),

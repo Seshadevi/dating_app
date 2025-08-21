@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/introMail.dart';
 import 'package:flutter/material.dart';
 
@@ -59,7 +60,7 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor:DatingColors.white,
       body: Stack(
         children: [
           // Decorative Image
@@ -87,9 +88,9 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
                   //   child: 
                     LinearProgressIndicator(
                       value: 4/ 18,
-                      backgroundColor: Colors.grey[300],
+                      backgroundColor: DatingColors.lightGreen,
                       valueColor: const AlwaysStoppedAnimation<Color>(
-                        Color.fromARGB(255, 147, 179, 3),
+                        DatingColors.darkGreen,
                       ),
                     ),
                   // ),
@@ -148,11 +149,11 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
               
                 Chip(
                   label: Text(
-                    selectedgender == null || selectedgender!.isEmpty
+                    selectedgender == null || selectedgender.isEmpty
                         ? 'Select Gender'
-                        : genderPronouns[selectedgender!] ?? selectedgender!,
+                        : genderPronouns[selectedgender] ?? selectedgender,
                   ),
-                  backgroundColor: const Color(0xffB2D12E),
+                  backgroundColor: DatingColors.primaryGreen,
                 ),
 
 
@@ -169,7 +170,7 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
                       onChanged: (val) => setState(() {
                         showGenderOnProfile = val;
                       }),
-                      activeColor: const Color(0xffB2D12E),
+                      activeColor: DatingColors.primaryGreen,
                     ),
                   ],
                 ),
@@ -192,14 +193,14 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
                     height: screenWidth * 0.125,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xffB2D12E), Color(0xff000000)],
+                        colors: [DatingColors.primaryGreen, DatingColors.black],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                       ),
                       borderRadius: BorderRadius.circular(50),
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+                      icon: const Icon(Icons.arrow_forward_ios, color: DatingColors.white),
                       onPressed: () {
                         // if (selectedGender.isNotEmpty) {
                         //   // Navigate to next screen

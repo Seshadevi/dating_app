@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/googe_sign_provider.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/screens/location_screen.dart';
@@ -28,7 +29,7 @@ class _SelectPageState extends ConsumerState<SelectPage> {
     final isSmallScreen = screenWidth < 375;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       body: Column(
         children: [
           _buildImageSection(screenWidth, screenHeight, isSmallScreen),
@@ -54,7 +55,7 @@ class _SelectPageState extends ConsumerState<SelectPage> {
       height: containerHeight,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xffB2D12E), Color(0xff000000)],
+          colors: [DatingColors.darkGreen, DatingColors.brown],
           stops: [0.0, 1.0],
           begin: AlignmentDirectional(0.0, -1.0),
           end: AlignmentDirectional(0, 1.0),
@@ -119,7 +120,7 @@ class _SelectPageState extends ConsumerState<SelectPage> {
           _buildSocialButton(
             "Continue With Google",
             null,
-            const Color(0xffDB4437),
+            DatingColors.errorRed,
             screenWidth,
             isSmallScreen,
             () async {
@@ -245,7 +246,7 @@ class _SelectPageState extends ConsumerState<SelectPage> {
           _buildSocialButton(
             "Use Mobile Number",
             null,
-            const Color(0xff25D366),
+            DatingColors.darkGreen,
             screenWidth,
             isSmallScreen,
             () {
@@ -284,12 +285,12 @@ class _SelectPageState extends ConsumerState<SelectPage> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(
-          color: const Color(0xffB2D12E),
+          color: DatingColors.primaryGreen,
           width: 2,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color:DatingColors.white,
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -298,8 +299,8 @@ class _SelectPageState extends ConsumerState<SelectPage> {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black87,
+          backgroundColor:DatingColors.backgroundWhite,
+          foregroundColor:DatingColors.black,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
@@ -331,7 +332,7 @@ class _SelectPageState extends ConsumerState<SelectPage> {
                   fontFamily: 'Lexend',
                   fontSize: fontSize,
                   fontWeight: FontWeight.w500,
-                  color: Colors.black87,
+                  color: DatingColors.black,
                 ),
               ),
             ),
@@ -354,7 +355,7 @@ class _SelectPageState extends ConsumerState<SelectPage> {
         maxLines: 3,
         style: TextStyle(
           fontSize: fontSize,
-          color: const Color.fromARGB(179, 29, 28, 28),
+          color: DatingColors.brown,
         ),
       ),
     );

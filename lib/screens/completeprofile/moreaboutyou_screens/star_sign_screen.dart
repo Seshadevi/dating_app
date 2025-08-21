@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -75,12 +76,12 @@ class _StarSignScreenState extends ConsumerState<StarSignScreen> {
     final isLoading = ref.watch(loadingProvider);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
@@ -114,7 +115,7 @@ class _StarSignScreenState extends ConsumerState<StarSignScreen> {
       return const Center(
         child: Text(
           'No zodiac signs available',
-          style: TextStyle(fontSize: 16, color: Colors.grey),
+          style: TextStyle(fontSize: 16, color: DatingColors.lightgrey),
         ),
       );
     }
@@ -141,17 +142,17 @@ class _StarSignScreenState extends ConsumerState<StarSignScreen> {
                   decoration: BoxDecoration(
                     gradient: isSelected
                         ? const LinearGradient(
-                            colors: [Color(0xFFB2D12E), Color(0xFF2B2B2B)],
+                            colors: [DatingColors.primaryGreen, DatingColors.black],
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
                           )
                         : null,
-                    color: isSelected ? null : Colors.white,
+                    color: isSelected ? null : DatingColors.white,
                     borderRadius: BorderRadius.circular(28),
                     border: Border.all(
                       color: isSelected
-                          ? Colors.transparent
-                          : const Color(0xFFB2D12E),
+                          ? DatingColors.black
+                          : DatingColors.darkGreen,
                       width: 2,
                     ),
                   ),
@@ -161,7 +162,7 @@ class _StarSignScreenState extends ConsumerState<StarSignScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: isSelected ? Colors.white : Colors.black,
+                        color: isSelected ? DatingColors.white : DatingColors.black,
                       ),
                     ),
                   ),

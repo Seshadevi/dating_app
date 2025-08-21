@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -71,13 +72,13 @@ class _UpdateGenderScreenState extends ConsumerState<UpdateGenderScreen> {
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         margin: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF89A000) : Colors.transparent,
+          color: isSelected ?  DatingColors.primaryGreen : DatingColors.black,
           gradient: isSelected
               ? const LinearGradient(
-                  colors: [Color(0xFF89A000), Colors.black],
+                  colors: [DatingColors.primaryGreen, DatingColors.black],
                 )
               : null,
-          border: Border.all(color: const Color(0xFF89A000)),
+          border: Border.all(color: DatingColors.darkGreen),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
@@ -86,7 +87,7 @@ class _UpdateGenderScreenState extends ConsumerState<UpdateGenderScreen> {
             Text(
               gender,
               style: TextStyle(
-                color: isSelected ? Colors.white : Colors.black,
+                color: isSelected ? DatingColors.white : DatingColors.black,
                 fontSize: 16,
               ),
             ),
@@ -105,16 +106,16 @@ class _UpdateGenderScreenState extends ConsumerState<UpdateGenderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Update Your Gender', style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.white,
+        title: const Text('Update Your Gender', style: TextStyle(color: DatingColors.black)),
+        backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: DatingColors.black),
           onPressed: () => Navigator.pop(context),
           // onPressed: () => Navigator.pushNamed(context, '/completeprofile'),
         ),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -143,7 +144,7 @@ class _UpdateGenderScreenState extends ConsumerState<UpdateGenderScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      border: Border.all(color: const Color(0xFF89A000)),
+                      border: Border.all(color: DatingColors.darkGreen),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -158,19 +159,19 @@ class _UpdateGenderScreenState extends ConsumerState<UpdateGenderScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF89A000),
+                                  color: DatingColors.darkGreen,
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
                                   'Show As: $selectedGender',
-                                  style: const TextStyle(color: Colors.white),
+                                  style: const TextStyle(color: DatingColors.white),
                                 ),
                               ),
                             ]),
                         Switch(
                           value: showOnProfile,
                           onChanged: (value) => setState(() => showOnProfile = value),
-                          activeColor: const Color(0xFF89A000),
+                          activeColor: DatingColors.darkGreen,
                         )
                       ],
                     ),
@@ -182,13 +183,13 @@ class _UpdateGenderScreenState extends ConsumerState<UpdateGenderScreen> {
                       height: 50,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                            colors: [Color(0xFF89A000), Colors.black]),
+                            colors: [DatingColors.primaryGreen, DatingColors.black]),
                         borderRadius: BorderRadius.circular(30),
                       ),
                       child: TextButton(
                         onPressed: _updateGender,
                         child: const Text('Save and close',
-                            style: TextStyle(color: Colors.white, fontSize: 16)),
+                            style: TextStyle(color: DatingColors.white, fontSize: 16)),
                       ),
                     ),
                   ),

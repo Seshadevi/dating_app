@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../provider/plans/plansfullprovider.dart';
@@ -83,8 +84,8 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
               height: 10,
               decoration: BoxDecoration(
                 color: currentBubbleIndex == index
-                    ? Colors.green
-                    : Colors.green[100],
+                    ? DatingColors.primaryGreen
+                    : DatingColors.lightgrey,
                 shape: BoxShape.circle,
               ),
             ),
@@ -122,8 +123,8 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? const Color(0xFF6E8B3D)
-                      : const Color(0xFFF1F3F4),
+                      ? DatingColors.darkGreen
+                      : DatingColors.lightBlue,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: isSelected ? Colors.black : Colors.transparent,
@@ -138,7 +139,7 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 16,
-                        color: isSelected ? Colors.white : Colors.black,
+                        color: isSelected ? DatingColors.white : DatingColors.black,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -150,7 +151,7 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
-                        color: isSelected ? Colors.white : Colors.black,
+                        color: isSelected ? DatingColors.white : DatingColors.black,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -159,7 +160,7 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
-                        color: isSelected ? Colors.white : Colors.black,
+                        color: isSelected ? DatingColors.white :DatingColors.black,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -168,7 +169,7 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: DatingColors.white,
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: const Text(
@@ -215,7 +216,7 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
             height: 38,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF6E8B3D),
+                backgroundColor: DatingColors.primaryGreen,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),

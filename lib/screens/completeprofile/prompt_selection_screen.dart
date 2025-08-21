@@ -1,3 +1,4 @@
+import "package:dating/constants/dating_app_user.dart";
 import "package:flutter/material.dart";
 class PromptSelectionScreen extends StatelessWidget {
   const PromptSelectionScreen({super.key});
@@ -28,9 +29,9 @@ class PromptSelectionScreen extends StatelessWidget {
         ),
         title: const Text("Pick your first Prompt"),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
-        foregroundColor: Colors.black,
+        foregroundColor: DatingColors.black,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -39,7 +40,7 @@ class PromptSelectionScreen extends StatelessWidget {
             children: [
               const Text(
                 "You can add up to 3 to really show off your personality.",
-                style: TextStyle(color: Colors.black54),
+                style: TextStyle(color: DatingColors.black),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
@@ -49,7 +50,7 @@ class PromptSelectionScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.grey[300]!),
+                    border: Border.all(color: DatingColors.lightgrey),
                   ),
                   child: Text(
                     prompt,

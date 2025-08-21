@@ -1,3 +1,4 @@
+import "package:dating/constants/dating_app_user.dart";
 import "package:flutter/material.dart";
 
 
@@ -12,18 +13,18 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor:DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Profile Strength',
           style: TextStyle(
-            color: Colors.black,
+            color: DatingColors.black,
             fontSize: 18,
             fontWeight: FontWeight.w600,
           ),
@@ -44,8 +45,8 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
                   child: CircularProgressIndicator(
                     value: 0.2,
                     strokeWidth: 6,
-                    backgroundColor: Colors.grey[200],
-                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.cyan),
+                    backgroundColor: DatingColors.surfaceGrey,
+                    valueColor: const AlwaysStoppedAnimation<Color>(DatingColors.accentTeal),
                   ),
                 ),
                 ClipRRect(
@@ -67,13 +68,13 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: Colors.cyan,
+                      color: DatingColors.accentTeal,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Text(
                       '20%',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: DatingColors.white,
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                       ),
@@ -90,7 +91,7 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: DatingColors.black,
               ),
               textAlign: TextAlign.center,
             ),
@@ -99,7 +100,7 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
               'It\'s Quick To Set Up And Will Boost Your Chances Of Matching',
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey,
+                color: DatingColors.lightgrey,
               ),
               textAlign: TextAlign.center,
             ),
@@ -119,28 +120,28 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
                   title: 'Bio',
                   subtitle: 'Not Written',
                   isCompleted: false,
-                  iconColor: Colors.blue,
+                  iconColor: DatingColors.accentTeal,
                 ),
                 _buildProfileCard(
                   icon: Icons.verified_user_outlined,
                   title: 'Get Verified',
                   subtitle: 'Not Verified',
                   isCompleted: false,
-                  iconColor: Colors.blue,
+                  iconColor: DatingColors.accentTeal,
                 ),
                 _buildProfileCard(
                   icon: Icons.person,
                   title: 'Basic Info',
                   subtitle: '1 Of 5 Added',
                   isCompleted: false,
-                  iconColor: Colors.red,
+                  iconColor: DatingColors.errorRed,
                 ),
                 _buildProfileCard(
                   icon: Icons.info_outline,
                   title: 'More About You',
                   subtitle: '3 Of 9 Added',
                   isCompleted: false,
-                  iconColor: Colors.orange,
+                  iconColor: DatingColors.yellow,
                   hasMoreInfo: true,
                 ),
                 _buildProfileCard(
@@ -148,14 +149,14 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
                   title: 'Photos',
                   subtitle: '1 Of 4 Added',
                   isCompleted: false,
-                  iconColor: Colors.green,
+                  iconColor: DatingColors.darkGreen,
                 ),
                 _buildProfileCard(
                   icon: Icons.chat_bubble_outline,
                   title: 'Prompts',
                   subtitle: '3 Of 9 Added',
                   isCompleted: false,
-                  iconColor: Colors.blue,
+                  iconColor: DatingColors.accentTeal,
                 ),
               ],
             ),
@@ -167,7 +168,7 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
               title: 'Interests',
               subtitle: '0 Of 5 Added',
               isCompleted: false,
-              iconColor: Colors.teal,
+              iconColor: DatingColors.lightyellow,
             ),
           ],
         ),
@@ -186,11 +187,11 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: isCompleted ? Colors.green : Colors.yellow[700]!,
+          color: isCompleted ? DatingColors.primaryGreen : DatingColors.yellow!,
           width: 2,
         ),
         borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
+        color: DatingColors.white,
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -211,13 +212,13 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: Colors.orange,
+                        color: DatingColors.yellow,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Text(
                         'MORE INFO',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: DatingColors.white,
                           fontSize: 8,
                           fontWeight: FontWeight.bold,
                         ),
@@ -232,7 +233,7 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.black,
+                color: DatingColors.black,
               ),
             ),
             const SizedBox(height: 4),
@@ -240,7 +241,7 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
               subtitle,
               style: const TextStyle(
                 fontSize: 12,
-                color: Colors.grey,
+                color: DatingColors.lightgrey,
               ),
               textAlign: TextAlign.center,
             ),
@@ -261,11 +262,11 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
       width: double.infinity,
       decoration: BoxDecoration(
         border: Border.all(
-          color: isCompleted ? Colors.green : Colors.yellow[700]!,
+          color: isCompleted ? DatingColors.primaryGreen : DatingColors.yellow!,
           width: 2,
         ),
         borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
+        color: DatingColors.white,
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -283,7 +284,7 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.black,
+                color: DatingColors.black,
               ),
             ),
             const SizedBox(height: 4),
@@ -291,7 +292,7 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
               subtitle,
               style: const TextStyle(
                 fontSize: 12,
-                color: Colors.grey,
+                color: DatingColors.lightgrey,
               ),
               textAlign: TextAlign.center,
             ),

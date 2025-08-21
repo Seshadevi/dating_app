@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/choose_foodies.dart';
 import 'package:dating/screens/partners_selections.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +65,7 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -73,9 +74,9 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: LinearProgressIndicator(
               value: 9 / 18,
-              backgroundColor: Colors.grey[300],
+              backgroundColor: DatingColors.lightgrey,
               valueColor: const AlwaysStoppedAnimation<Color>(
-                  Color.fromARGB(255, 147, 179, 3)),
+                  DatingColors.darkGreen),
             ),
           ),
           const SizedBox(height: 15),
@@ -124,7 +125,7 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
               "Quick intro now, meaningful moments later.",
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.black87,
+                color: DatingColors.black,
               ),
             ),
           ),
@@ -135,7 +136,7 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: DatingColors.black,
               ),
             ),
           ),
@@ -168,14 +169,14 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
                   height: screenWidth * 0.125,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xffB2D12E), Color(0xff000000)],
+                      colors: [DatingColors.primaryGreen, DatingColors.black],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                     ),
                     borderRadius: BorderRadius.circular(50),
                   ),
                   child: IconButton(
-                    icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+                    icon: const Icon(Icons.arrow_forward_ios, color: DatingColors.white),
                     onPressed: () {
                           // Navigator.push(...) your next screen here
                         Navigator.pushNamed(
@@ -298,12 +299,12 @@ class HeightBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final gradient = isSelected
         ? const LinearGradient(
-            colors: [Color(0xFFBEDC62), Color(0xFF000000)],
+            colors: [DatingColors.primaryGreen,DatingColors.black],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           )
         : const LinearGradient(
-            colors: [Color(0xFFE8F3C1), Color(0xFFE8F3C1)],
+            colors: [DatingColors.lightyellow,DatingColors.surfaceGrey],
           );
 
     return AnimatedContainer(
@@ -316,7 +317,7 @@ class HeightBubble extends StatelessWidget {
         boxShadow: isSelected
             ? [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
+                  color: DatingColors.black.withOpacity(0.3),
                   offset: const Offset(2, 4),
                   blurRadius: 20,
                 )
@@ -327,7 +328,7 @@ class HeightBubble extends StatelessWidget {
         child: Text(
           '$height cm',
           style: TextStyle(
-            color: isSelected ? Colors.white : Colors.black,
+            color: isSelected ? DatingColors.white : DatingColors.black,
             fontSize: isSelected ? 18 : 14,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),

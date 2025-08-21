@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,8 +39,8 @@ class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Favorite Qualities'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: DatingColors.white,
+        foregroundColor: DatingColors.black,
         elevation: 0,
       ),
       body: Column(
@@ -56,7 +57,7 @@ class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               'These will be saved to your profile.',
-              style: TextStyle(fontSize: 14, color: Colors.grey),
+              style: TextStyle(fontSize: 14, color: DatingColors.lightgrey),
             ),
           ),
           const SizedBox(height: 16),
@@ -73,10 +74,10 @@ class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
+                    color: DatingColors.surfaceGrey,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: const Color(0xFF869E23),
+                      color: DatingColors.darkGreen,
                       width: 1.5,
                     ),
                   ),
@@ -102,10 +103,10 @@ class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
             child: ElevatedButton(
               onPressed: _saveAllQualities,
               style: ElevatedButton.styleFrom(
-                backgroundColor:const Color(0xFF869E23),
+                backgroundColor:DatingColors.darkGreen,
                 minimumSize: const Size.fromHeight(50),
               ),
-              child: const Text('Save All',style:TextStyle(color:Colors.white),),
+              child: const Text('Save All',style:TextStyle(color:DatingColors.white),),
             ),
           ),
         ],

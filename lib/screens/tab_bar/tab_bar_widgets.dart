@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/profile_screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -64,7 +65,7 @@ class SubscriptionContent extends StatelessWidget {
         const SizedBox(height: 14),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Text(note, textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+          child: Text(note, textAlign: TextAlign.center, style: const TextStyle(fontSize: 12, color: DatingColors.lightBlue)),
         ),
         const SizedBox(height: 4),
         const Text("Terms & Conditions", style: TextStyle(fontSize: 12, color: Colors.blue, decoration: TextDecoration.underline)),
@@ -76,11 +77,11 @@ class SubscriptionContent extends StatelessWidget {
                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ProfileScreen()));
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFF869E23),
+              backgroundColor: DatingColors.primaryGreen,
               padding: const EdgeInsets.symmetric(vertical: 10),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
-            child: Center(child: Text(buttonText, style: const TextStyle(color: Colors.white))),
+            child: Center(child: Text(buttonText, style: const TextStyle(color: DatingColors.white))),
           ),
         ),
       ],
@@ -101,26 +102,26 @@ class PlanCard extends StatelessWidget {
       height: 170,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: selected ? Color(0xFF869E23) : Colors.grey[100],
+        color: selected ? DatingColors.primaryGreen : DatingColors.surfaceGrey,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: selected ? Colors.black : Colors.grey.shade300, width: 2),
+        border: Border.all(color: selected ? DatingColors.black : DatingColors.mediumGrey, width: 2),
       ),
       child: Column(
         children: [
-          Text(plan.duration, style: TextStyle(color: selected ? Colors.white : Colors.black, fontWeight: FontWeight.bold)),
+          Text(plan.duration, style: TextStyle(color: selected ? DatingColors.white : DatingColors.black, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          Text(plan.price, style: TextStyle(color: selected ? Colors.white : Colors.black, fontSize: 10)),
+          Text(plan.price, style: TextStyle(color: selected ? DatingColors.white : DatingColors.black, fontSize: 10)),
           const SizedBox(height: 4),
           if (plan.badge.isNotEmpty)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
-                color: selected ? Colors.white : Colors.green,
+                color: selected ? DatingColors.white : DatingColors.primaryGreen,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 plan.badge,
-                style: TextStyle(fontSize: 8, color: selected ? Colors.black : Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 8, color: selected ? DatingColors.black : DatingColors.white, fontWeight: FontWeight.bold),
               ),
             ),
         ],

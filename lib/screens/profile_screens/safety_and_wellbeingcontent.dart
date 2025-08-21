@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/profile_after_click/feeling_of_rejection.dart';
 import 'package:dating/screens/profile_after_click/harmful_behaviour_screen.dart';
 import 'package:dating/screens/profile_after_click/irl_screen.dart';
@@ -27,8 +28,8 @@ class _SafetyAndWellbeingcontentState extends State<SafetyAndWellbeingcontent> {
                 icon: Icons.psychology_outlined,
                 title: 'Mental Exhaustion',
                 description: 'Help With Dating Anxiety Uncertainty Or Burnout',
-                backgroundColor: const Color(0xFFFFF2E6),
-                borderColor: const Color(0xFFFFD700),
+                backgroundColor: DatingColors.lightyellow,
+                borderColor: DatingColors.yellow,
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder:(context) => MentalExhaustionScreen()));
                 },
@@ -40,8 +41,8 @@ class _SafetyAndWellbeingcontentState extends State<SafetyAndWellbeingcontent> {
                 icon: Icons.warning_outlined,
                 title: 'Harmful Behavior',
                 description: 'What To Do About Things Like Abuse Or Catfishing',
-                backgroundColor: const Color(0xFFFFF2E6),
-                borderColor: const Color(0xFFFFD700),
+                backgroundColor: DatingColors.lightyellow,
+                borderColor: DatingColors.yellow,
                  onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder:(context) => HarmfulBehaviorScreen()));
                 },
@@ -53,8 +54,8 @@ class _SafetyAndWellbeingcontentState extends State<SafetyAndWellbeingcontent> {
                 icon: Icons.sentiment_dissatisfied_outlined,
                 title: 'Feeling Of Rejection',
                 description: 'Overcome Low Moments Like Ghosting',
-                backgroundColor: const Color(0xFFFFF2E6),
-                borderColor: const Color(0xFFFFD700),
+                backgroundColor: DatingColors.lightyellow,
+                borderColor: DatingColors.yellow,
                  onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder:(context) => FeelingOfRejectionScreen()));
                 },
@@ -66,8 +67,8 @@ class _SafetyAndWellbeingcontentState extends State<SafetyAndWellbeingcontent> {
                 icon: Icons.people_outline,
                 title: 'Bumble To IRL',
                 description: 'Tips On Staying Safe When You Decide To Date',
-                backgroundColor: const Color(0xFFFFF2E6),
-                borderColor: const Color(0xFFFFD700),
+                backgroundColor: DatingColors.lightyellow,
+                borderColor: DatingColors.yellow,
                  onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder:(context) => BumbleToIrlScreen()));
                 },
@@ -80,7 +81,7 @@ class _SafetyAndWellbeingcontentState extends State<SafetyAndWellbeingcontent> {
                 height: 50,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Color(0xFFB6E11D), Color(0xFF2B2B2B)],
+                    colors: [DatingColors.primaryGreen, DatingColors.black],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                     ),
@@ -91,8 +92,8 @@ class _SafetyAndWellbeingcontentState extends State<SafetyAndWellbeingcontent> {
                     // Handle button press
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    foregroundColor: Colors.white,
+                    backgroundColor: DatingColors.black,
+                    foregroundColor: DatingColors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
@@ -114,8 +115,8 @@ class _SafetyAndWellbeingcontentState extends State<SafetyAndWellbeingcontent> {
                 icon: Icons.security_outlined,
                 title: 'Your Safety',
                 description: 'Trusted Organization To Help Keep You Safe And Well',
-                backgroundColor: const Color(0xFFFFF2E6),
-                borderColor: const Color(0xFFFFD700),
+                backgroundColor: DatingColors.lightyellow,
+                borderColor: DatingColors.yellow,
                  onTap: () {
                   
                 },
@@ -127,8 +128,8 @@ class _SafetyAndWellbeingcontentState extends State<SafetyAndWellbeingcontent> {
                 icon: Icons.favorite_outline,
                 title: 'Your Emotional Wellbeing',
                 description: 'Resources For A Healthy State Of Mind Inn Dating And In Life',
-                backgroundColor: const Color(0xFFFFF2E6),
-                borderColor: const Color(0xFFFFD700),
+                backgroundColor: DatingColors.lightyellow,
+                borderColor: DatingColors.yellow,
                  onTap: () {
                   
                 },
@@ -140,8 +141,8 @@ class _SafetyAndWellbeingcontentState extends State<SafetyAndWellbeingcontent> {
                 icon: Icons.shield_outlined,
                 title: 'Your Emotional Wellbeing',
                 description: 'See What Bumble Stands For And What We Ask Of Our Community',
-                backgroundColor: const Color(0xFFFFF2E6),
-                borderColor: const Color(0xFFFFD700),
+                backgroundColor: DatingColors.lightyellow,
+                borderColor: DatingColors.yellow,
                  onTap: () {
                   
                 },
@@ -181,7 +182,7 @@ class _SafetyAndWellbeingcontentState extends State<SafetyAndWellbeingcontent> {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: DatingColors.white,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: borderColor,
@@ -190,7 +191,7 @@ class _SafetyAndWellbeingcontentState extends State<SafetyAndWellbeingcontent> {
               ),
               child: Icon(
                 icon,
-                color: const Color(0xFF333333),
+                color: DatingColors.brown,
                 size: 24,
               ),
             ),
@@ -206,7 +207,7 @@ class _SafetyAndWellbeingcontentState extends State<SafetyAndWellbeingcontent> {
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF333333),
+                      color: DatingColors.brown,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -214,7 +215,7 @@ class _SafetyAndWellbeingcontentState extends State<SafetyAndWellbeingcontent> {
                     description,
                     style: const TextStyle(
                       fontSize: 14,
-                      color: Color(0xFF666666),
+                      color: DatingColors.brown,
                       height: 1.3,
                     ),
                   ),

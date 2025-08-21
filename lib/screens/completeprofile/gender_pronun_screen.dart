@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 
 class GenderPronounsFeedbackScreen extends StatefulWidget {
@@ -27,15 +28,15 @@ class _GenderPronounsFeedbackScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
-        leading: const Icon(Icons.close, color: Colors.black),
-        backgroundColor: Colors.white,
+        leading: const Icon(Icons.close, color: DatingColors.black),
+        backgroundColor: DatingColors.white,
         centerTitle: true,
         elevation: 0,
         title: const Text(
           "Gender Pronouns Feedback",
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: DatingColors.black),
         ),
       ),
       body: Padding(
@@ -45,7 +46,7 @@ class _GenderPronounsFeedbackScreenState
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.green),
+                border: Border.all(color: DatingColors.darkGreen),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: TextField(
@@ -65,12 +66,12 @@ class _GenderPronounsFeedbackScreenState
                 width: double.infinity,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFFB5D228), Color(0xFF000000)],
+                    colors: [DatingColors.primaryGreen, DatingColors.black],
                   ),
                   borderRadius: BorderRadius.circular(30),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black12,
+                      color: DatingColors.black,
                       blurRadius: 10,
                       offset: Offset(0, 4),
                     ),
@@ -79,7 +80,7 @@ class _GenderPronounsFeedbackScreenState
                 alignment: Alignment.center,
                 child: const Text(
                   'Save',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+                  style: TextStyle(color: DatingColors.white, fontSize: 16),
                 ),
               ),
             ),
@@ -88,7 +89,7 @@ class _GenderPronounsFeedbackScreenState
               onPressed: _onCancel,
               child: const Text(
                 "Cancel",
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(color: DatingColors.black),
               ),
             )
           ],

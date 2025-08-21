@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/signupprocessProviders/lookingProvider.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/relationship_screen.dart';
@@ -41,12 +42,12 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
     final options = lookingState.data ?? [];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.black),
+          icon: const Icon(Icons.close, color: DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -61,10 +62,10 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF8BC34A),
+                    color: DatingColors.darkGreen,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(Icons.search, color: Colors.white),
+                  child: const Icon(Icons.search, color: DatingColors.white),
                 ),
                 const SizedBox(width: 12),
                 const Expanded(
@@ -73,7 +74,7 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black,
+                      color: DatingColors.black,
                     ),
                   ),
                 ),
@@ -124,19 +125,19 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
                                     gradient: isSelected
                                         ? const LinearGradient(
                                             colors: [
-                                              Color(0xffB2D12E),
-                                              Color(0xFF2B2B2B)
+                                              DatingColors.primaryGreen,
+                                              DatingColors.black
                                             ],
                                             begin: Alignment.centerLeft,
                                             end: Alignment.centerRight,
                                           )
                                         : null,
-                                    color: isSelected ? null : Colors.white,
+                                    color: isSelected ? null : DatingColors.white,
                                     borderRadius: BorderRadius.circular(28),
                                     border: Border.all(
                                       color: isSelected
-                                          ? Colors.transparent
-                                          : const Color(0xffB2D12E),
+                                          ? DatingColors.backgroundWhite
+                                          : DatingColors.darkGreen,
                                       width: 2,
                                     ),
                                   ),
@@ -147,8 +148,8 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500,
                                         color: isSelected
-                                            ? Colors.white
-                                            : Colors.black,
+                                            ? DatingColors.white
+                                            : DatingColors.black,
                                       ),
                                     ),
                                   ),
@@ -165,7 +166,7 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
                 padding: const EdgeInsets.only(bottom: 20),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xffB2D12E),
+                    backgroundColor: DatingColors.darkGreen,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(28),
                     ),
@@ -194,7 +195,7 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      color: DatingColors.white,
                     ),
                   ),
                 ),
@@ -215,7 +216,7 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey,
+                    color: DatingColors.surfaceGrey,
                   ),
                 ),
               ),

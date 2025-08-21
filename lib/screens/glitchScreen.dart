@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 import '../screens/main_Screens/chatScreen.dart';
 
@@ -9,16 +10,16 @@ class GlitchScreen extends StatelessWidget {
     return Scaffold(
       drawer: const Drawer(), // Dummy drawer icon on top left
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: DatingColors.black),
         title: const Text(
           'Ever Qpid',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: DatingColors.black),
         ),
         centerTitle: true,
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       body: Stack(
         children: [
           // Top left circle
@@ -29,7 +30,7 @@ class GlitchScreen extends StatelessWidget {
               width: 150,
               height: 150,
               decoration: const BoxDecoration(
-                color: Color(0xffE9F1C4),
+                color: DatingColors.lightGreen,
                 shape: BoxShape.circle,
               ),
             ),
@@ -42,7 +43,7 @@ class GlitchScreen extends StatelessWidget {
               width: 200,
               height: 200,
               decoration: const BoxDecoration(
-                color: Color(0xffE9F1C4),
+                color: DatingColors.lightGreen,
                 shape: BoxShape.circle,
               ),
             ),
@@ -58,14 +59,14 @@ class GlitchScreen extends StatelessWidget {
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
                   colors: [
-                    Color(0xFF869E23),
-                    Color(0xFF000000),
+                    DatingColors.primaryGreen,
+                    DatingColors.black,
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
               ),
-              child: const Icon(Icons.refresh, color: Colors.white, size: 50),
+              child: const Icon(Icons.refresh, color: DatingColors.white, size: 50),
             ),
           ),
 
@@ -91,7 +92,7 @@ class GlitchScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 18,
                       height: 1.5,
-                      color: Colors.black87,
+                      color: DatingColors.black,
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -105,7 +106,7 @@ class GlitchScreen extends StatelessWidget {
                     child: const CircleAvatar(
                       radius: 24,
                       backgroundColor: Color.fromARGB(255, 19, 93, 22),
-                      child: Icon(Icons.arrow_forward, color: Colors.white),
+                      child: Icon(Icons.arrow_forward, color: DatingColors.white),
                     ),
                   )
                 ],

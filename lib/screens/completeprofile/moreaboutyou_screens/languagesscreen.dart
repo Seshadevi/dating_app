@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/model/moreabout/languagemodel.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/moreabout/languageprovider.dart';
@@ -65,18 +66,18 @@ class _LanguageSelectionScreenState
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           "Select Languages",
           style: TextStyle(
-            color: Color.fromARGB(255, 8, 162, 46),
+            color: DatingColors.darkGreen,
             fontSize: 18,
             fontWeight: FontWeight.w600,
           ),
@@ -95,7 +96,7 @@ class _LanguageSelectionScreenState
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: DatingColors.black,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -103,7 +104,7 @@ class _LanguageSelectionScreenState
                     "Select up to 5",
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.grey,
+                      color: DatingColors.lightgrey,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -111,7 +112,7 @@ class _LanguageSelectionScreenState
                   // Search Field
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
+                      color: DatingColors.surfaceGrey,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: TextField(
@@ -120,12 +121,12 @@ class _LanguageSelectionScreenState
                       decoration: InputDecoration(
                         hintText: "Search for a language",
                         hintStyle: TextStyle(
-                          color: Colors.grey.shade500,
+                          color: DatingColors.lightgrey,
                           fontSize: 16,
                         ),
                         prefixIcon: Icon(
                           Icons.search,
-                          color: Colors.grey.shade500,
+                          color: DatingColors.lightgrey,
                         ),
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(
@@ -143,7 +144,7 @@ class _LanguageSelectionScreenState
                             child: Text(
                               "No languages found",
                               style: TextStyle(
-                                color: Colors.grey,
+                                color: DatingColors.lightgrey,
                                 fontSize: 16,
                               ),
                             ),
@@ -183,10 +184,10 @@ class _LanguageSelectionScreenState
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 20, vertical: 16),
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
+                                      color: DatingColors.white,
                                       borderRadius: BorderRadius.circular(12),
                                       border: Border.all(
-                                        color: Colors.grey.shade300,
+                                        color: DatingColors.lightgrey,
                                         width: 1,
                                       ),
                                     ),
@@ -198,7 +199,7 @@ class _LanguageSelectionScreenState
                                             style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w500,
-                                              color: Colors.black,
+                                              color: DatingColors.black,
                                             ),
                                           ),
                                         ),
@@ -207,12 +208,12 @@ class _LanguageSelectionScreenState
                                           height: 24,
                                           decoration: BoxDecoration(
                                             color: isSelected
-                                                ? const Color.fromARGB(255, 18, 183, 62)
-                                                : Colors.transparent,
+                                                ? DatingColors.darkGreen
+                                                : DatingColors.black,
                                             border: Border.all(
                                               color: isSelected
-                                                  ? const Color.fromARGB(255, 13, 192, 25)
-                                                  : Colors.grey.shade400,
+                                                  ? DatingColors.primaryGreen
+                                                  : DatingColors.lightgrey,
                                               width: 2,
                                             ),
                                             borderRadius:
@@ -221,7 +222,7 @@ class _LanguageSelectionScreenState
                                           child: isSelected
                                               ? const Icon(
                                                   Icons.check,
-                                                  color: Colors.white,
+                                                  color: DatingColors.white,
                                                   size: 16,
                                                 )
                                               : null,
@@ -270,8 +271,8 @@ class _LanguageSelectionScreenState
                 },
           style: ElevatedButton.styleFrom(
             backgroundColor: selectedIds.isEmpty
-                ? Colors.grey.shade300
-                : const Color(0xFF118105),
+                ? DatingColors.surfaceGrey
+                : DatingColors.darkGreen,
             minimumSize: const Size.fromHeight(56),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(28),
@@ -281,7 +282,7 @@ class _LanguageSelectionScreenState
             "Save (${selectedIds.length}/5)",
             style: TextStyle(
               color:
-                  selectedIds.isEmpty ? Colors.grey.shade600 : Colors.white,
+                  selectedIds.isEmpty ? DatingColors.middlegrey : DatingColors.white,
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),

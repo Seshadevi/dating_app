@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/FriendOnboardingScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -86,18 +87,18 @@ class _BeKindScreenState extends State<BeKindScreen> {
     bool termsAndCondition = isChecked;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
         title: Text(
           'Ever Qupid',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            color: DatingColors.black,
             fontSize: screen.width * 0.045,
           ),
         ),
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.black),
+        backgroundColor: DatingColors.white,
+        iconTheme: const IconThemeData(color:DatingColors.black),
         elevation: 0,
         centerTitle: true,
         leading: IconButton(
@@ -176,7 +177,7 @@ class _BeKindScreenState extends State<BeKindScreen> {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       decoration: TextDecoration.underline,
-                      color: Colors.blue,
+                      color: DatingColors.accentTeal,
                       fontSize: bodyFontSize,
                     ),
                   ),
@@ -192,7 +193,7 @@ class _BeKindScreenState extends State<BeKindScreen> {
                   Container(
                     padding: EdgeInsets.all(screen.width * 0.04),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF0F0F0),
+                      color: DatingColors.white,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -268,7 +269,7 @@ class _BeKindScreenState extends State<BeKindScreen> {
                       height: screen.height * 0.065,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xFF869E23), Color(0xFF000000)],
+                          colors: [DatingColors.primaryGreen,DatingColors.black],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                         ),
@@ -278,7 +279,7 @@ class _BeKindScreenState extends State<BeKindScreen> {
                       child: Text(
                         "I Accept",
                         style: TextStyle(
-                          color: Colors.white,
+                          color: DatingColors.white,
                           fontWeight: FontWeight.w600,
                           fontSize: buttonFontSize,
                         ),

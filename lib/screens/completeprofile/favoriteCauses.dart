@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,8 +39,8 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Favorite Cause'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: DatingColors.white,
+        foregroundColor: DatingColors.black,
         elevation: 0,
       ),
       body: Column(
@@ -56,7 +57,7 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               'These causes will be sent to your profile.',
-              style: TextStyle(fontSize: 14, color: Colors.grey),
+              style: TextStyle(fontSize: 14, color: DatingColors.middlegrey),
             ),
           ),
           const SizedBox(height: 16),
@@ -73,10 +74,10 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
+                    color: DatingColors.lightgrey,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: const Color(0xFF869E23),
+                      color: DatingColors.primaryGreen,
                       width: 1.5,
                     ),
                   ),
@@ -102,7 +103,7 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
             child: ElevatedButton(
               onPressed: _saveAllCauses,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF869E23),
+                backgroundColor: DatingColors.darkGreen,
                 minimumSize: const Size.fromHeight(50),
               ),
               child: const Text('Save All',style:TextStyle(color:Colors.white),),

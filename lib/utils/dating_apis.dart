@@ -31,4 +31,5 @@ class Dgapi {
   
   static const String educationUpdate="$baseUrl/education";
   static const String educationdelete="$baseUrl/education";
+  
 }

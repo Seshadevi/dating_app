@@ -1,5 +1,6 @@
 
 
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/completeprofile/uploadPhotoscreen.dart';
 import 'package:flutter/material.dart';
 
@@ -16,18 +17,18 @@ class _IdVerificationScreenState extends State<IdVerificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Verification',
           style: TextStyle(
-            color: Colors.black,
+            color: DatingColors.black,
             fontSize: 18,
             fontWeight: FontWeight.w500,
           ),
@@ -52,7 +53,7 @@ class _IdVerificationScreenState extends State<IdVerificationScreen> {
                           width: 100,
                           height: 120,
                           decoration: BoxDecoration(
-                            color: Color(0xFFE3E8FF),
+                            color: DatingColors.surfaceGrey,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Column(
@@ -67,13 +68,13 @@ class _IdVerificationScreenState extends State<IdVerificationScreen> {
                               Container(
                                 width: 40,
                                 height: 4,
-                                color: Color(0xFF6B7280),
+                                color: DatingColors.accentTeal,
                                 margin: EdgeInsets.only(bottom: 4),
                               ),
                               Container(
                                 width: 50,
                                 height: 4,
-                                color: Color(0xFF6B7280),
+                                color: DatingColors.middlegrey,
                               ),
                             ],
                           ),
@@ -85,12 +86,12 @@ class _IdVerificationScreenState extends State<IdVerificationScreen> {
                             width: 30,
                             height: 30,
                             decoration: BoxDecoration(
-                              color: Colors.red,
+                              color: DatingColors.errorRed,
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
                               Icons.search,
-                              color: Colors.white,
+                              color: DatingColors.white,
                               size: 16,
                             ),
                           ),
@@ -104,7 +105,7 @@ class _IdVerificationScreenState extends State<IdVerificationScreen> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black,
+                      color: DatingColors.black,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -122,7 +123,7 @@ class _IdVerificationScreenState extends State<IdVerificationScreen> {
                   Container(
                     padding: EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.grey[50],
+                      color: DatingColors.surfaceGrey,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -131,12 +132,12 @@ class _IdVerificationScreenState extends State<IdVerificationScreen> {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: Colors.grey[200],
+                            color: DatingColors.surfaceGrey,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(
                             Icons.upload_file,
-                            color: Colors.grey[600],
+                            color: DatingColors.middlegrey,
                             size: 20,
                           ),
                         ),
@@ -150,7 +151,7 @@ class _IdVerificationScreenState extends State<IdVerificationScreen> {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.black,
+                                  color: DatingColors.black,
                                 ),
                               ),
                               SizedBox(height: 4),
@@ -172,7 +173,8 @@ class _IdVerificationScreenState extends State<IdVerificationScreen> {
                   Container(
                     padding: EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.grey[50],
+                      color: DatingColors.surfaceGrey
+                      ,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -181,12 +183,12 @@ class _IdVerificationScreenState extends State<IdVerificationScreen> {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: Colors.grey[200],
+                            color: DatingColors.surfaceGrey,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(
                             Icons.camera_alt,
-                            color: Colors.grey[600],
+                            color:DatingColors.middlegrey,
                             size: 20,
                           ),
                         ),
@@ -200,7 +202,7 @@ class _IdVerificationScreenState extends State<IdVerificationScreen> {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.black,
+                                  color: DatingColors.black,
                                 ),
                               ),
                               SizedBox(height: 4),
@@ -208,7 +210,7 @@ class _IdVerificationScreenState extends State<IdVerificationScreen> {
                                 'We\'ll Verify That Your Photo Matches Your ID And Confirm Your Age',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Colors.grey[600],
+                                  color: DatingColors.middlegrey,
                                 ),
                               ),
                             ],
@@ -229,7 +231,7 @@ class _IdVerificationScreenState extends State<IdVerificationScreen> {
                   child: Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Color(0xFF869E23), Color(0xFF000000)],
+                        colors: [DatingColors.primaryGreen, DatingColors.black],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -245,8 +247,8 @@ class _IdVerificationScreenState extends State<IdVerificationScreen> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        shadowColor: Colors.transparent,
+                        backgroundColor: DatingColors.black,
+                        shadowColor: DatingColors.black,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),
                         ),
@@ -272,7 +274,7 @@ class _IdVerificationScreenState extends State<IdVerificationScreen> {
                       Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[400],
+                      backgroundColor:DatingColors.lightgrey,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
                       ),
@@ -280,7 +282,7 @@ class _IdVerificationScreenState extends State<IdVerificationScreen> {
                     child: Text(
                       'Don\'t Have a ID ?',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: DatingColors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../model/plans/plamsfullmodel.dart';
@@ -34,13 +35,13 @@ class _SpotlightScreenState extends ConsumerState<SpotlightScreen> {
     final selectedPlan = filteredPlans[selectedIndex];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
         title: Text(planName),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
-        foregroundColor: Colors.black,
+        foregroundColor: DatingColors.black,
       ),
       body: Column(
         children: [
@@ -94,11 +95,11 @@ class _SpotlightScreenState extends ConsumerState<SpotlightScreen> {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? const Color(0xFF6E8B3D)
-                        : const Color(0xFFF1F3F4),
+                        ? DatingColors.primaryGreen
+                        : DatingColors.black,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: isSelected ? Colors.black : Colors.transparent,
+                      color: isSelected ? DatingColors.black : DatingColors.black,
                       width: 2,
                     ),
                   ),
@@ -110,7 +111,7 @@ class _SpotlightScreenState extends ConsumerState<SpotlightScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16,
-                          color: isSelected ? Colors.white : Colors.black,
+                          color: isSelected ? DatingColors.white : DatingColors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -119,7 +120,7 @@ class _SpotlightScreenState extends ConsumerState<SpotlightScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14,
-                          color: isSelected ? Colors.white : Colors.black,
+                          color: isSelected ? DatingColors.white : DatingColors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -128,7 +129,7 @@ class _SpotlightScreenState extends ConsumerState<SpotlightScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: DatingColors.white,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: const Text(
@@ -175,7 +176,7 @@ class _SpotlightScreenState extends ConsumerState<SpotlightScreen> {
               height: 48,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF6E8B3D),
+                  backgroundColor: DatingColors.primaryGreen,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -186,7 +187,7 @@ class _SpotlightScreenState extends ConsumerState<SpotlightScreen> {
                 child: Text(
                   "Get ${selectedPlan.quantity} ${selectedPlan.title} INR For "
                   "${selectedPlan.price ?? "0"}",
-                  style: const TextStyle(fontSize: 16, color: Colors.white),
+                  style: const TextStyle(fontSize: 16, color: DatingColors.white),
                 ),
               ),
             ),
@@ -284,8 +285,8 @@ class _SwipingHeaderTextState extends State<SwipingHeaderText> {
               height: 10,
               decoration: BoxDecoration(
                 color: _currentIndex == index
-                    ? Colors.green
-                    : Colors.green[100],
+                    ? DatingColors.darkGreen
+                    : DatingColors.lightyellow,
                 shape: BoxShape.circle,
               ),
             ),

@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/signupprocessProviders/religionProvider.dart';
 import 'package:flutter/material.dart';
@@ -82,12 +83,12 @@ class _ReligionScreenState extends ConsumerState<ReligionScreen> {
     final options = religionState.data ?? [];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.black),
+          icon: const Icon(Icons.close, color: DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -102,10 +103,10 @@ class _ReligionScreenState extends ConsumerState<ReligionScreen> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF8BC34A),
+                    color: DatingColors.darkGreen,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(Icons.star_border, color: Colors.white),
+                  child: const Icon(Icons.star_border, color: DatingColors.white),
                 ),
                 const SizedBox(width: 12),
                 const Expanded(
@@ -114,7 +115,7 @@ class _ReligionScreenState extends ConsumerState<ReligionScreen> {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black,
+                      color: DatingColors.black,
                     ),
                   ),
                 ),
@@ -145,17 +146,17 @@ class _ReligionScreenState extends ConsumerState<ReligionScreen> {
                                   decoration: BoxDecoration(
                                     gradient: isSelected
                                         ? const LinearGradient(
-                                            colors: [Color(0xffB2D12E), Color(0xFF2B2B2B)],
+                                            colors: [DatingColors.primaryGreen, DatingColors.black],
                                             begin: Alignment.centerLeft,
                                             end: Alignment.centerRight,
                                           )
                                         : null,
-                                    color: isSelected ? null : Colors.white,
+                                    color: isSelected ? null : DatingColors.white,
                                     borderRadius: BorderRadius.circular(28),
                                     border: Border.all(
                                       color: isSelected
-                                          ? Colors.transparent
-                                          : const Color(0xffB2D12E),
+                                          ? DatingColors.black
+                                          : DatingColors.darkGreen,
                                       width: 2,
                                     ),
                                   ),
@@ -165,7 +166,7 @@ class _ReligionScreenState extends ConsumerState<ReligionScreen> {
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500,
-                                        color: isSelected ? Colors.white : Colors.black,
+                                        color: isSelected ? DatingColors.white : DatingColors.black,
                                       ),
                                     ),
                                   ),
@@ -185,7 +186,7 @@ class _ReligionScreenState extends ConsumerState<ReligionScreen> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey,
+                    color: DatingColors.lightgrey,
                   ),
                 ),
               ),

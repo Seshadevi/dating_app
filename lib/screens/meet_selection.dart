@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/signupprocessProviders/genderProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -113,9 +114,9 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: LinearProgressIndicator(
         value: 7 / 18,
-        backgroundColor: Colors.grey[300],
+        backgroundColor: DatingColors.lightgrey,
         valueColor:
-            const AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 147, 179, 3)),
+            const AlwaysStoppedAnimation<Color>(DatingColors.primaryGreen),
       ),
     );
   }
@@ -174,10 +175,10 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
               }
             });
           },
-          activeTrackColor: const Color(0xffB2D12E),
-          activeColor: Colors.white,
-          inactiveTrackColor: const Color(0xFFD3D3D3),
-          inactiveThumbColor: Colors.white,
+          activeTrackColor: DatingColors.primaryGreen,
+          activeColor: DatingColors.white,
+          inactiveTrackColor: DatingColors.lightgrey,
+          inactiveThumbColor: DatingColors.white,
         ),
         const Text(
           "I'm open to dating everyone",
@@ -213,7 +214,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
         height: 70,
         decoration: BoxDecoration(
           color:
-              isSelected ? const Color(0xff92AB26) : const Color(0xffE9F1C4),
+              isSelected ?  DatingColors.darkGreen : DatingColors.lightyellow,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
             width: 2,
@@ -228,7 +229,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
               style: TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 22,
-                color: isSelected ? Colors.white : const Color(0xFF5A7651),
+                color: isSelected ? DatingColors.white :  DatingColors.secondaryText,
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -238,11 +239,11 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? Colors.white : const Color(0xFF5A7651),
+                  color: isSelected ? DatingColors.white :  DatingColors.darkGreen,
                   width: 2,
                 ),
                 color:
-                    isSelected ? const Color(0xFF5A7651) : Colors.transparent,
+                    isSelected ? DatingColors.secondaryText : DatingColors.white,
               ),
               child: isSelected
                   ? Center(
@@ -251,7 +252,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
                         height: 12,
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white,
+                          color: DatingColors.white,
                         ),
                       ),
                     )
@@ -267,7 +268,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
     return Row(
       children: [
         Icon(Icons.remove_red_eye_outlined,
-            color: Colors.grey[600], size: 24),
+            color: DatingColors.darkGrey, size: 24),
         const SizedBox(width: 12),
         const Text(
           "You'll Only Be Shown To People In The \nSame Mode As You.",
@@ -295,14 +296,14 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
             height: screenWidth * 0.125,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xffB2D12E), Color(0xff000000)],
+                colors: [DatingColors.primaryGreen, DatingColors.black],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
               borderRadius: BorderRadius.circular(50),
             ),
             child: IconButton(
-              icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+              icon: const Icon(Icons.arrow_forward_ios, color: DatingColors.white),
               onPressed: () {
                 if (selectedGenderIds.isNotEmpty) {
                   Navigator.pushNamed(

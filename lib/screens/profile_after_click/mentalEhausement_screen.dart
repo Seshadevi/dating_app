@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/profile_after_click/feeling_of_rejection.dart';
 import 'package:dating/screens/profile_after_click/helpfull_resource.dart';
 import 'package:flutter/material.dart';
@@ -8,16 +9,16 @@ class MentalExhaustionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: DatingColors.mediumGrey,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
         title: const Text(
           'Mental Exhaustion',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: DatingColors.black),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -70,8 +71,8 @@ class MentalExhaustionScreen extends StatelessWidget {
                         builder: (context) => HelpfulResourcesScreen()));
               },
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.black,
-                backgroundColor: Colors.grey[200],
+                foregroundColor: DatingColors.black,
+                backgroundColor: DatingColors.lightgrey,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -128,8 +129,8 @@ class MentalExhaustionScreen extends StatelessWidget {
           return Container(
             width: 160,
             decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.greenAccent),
+              color: DatingColors.white,
+              border: Border.all(color: DatingColors.primaryGreen),
               borderRadius: BorderRadius.circular(12),
             ),
             padding: const EdgeInsets.all(8),
@@ -159,9 +160,9 @@ class MentalExhaustionScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        border: Border.all(color: const Color.fromARGB(255, 19, 19, 19)),
+        border: Border.all(color: DatingColors.black),
         borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
+        color: DatingColors.white,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,7 +173,7 @@ class MentalExhaustionScreen extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             subtitle,
-            style: const TextStyle(fontSize: 13, color: Colors.black54),
+            style: const TextStyle(fontSize: 13, color: DatingColors.black),
           )
         ],
       ),

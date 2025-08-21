@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/signupprocessProviders/kidsProvider.dart';
 import 'package:flutter/material.dart';
@@ -59,12 +60,12 @@ class _HaveKidsScreenState extends ConsumerState<HaveKidsScreen> {
     final kidsState = ref.watch(kidsProvider);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.black),
+          icon: const Icon(Icons.close, color: DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -80,10 +81,10 @@ class _HaveKidsScreenState extends ConsumerState<HaveKidsScreen> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF8BC34A),
+                    color: DatingColors.darkGreen,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(Icons.child_friendly, color: Colors.white),
+                  child: const Icon(Icons.child_friendly, color: DatingColors.white),
                 ),
                 const SizedBox(width: 12),
                 const Text(
@@ -140,19 +141,19 @@ class _HaveKidsScreenState extends ConsumerState<HaveKidsScreen> {
                                 gradient: isSelected
                                     ? const LinearGradient(
                                         colors: [
-                                          Color(0xffB2D12E),
-                                          Color(0xFF2B2B2B),
+                                          DatingColors.primaryGreen,
+                                          DatingColors.black,
                                         ],
                                         begin: Alignment.centerLeft,
                                         end: Alignment.centerRight,
                                       )
                                     : null,
-                                color: isSelected ? null : Colors.white,
+                                color: isSelected ? null : DatingColors.white,
                                 borderRadius: BorderRadius.circular(28),
                                 border: Border.all(
                                   color: isSelected
-                                      ? Colors.transparent
-                                      : const Color(0xffB2D12E),
+                                      ? DatingColors.black
+                                      : DatingColors.primaryGreen,
                                   width: 2,
                                 ),
                               ),
@@ -162,7 +163,7 @@ class _HaveKidsScreenState extends ConsumerState<HaveKidsScreen> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
-                                    color: isSelected ? Colors.white : Colors.black,
+                                    color: isSelected ? DatingColors.white : DatingColors.black,
                                   ),
                                 ),
                               ),

@@ -1,4 +1,5 @@
 
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 
 class PromptEditScreen extends StatefulWidget {
@@ -117,8 +118,8 @@ class _PromptEditScreenState extends State<PromptEditScreen> {
                     "$_characterCount/$_maxCharacters",
                     style: TextStyle(
                       color: _characterCount > _maxCharacters 
-                          ? Colors.red 
-                          : Colors.grey,
+                          ? DatingColors.errorRed
+                          :DatingColors.lightgrey,
                     ),
                   ),
                   GestureDetector(
@@ -136,17 +137,17 @@ class _PromptEditScreenState extends State<PromptEditScreen> {
                       decoration: BoxDecoration(
                         gradient: _characterCount > 0 && _characterCount <= _maxCharacters
                             ? const LinearGradient(
-                                colors: [Color(0xffB2D12E), Color(0xff000000)],
+                                colors: [DatingColors.primaryGreen, DatingColors.black],
                               )
                             : LinearGradient(
-                                colors: [Colors.grey[400]!, Colors.grey[600]!],
+                                colors: [DatingColors.surfaceGrey!, DatingColors.darkGrey],
                               ),
                         borderRadius: BorderRadius.circular(25),
                       ),
                       child: const Text(
                         "Done",
                         style: TextStyle(
-                          color: Colors.white,
+                          color: DatingColors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

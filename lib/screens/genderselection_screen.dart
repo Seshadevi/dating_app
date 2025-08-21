@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 import 'gender_display_screen.dart';
 
@@ -55,16 +56,16 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
         decoration: BoxDecoration(
           gradient: isSelected
               ? const LinearGradient(
-                  colors: [Color(0xff000000), Color(0xffB2D12E)],
+                  colors: [DatingColors.primaryGreen, DatingColors.black],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 )
               : const LinearGradient(
-                  colors: [Color(0xffE9F1C4), Color(0xffE9F1C4)],
+                  colors: [DatingColors.lightGreen,DatingColors.lightyellow],
                 ),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? Colors.black : Colors.grey.shade300,
+            color: isSelected ? DatingColors.black : DatingColors.lightgrey,
             width: 1.5,
           ),
         ),
@@ -74,7 +75,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
             Text(
               label,
               style: TextStyle(
-                color: isSelected ? Colors.white : Colors.black,
+                color: isSelected ? DatingColors.white : DatingColors.black,
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
                 fontFamily: 'Poppins',
@@ -82,7 +83,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
             ),
             Icon(
               isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
-              color: isSelected ? Colors.white : Colors.grey,
+              color: isSelected ? DatingColors.white : DatingColors.lightgrey,
             ),
           ],
         ),
@@ -95,7 +96,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor:DatingColors.white,
       body: SafeArea(
         child: Stack(
           children: [
@@ -107,9 +108,9 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                   // Progress bar
                   LinearProgressIndicator(
                     value: 2 / 18,
-                    backgroundColor: Colors.grey[300],
+                    backgroundColor:DatingColors.surfaceGrey,
                     valueColor: const AlwaysStoppedAnimation<Color>(
-                      Color.fromARGB(255, 147, 179, 3),
+                      DatingColors.primaryGreen,
                     ),
                   ),
                   // const SizedBox(height: 24),
@@ -174,7 +175,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Icon(Icons.info_outline,
-                          size: 18, color: Colors.grey),
+                          size: 18, color: DatingColors.lightgrey),
                       const SizedBox(width: 8),
                       Expanded(
                         child: RichText(
@@ -182,7 +183,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                             style: const TextStyle(
                               fontSize: 13,
                               fontFamily: 'Inter',
-                              color: Colors.grey,
+                              color: DatingColors.lightgrey,
                             ),
                             children: [
                               const TextSpan(
@@ -190,7 +191,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                               TextSpan(
                                 text: "A Note About Gender On Bumble.",
                                 style: TextStyle(
-                                  color: Colors.grey.shade700,
+                                  color: DatingColors.darkGrey,
                                   decoration: TextDecoration.underline,
                                 ),
                               ),
@@ -218,7 +219,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                     height: screenWidth * 0.125,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xffB2D12E), Color(0xff000000)],
+                        colors: [DatingColors.primaryGreen, DatingColors.black],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                       ),
@@ -226,7 +227,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                     ),
                     child: IconButton(
                       icon: const Icon(Icons.arrow_forward_ios,
-                          color: Colors.white),
+                          color: DatingColors.white),
                       onPressed: () {
                         if (selectedGender.isNotEmpty) {
                           Navigator.pushNamed(

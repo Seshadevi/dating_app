@@ -1,22 +1,23 @@
 
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/completeprofile/capture_document.dart';
 import 'package:flutter/material.dart';
 class UploadPhotoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Upload Photo Of ID',
           style: TextStyle(
-            color: Colors.black,
+            color: DatingColors.black,
             fontSize: 18,
             fontWeight: FontWeight.w500,
           ),
@@ -38,7 +39,7 @@ class UploadPhotoScreen extends StatelessWidget {
                       height: 60,
                       decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Color(0xFF869E23), Color(0xFF000000)],
+                        colors: [DatingColors.primaryGreen, DatingColors.black],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                       ),
@@ -46,7 +47,7 @@ class UploadPhotoScreen extends StatelessWidget {
                     ),
                       child: Icon(
                         Icons.cloud_upload,
-                        color: Colors.white,
+                        color: DatingColors.white,
                         size: 30,
                       ),
                     ),
@@ -56,7 +57,7 @@ class UploadPhotoScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
-                        color: Colors.black,
+                        color: DatingColors.black,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -65,7 +66,7 @@ class UploadPhotoScreen extends StatelessWidget {
                       'Make Sure Your ID Is Still Valid And Not Expired',
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.grey[600],
+                        color: DatingColors.middlegrey,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -78,7 +79,7 @@ class UploadPhotoScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Colors.black,
+                          color: DatingColors.black,
                         ),
                       ),
                     ),
@@ -93,16 +94,16 @@ class UploadPhotoScreen extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Color(0xFFFFF3CD),
+                        color: DatingColors.surfaceGrey,
                         borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Color(0xFFFFC107)),
+                        border: Border.all(color: DatingColors.yellow),
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Icon(
                             Icons.warning,
-                            color: Color(0xFFFF8F00),
+                            color: DatingColors.yellow,
                             size: 20,
                           ),
                           SizedBox(width: 12),
@@ -123,7 +124,7 @@ class UploadPhotoScreen extends StatelessWidget {
                                   'We\'ll Verify Your Birthdate And Match Your ID To Your Photos Without Changing Your Profile Name',
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: Colors.grey[700],
+                                    color: DatingColors.middlegrey,
                                   ),
                                 ),
                               ],
@@ -137,7 +138,7 @@ class UploadPhotoScreen extends StatelessWidget {
                       'By Submitting A Selfie And ID, You Agree To Identity Verification, Including Facial Recognition. To Opt Out, Request A Manual Review. See Our Privacy Policy And WMP\'s Notice For Details. JG',
                       style: TextStyle(
                         fontSize: 11,
-                        color: Colors.grey[600],
+                        color: DatingColors.middlegrey,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -152,7 +153,7 @@ class UploadPhotoScreen extends StatelessWidget {
               child: Container(
                  decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Color(0xFF869E23), Color(0xFF000000)],
+                        colors: [DatingColors.primaryGreen, DatingColors.black],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -168,8 +169,8 @@ class UploadPhotoScreen extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
+                    backgroundColor: DatingColors.black,
+                    shadowColor: DatingColors.black,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
@@ -177,7 +178,7 @@ class UploadPhotoScreen extends StatelessWidget {
                   child: Text(
                     'Upload Photo Of ID',
                     style: TextStyle(
-                      color: Colors.white,
+                      color:DatingColors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),

@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/signupprocessProviders/kidsProvider.dart';
 import 'package:dating/screens/importantLife.dart';
 import 'package:dating/screens/lifeStryle_habits.dart';
@@ -95,17 +96,17 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
         decoration: BoxDecoration(
           gradient: isSelected
               ? const LinearGradient(
-                  colors: [Color(0xFF869E23), Color(0xFF000000)],
+                  colors: [DatingColors.primaryGreen, DatingColors.black],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 )
               : const LinearGradient(
-                  colors: [Color(0xFFF3F7DA), Color(0xFFE6EBA4)],
+                  colors: [DatingColors.surfaceGrey, DatingColors.lightyellow,],
                 ),
           shape: BoxShape.circle,
           boxShadow: const [
             BoxShadow(
-              color: Colors.black26,
+              color: DatingColors.black,
               blurRadius: 10,
               offset: Offset(2, 4),
             ),
@@ -119,7 +120,7 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
             style: TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
-              color: isSelected ? Colors.white : Colors.black87,
+              color: isSelected ? DatingColors.white : DatingColors.black,
             ),
           ),
         ),
@@ -135,7 +136,7 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
     final kidsState = ref.watch(kidsProvider);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -146,9 +147,9 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
                   children: [
                     LinearProgressIndicator(
                       value: 13 / 18,
-                      backgroundColor: Colors.grey[300],
+                      backgroundColor:DatingColors.lightgrey,
                       valueColor: const AlwaysStoppedAnimation<Color>(
-                          Color.fromARGB(255, 147, 179, 3)),
+                          DatingColors.primaryGreen),
                     ),
                     Row(
                       children: [
@@ -194,7 +195,7 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
                     Text(
                       "Let’s get deeper. Feel free to skip if you'd prefer not to say.",
                       style: TextStyle(
-                        color: Colors.grey[700],
+                        color: DatingColors.darkGrey,
                         fontSize: screen.width * 0.038,
                       ),
                     ),
@@ -247,10 +248,10 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color:DatingColors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: DatingColors.black,
                     blurRadius: 10,
                     offset: const Offset(0, -5),
                   ),
@@ -290,7 +291,7 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
                         'Skip',
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.black54,
+                          color: DatingColors.black,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -314,19 +315,19 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
                             shape: BoxShape.circle,
                             gradient: selectedKidsIds.length == 1
                                 ? const LinearGradient(
-                                    colors: [Color(0xFF869E23), Color(0xFF000000)],
+                                    colors: [DatingColors.primaryGreen, DatingColors.black],
                                     begin: Alignment.topCenter,
                                     end: Alignment.bottomCenter,
                                   )
                                 : null,
                             color: selectedKidsIds.length != 1
-                                ? Colors.grey.shade400
+                                ? DatingColors.lightGreen
                                 : null,
                           ),
                           child: IconButton(
                             icon: const Icon(
                               Icons.arrow_forward_ios,
-                              color: Colors.white,
+                              color: DatingColors.white,
                               size: 20,
                             ),
                             onPressed: () {

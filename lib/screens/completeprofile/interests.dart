@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/signupprocessProviders/choosr_foodies_provider.dart';
 import 'package:dating/screens/completeprofile/favoriteinterests.dart';
 import 'package:flutter/material.dart';
@@ -48,11 +49,11 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
         title: const Text('Interests'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: DatingColors.white,
+        foregroundColor: DatingColors.black,
         elevation: 0,
         centerTitle: true,
         leading: const BackButton(),
@@ -89,10 +90,10 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? const Color.fromARGB(255, 218, 217, 215)
-                            : Colors.white,
+                            ? DatingColors.lightGreen
+                            : DatingColors.white,
                         borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: Colors.grey.shade300),
+                        border: Border.all(color: DatingColors.lightgrey),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -100,7 +101,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                           Text(
                             interest.interests ?? '',
                             style: const TextStyle(
-                              color: Colors.black,
+                              color: DatingColors.black,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -108,7 +109,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                           Icon(
                             isSelected ? Icons.close : Icons.add,
                             size: 18,
-                            color: Colors.black87,
+                            color: DatingColors.black,
                           ),
                         ],
                       ),
@@ -141,10 +142,10 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                     }
                   : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF869E23),
+                backgroundColor: DatingColors.darkGreen,
                 minimumSize: const Size.fromHeight(50),
               ),
-              child: const Text("Continue", style: TextStyle(color: Colors.white)),
+              child: const Text("Continue", style: TextStyle(color: DatingColors.white)),
             ),
           ],
         ),

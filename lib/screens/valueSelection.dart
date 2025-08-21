@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/signupprocessProviders/qualities.dart';
 import 'package:dating/screens/lifeStryle_habits.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +101,7 @@ class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF869E23), Color(0xFF000000)],
+                colors: [DatingColors.primaryGreen, DatingColors.black],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -112,7 +113,7 @@ class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
                 Text(
                   quality,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: DatingColors.white,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -160,18 +161,18 @@ class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
           shape: BoxShape.circle,
           gradient: isSelected
               ? const LinearGradient(
-                  colors: [Color(0xFF869E23), Color(0xFF000000)],
+                  colors: [DatingColors.primaryGreen, DatingColors.black],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 )
               : const LinearGradient(
-                  colors: [Color(0xFFF3F7DA), Color(0xFFE6EBA4)],
+                  colors: [DatingColors.surfaceGrey, DatingColors.lightyellow,],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
           boxShadow: const [
             BoxShadow(
-              color: Colors.black12,
+              color: DatingColors.black,
               blurRadius: 4,
               offset: Offset(2, 2),
             ),
@@ -185,7 +186,7 @@ class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
             style: TextStyle(
               fontSize: text.length > 8 ? 10 : 11,
               fontWeight: FontWeight.bold,
-              color: isSelected ? Colors.white : Colors.black87,
+              color: isSelected ? DatingColors.white : DatingColors.black,
             ),
           ),
         ),
@@ -219,7 +220,7 @@ class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
     final qualitiesData = qualitiesState.data ?? [];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -232,9 +233,9 @@ class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
                   // Progress indicator
                   LinearProgressIndicator(
                     value: 11 / 18,
-                    backgroundColor: Colors.grey[300],
+                    backgroundColor: DatingColors.white,
                     valueColor: const AlwaysStoppedAnimation<Color>(
-                        Color.fromARGB(255, 147, 179, 3)),
+                       DatingColors.primaryGreen),
                   ),
                   const SizedBox(height: 15),
                   
@@ -286,7 +287,7 @@ class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
                   const Text(
                     'Choose 4 that define your kind of connection.',
                     style: TextStyle(
-                      color: Colors.black87,
+                      color: DatingColors.black,
                       fontSize: 14,
                     ),
                   ),
@@ -330,10 +331,10 @@ class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: DatingColors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: DatingColors.black.withOpacity(0.1),
                     blurRadius: 10,
                     offset: const Offset(0, -5),
                   ),
@@ -372,7 +373,7 @@ class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
                         'Skip',
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.black54,
+                          color: DatingColors.black,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -395,19 +396,19 @@ class _ValuesSelectionScreenState extends ConsumerState<ValuesSelectionScreen> {
                             shape: BoxShape.circle,
                             gradient: selectedQualities.length == 4
                                 ? const LinearGradient(
-                                    colors: [Color(0xFF869E23), Color(0xFF000000)],
+                                    colors: [DatingColors.primaryGreen, DatingColors.black],
                                     begin: Alignment.topCenter,
                                     end: Alignment.bottomCenter,
                                   )
                                 : null,
                             color: selectedQualities.length != 4
-                                ? Colors.grey.shade400
+                                ? DatingColors.lightgrey
                                 : null,
                           ),
                           child: IconButton(
                             icon: const Icon(
                               Icons.arrow_forward_ios,
-                              color: Colors.white,
+                              color: DatingColors.white,
                               size: 20,
                             ),
                             onPressed: () {

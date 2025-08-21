@@ -161,6 +161,7 @@
 //     );
 //   }
 // }
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/tab_bar/tabScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -179,7 +180,7 @@ class JoinPageScreen extends ConsumerWidget {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF869E23), Color(0xFF000000)],
+            colors: [DatingColors.darkGreen, DatingColors.brown],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -264,7 +265,7 @@ class JoinPageScreen extends ConsumerWidget {
                           style: TextStyle(
                             fontSize: height * 0.022,
                             fontWeight: FontWeight.bold,
-                            color: Colors.green,
+                            color:DatingColors.darkGreen,
                           ),
                         ),
                       ),

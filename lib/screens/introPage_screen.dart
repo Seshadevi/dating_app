@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -114,7 +115,7 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       body: Stack(
         children: [
           // Background Decorations
@@ -153,9 +154,9 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                   const SizedBox(height: 20),
                   LinearProgressIndicator(
                     value: 1 / 16,
-                    backgroundColor: Colors.grey[300],
+                    backgroundColor: DatingColors.lightgrey,
                     valueColor: const AlwaysStoppedAnimation<Color>(
-                      Color.fromARGB(255, 147, 179, 3),
+                      DatingColors.primaryGreen,
                     ),
                   ),
                   Row(
@@ -268,14 +269,14 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                   height: screenWidth * 0.125,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xffB2D12E), Color(0xff000000)],
+                      colors: [DatingColors.primaryGreen, DatingColors.black],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                     ),
                     borderRadius: BorderRadius.circular(50),
                   ),
                   child: IconButton(
-                    icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+                    icon: const Icon(Icons.arrow_forward_ios, color: DatingColors.lightGreen),
                     onPressed: () {
                       final name = _nameController.text.trim();
                       print("username: $name, month: $_month, day: $_day, year: $_year");

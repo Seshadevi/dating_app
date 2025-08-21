@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/model/moreabout/work_model.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/moreabout/workProvider.dart';
@@ -37,12 +38,12 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
       appBar: AppBar(
         title: const Text(
           'Occupation',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: DatingColors.black),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios_new, color: DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -55,7 +56,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
               'You Can Only Show One Job On Your Profile At a Time',
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.grey,
+                color: DatingColors.lightgrey,
               ),
             ),
           ),
@@ -69,7 +70,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
                         'No jobs found.\nAdd your first job above.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Colors.grey,
+                          color: DatingColors.lightgrey,
                           fontSize: 16,
                         ),
                       ),
@@ -86,10 +87,10 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
           Container(
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: DatingColors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: DatingColors.lightgrey,
                   spreadRadius: 1,
                   blurRadius: 4,
                   offset: const Offset(0, -2),
@@ -101,8 +102,8 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
               height: 52,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 42, 137, 4),
-                  foregroundColor: Colors.white,
+                  backgroundColor: DatingColors.darkGreen,
+                  foregroundColor: DatingColors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -138,7 +139,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
           ),
         ],
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
     );
   }
 
@@ -146,7 +147,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: DatingColors.lightgrey),
         borderRadius: BorderRadius.circular(8),
       ),
       child: ListTile(
@@ -177,7 +178,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
               );
             }
           },
-          activeColor: const Color.fromARGB(255, 42, 137, 4),
+          activeColor: DatingColors.darkGreen,
         ),
         title: Text(
           job.title ?? 'Unknown Job',
@@ -194,7 +195,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
                   Text(
                     'Company: ${job.company}',
                     style: TextStyle(
-                      color: Colors.grey.shade600,
+                      color: DatingColors.lightgrey,
                       fontSize: 14,
                     ),
                   ),
@@ -217,7 +218,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
               value: 'edit',
               child: Row(
                 children: [
-                  Icon(Icons.edit, size: 18, color: Colors.blue),
+                  Icon(Icons.edit, size: 18, color: DatingColors.accentTeal),
                   SizedBox(width: 8),
                   Text('Edit'),
                 ],
@@ -227,7 +228,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
               value: 'delete',
               child: Row(
                 children: [
-                  Icon(Icons.delete, size: 18, color: Colors.red),
+                  Icon(Icons.delete, size: 18, color: DatingColors.errorRed),
                   SizedBox(width: 8),
                   Text('Delete'),
                 ],
@@ -276,7 +277,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Job deleted successfully'),
-                      backgroundColor: Colors.red,
+                      backgroundColor: DatingColors.errorRed,
                     ),
                   );
                   ref.read(workProvider.notifier).getWork();
@@ -286,7 +287,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
                   );
                 }
               },
-              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+              child: const Text('Delete', style: TextStyle(color: DatingColors.errorRed)),
             ),
           ],
         );

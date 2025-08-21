@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -73,17 +74,17 @@ class _GenderPronounsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios_new, color: DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           "Gender On Bumble",
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: DatingColors.black),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
         centerTitle: true,
       ),
@@ -123,11 +124,11 @@ class _GenderPronounsScreenState
                     label: Text(pronoun),
                     selected: isSelected,
                     onSelected: (_) => selectPronoun(pronoun),
-                    selectedColor: const Color.fromARGB(255, 15, 104, 5),
+                    selectedColor: DatingColors.primaryGreen,
                     labelStyle: TextStyle(
-                      color: isSelected ? Colors.white : Colors.black,
+                      color: isSelected ? DatingColors.white : DatingColors.black,
                     ),
-                    backgroundColor: Colors.grey[200],
+                    backgroundColor: DatingColors.surfaceGrey,
                   );
                 }).toList(),
               ),
@@ -136,7 +137,7 @@ class _GenderPronounsScreenState
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.green),
+                  border: Border.all(color: DatingColors.darkGreen),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Column(
@@ -162,12 +163,12 @@ class _GenderPronounsScreenState
           onPressed: selectedPronoun == null ? null : updatePronounToApi,
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16),
-            backgroundColor: const Color.fromARGB(255, 15, 104, 5),
-            disabledBackgroundColor: Colors.grey,
+            backgroundColor:DatingColors.darkGreen,
+            disabledBackgroundColor: DatingColors.lightgrey,
           ),
           child: const Text(
             "Save",
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: DatingColors.white),
           ),
         ),
       ),

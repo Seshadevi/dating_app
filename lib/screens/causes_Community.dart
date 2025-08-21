@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/signupprocessProviders/causesProvider.dart';
 import 'package:dating/screens/datePromtSelection.dart';
 import 'package:flutter/material.dart';
@@ -157,7 +158,7 @@ final List<String> selectedcauses = [];
                   end: Alignment.bottomCenter,
                 )
               : const LinearGradient(
-                  colors: [Color(0xFFF3F7DA), Color(0xFFE6EBA4)],
+                  colors: [DatingColors.surfaceGrey, DatingColors.lightyellow,],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),

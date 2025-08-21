@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/star_sign_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -29,12 +30,12 @@ class _NewToAreaScreenState extends State<NewToAreaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.black, size: 24),
+          icon: const Icon(Icons.close, color: DatingColors.black, size: 24),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -51,12 +52,12 @@ class _NewToAreaScreenState extends State<NewToAreaScreen> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFB2D12E),
+                    color: DatingColors.darkGreen,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Icon(
                     Icons.location_on_outlined,
-                    color: Colors.white,
+                    color: DatingColors.white,
                     size: 24,
                   ),
                 ),
@@ -66,7 +67,7 @@ class _NewToAreaScreenState extends State<NewToAreaScreen> {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
-                    color: Colors.black,
+                    color: DatingColors.black,
                   ),
                 ),
               ],
@@ -88,22 +89,22 @@ class _NewToAreaScreenState extends State<NewToAreaScreen> {
                       gradient: isSelected
                           ? (isFirstOption 
                               ? const LinearGradient(
-                                  colors: [Color(0xFFB2D12E), Color(0xFF2B2B2B)],
+                                  colors: [DatingColors.primaryGreen, DatingColors.black],
                                   begin: Alignment.centerLeft,
                                   end: Alignment.centerRight,
                                 )
                               : const LinearGradient(
-                                  colors: [Color(0xFFB2D12E), Color(0xFF2B2B2B)],
+                                  colors: [DatingColors.primaryGreen,DatingColors.black],
                                   begin: Alignment.centerLeft,
                                   end: Alignment.centerRight,
                                 ))
                           : null,
-                      color: isSelected ? null : Colors.white,
+                      color: isSelected ? null : DatingColors.white,
                       borderRadius: BorderRadius.circular(28),
                       border: Border.all(
                         color: isSelected 
-                            ? Colors.transparent 
-                            : const Color(0xFFB2D12E),
+                            ? DatingColors.black 
+                            : DatingColors.primaryGreen,
                         width: 2,
                       ),
                     ),
@@ -113,7 +114,7 @@ class _NewToAreaScreenState extends State<NewToAreaScreen> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: isSelected ? Colors.white : Colors.black,
+                          color: isSelected ? DatingColors.white : DatingColors.black,
                         ),
                       ),
                     ),
@@ -133,7 +134,7 @@ class _NewToAreaScreenState extends State<NewToAreaScreen> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey,
+                    color: DatingColors.lightgrey,
                   ),
                 ),
               ),

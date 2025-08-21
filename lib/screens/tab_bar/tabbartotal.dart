@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/tab_bar/subscriptioncontent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,18 +55,18 @@ class SubscriptionTabScreen extends ConsumerWidget {
     return DefaultTabController(
       length: tabsToShow.length,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         appBar: AppBar(
           title: const Text('Subscription'),
           centerTitle: true,
-          backgroundColor: Colors.white,
+          backgroundColor: DatingColors.white,
           elevation: 0,
-          foregroundColor: Colors.black,
+          foregroundColor: DatingColors.black,
           bottom: TabBar(
             isScrollable: true,
-            labelColor: Colors.black,
+            labelColor: DatingColors.black,
             unselectedLabelColor: Colors.grey,
-            indicatorColor: Colors.black,
+            indicatorColor: DatingColors.black,
             tabs: tabsToShow
                 .map((entry) => Tab(text: entry.key))
                 .toList(),

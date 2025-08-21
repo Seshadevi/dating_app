@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 
 class AboutMengender extends StatefulWidget {
@@ -18,19 +19,19 @@ class _AboutMengenderState extends State<AboutMengender> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor:DatingColors.white,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.black),
+          icon: const Icon(Icons.close, color: DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
         centerTitle: true,
         title: const Text(
           'Add More About Your Gender',
           style: TextStyle(
-            color: Colors.black,
+            color: DatingColors.black,
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
@@ -53,7 +54,7 @@ class _AboutMengenderState extends State<AboutMengender> {
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
-                          color: isSelected ? const Color(0xFF89A000) : Colors.black26,
+                          color: isSelected ? DatingColors.darkGreen : DatingColors.black,
                           width: 1,
                         ),
                       ),
@@ -63,7 +64,7 @@ class _AboutMengenderState extends State<AboutMengender> {
                       children: [
                         Text(
                           gender,
-                          style: const TextStyle(fontSize: 16, color: Colors.black),
+                          style: const TextStyle(fontSize: 16, color: DatingColors.black),
                         ),
                         Container(
                           width: 22,
@@ -71,7 +72,7 @@ class _AboutMengenderState extends State<AboutMengender> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color: const Color(0xFF89A000),
+                              color: DatingColors.darkGreen,
                               width: 2,
                             ),
                           ),
@@ -82,7 +83,7 @@ class _AboutMengenderState extends State<AboutMengender> {
                                     height: 10,
                                     decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: Color(0xFF89A000),
+                                      color: DatingColors.darkGreen,
                                     ),
                                   ),
                                 )
@@ -119,14 +120,14 @@ class _AboutMengenderState extends State<AboutMengender> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25),
                   gradient: const LinearGradient(
-                    colors: [Color(0xFFB5CD00), Color(0xFF000000)],
+                    colors: [DatingColors.darkGreen, DatingColors.black],
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                   ),
                 ),
                 child: const Text(
                   'Save and close',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: DatingColors.white, fontWeight: FontWeight.bold),
                 ),
               ),
             ),

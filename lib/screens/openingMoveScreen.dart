@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/signupprocessProviders/defaultmessages.dart';
 import 'package:dating/screens/addHeadlineScreen.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +87,7 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
 
     return Scaffold(
       
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -95,9 +96,9 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
             SizedBox(height: 30,),
             LinearProgressIndicator(
                 value: 17/ 18,
-                backgroundColor: Colors.grey[300],
+                backgroundColor: DatingColors.lightgrey,
                 valueColor: const AlwaysStoppedAnimation<Color>(
-                    Color(0xffB2D12E)),
+                   DatingColors.primaryGreen),
               ),
               // const SizedBox(height: 16),
               Row(
@@ -164,7 +165,7 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
                     child: const Text(
                       'Skip',
                       style: TextStyle(
-                        color: Colors.grey,
+                        color: DatingColors.lightgrey,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -184,7 +185,7 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
               "Choose A First Message For All\nYour New Matches To Reply To.\nEasy!",
               style: TextStyle(
                 fontSize: 15,
-                color: Colors.black87,
+                color: DatingColors.black,
               ),
             ),
             // const SizedBox(height: 20),
@@ -212,10 +213,10 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
                         margin: const EdgeInsets.only(bottom: 16),
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF0F8E7),
+                          color: DatingColors.lightGreen,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: isSelected ? Color(0xffB2D12E): Colors.transparent,
+                            color: isSelected ? DatingColors.primaryGreen: DatingColors.black,
                             width: 1.5,
                           ),
                         ),
@@ -233,7 +234,7 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
                             ),
                             Icon(
                               isSelected ? Icons.check_circle : Icons.circle_outlined,
-                              color: isSelected ? Color(0xffB2D12E) : Colors.grey.shade700,
+                              color: isSelected ? DatingColors.primaryGreen : DatingColors.lightgrey,
                             ),
                           ],
                         ),
@@ -263,16 +264,16 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
                     decoration: BoxDecoration(
                       gradient: selectedIndexes.length == 3
                           ? const LinearGradient(
-                              colors: [Color(0xffB2D12E), Color(0xff000000)],
+                              colors: [DatingColors.primaryGreen, DatingColors.black],
                             )
                           : LinearGradient(
-                              colors: [Colors.grey[400]!, Colors.grey[600]!],
+                              colors: [DatingColors.surfaceGrey, DatingColors.lightyellow,],
                             ),
                       borderRadius: BorderRadius.circular(50),
                     ),
                     child: IconButton(
                       icon: const Icon(Icons.arrow_forward_ios,
-                          color: Colors.white),
+                          color: DatingColors.white),
                       onPressed: () {
                         if (selectedIndexes.length == 3) {
                             Navigator.pushNamed(

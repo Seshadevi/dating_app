@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/signupprocessProviders/lookingProvider.dart';
 import 'package:dating/screens/height_selection_screen.dart';
@@ -73,7 +74,7 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
     }).toList();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -83,9 +84,9 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
           //       child:
           LinearProgressIndicator(
             value: 8 / 18,
-            backgroundColor: Colors.grey[300],
+            backgroundColor: DatingColors.lightgrey,
             valueColor: const AlwaysStoppedAnimation<Color>(
-                Color.fromARGB(255, 147, 179, 3)),
+                DatingColors.primaryGreen),
           ),
           // ),
           const SizedBox(height: 15),
@@ -180,7 +181,7 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                             'No options available for selected mode',
                             style: TextStyle(
                               fontSize: 16,
-                              color: Colors.grey[600],
+                              color: DatingColors.lightgrey,
                             ),
                           )
                     )
@@ -214,8 +215,8 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                                     fontSize: 20,
                                     fontWeight: FontWeight.w400,
                                     color: isSelected
-                                        ? Color(0xff92AB26)
-                                        : Colors.black87,
+                                        ? DatingColors.primaryGreen
+                                        : DatingColors.black,
                                   ),
                                 ),
                                 Container(
@@ -224,12 +225,12 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: isSelected
-                                        ? Color(0xff92AB26)
-                                        : Colors.transparent,
+                                        ? DatingColors.primaryGreen
+                                        : DatingColors.white,
                                     border: Border.all(
                                       color: isSelected
-                                          ? Color(0xff92AB26)
-                                          : Colors.grey[400]!,
+                                          ? DatingColors.primaryGreen
+                                          : DatingColors.secondaryText,
                                       width: 2,
                                     ),
                                   ),
@@ -237,7 +238,7 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                                       ? Icon(
                                           Icons.check,
                                           size: 18,
-                                          color: Colors.white,
+                                          color: DatingColors.white,
                                         )
                                       : null,
                                 ),
@@ -259,7 +260,7 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                 Icon(
                   Icons.visibility_outlined,
                   size: 24,
-                  color: Colors.grey[600],
+                  color: DatingColors.lightgrey,
                 ),
                 SizedBox(width: 12),
                 Expanded(
@@ -267,7 +268,7 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                     'This Will Show On Your Profile To Help Everyone Find What They\'re Looking For.',
                     style: TextStyle(
                       fontSize: 10,
-                      color: Colors.grey[600],
+                      color: DatingColors.lightgrey,
                       height: 1.4,
                     ),
                   ),
@@ -307,7 +308,7 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                   height: screenWidth * 0.125,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xffB2D12E), Color(0xff000000)],
+                      colors: [DatingColors.primaryGreen, DatingColors.black],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                     ),
@@ -315,7 +316,7 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                   ),
                   child: IconButton(
                     icon: const Icon(Icons.arrow_forward_ios,
-                        color: Colors.white),
+                        color: DatingColors.white),
                     onPressed: () {
                       if (selectedOptionIds.length < 3) {
                         print("✅ Proceeding with:");

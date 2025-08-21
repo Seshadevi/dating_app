@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/moreabout/educationprovider.dart';
 import 'package:dating/screens/About_section/add_eduction_screen.dart';
@@ -31,12 +32,12 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
       appBar: AppBar(
         title: const Text(
           'Education',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: DatingColors.black),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios_new, color: DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -49,7 +50,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
               'You Can Only Show One Education On Your Profile At a Time',
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.grey,
+                color: DatingColors.lightgrey,
               ),
             ),
           ),
@@ -60,10 +61,10 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
           Container(
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: DatingColors.white,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: DatingColors.lightgrey,
                   spreadRadius: 1,
                   blurRadius: 4,
                   offset: const Offset(0, -2),
@@ -75,8 +76,8 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
               height: 52,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 42, 137, 4),
-                  foregroundColor: Colors.white,
+                  backgroundColor: DatingColors.darkGreen,
+                  foregroundColor: DatingColors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -112,7 +113,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
           ),
         ],
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
     );
   }
 
@@ -125,7 +126,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
             'No education records found.\nAdd your first education above.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.grey,
+              color: DatingColors.lightgrey,
               fontSize: 16,
             ),
           ),
@@ -146,7 +147,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: DatingColors.surfaceGrey),
         borderRadius: BorderRadius.circular(8),
       ),
       child: ListTile(
@@ -179,7 +180,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
               );
             }
           },
-          activeColor: const Color.fromARGB(255, 23, 136, 36),
+          activeColor: DatingColors.darkGreen,
         ),
         title: Text(
           education.institution ?? 'Unknown Institution',
@@ -195,7 +196,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
             Text(
               'Grad Year: ${education.gradYear ?? 'Not specified'}',
               style: TextStyle(
-                color: Colors.grey.shade600,
+                color: DatingColors.lightgrey,
                 fontSize: 14,
               ),
             ),
@@ -217,7 +218,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
               value: 'edit',
               child: Row(
                 children: [
-                  Icon(Icons.edit, size: 18, color: Colors.blue),
+                  Icon(Icons.edit, size: 18, color: DatingColors.accentTeal),
                   SizedBox(width: 8),
                   Text('Edit'),
                 ],
@@ -228,7 +229,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
               child: Row(
                 children: [
                   Icon(Icons.delete,
-                      size: 18, color: Color.fromARGB(255, 99, 91, 90)),
+                      size: 18, color: DatingColors.brown),
                   SizedBox(width: 8),
                   Text('Delete'),
                 ],
@@ -282,7 +283,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Education deleted successfully'),
-                      backgroundColor: Colors.red,
+                      backgroundColor: DatingColors.errorRed,
                     ),
                   );
                   ref.read(educationProvider.notifier).geteducation();
@@ -292,7 +293,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
                   );
                 }
               },
-              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+              child: const Text('Delete', style: TextStyle(color: DatingColors.errorRed)),
             ),
           ],
         );

@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
 import 'package:flutter/material.dart';
 
@@ -7,14 +8,14 @@ class DiscoverScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF9F9F9),
+      backgroundColor: DatingColors.lightGreen,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         elevation: 0,
         title: const Text(
           "Discover",
           style: TextStyle(
-            color: Colors.black,
+            color: DatingColors.black,
             fontWeight: FontWeight.bold,
             fontSize: 22,
           ),
@@ -22,7 +23,7 @@ class DiscoverScreen extends StatelessWidget {
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 12),
-            child: Icon(Icons.info_outline, color: Colors.black),
+            child: Icon(Icons.info_outline, color: DatingColors.black),
           )
         ],
       ),
@@ -38,7 +39,7 @@ class DiscoverScreen extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 231, 240, 197),
+                  color: DatingColors.lightGreen,
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: const Text(
@@ -51,7 +52,7 @@ class DiscoverScreen extends StatelessWidget {
             const Text(
               "Discover New Genuine Humans With People\nWho Match Your Vibes, Refreshed Every Day.",
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black87, fontSize: 12),
+              style: TextStyle(color: DatingColors.black, fontSize: 12),
             ),
             const SizedBox(height: 30),
             const Text(
@@ -82,18 +83,18 @@ class DiscoverScreen extends StatelessWidget {
                         "Kalvin, 23",
                         style: TextStyle(
                           fontSize: 22,
-                          color: Colors.white,
+                          color: DatingColors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       SizedBox(height: 4),
                       Text(
                         " 0.8 km nearby",
-                        style: TextStyle(color: Colors.white70),
+                        style: TextStyle(color: DatingColors.white),
                       ),
                       Text(
                         "🟢 Active now",
-                        style: TextStyle(color: Colors.white70),
+                        style: TextStyle(color: DatingColors.lightgrey),
                       ),
                     ],
                   ),
@@ -107,9 +108,9 @@ class DiscoverScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _gradientCircleButton(Icons.thumb_down_alt_outlined, Colors.white),
-                _gradientCircleButton(Icons.star_border_outlined, Color.fromARGB(255, 246, 247, 241)),
-                _gradientCircleButton(Icons.thumb_up_alt_outlined, Colors.white),
+                _gradientCircleButton(Icons.thumb_down_alt_outlined, DatingColors.white),
+                _gradientCircleButton(Icons.star_border_outlined, DatingColors.white),
+                _gradientCircleButton(Icons.thumb_up_alt_outlined, DatingColors.white),
               ],
             ),
             const SizedBox(height: 50),
@@ -117,12 +118,12 @@ class DiscoverScreen extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 231, 240, 197),
+                  color: DatingColors.lightGreen,
                   borderRadius: BorderRadius.circular(1),
                 ),
                 child: const Text(
                   "Based On Your Profile And Past Matches",
-                  style: TextStyle(fontSize: 13, color: Color(0xFF6A8900)),
+                  style: TextStyle(fontSize: 13, color: DatingColors.darkGreen),
                 ),
               ),
             ),
@@ -159,12 +160,12 @@ class DiscoverScreen extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         gradient: LinearGradient(
-          colors: [Color(0xFF869E23), Color(0xFF000000)],
+          colors: [DatingColors.primaryGreen, DatingColors.black],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(2, 2))
+          BoxShadow(color: DatingColors.black, blurRadius: 4, offset: Offset(2, 2))
         ],
       ),
       child: Icon(icon, color: iconColor, size: 28),
@@ -199,15 +200,15 @@ return Container(
   width: 140,
   decoration: BoxDecoration(
      gradient: LinearGradient(
-          colors: [Color(0xFF869E23), Color(0xFF000000)],
+          colors: [DatingColors.primaryGreen, DatingColors.black],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
     borderRadius: BorderRadius.circular(16),
-    border: Border.all(color: Color(0xFFB6E300), width: 1.2),
+    border: Border.all(color: DatingColors.primaryGreen, width: 1.2),
     boxShadow: [
       BoxShadow(
-        color: Colors.black.withOpacity(0.1),
+        color: DatingColors.black.withOpacity(0.1),
         blurRadius: 6,
         offset: Offset(2, 4),
       ),
@@ -232,7 +233,7 @@ return Container(
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
-            color: Color(0xFFE9F6C5),
+            color:DatingColors.primaryGreen,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
@@ -240,7 +241,7 @@ return Container(
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: Color.fromARGB(221, 15, 14, 14),
+              color: DatingColors.black,
             ),
           ),
         ),
@@ -250,7 +251,7 @@ return Container(
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 14,
-            color: Color.fromARGB(221, 218, 208, 208),
+            color: DatingColors.mediumGrey,
           ),
         ),
       ],

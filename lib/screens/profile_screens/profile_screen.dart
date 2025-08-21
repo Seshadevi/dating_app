@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/completeprofile/complete_profile.dart';
 import 'package:dating/screens/profile_screens/insightstab.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,7 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: DatingColors.white,
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -58,7 +59,7 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
               Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Color(0xffB2D12E), Color(0xFF2B2B2B)],
+                    colors: [DatingColors.primaryGreen, DatingColors.black],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),
@@ -70,7 +71,7 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
                 padding: const EdgeInsets.only(top: 50, bottom: 20),
                 child: Column(
                   children: [
-                    const Text('Profile', style: TextStyle(color: Colors.white, fontSize: 20)),
+                    const Text('Profile', style: TextStyle(color: DatingColors.white, fontSize: 20)),
                     const SizedBox(height: 16),
                     Stack(
                       alignment: Alignment.center,
@@ -81,7 +82,7 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
                           child: CircularProgressIndicator(
                             value: profilePercent,
                             strokeWidth: 3,
-                            backgroundColor: Colors.grey[300],
+                            backgroundColor: DatingColors.mediumGrey,
                             valueColor: AlwaysStoppedAnimation<Color>(
                                 profilePercent < 0.3 ? Colors.red : Colors.pink),
                           ),
@@ -98,7 +99,7 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: DatingColors.white,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -110,7 +111,7 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
                     Text(
                       name,
                       style: const TextStyle(
-                          color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                          color: DatingColors.white, fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
 
@@ -178,11 +179,11 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
                     const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.circle, size: 15, color: Color.fromARGB(255, 200, 232, 164)),
-                        Icon(Icons.circle, size: 15, color: Color.fromARGB(255, 200, 232, 164)),
-                        Icon(Icons.circle, size: 15, color: Color.fromARGB(255, 200, 232, 164)),
-                        Icon(Icons.circle, size: 15, color: Color.fromARGB(255, 200, 232, 164)),
-                        Icon(Icons.circle_outlined, size: 15, color: Colors.lightGreen),
+                        Icon(Icons.circle, size: 15, color: DatingColors.lightGreen),
+                        Icon(Icons.circle, size: 15, color: DatingColors.lightGreen),
+                        Icon(Icons.circle, size: 15, color: DatingColors.lightGreen),
+                        Icon(Icons.circle, size: 15, color: DatingColors.lightGreen),
+                        Icon(Icons.circle_outlined, size: 15, color: DatingColors.primaryGreen),
                       ],
                     ),
                     const SizedBox(height: 10),
@@ -193,8 +194,8 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
                         });
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey.shade200,
-                        foregroundColor: Colors.black,
+                        backgroundColor: DatingColors.surfaceGrey,
+                        foregroundColor: DatingColors.black,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                       ),
                       child: const Padding(
@@ -212,17 +213,17 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
                  Container(
   margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 1),
   decoration: BoxDecoration(
-    color: const Color(0xFFF5F5F5), // Background color behind tabs
+    color: DatingColors.surfaceGrey, // Background color behind tabs
     borderRadius: BorderRadius.circular(10),
     // border: Border.all(color: Colors.grey, width: 1),
   ),
   child: TabBar(
     indicator: BoxDecoration(
-      color: const Color.fromARGB(255, 128, 154, 10), // Active tab background
+      color: DatingColors.darkGreen, // Active tab background
       borderRadius: BorderRadius.circular(10),
     ),
-    labelColor: Colors.white, // Selected tab text color
-    unselectedLabelColor: Colors.black87,
+    labelColor: DatingColors.white, // Selected tab text color
+    unselectedLabelColor: DatingColors.black,
     indicatorPadding: EdgeInsets.zero,
     tabs: const [
       Tab(
@@ -293,8 +294,8 @@ class _CircleButton extends StatelessWidget {
               onTap: onTap,
               child: CircleAvatar(
                 radius: 28,
-                backgroundColor: Colors.white,
-                child: Icon(icon, color: const Color.fromARGB(255, 139, 135, 135)),
+                backgroundColor: DatingColors.white,
+                child: Icon(icon, color: DatingColors.brown),
               ),
             ),
             if (hasDot)
@@ -305,7 +306,7 @@ class _CircleButton extends StatelessWidget {
                   width: 8,
                   height: 8,
                   decoration: const BoxDecoration(
-                    color: Colors.red,
+                    color: DatingColors.errorRed,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -314,7 +315,7 @@ class _CircleButton extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(label.toUpperCase(),
-            style: const TextStyle(color: Colors.white, fontSize: 10)),
+            style: const TextStyle(color: DatingColors.white, fontSize: 10)),
       ],
     );
   }

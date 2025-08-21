@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 import 'mode_screen.dart';
 
@@ -50,7 +51,7 @@ void didChangeDependencies() {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.white,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SingleChildScrollView(
@@ -66,9 +67,9 @@ void didChangeDependencies() {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: LinearProgressIndicator(
                     value: 5 / 18,
-                    backgroundColor: Colors.grey[300],
+                    backgroundColor: DatingColors.lightgrey,
                     valueColor: const AlwaysStoppedAnimation<Color>(
-                      Color.fromARGB(255, 147, 179, 3),
+                      DatingColors.primaryGreen,
                     ),
                   ),
                 ),
@@ -129,7 +130,7 @@ void didChangeDependencies() {
                   child: Text(
                     'Your Email',
                     style: TextStyle(
-                      color: Colors.black,
+                      color: DatingColors.black,
                       fontFamily: 'poppins',
                       fontSize: 20.0,
                       letterSpacing: 1.28,
@@ -156,14 +157,14 @@ void didChangeDependencies() {
                           height: screenWidth * 0.125,
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [Color(0xffB2D12E), Color(0xff000000)],
+                              colors: [DatingColors.primaryGreen, DatingColors.black],
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                             ),
                             borderRadius: BorderRadius.circular(50),
                           ),
                           child: IconButton(
-                            color: Colors.white,
+                            color: DatingColors.white,
                             icon: const Icon(Icons.arrow_forward_ios),
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
@@ -229,9 +230,9 @@ void didChangeDependencies() {
         width: width,
         height: 60,
         decoration: BoxDecoration(
-          color: const Color(0xffE9F1C4),
+          color: DatingColors.lightyellow,
           borderRadius: BorderRadius.circular(18.0),
-          border: Border.all(color: const Color(0xff92AB26), width: 1.0),
+          border: Border.all(color: DatingColors.primaryGreen, width: 1.0),
         ),
         child: TextFormField(
           controller: emailController,
@@ -249,7 +250,7 @@ void didChangeDependencies() {
             border: InputBorder.none,
           ),
           style: const TextStyle(
-            color: Color.fromARGB(255, 39, 40, 36),
+            color: DatingColors.black,
             fontFamily: 'Inter',
             letterSpacing: 0.4,
           ),

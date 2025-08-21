@@ -1,4 +1,5 @@
 
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/profile_after_click/premium.dart';
 import 'package:dating/screens/profile_screens/spotlight_page.dart';
 import 'package:dating/screens/profile_screens/superswipe_page.dart';
@@ -27,7 +28,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
                     title: 'Spotlight',
                     subtitle: 'Stand Out',
                     icon: Icons.star,
-                    color: const Color(0xFF8BC34A),
+                    color:  DatingColors.darkGreen,
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context)=> SpotlightPage()));
                     },
@@ -39,7 +40,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
                     title: 'Superswipe',
                     subtitle: 'Get Noticed',
                     icon: Icons.favorite,
-                    color: const Color(0xFF8BC34A),
+                    color: DatingColors.darkGreen,
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context)=> SuperswipePage()));
                     },
@@ -95,7 +96,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
           color: color,
           borderRadius: BorderRadius.circular(24),
           gradient: LinearGradient(
-                      colors: [Color(0xFFB6E11D), Color(0xFF2B2B2B)],
+                      colors: [DatingColors.darkGreen, DatingColors.black],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -104,7 +105,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
           children: [
             Icon(
               icon,
-              color: Colors.white,
+              color: DatingColors.white,
               size: 20,
             ),
             const SizedBox(width: 8),
@@ -116,7 +117,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
                   Text(
                     title,
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: DatingColors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -124,7 +125,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
                   Text(
                     subtitle,
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: DatingColors.white,
                       fontSize: 12,
                     ),
                   ),
@@ -145,9 +146,9 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF0F5),
+        color: DatingColors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFFFE4E1)),
+        border: Border.all(color: DatingColors.white),
        
       ),
       child: Column(
@@ -158,7 +159,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: Colors.black87,
+              color: DatingColors.black,
             ),
           ),
           const SizedBox(height: 8),
@@ -166,7 +167,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
             subtitle,
             style: const TextStyle(
               fontSize: 14,
-              color: Colors.black54,
+              color: DatingColors.black,
               height: 1.4,
             ),
           ),
@@ -176,7 +177,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
           child: Container(
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFFB6E11D), Color(0xFF2B2B2B)],
+                  colors: [DatingColors.primaryGreen, DatingColors.black],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -187,9 +188,9 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
                   Navigator.push(context, MaterialPageRoute(builder: (context)=>UpgradePremiumPage()));
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  foregroundColor: Colors.white,
+                  backgroundColor: DatingColors.black,
+                  shadowColor: DatingColors.black,
+                  foregroundColor: DatingColors.white,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24),
@@ -216,9 +217,9 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF0F5),
+        color: DatingColors.lightGreen,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFFFE4E1)),
+        border: Border.all(color: DatingColors.lightGreen),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -228,7 +229,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: Colors.black87,
+              color: DatingColors.black,
             ),
           ),
           const SizedBox(height: 8),
@@ -236,7 +237,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
             'More Chances To Match With Extra Features To Boost Your Profile',
             style: TextStyle(
               fontSize: 14,
-              color: Colors.black54,
+              color: DatingColors.black,
               height: 1.4,
             ),
           ),
@@ -246,7 +247,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
             child: Container(
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFFB6E11D), Color(0xFF2B2B2B)],
+                  colors: [DatingColors.primaryGreen, DatingColors.black],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -257,9 +258,9 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
                   Navigator.push(context, MaterialPageRoute(builder: (context)=>UpgradePremiumPage()));
                  },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
+                  backgroundColor: DatingColors.black,
                   
-                  foregroundColor: Colors.white,
+                  foregroundColor: DatingColors.white,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24),
@@ -302,11 +303,11 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
     return Container(
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: DatingColors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: DatingColors.mediumGrey,
             spreadRadius: 1,
             blurRadius: 8,
             offset: const Offset(0, 2),
@@ -320,7 +321,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
             padding: const EdgeInsets.all(16),
             decoration: const BoxDecoration(
               border: Border(
-                bottom: BorderSide(color: Color(0xFFE0E0E0)),
+                bottom: BorderSide(color: DatingColors.mediumGrey),
               ),
             ),
             child: const Row(
@@ -332,7 +333,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                      color: DatingColors.black,
                     ),
                   ),
                 ),
@@ -343,7 +344,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                      color: DatingColors.black,
                     ),
                   ),
                 ),
@@ -354,7 +355,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                      color: DatingColors.black,
                     ),
                   ),
                 ),
@@ -374,7 +375,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: const BoxDecoration(
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF5F5F5)),
+          bottom: BorderSide(color: DatingColors.lightGreen),
         ),
       ),
       child: Row(
@@ -385,7 +386,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
               feature.title,
               style: const TextStyle(
                 fontSize: 14,
-                color: Colors.black87,
+                color: DatingColors.black,
               ),
             ),
           ),
@@ -394,7 +395,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
               child: feature.premiumPlus
                   ? const Icon(
                       Icons.check,
-                      color: Color(0xFF4CAF50),
+                      color: DatingColors.darkGreen,
                       size: 20,
                     )
                   : const SizedBox(),
@@ -405,7 +406,7 @@ class _ProfilePayplanScreenState extends State<ProfilePayplanScreen> {
               child: feature.premium
                   ? const Icon(
                       Icons.check,
-                      color: Color(0xFF4CAF50),
+                      color: DatingColors.primaryGreen,
                       size: 20,
                     )
                   : const SizedBox(),

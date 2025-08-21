@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 
 class ProfileInsightsScreen extends StatefulWidget {
@@ -23,10 +24,10 @@ class _ProfileInsightsScreenState extends State<ProfileInsightsScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: DatingColors.white,
                   borderRadius: BorderRadius.circular(12.0),
                   border: Border.all(
-                    color: const Color(0xFFB8D977),
+                    color: DatingColors.darkGreen,
                     width: 2.0,
                   ),
                 ),

@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/introMail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -83,8 +84,8 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: LinearProgressIndicator(
                   value: 6 / 18,
-                  backgroundColor: Colors.grey[300],
-                  valueColor: const AlwaysStoppedAnimation<Color>(Color(0xffB2D12E)),
+                  backgroundColor: DatingColors.lightgrey,
+                  valueColor: const AlwaysStoppedAnimation<Color>(DatingColors.primaryGreen),
                 ),
               ),
               const SizedBox(height: 3),
@@ -160,7 +161,7 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
                 padding: EdgeInsets.symmetric(horizontal: 24),
                 child: Row(
                   children: [
-                    Icon(Icons.remove_red_eye_outlined, color: Colors.grey),
+                    Icon(Icons.remove_red_eye_outlined, color: DatingColors.lightgrey),
                     SizedBox(width: 12),
                     Expanded(
                       child: Text(
@@ -189,14 +190,14 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
                       height: screenWidth * 0.125,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xffB2D12E), Color(0xff000000)],
+                          colors: [DatingColors.primaryGreen, DatingColors.black],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                         ),
                         borderRadius: BorderRadius.circular(50),
                       ),
                       child: IconButton(
-                        icon: const Icon(Icons.arrow_forward_ios, color: Colors.white),
+                        icon: const Icon(Icons.arrow_forward_ios, color: DatingColors.white),
                         onPressed: () {
                           if (selectedMode != null && modeid == 4) {
                              print("modeid:$modeid");
@@ -269,7 +270,7 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
 
   Widget _buildModeOption(Data mode) {
     final isSelected = selectedMode?.id == mode.id;
-    final textColor = isSelected ? Colors.white : const Color.fromARGB(255, 90, 118, 81);
+    final textColor = isSelected ? DatingColors.white : DatingColors.black;
 
     return InkWell(
       onTap: () => setState(() {selectedMode = mode; modeid=mode.id; modename=mode.value;}),
@@ -277,11 +278,19 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
         width: double.infinity,
         height: 120,
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xff92AB26) : const Color(0xffE9F1C4),
+          gradient: isSelected
+      ? LinearGradient(
+          colors: [DatingColors.darkGreen, DatingColors.brown],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        )
+      : LinearGradient(
+          colors: [DatingColors.lightGreen, DatingColors.lightGreen],
+        ),
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
             width: 2,
-            color: isSelected ? const Color(0xffE9F1C4) : Colors.transparent,
+            color: isSelected ? DatingColors.white : DatingColors.darkGreen,
           ),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -307,13 +316,13 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: isSelected
-                          ? Colors.white
-                          : const Color.fromARGB(255, 90, 118, 81),
+                          ? DatingColors.white
+                          : DatingColors.darkGreen,
                       width: 2,
                     ),
                     color: isSelected
-                        ? const Color.fromARGB(255, 90, 118, 81)
-                        : Colors.transparent,
+                        ? DatingColors.primaryGreen
+                        : DatingColors.white,
                   ),
                   child: isSelected
                       ? Center(
@@ -322,7 +331,7 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
                             height: 12,
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Colors.white,
+                              color: DatingColors.white,
                             ),
                           ),
                         )

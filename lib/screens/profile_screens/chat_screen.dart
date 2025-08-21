@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/chat_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -91,7 +92,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     padding: const EdgeInsets.all(10),
                     margin: const EdgeInsets.symmetric(vertical: 4),
                     decoration: BoxDecoration(
-                      color: isMe ? Colors.green[100] : Colors.grey[200],
+                      color: isMe ? DatingColors.lightGreen : DatingColors.lightGreen,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(msg.message),
