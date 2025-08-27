@@ -1,33 +1,22 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/model/loginmodel.dart';
-import 'package:dating/model/signupprocessmodels/lookingModel.dart';
 import 'package:dating/provider/loginProvider.dart';
-import 'package:dating/screens/About_section/city_screen.dart';
-import 'package:dating/screens/About_section/education_screen.dart';
-import 'package:dating/screens/About_section/gender_screen.dart';
-import 'package:dating/screens/About_section/hometown_screen.dart';
-import 'package:dating/screens/About_section/occupation_screen.dart';
 import 'package:dating/screens/completeprofile/causeScreen.dart';
 import 'package:dating/screens/completeprofile/id_verification_screen.dart';
 import 'package:dating/screens/completeprofile/interests.dart';
-import 'package:dating/screens/completeprofile/intrest_screen.dart';
 import 'package:dating/screens/completeprofile/lifeBadgesScreen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/drinking_screen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/exercise_screen.dart';
-import 'package:dating/screens/completeprofile/moreaboutyou_screens/have_kids_screen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/kids_screen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/languagesscreen.dart';
-import 'package:dating/screens/completeprofile/moreaboutyou_screens/looking_for_screen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/new_to_area_screen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/relationship_screen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/religion_screen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/smoking_screen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/star_sign_screen.dart';
 import 'package:dating/screens/completeprofile/profile_strength_detailScreen.dart';
-import 'package:dating/screens/completeprofile/prompt_selection_screen.dart';
 import 'package:dating/screens/completeprofile/pronoun_screen.dart';
 import 'package:dating/screens/completeprofile/qualities.dart';
-// import 'package:dating/screens/profile_screens/languagesScreen.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -1523,9 +1512,34 @@ Widget _buildMoreAboutYouSection() {
   final  smoking = (user?.smoking?.isNotEmpty ?? false)
       ? user?.smoking
       : 'Add';
+  // final  height = (user?.height) != null
+  //     ? user?.height
+  //     : 'Add';
+  
+  // final  newtoarea = (user?.newToArea?.isNotEmpty ?? false)
+  //     ? user?.newToArea
+  //     : 'Add';
+  // final  relationship = (user?.relationship) != null
+  //     ? user?.relationship
+  //     : 'Add';
+  final  educationLevel = (user?.educationLevel?.isNotEmpty ?? false)
+      ? user?.educationLevel
+      : 'Add';
+  final  havekids = (user?.haveKids?.isNotEmpty ?? false)
+      ? user?.haveKids
+      : 'Add';
+  final  industry = (user?.industries?.isNotEmpty ?? false)
+      ? user?.industries
+      : 'Add';
+  final  experiences = (user?.experiences?.isNotEmpty ?? false)
+      ? user?.experiences
+      : 'Add';
+      
 
   final starsign = user?.starSign?.name ?? 'Add';
   final exercise = user?.exercise ?? 'Add';
+    final  height = user?.height
+      ??'Add';
 
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1540,13 +1554,17 @@ Widget _buildMoreAboutYouSection() {
         style: TextStyle(fontSize: 14, color: Colors.grey[600]),
       ),
       const SizedBox(height: 16),
+      _buildProfileItem(Icons.place_outlined, 'Height', 'add', onTap: () {
+        Navigator.pushNamed(context,'/heightscreenprofile');
+        
+      }),
       _buildProfileItem(Icons.search, 'Looking For', lookingfor, onTap: () {
         Navigator.pushNamed(context,'/lookingforscreen');
       }),
-      _buildProfileItem(Icons.favorite_border, 'Relationship', 'Add', onTap: () {
+      _buildProfileItem(Icons.favorite_border, 'Relationship', 'add', onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (_) => RelationshipScreen()));
       }),
-      _buildProfileItem(Icons.child_care, 'Have A Kids', kids, onTap: () {
+      _buildProfileItem(Icons.child_care, 'Kids', kids, onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (_) => HaveKidsScreen()));
       }),
       _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', smoking!, onTap: () {
@@ -1567,6 +1585,20 @@ Widget _buildMoreAboutYouSection() {
       _buildProfileItem(Icons.place_outlined, 'Religion', religion, onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (_) => ReligionScreen()));
       }),
+      // ====================================
+      _buildProfileItem(Icons.business_sharp, 'Experience', 'add', onTap: () {
+        Navigator.pushNamed(context, '/experiencescreen');
+      }),
+      _buildProfileItem(Icons.factory, 'Industries', 'add', onTap: () {
+        Navigator.pushNamed(context, '/industryscreen');
+      }),
+      _buildProfileItem(Icons.school, 'EducationLevel', educationLevel!, onTap: () {
+        Navigator.pushNamed(context, '/educaationlevelscreen');
+      }),
+      _buildProfileItem(Icons.baby_changing_station, 'Have Kids', havekids!, onTap: () {
+        Navigator.pushNamed(context, '/havekidscreen');
+      }),
+      
     ],
   );
 }

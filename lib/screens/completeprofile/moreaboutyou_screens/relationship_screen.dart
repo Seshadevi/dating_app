@@ -1,5 +1,5 @@
 import 'package:dating/constants/dating_app_user.dart';
-import 'package:dating/screens/completeprofile/moreaboutyou_screens/have_kids_screen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/kids_screen.dart';
 import 'package:flutter/material.dart';
 
 class RelationshipScreen extends StatefulWidget {

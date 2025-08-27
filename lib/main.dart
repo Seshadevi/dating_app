@@ -13,6 +13,11 @@ import 'package:dating/screens/beKindScreen.dart';
 import 'package:dating/screens/causes_Community.dart';
 import 'package:dating/screens/choose_foodies.dart';
 import 'package:dating/screens/completeprofile/complete_profile.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/educationlevelscreen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/experiencescreen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/havekidsscreen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/heightscreen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/industryscreen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/looking_for_screen.dart';
 import 'package:dating/screens/datePromtSelection.dart';
 import 'package:dating/screens/face_screen.dart';
@@ -151,6 +156,18 @@ class MyApp extends StatelessWidget {
           "/lookingforscreen": (context) =>LookingForScreen(),
           "/addeductionscreen": (context) =>AddEducationScreen(),
           "/addoccupation": (context) =>AddJobScreen(),
+          "/educaationlevelscreen": (context) =>Educationlevelscreen(),
+          "/experiencescreen": (context) =>ExperienceScreen(),
+          "/havekidscreen": (context) =>Havekidsscreen(),
+          "/industryscreen": (context) =>Industryscreen(),
+              "/heightscreenprofile": (context) =>HeightScreen(),
+            //   "/": (context) =>(),
+            //     "/": (context) =>(),
+            //     "/": (context) =>(),
+            //       "/": (context) =>(),
+            //       "/": (context) =>(),
+            //         "/": (context) =>(),
+
           
 
       },

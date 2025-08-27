@@ -28,8 +28,16 @@ class Dgapi {
   static const String starsignGet="$baseUrl/starsign";
   static const String workUpdate="$baseUrl/work";
   static const String workdelete="$baseUrl/work";
-  
   static const String educationUpdate="$baseUrl/education";
   static const String educationdelete="$baseUrl/education";
+  static const String experienceget="$baseUrl/user/experience";
+  static const String industryget="$baseUrl/user/industry";
+  // static const String ="$baseUrl/";
+  // static const String ="$baseUrl/";
+  // static const String ="$baseUrl/";
+  // static const String ="$baseUrl/";
+  // static const String ="$baseUrl/";
+  // static const String ="$baseUrl/";
+
   
 }

@@ -1,34 +1,44 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
-import 'package:dating/screens/completeprofile/moreaboutyou_screens/star_sign_screen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/new_to_area_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NewToAreaScreen extends ConsumerStatefulWidget {
-  const NewToAreaScreen({super.key});
+class Havekidsscreen extends ConsumerStatefulWidget {
+  const Havekidsscreen({super.key});
 
   @override
-  ConsumerState<NewToAreaScreen> createState() => _NewToAreaScreenState();
+  ConsumerState<Havekidsscreen> createState() => _HavekidsscreenState();
 }
 
-class _NewToAreaScreenState extends ConsumerState<NewToAreaScreen> {
-  List<String> selectedOptions = [];
-   String? selectedOption;
-  
+class _HavekidsscreenState extends ConsumerState<Havekidsscreen> {
+  String? selectedOption; // Preselected from user profile
+
   final List<String> options = [
-    'New To Town',
-    'Im a Local',
+    'Have kids',
+    'Dont have kids',
+    // '',
   ];
 
-  void toggleOption(String option) {
-    setState(() {
-      if (selectedOptions.contains(option)) {
-        selectedOptions.remove(option);
-      } else {
-        selectedOptions.add(option);
+  @override
+  void initState() {
+    super.initState();
+
+    // Load preselected data from loginProvider after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userState = ref.read(loginProvider);
+      final user = userState.data != null && userState.data!.isNotEmpty
+          ? userState.data![0].user
+          : null;
+
+      if (user != null && user.haveKids != null && user.haveKids!.isNotEmpty) {
+        setState(() {
+          selectedOption = user.haveKids; // Match exact string
+        });
       }
     });
   }
+
   Future<void> selectOption(String option) async {
     setState(() {
       selectedOption = option;
@@ -43,33 +53,32 @@ class _NewToAreaScreenState extends ConsumerState<NewToAreaScreen> {
             prompt: null,
             qualityId: null,
             jobId: null,
-            newarea: option,
+            haveKids: option,
           );
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('new area updated successfully!')),
+        const SnackBar(content: Text('haveKids updated successfully!')),
       );
 
       Navigator.pop(context, selectedOption);
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update new area: $e')),
+        SnackBar(content: Text('Failed to update haveKids: $e')),
       );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: DatingColors.white,
       appBar: AppBar(
-        backgroundColor: DatingColors.white,
+        backgroundColor:DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: DatingColors.black, size: 24),
+          icon: const Icon(Icons.close, color: Colors.black, size: 24),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -78,7 +87,6 @@ class _NewToAreaScreenState extends ConsumerState<NewToAreaScreen> {
         child: Column(
           children: [
             const SizedBox(height: 150),
-            // Header with icon and title
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -90,14 +98,14 @@ class _NewToAreaScreenState extends ConsumerState<NewToAreaScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Icon(
-                    Icons.location_on_outlined,
+                    Icons.sports_gymnastics,
                     color: DatingColors.white,
                     size: 24,
                   ),
                 ),
                 const SizedBox(width: 12),
                 const Text(
-                  'Are you new to the area',
+                  'Do You Work Out',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
@@ -107,38 +115,29 @@ class _NewToAreaScreenState extends ConsumerState<NewToAreaScreen> {
               ],
             ),
             const SizedBox(height: 50),
-            // Options list
             ...options.map((option) {
-              final isSelected = selectedOptions.contains(option);
-              final isFirstOption = option == 'New To Town';
-              
+              final isSelected = selectedOption == option;
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: GestureDetector(
-                  onTap: () => toggleOption(option),
+                  onTap: () => selectOption(option),
                   child: Container(
                     width: double.infinity,
                     height: 56,
                     decoration: BoxDecoration(
                       gradient: isSelected
-                          ? (isFirstOption 
-                              ? const LinearGradient(
-                                  colors: [DatingColors.primaryGreen, DatingColors.black],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                )
-                              : const LinearGradient(
-                                  colors: [DatingColors.primaryGreen,DatingColors.black],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                ))
+                          ? const LinearGradient(
+                              colors: [DatingColors.primaryGreen, DatingColors.black],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            )
                           : null,
-                      color: isSelected ? null : DatingColors.white,
+                      color: isSelected ? null : Colors.white,
                       borderRadius: BorderRadius.circular(28),
                       border: Border.all(
-                        color: isSelected 
-                            ? DatingColors.black 
-                            : DatingColors.primaryGreen,
+                        color: isSelected
+                            ? DatingColors.black
+                            : DatingColors.darkGreen,
                         width: 2,
                       ),
                     ),
@@ -157,11 +156,14 @@ class _NewToAreaScreenState extends ConsumerState<NewToAreaScreen> {
               );
             }).toList(),
             const Spacer(),
-            // Skip button
             Center(
               child: TextButton(
                 onPressed: () {
-                 Navigator.push(context, MaterialPageRoute(builder: (context) => StarSignScreen(),));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const NewToAreaScreen()),
+                  );
                 },
                 child: const Text(
                   'Skip',

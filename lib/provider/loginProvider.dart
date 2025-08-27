@@ -772,7 +772,13 @@ Future<int> updateProfile({
   String? gender,
   bool? showOnProfile,
   String? pronoun,
-  String?exercise
+  String?exercise,
+  int? industryId,
+  int? experienceId,
+  String? haveKids,
+  String? educationLevel,
+  String? newarea,
+  int? height,
 }) async {
   final loadingState = ref.read(loadingProvider.notifier);
   loadingState.state = true;
@@ -813,6 +819,8 @@ Future<int> updateProfile({
     if (modename != null) request.fields['modename'] = modename;
     if (bio != null) request.fields['headLine'] = bio;
     if (religionId != null) request.fields['religionId'] = religionId.toString();
+    if (experienceId != null) request.fields['experiences'] = experienceId.toString();
+    if (industryId != null) request.fields['industries'] = industryId.toString();
     if (jobId != null) request.fields['workId'] = jobId.toString();
     if (educationId != null) request.fields['educationId'] = educationId.toString();
     if (starsignId != null) request.fields['starSignId'] = starsignId.toString();
@@ -821,6 +829,10 @@ Future<int> updateProfile({
     if (showOnProfile != null) request.fields['showOnProfile'] = showOnProfile.toString();
     if (pronoun != null) request.fields['pronouns'] = pronoun.toString();
     if (exercise != null) request.fields['exercise'] =exercise.toString();
+    if (haveKids != null) request.fields['haveKids'] =haveKids.toString();
+    if (educationLevel != null) request.fields['educationLevel'] =educationLevel.toString();
+    if (newarea != null) request.fields['newToArea'] =newarea.toString();
+    if (height != null) request.fields['height'] =height.toString();
     // Add list fields as indexed keys
     void addListField(String key, List<int>? values) {
       if (values != null && values.isNotEmpty) {

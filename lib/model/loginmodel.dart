@@ -133,6 +133,8 @@ class User {
   String? politics;
   String? hometown;
   int? height;
+  List<Experiences>? experiences;
+  List<Industries>? industries;
 
   User({
     this.id,
@@ -431,6 +433,158 @@ class User {
     return User();
   }
 }
+
+
+  class Experiences {
+  int? id;
+  String? experiences;
+  UserExperiences? userExperiences;
+
+  Experiences({this.id, this.experiences, this.userExperiences});
+
+  Experiences.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    experiences = json['experiences'];
+    userExperiences = json['user_experiences'] != null
+        ? UserExperiences.fromJson(json['user_experiences'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['experiences'] = experiences;
+    if (userExperiences != null) {
+      data['user_experiences'] = userExperiences!.toJson();
+    }
+    return data;
+  }
+
+  Experiences copyWith({
+    int? id,
+    String? experiences,
+    UserExperiences? userExperiences,
+  }) {
+    return Experiences(
+      id: id ?? this.id,
+      experiences: experiences ?? this.experiences,
+      userExperiences: userExperiences ?? this.userExperiences,
+    );
+  }
+
+  static Experiences initial() {
+    return Experiences();
+  }
+}
+
+class UserExperiences {
+  int? userId;
+  int? experiencesId;
+
+  UserExperiences({this.userId, this.experiencesId});
+
+  UserExperiences.fromJson(Map<String, dynamic> json) {
+    userId = json['user_id'];
+    experiencesId = json['experiences_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['user_id'] = userId;
+    data['experiences_id'] = experiencesId;
+    return data;
+  }
+
+ UserExperiences copyWith({
+    int? userId,
+    int? religionId,
+  }) {
+    return UserExperiences(
+      userId: userId ?? this.userId,
+      experiencesId: religionId ?? this.experiencesId,
+    );
+  }
+
+  static UserExperiences initial() {
+    return UserExperiences();
+  }
+}
+class Industries {
+  int? id;
+  String? industries;
+  UserExperiences? userindustries;
+
+  Industries({this.id, this.industries, this.userindustries});
+
+  Industries.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    industries = json['industries'];
+    userindustries = json['user_industries'] != null
+        ? UserExperiences.fromJson(json['user_industries'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['industries'] = industries;
+    if (userindustries != null) {
+      data['user_industries'] = userindustries!.toJson();
+    }
+    return data;
+  }
+
+  Industries copyWith({
+    int? id,
+    String? industries,
+    UserExperiences? userindustries,
+  }) {
+    return Industries(
+      id: id ?? this.id,
+      industries: industries ?? this.industries,
+      userindustries: userindustries ?? this.userindustries,
+    );
+  }
+
+  static Experiences initial() {
+    return Experiences();
+  }
+}
+
+class UserIndustries {
+  int? userId;
+  int? industriesId;
+
+  UserIndustries({this.userId, this.industriesId});
+
+  UserIndustries.fromJson(Map<String, dynamic> json) {
+    userId = json['user_id'];
+    industriesId = json['industries_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['user_id'] = userId;
+    data['industries_id'] = industriesId;
+    return data;
+  }
+
+ UserIndustries copyWith({
+    int? userId,
+    int? industriesId,
+  }) {
+    return UserIndustries(
+      userId: userId ?? this.userId,
+      industriesId: industriesId ?? this.industriesId,
+    );
+  }
+
+  static UserIndustries initial() {
+    return UserIndustries();
+  }
+}
+
+
 
 class Qualities {
   int? id;
