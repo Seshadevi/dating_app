@@ -86,7 +86,7 @@ class _ReligionSelectorWidgetState extends ConsumerState<ReligionSelectorWidget>
         selectedReligions.removeAt(index);
         selectedReligionIds.removeAt(index);
       } else {
-        if (selectedReligions.length < 4) {
+        if (selectedReligions.length < 2) {
           // Add to both lists
           selectedReligions.add(religion);
           selectedReligionIds.add(religionId);

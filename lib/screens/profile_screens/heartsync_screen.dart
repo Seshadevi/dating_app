@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:dating/provider/socket_users_combined_provider.dart';
-
+import 'package:dating/screens/profile_screens/narrowsearch.dart';
 import 'dart:math' as math;
 import 'package:geocoding/geocoding.dart';
 
@@ -35,7 +35,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage> {
   bool _hideFixedImage = false;
   CardSwiperDirection? _swipeDirection;
   bool _showOverlay = false;
-
+  SearchFilters? _filters;
 
   @override
 void initState() {
@@ -59,6 +59,75 @@ void initState() {
     _scrollController.addListener(_checkVisibility);
   });
 }
+
+List<Users> _applyClientFilters(List<Users> input) {
+  final f = _filters;
+  if (f == null) return input; // nothing selected yet
+  return input.where((u) => _matchesFilters(u, f)).toList();
+}
+
+bool _matchesFilters(Users u, SearchFilters f) {
+  // Age (from dob)
+  final dob = u.dob;
+  if (dob != null && dob.isNotEmpty) {
+    final age = _ageFromDob(dob);
+    if (age != null) {
+      final min = f.minAge - (f.relaxAge ? 2 : 0);
+      final max = f.maxAge + (f.relaxAge ? 2 : 0);
+      if (age < min || age > max) return false;
+    }
+  }
+
+  // Distance (needs both sides to have coords)
+  if (u.latitude != null && u.longitude != null &&
+      currentUserLatitude != null && currentUserLongitude != null) {
+    final limitKm = f.maxDistanceKm + (f.relaxDistance ? 20 : 0);
+    final dKm = _calculateDistance(
+      currentUserLatitude!, currentUserLongitude!, u.latitude!, u.longitude!
+    );
+    if (dKm > limitKm) return false;
+  }
+
+  // Interests -> your "qualities" IDs
+  if (f.interestIds.isNotEmpty) {
+    final qids = (u.qualities ?? []).map((q) => q.id).whereType<int>().toSet();
+    if (qids.intersection(f.interestIds).isEmpty) return false;
+  }
+
+  // Languages (if present on this Users model)
+  if (f.languageNames.isNotEmpty && u.languages != null) {
+    final userLangs = u.languages!
+        .map((l) => l.name?.toLowerCase())
+        .whereType<String>()
+        .toSet();
+    final wanted = f.languageNames.map((s) => s.toLowerCase()).toSet();
+    if (userLangs.intersection(wanted).isEmpty) return false;
+  }
+
+  // Height (if your Users has height)
+  if (u.height != null) {
+    final minH = f.minHeightCm - (f.relaxHeight ? 5 : 0);
+    final maxH = f.maxHeightCm + (f.relaxHeight ? 5 : 0);
+    if (u.height! < minH || u.height! > maxH) return false;
+  }
+
+  // (Optional) genderId + relationship if your Users exposes those as IDs/strings.
+
+  return true;
+}
+
+int? _ageFromDob(String dob) {
+  try {
+    final b = DateTime.parse(dob);
+    final now = DateTime.now();
+    var age = now.year - b.year;
+    if (now.month < b.month || (now.month == b.month && now.day < b.day)) age--;
+    return age;
+  } catch (_) {
+    return null;
+  }
+}
+
 
 
   void _checkVisibility() {
@@ -221,6 +290,11 @@ void initState() {
     print("📡 Total socket users in UI: ${users.length}");
     // Update allUsers when new data comes
     allUsers = users.map((e) => Users.fromJson(e)).toList();
+    final visibleUsers = _applyClientFilters(allUsers); 
+    // after: allUsers = users.map((e) => Users.fromJson(e)).toList();
+    final int cardsCount = allUsers.length;
+    final int displayed = cardsCount >= 2 ? 2 : cardsCount; // 1 when only one user
+
     // if (users.isNotEmpty && allUsers.isEmpty) {
     //   allUsers = List.from(users);
     // }
@@ -230,7 +304,7 @@ void initState() {
 
     return Scaffold(
       backgroundColor: DatingColors.white,
-      body: allUsers.isEmpty
+      body: visibleUsers.isEmpty
           ? const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -241,7 +315,13 @@ void initState() {
                 ],
               ),
             )
-          : Column(
+          :cardsCount == 0
+        ? const Center(
+            child: Text(
+              "Users not found",
+              style: TextStyle(fontSize: 18, color: Colors.grey),
+            ),
+          ):Column(
               children: [
                 // Custom AppBar with Progress Bar
                 SafeArea(
@@ -261,9 +341,18 @@ void initState() {
                             ),
                              IconButton(
                                 icon: const Icon(Icons.tune, color: DatingColors.black),
-                                onPressed: () {
-                                    Navigator.pushNamed(context,'/narrowsearch');
-                                },
+                                  onPressed: () async {
+                                    final result = await Navigator.pushNamed(context, '/narrowsearch');
+                                    if (result is SearchFilters) {
+                                      setState(() {
+                                        _filters = result;
+                                        // reset progress when filters change
+                                        viewedUsersCount = 0;
+                                        allUsersCompleted = false;
+                                        currentCardIndex = 0;
+                                      });
+                                    }
+                                  },
                               ),
                           ],
                         ),
@@ -297,7 +386,7 @@ void initState() {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Viewed: $viewedUsersCount/${allUsers.length}',
+                              'Viewed: $viewedUsersCount/${visibleUsers.length}',
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: DatingColors.mediumGrey,
@@ -305,7 +394,7 @@ void initState() {
                               ),
                             ),
                             Text(
-                              allUsersCompleted ? 'Completed!' : '${(viewedUsersCount / allUsers.length * 100).toInt()}%',
+                              allUsersCompleted ? 'Completed!' : '${(viewedUsersCount / (visibleUsers.isEmpty ? 1 : visibleUsers.length) * 100).toInt()}%',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: allUsersCompleted ? DatingColors.primaryGreen :DatingColors.lightpink,
@@ -360,8 +449,8 @@ void initState() {
                       if (!allUsersCompleted)
                         CardSwiper(
                           controller: controller,
-                          cardsCount: allUsers.length,
-                          numberOfCardsDisplayed: 2,
+                          cardsCount: cardsCount,
+                          numberOfCardsDisplayed: displayed,
                           isLoop: false, // Disable loop when tracking progress
                           allowedSwipeDirection: const AllowedSwipeDirection.symmetric(horizontal: true),
                           backCardOffset: const Offset(0, 20),
@@ -372,6 +461,8 @@ void initState() {
                             currentCardIndex = currentIndex ?? 0;
                             _swipeDirection = direction;
                             _showOverlay = true;
+                            viewedUsersCount++;
+                            allUsersCompleted = viewedUsersCount >= cardsCount; // << filtered total
                           });
 
                           // Hide overlay after 300ms
@@ -416,11 +507,11 @@ void initState() {
                           //   return _buildUserCard(allUsers[index % allUsers.length]);
                           // },
                           cardBuilder: (BuildContext context, int index, int hOffset, int vOffset) {
-                            if (index >= allUsers.length) return Container();
+                            if (index >= visibleUsers.length) return Container();
 
                             return Stack(
                               children: [
-                                _buildUserCard(allUsers[index % allUsers.length]),
+                                _buildUserCard(visibleUsers[index % allUsers.length]),
 
                                if (_showOverlay && _swipeDirection != null)
                               Positioned(

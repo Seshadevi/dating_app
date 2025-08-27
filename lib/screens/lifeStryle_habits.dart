@@ -87,7 +87,7 @@ class _LifestyleHabitsScreenState extends ConsumerState<LifestyleHabitsScreen> {
         selectedHabitIds.removeAt(index);
      
       } else {
-        if (selectedHabitIds.length < 5) {
+        if (selectedHabitIds.length < 2) {
           selectedhabbits.add(habit);
           selectedHabitIds.add(habitId);
         }

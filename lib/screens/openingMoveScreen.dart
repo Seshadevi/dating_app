@@ -14,7 +14,7 @@ class OpeningMoveScreen extends ConsumerStatefulWidget {
 }
 
 class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
-   List<int> selectedIndexes = [];
+   List<int> selectedMessageIds = [];
 
    String? email;
    String? mobile;
@@ -65,7 +65,7 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
           selectedcausesIds = args['selectedCausesIds'] ?? [];
           seletedprompts = args['selectedPrompts'] ?? {};
           if (args['selectedmessagesIds'] != null) {
-            selectedIndexes = List<int>.from(args['selectedmessagesIds']);
+            selectedMessageIds = List<int>.from(args['selectedmessagesIds']);
           }
 
       });
@@ -83,7 +83,7 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
   Widget build(BuildContext context) {
     final screen = MediaQuery.of(context).size;
     final defaultMessages = ref.watch(defaultmessagesProvider);
-    final prompts = defaultMessages.data?.map((e) => e.message ?? '').toList() ?? [];
+    final messages = defaultMessages.data ?? [];
 
     return Scaffold(
       
@@ -189,23 +189,24 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
               ),
             ),
             // const SizedBox(height: 20),
-            if (prompts.isEmpty)
+            if (messages.isEmpty)
               const Expanded(
                 child: Center(child: CircularProgressIndicator()),
               )
             else
               Expanded(
                 child: ListView.builder(
-                  itemCount: prompts.length,
+                  itemCount: messages.length,
                   itemBuilder: (context, index) {
-                    final isSelected = selectedIndexes.contains(index);
+                    final message = messages[index];
+                    final isSelected = selectedMessageIds.contains(message.id);
                     return GestureDetector(
                       onTap: () {
                         setState(() {
                           if (isSelected) {
-                            selectedIndexes.remove(index);
-                          } else if (selectedIndexes.length < 3) {
-                            selectedIndexes.add(index);
+                             selectedMessageIds.remove(message.id);
+                          } else if (selectedMessageIds.length < 3) {
+                            selectedMessageIds.add(message.id!);
                           }
                         });
                       },
@@ -225,7 +226,7 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
                           children: [
                             Expanded(
                               child: Text(
-                                prompts[index],
+                                message.message ?? '',
                                 style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w500,
@@ -248,7 +249,7 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  "${selectedIndexes.length}/3 Selected",
+                  "${selectedMessageIds.length}/3 Selected",
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
@@ -262,7 +263,7 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
                     width: screen.width * 0.125,
                     height: screen.width * 0.125,
                     decoration: BoxDecoration(
-                      gradient: selectedIndexes.length == 3
+                      gradient: selectedMessageIds.length == 3
                           ? const LinearGradient(
                               colors: [DatingColors.primaryGreen, DatingColors.black],
                             )
@@ -275,7 +276,7 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
                       icon: const Icon(Icons.arrow_forward_ios,
                           color: DatingColors.white),
                       onPressed: () {
-                        if (selectedIndexes.length == 3) {
+                        if (selectedMessageIds.length == 3) {
                             Navigator.pushNamed(
                                   context,
                                   '/photosScreen',
@@ -298,7 +299,7 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
                                     "selectedReligionIds":selectedReligionIds,
                                     "selectedCausesIds":selectedcausesIds,
                                     "selectedPrompts":seletedprompts,
-                                    "selectedmessagesIds":selectedIndexes,
+                                    "selectedmessagesIds":selectedMessageIds,
                                     'email':email,
                                     'mobile':mobile
                                   },);
