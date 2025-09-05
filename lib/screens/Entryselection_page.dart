@@ -33,7 +33,8 @@ class _SelectPageState extends ConsumerState<SelectPage> {
       body: Column(
         children: [
           _buildImageSection(screenWidth, screenHeight, isSmallScreen),
-          const Spacer(),
+          // const Spacer(),
+          SizedBox(height: isSmallScreen ? 35 : 20),
           _buildButtons(context, screenWidth, isSmallScreen),
           SizedBox(height: isSmallScreen ? 15 : 20),
           _buildDisclaimerText(screenWidth),
@@ -53,56 +54,72 @@ class _SelectPageState extends ConsumerState<SelectPage> {
     return Container(
       width: double.infinity,
       height: containerHeight,
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [DatingColors.lightpink, DatingColors.everqpidColor],
-          stops: [0.0, 1.0],
-          begin: AlignmentDirectional(0.0, -1.0),
-          end: AlignmentDirectional(0, 1.0),
-        ),
+      decoration: 
+      const BoxDecoration(
+        // gradient: LinearGradient(
+          // colors: [DatingColors.lightpink, DatingColors.everqpidColor],
+          image:const DecorationImage(
+      image: AssetImage("assets/everqpidbg.png"), // your image path
+      fit: BoxFit.cover, // cover, contain, fill, etc.
+    ),
+          // stops: [0.0, 1.0],
+          // begin: AlignmentDirectional(0.0, -1.0),
+          // end: AlignmentDirectional(0, 1.0),
+        // ),
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(40.0),
           bottomRight: Radius.circular(40.0),
         ),
       ),
+      
+      
+      
+      
       child: Stack(
+
         children: [
+          // Positioned.fill(
+          //   child: Image.asset(
+          //     "assets/everqpidbg.png",
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           Align(
             alignment: Alignment.center,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
               child: Image.asset(
-                'assets/Group_1000002551.png',
+                'assets/everlogo.png',
                 width: mainImageWidth,
                 height: mainImageHeight,
                 fit: BoxFit.contain,
               ),
             ),
           ),
-          Align(
-            alignment: AlignmentDirectional(0.60, -0.55),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.asset(
-                'assets/Frame_1597886617.png',
-                width: smallImageSize,
-                height: smallImageSize,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-          Align(
-            alignment: AlignmentDirectional(-0.60, 0.55),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.asset(
-                'assets/Frame_1597886617.png',
-                width: smallImageSize,
-                height: smallImageSize,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
+          // Align(
+          //   alignment: AlignmentDirectional(0.60, -0.55),
+          //   child: ClipRRect(
+          //     borderRadius: BorderRadius.circular(8.0),
+          //     child: Image.asset(
+          //       'assets/Frame_1597886617.png',
+          //       width: smallImageSize,
+          //       height: smallImageSize,
+          //       fit: BoxFit.contain,
+          //     ),
+          //   ),
+          // ),
+          // Align(
+          //   alignment: AlignmentDirectional(-0.60, 0.55),
+          //   child: ClipRRect(
+          //     borderRadius: BorderRadius.circular(8.0),
+          //     child: Image.asset(
+          //       'assets/Frame_1597886617.png',
+          //       width: smallImageSize,
+          //       height: smallImageSize,
+          //       fit: BoxFit.cover,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
