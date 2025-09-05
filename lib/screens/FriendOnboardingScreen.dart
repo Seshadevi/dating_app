@@ -125,7 +125,7 @@ class _FriendOnboardingScreenState extends ConsumerState<FriendOnboardingScreen>
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: DatingColors.black,
+                      color: DatingColors.everqpidColor,
                     ),
                     textAlign: TextAlign.start,
                   ),
@@ -137,7 +137,7 @@ class _FriendOnboardingScreenState extends ConsumerState<FriendOnboardingScreen>
                     'BFF will help you find new friendships, whether you’re new to a city or just looking to expand your social circle.',
                     style: TextStyle(
                       fontSize: 14,
-                      color: DatingColors.black,
+                      color: DatingColors.everqpidColor,
                     ),
                     textAlign: TextAlign.start,
                   ),
@@ -199,7 +199,7 @@ class _FriendOnboardingScreenState extends ConsumerState<FriendOnboardingScreen>
                       child: Ink(
                         decoration: const BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [DatingColors.primaryGreen,DatingColors.black],
+                            colors: [DatingColors.lightpinks,DatingColors.everqpidColor],
                           ),
                           borderRadius: BorderRadius.all(Radius.circular(12)),
                         ),
@@ -207,7 +207,7 @@ class _FriendOnboardingScreenState extends ConsumerState<FriendOnboardingScreen>
                           child: Text(
                             'Got It',
                             style: TextStyle(
-                              color: DatingColors.white,
+                              color: DatingColors.brown,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

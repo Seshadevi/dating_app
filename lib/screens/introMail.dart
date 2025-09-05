@@ -69,7 +69,7 @@ void didChangeDependencies() {
                     value: 5 / 18,
                     backgroundColor: DatingColors.lightgrey,
                     valueColor: const AlwaysStoppedAnimation<Color>(
-                      DatingColors.primaryGreen,
+                      DatingColors.everqpidColor,
                     ),
                   ),
                 ),
@@ -130,7 +130,7 @@ void didChangeDependencies() {
                   child: Text(
                     'Your Email',
                     style: TextStyle(
-                      color: DatingColors.black,
+                      color: DatingColors.brown,
                       fontFamily: 'poppins',
                       fontSize: 20.0,
                       letterSpacing: 1.28,
@@ -157,7 +157,7 @@ void didChangeDependencies() {
                           height: screenWidth * 0.125,
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [DatingColors.primaryGreen, DatingColors.black],
+                              colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                             ),
@@ -203,14 +203,14 @@ void didChangeDependencies() {
                   height: 150, // or any height you need
                   child: Stack(
                     children: [
-                      Positioned(
-                        left: 0,
-                        bottom: 0,
-                        child: Image.asset(
-                          'assets/mail_frame.png',
-                          fit: BoxFit.contain,
-                        ),
-                      ),
+                      // Positioned(
+                      //   left: 0,
+                      //   bottom: 0,
+                      //   child: Image.asset(
+                      //     'assets/mail_frame.png',
+                      //     fit: BoxFit.contain,
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -230,9 +230,9 @@ void didChangeDependencies() {
         width: width,
         height: 60,
         decoration: BoxDecoration(
-          color: DatingColors.lightyellow,
+          color: DatingColors.everqpidColor,
           borderRadius: BorderRadius.circular(18.0),
-          border: Border.all(color: DatingColors.primaryGreen, width: 1.0),
+          border: Border.all(color: DatingColors.everqpidColor, width: 1.0),
         ),
         child: TextFormField(
           controller: emailController,
@@ -250,7 +250,7 @@ void didChangeDependencies() {
             border: InputBorder.none,
           ),
           style: const TextStyle(
-            color: DatingColors.black,
+            color: DatingColors.brown,
             fontFamily: 'Inter',
             letterSpacing: 0.4,
           ),

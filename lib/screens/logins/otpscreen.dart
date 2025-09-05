@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/firebase_auth.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
@@ -185,11 +186,11 @@ class _OTPScreenState extends ConsumerState<OTPScreen> {
                       child: Container(
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.grey,
+                          color: DatingColors.black,
                         ),
                         padding: const EdgeInsets.all(8),
                         child: const Icon(Icons.arrow_forward_ios,
-                            color: Colors.white, size: 18),
+                            color: DatingColors.darkGrey, size: 18),
                       ),
                     ),
                   ],
@@ -214,7 +215,7 @@ class _OTPScreenState extends ConsumerState<OTPScreen> {
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             gradient: LinearGradient(
-              colors: [Color(0xFFB9D83F), Colors.black],
+              colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),

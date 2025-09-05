@@ -138,7 +138,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
                 value: 18 / 18,
                 backgroundColor: DatingColors.surfaceGrey,
                 valueColor: const AlwaysStoppedAnimation<Color>(
-                    DatingColors.darkGreen),
+                    DatingColors.everqpidColor),
               ),
               const SizedBox(height: 16),
               Row(
@@ -212,17 +212,17 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
               ),
               const SizedBox(height: 8),
               const Text(
-                "Time To Put A Face To The Name",
+                "Upload A Photo To Start Matching",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 10),
-              const Text(
-                "You Do You! Add At Least 4 Photos, Whether It’s You With Your Pet, Eating Your Fave Food, Or In A Place You Love.",
-                style: TextStyle(fontSize: 14, height: 1.4),
-              ),
+              // const Text(
+              //   "You Do You! Add At Least 4 Photos, Whether It’s You With Your Pet, Eating Your Fave Food, Or In A Place You Love.",
+              //   style: TextStyle(fontSize: 14, height: 1.4),
+              // ),
               const SizedBox(height: 24),
               Wrap(
                 spacing: 10,
@@ -236,7 +236,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: Colors.greenAccent,
+                          color: DatingColors.everqpidColor,
                           width: 2,
                         ),
                       ),
@@ -259,7 +259,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
               const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.camera_alt, color: DatingColors.darkGreen, size: 20),
+                  Icon(Icons.camera_alt, color: DatingColors.everqpidColor, size: 20),
                   SizedBox(width: 8),
                   Text(
                     "Want To Make Sure You Really Shine?",
@@ -284,7 +284,7 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
               ),
               /// Changed section ends here
 
-              const SizedBox(height: 14),
+              const SizedBox(height: 44),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

@@ -98,7 +98,7 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
                 value: 17/ 18,
                 backgroundColor: DatingColors.lightgrey,
                 valueColor: const AlwaysStoppedAnimation<Color>(
-                   DatingColors.primaryGreen),
+                   DatingColors.lightpinks),
               ),
               // const SizedBox(height: 16),
               Row(
@@ -106,31 +106,50 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
                   IconButton(
                     icon: const Icon(Icons.arrow_back_ios),
                     onPressed: () {
-                     Navigator.pushNamed(
-                          context,
-                          '/promptsScreen',
-                          arguments: {
-                            'latitude': latitude,
-                            'longitude': longitude,
-                            'dateofbirth':dateofbirth,
-                            'userName':userName,
-                            'selectgender':selectedgender,
-                            "showonprofile":showonprofile,
-                            "modeid":modeid,
-                            "modename":modename,
-                            "selectedGenderIds":selectedGenderIds,
-                            "selectedoptionIds":selectedoptionIds,
-                            "selectedheight":selectedheight,
-                            "selectedinterestIds":selectedinterestsIds,
-                            "selectedQualitiesIds":selectedQualitiesIds,
-                            "selectedHabbits":selectedHabitIds,
-                            "selectedKidsIds":selectedKidsIds,
-                            "selectedReligionIds":selectedReligionIds,
-                            "selectedCausesIds":selectedcausesIds,
-                            "selectedPrompts":seletedprompts,
-                            'email':email,
-                            'mobile':mobile
-                          },);
+                    //  Navigator.pushNamed(
+                    //       context,
+                    //       '/promptsScreen',
+                    //       arguments: {
+                    //         'latitude': latitude,
+                    //         'longitude': longitude,
+                    //         'dateofbirth':dateofbirth,
+                    //         'userName':userName,
+                    //         'selectgender':selectedgender,
+                    //         "showonprofile":showonprofile,
+                    //         "modeid":modeid,
+                    //         "modename":modename,
+                    //         "selectedGenderIds":selectedGenderIds,
+                    //         "selectedoptionIds":selectedoptionIds,
+                    //         "selectedheight":selectedheight,
+                    //         "selectedinterestIds":selectedinterestsIds,
+                    //         "selectedQualitiesIds":selectedQualitiesIds,
+                    //         "selectedHabbits":selectedHabitIds,
+                    //         "selectedKidsIds":selectedKidsIds,
+                    //         "selectedReligionIds":selectedReligionIds,
+                    //         "selectedCausesIds":selectedcausesIds,
+                    //         "selectedPrompts":seletedprompts,
+                    //         'email':email,
+                    //         'mobile':mobile
+                    //       },);
+                    Navigator.pushNamed(
+                                    context,
+                                    '/heightscreen',
+                                    arguments: {
+                                      'latitude': latitude,
+                                      'longitude': longitude,
+                                      'dateofbirth':dateofbirth,
+                                      'userName':userName,
+                                      'selectgender':selectedgender,
+                                      "showonprofile":showonprofile,
+                                      "modeid":modeid,
+                                      "modename":modename,
+                                      "selectedGenderIds":selectedGenderIds,
+                                      "selectedoptionIds":selectedoptionIds,
+                                      "selectedheight":selectedheight,
+                                      'email':email,
+                                      'mobile':mobile
+                                    },
+                                );
                     },
                   ),
                   const Spacer(),
@@ -174,20 +193,20 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
               ),
               // const SizedBox(height: 8),
               const Text(
-                "What will opening Move Be?",
+                "Ice Breaking Move",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               // const SizedBox(height: 10),
-            const Text(
-              "Choose A First Message For All\nYour New Matches To Reply To.\nEasy!",
-              style: TextStyle(
-                fontSize: 15,
-                color: DatingColors.black,
-              ),
-            ),
+            // const Text(
+            //   "Choose A First Message For All\nYour New Matches To Reply To.\nEasy!",
+            //   style: TextStyle(
+            //     fontSize: 15,
+            //     color: DatingColors.black,
+            //   ),
+            // ),
             // const SizedBox(height: 20),
             if (messages.isEmpty)
               const Expanded(
@@ -214,10 +233,10 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
                         margin: const EdgeInsets.only(bottom: 16),
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
                         decoration: BoxDecoration(
-                          color: DatingColors.lightGreen,
+                          color: isSelected ? DatingColors.everqpidColor: DatingColors.lightpinks,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: isSelected ? DatingColors.primaryGreen: DatingColors.black,
+                            color: isSelected ? DatingColors.lightpink: DatingColors.lightpinks,
                             width: 1.5,
                           ),
                         ),
@@ -235,7 +254,7 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
                             ),
                             Icon(
                               isSelected ? Icons.check_circle : Icons.circle_outlined,
-                              color: isSelected ? DatingColors.primaryGreen : DatingColors.lightgrey,
+                              color: isSelected ? DatingColors.lightpink : DatingColors.lightpinks,
                             ),
                           ],
                         ),
@@ -265,16 +284,16 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
                     decoration: BoxDecoration(
                       gradient: selectedMessageIds.length == 3
                           ? const LinearGradient(
-                              colors: [DatingColors.primaryGreen, DatingColors.black],
+                              colors: [DatingColors.lightpinks, DatingColors.black],
                             )
                           : LinearGradient(
-                              colors: [DatingColors.surfaceGrey, DatingColors.lightyellow,],
+                              colors: [DatingColors.lightpinks, DatingColors.everqpidColor,],
                             ),
                       borderRadius: BorderRadius.circular(50),
                     ),
                     child: IconButton(
                       icon: const Icon(Icons.arrow_forward_ios,
-                          color: DatingColors.white),
+                          color: DatingColors.everqpidColor),
                       onPressed: () {
                         if (selectedMessageIds.length == 3) {
                             Navigator.pushNamed(

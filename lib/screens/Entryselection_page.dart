@@ -55,7 +55,7 @@ class _SelectPageState extends ConsumerState<SelectPage> {
       height: containerHeight,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [DatingColors.darkGreen, DatingColors.brown],
+          colors: [DatingColors.lightpink, DatingColors.everqpidColor],
           stops: [0.0, 1.0],
           begin: AlignmentDirectional(0.0, -1.0),
           end: AlignmentDirectional(0, 1.0),
@@ -246,7 +246,7 @@ class _SelectPageState extends ConsumerState<SelectPage> {
           _buildSocialButton(
             "Use Mobile Number",
             null,
-            DatingColors.darkGreen,
+            DatingColors.everqpidColor,
             screenWidth,
             isSmallScreen,
             () {
@@ -300,7 +300,7 @@ class _SelectPageState extends ConsumerState<SelectPage> {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor:DatingColors.backgroundWhite,
-          foregroundColor:DatingColors.black,
+          foregroundColor:DatingColors.everqpidColor,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
@@ -332,7 +332,7 @@ class _SelectPageState extends ConsumerState<SelectPage> {
                   fontFamily: 'Lexend',
                   fontSize: fontSize,
                   fontWeight: FontWeight.w500,
-                  color: DatingColors.black,
+                  color: DatingColors.everqpidColor,
                 ),
               ),
             ),

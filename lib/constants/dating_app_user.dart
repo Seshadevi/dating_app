@@ -1,11 +1,17 @@
 import 'dart:ui';
 
 class DatingColors {
-  static const Color primaryGreen = Color(0xFFB2D12E);
+  static const Color primaryGreen = Color(0xFFFCD0D7);
+  //  Color(0xFFB2D12E);
   static const Color darkGreen = Color(0xFF92AB26);
   static const Color lightpink = Color(0xFFEB507F);
+  static const Color qpidColor = Color(0xFFD68F95);
+  static const Color lightpinks = Color(0xFFFEDFDD);
+  static const Color middlepink = Color(0xFFFEDFDE);
+  static const Color everqpidColor = Color(0xFFFEB3B8);
+
   static const Color accentTeal = Color(0xFF00BCD4);
-  static const Color black = Color(0xFF000000);
+  static const Color black =Color(0xFFF58AAE);
   static const Color yellow = Color(0xFFF9E109);
   static const Color lightyellow = Color(0xFFE6EBA4);
   static const Color white = Color(0xFFFFFFFF);

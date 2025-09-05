@@ -66,98 +66,111 @@ class _AllowNotificationState extends State<AllowNotification> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+      body: Stack(
         children: [
-          Container(
-            margin: EdgeInsets.only(
-              top: screenHeight * 0.1,
-              bottom: screenHeight * 0.04,
-            ),
-            width: screenWidth,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Image.asset('assets/allow_notification.png'),
-              ],
+          // Background image covering entire screen
+          Positioned.fill(
+            child: Image.asset(
+              "assets/everqpidbg.png",
+              fit: BoxFit.cover,
             ),
           ),
-          const Text(
-            'Enable Notifications',
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              fontFamily: 'Inter Tight',
-              fontSize: 27.0,
-              letterSpacing: 0.48,
-              fontWeight: FontWeight.bold,
-              height: 1.32,
-            ),
-          ),
-          const Text(
-            'So you never miss a \nmatch, like, or message.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'Inter Tight',
-              fontSize: 17.0,
-              letterSpacing: 1.28,
-              fontWeight: FontWeight.w300,
-            ),
-          ),
-          SizedBox(height: screenHeight * 0.21),
-          Container(
-            height: screenHeight * 0.06,
-            width: screenWidth * 0.88,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              gradient: const LinearGradient(
-                colors: [DatingColors.primaryGreen,DatingColors.black ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-            child: ElevatedButton(
-              onPressed: () => _handleNotificationPermission(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent,
-                shadowColor: Colors.transparent,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18),
+          
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                margin: EdgeInsets.only(
+                  top: screenHeight * 0.1,
+                  bottom: screenHeight * 0.04,
+                ),
+                width: screenWidth,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    // Image.asset('assets/allow_notification.png'),
+                    SizedBox(height: 200,)
+                  ],
                 ),
               ),
-              child: Text(
-                'Allow Notifications',
+              const Text(
+                'Enable Notifications',
+                textAlign: TextAlign.start,
                 style: TextStyle(
-                  fontSize: screenWidth * 0.045,
-                  color: DatingColors.white,
+                  fontFamily: 'Inter Tight',
+                  fontSize: 27.0,
+                  letterSpacing: 0.48,
+                  fontWeight: FontWeight.bold,
+                  height: 1.32,
                 ),
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 25),
-            child: TextButton(
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  '/intropage',
-                  arguments: {
-                    'latitude': latitude,
-                    'longitude': longitude,
-                    'email':entryemail,
-                    'mobile':mobile
+              const Text(
+                'So you never miss a \nmatch, like, or message.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Inter Tight',
+                  fontSize: 17.0,
+                  letterSpacing: 1.28,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+              SizedBox(height: screenHeight * 0.21),
+              Container(
+                height: screenHeight * 0.06,
+                width: screenWidth * 0.88,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  gradient: const LinearGradient(
+                    colors: [DatingColors.primaryGreen,DatingColors.black ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+                child: ElevatedButton(
+                  onPressed: () => _handleNotificationPermission(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                  ),
+                  child: Text(
+                    'Allow Notifications',
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.045,
+                      color: DatingColors.brown,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/intropage',
+                      arguments: {
+                        'latitude': latitude,
+                        'longitude': longitude,
+                        'email':entryemail,
+                        'mobile':mobile
+                      },
+                    );   
                   },
-                );   
-              },
-              child: Text(
-                'Not Now',
-                style: TextStyle(
-                  fontSize: screenWidth * 0.045,
-                  color: DatingColors.black,
+                  child: Text(
+                    'Not Now',
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.045,
+                      color: DatingColors.brown,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          )
+              )
+            ],
+          ),
         ],
       ),
     );

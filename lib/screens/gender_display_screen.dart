@@ -64,14 +64,14 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
       body: Stack(
         children: [
           // Decorative Image
-          Positioned(
-            left: 0,
-            bottom: 0,
-            child: Image.asset(
-              'assets/mail_frame.png',
-              fit: BoxFit.contain,
-            ),
-          ),
+          // Positioned(
+          //   left: 0,
+          //   bottom: 0,
+          //   child: Image.asset(
+          //     'assets/mail_frame.png',
+          //     fit: BoxFit.contain,
+          //   ),
+          // ),
 
           // Main content
           Padding(
@@ -88,9 +88,9 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
                   //   child: 
                     LinearProgressIndicator(
                       value: 4/ 18,
-                      backgroundColor: DatingColors.lightGreen,
+                      backgroundColor: DatingColors.lightpinks,
                       valueColor: const AlwaysStoppedAnimation<Color>(
-                        DatingColors.darkGreen,
+                        DatingColors.everqpidColor,
                       ),
                     ),
                   // ),
@@ -153,7 +153,7 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
                         ? 'Select Gender'
                         : genderPronouns[selectedgender] ?? selectedgender,
                   ),
-                  backgroundColor: DatingColors.primaryGreen,
+                  backgroundColor: DatingColors.everqpidColor,
                 ),
 
 
@@ -170,7 +170,7 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
                       onChanged: (val) => setState(() {
                         showGenderOnProfile = val;
                       }),
-                      activeColor: DatingColors.primaryGreen,
+                      activeColor: DatingColors.everqpidColor,
                     ),
                   ],
                 ),
@@ -193,7 +193,7 @@ class _GenderDisplayScreenState extends State<GenderDisplayScreen> {
                     height: screenWidth * 0.125,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [DatingColors.primaryGreen, DatingColors.black],
+                        colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                       ),

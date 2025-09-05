@@ -38,7 +38,7 @@ class _IndustryscreenState extends ConsumerState<Industryscreen> {
           // Adjust based on your model type
           setState(() {
             selectedindustryId = first.id; // assuming `id` exists
-            selectedIndustryName = first.industries; // assuming `religion` string exists
+            selectedIndustryName = first.industrie; // assuming `religion` string exists
           });
         }
       }

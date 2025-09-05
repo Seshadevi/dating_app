@@ -60,7 +60,7 @@ class _BumbleDateProfileScreenState
   final ImagePicker _picker = ImagePicker();
   // final TextEditingController _bioController = TextEditingController();
   // String selectedGender = 'Man';
-   @override
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
@@ -81,6 +81,7 @@ class _BumbleDateProfileScreenState
       });
     }
   }
+
   @override
   void initState() {
     super.initState();
@@ -356,7 +357,8 @@ class _BumbleDateProfileScreenState
           padding: EdgeInsets.all(2),
           child: Container(
             decoration: BoxDecoration(
-              color: image != null ? DatingColors.surfaceGrey : DatingColors.white,
+              color:
+                  image != null ? DatingColors.surfaceGrey : DatingColors.white,
               borderRadius: BorderRadius.circular(10),
             ),
             child: image != null
@@ -429,8 +431,8 @@ class _BumbleDateProfileScreenState
               if (selectedImages[index] != null)
                 ListTile(
                   leading: Icon(Icons.delete, color: DatingColors.errorRed),
-                  title:
-                      Text('Remove Photo', style: TextStyle(color: DatingColors.errorRed)),
+                  title: Text('Remove Photo',
+                      style: TextStyle(color: DatingColors.errorRed)),
                   onTap: () {
                     Navigator.pop(context);
                     setState(() {
@@ -574,7 +576,8 @@ class _BumbleDateProfileScreenState
               ),
             ),
             SizedBox(width: 8),
-            Icon(Icons.arrow_forward_ios, color: DatingColors.lightgrey, size: 16),
+            Icon(Icons.arrow_forward_ios,
+                color: DatingColors.lightgrey, size: 16),
           ],
         ),
       ),
@@ -1090,7 +1093,9 @@ class _BumbleDateProfileScreenState
         const Text(
           'Prompts',
           style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w600, color: DatingColors.black),
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: DatingColors.black),
         ),
         const SizedBox(height: 8),
         const Text(
@@ -1117,8 +1122,7 @@ class _BumbleDateProfileScreenState
                         const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
                     decoration: BoxDecoration(
                       border: Border(
-                        bottom: BorderSide(
-                            color: DatingColors.lightgrey),
+                        bottom: BorderSide(color: DatingColors.lightgrey),
                       ),
                     ),
                     child: Row(
@@ -1233,8 +1237,8 @@ class _BumbleDateProfileScreenState
                     padding: const EdgeInsets.symmetric(
                         vertical: 16, horizontal: 12),
                     decoration: BoxDecoration(
-                      border:
-                          Border(top: BorderSide(color: DatingColors.surfaceGrey)),
+                      border: Border(
+                          top: BorderSide(color: DatingColors.surfaceGrey)),
                     ),
                     child: Row(
                       children: const [
@@ -1256,18 +1260,20 @@ class _BumbleDateProfileScreenState
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: DatingColors.lightGreen,
-                    border:
-                        Border(top: BorderSide(color: DatingColors.surfaceGrey)),
+                    border: Border(
+                        top: BorderSide(color: DatingColors.surfaceGrey)),
                   ),
                   child: TextField(
                     controller: _promptController,
                     maxLines: 2,
-                    style: const TextStyle(fontSize: 15, color: DatingColors.black),
+                    style: const TextStyle(
+                        fontSize: 15, color: DatingColors.black),
                     decoration: InputDecoration(
                       hintText: 'Write your prompt...',
                       border: InputBorder.none,
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.check, color: DatingColors.primaryGreen),
+                        icon: const Icon(Icons.check,
+                            color: DatingColors.primaryGreen),
                         onPressed: () {
                           final promptText = _promptController.text.trim();
                           if (promptText.isNotEmpty) {
@@ -1325,10 +1331,9 @@ class _BumbleDateProfileScreenState
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
             decoration: BoxDecoration(
-              color:  DatingColors.white,
+              color: DatingColors.white,
               borderRadius: BorderRadius.circular(12),
-              border:
-                  Border.all(color: DatingColors.middlegrey),
+              border: Border.all(color: DatingColors.middlegrey),
             ),
             child: TextField(
               controller: _bioController,
@@ -1340,8 +1345,7 @@ class _BumbleDateProfileScreenState
                 hintText: 'Write about you',
                 border: InputBorder.none,
                 suffixIcon: IconButton(
-                  icon: const Icon(Icons.check,
-                      color: DatingColors.black),
+                  icon: const Icon(Icons.check, color: DatingColors.black),
                   onPressed: () async {
                     final updatedHeadline = _bioController.text.trim();
 
@@ -1392,8 +1396,9 @@ class _BumbleDateProfileScreenState
                     headline.isNotEmpty ? headline : 'Write about you',
                     style: TextStyle(
                       fontSize: 16,
-                      color:
-                          headline.isNotEmpty ? DatingColors.black : DatingColors.black,
+                      color: headline.isNotEmpty
+                          ? DatingColors.black
+                          : DatingColors.black,
                       fontStyle: headline.isNotEmpty
                           ? FontStyle.normal
                           : FontStyle.italic,
@@ -1425,8 +1430,7 @@ class _BumbleDateProfileScreenState
         decoration: BoxDecoration(
           color: DatingColors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-              color: DatingColors.mediumGrey, width: 1),
+          border: Border.all(color: DatingColors.mediumGrey, width: 1),
         ),
         child: Row(
           children: [
@@ -1439,7 +1443,8 @@ class _BumbleDateProfileScreenState
                 ),
               ),
             ),
-            Icon(Icons.arrow_forward_ios, color: DatingColors.middlegrey, size: 16),
+            Icon(Icons.arrow_forward_ios,
+                color: DatingColors.middlegrey, size: 16),
           ],
         ),
       ),
@@ -1447,162 +1452,196 @@ class _BumbleDateProfileScreenState
   }
 
   Widget _buildAboutYouSection() {
-  final userData = ref.watch(loginProvider);
-  final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+    final userData = ref.watch(loginProvider);
+    final user =
+        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
 
-  final workTitle = user?.work?.title ?? '';
-  final workCompany = user?.work?.company ?? '';
-  final workDisplayText = (workTitle.isNotEmpty || workCompany.isNotEmpty)
-      ? '$workTitle${workCompany.isNotEmpty ? ' at $workCompany' : ''}'
-      : 'Add';
- Education? education = user?.education;
+    final workTitle = user?.work?.title ?? '';
+    final workCompany = user?.work?.company ?? '';
+    final workDisplayText = (workTitle.isNotEmpty || workCompany.isNotEmpty)
+        ? '$workTitle${workCompany.isNotEmpty ? ' at $workCompany' : ''}'
+        : 'Add';
+    Education? education = user?.education;
     final educationText = education != null
         ? education.institution! + (' in ${education.gradYear}')
         : 'Add';
 
-  final selectGender = user?.gender ?? 'Add';
+    final selectGender = user?.gender ?? 'Add';
 
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'About You',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: DatingColors.black),
-      ),
-      const SizedBox(height: 16),
-      _buildProfileItem(Icons.work_outline, 'Work', workDisplayText, onTap: () {
-        Navigator.pushNamed(context, '/occupationscreen');
-      }),
-      _buildProfileItem(Icons.school_outlined, 'Education', educationText, onTap: () {
-        Navigator.pushNamed(context, '/educationscreen');
-      }),
-      _buildProfileItem(Icons.person_outline, 'Gender', selectGender, onTap: () {
-        Navigator.pushNamed(context, '/updategenderscreen');
-      }),
-      _buildProfileItem(Icons.location_on_outlined, 'Location', 'Add', onTap: () {
-        Navigator.pushNamed(context, '/citysearchpage');
-      }),
-      _buildProfileItem(Icons.home_outlined, 'Hometown', 'Add', onTap: () {
-        Navigator.pushNamed(context, '/hometownscreen');
-      }),
-    ],
-  );
-}
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'About You',
+          style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: DatingColors.black),
+        ),
+        const SizedBox(height: 16),
+        _buildProfileItem(Icons.work_outline, 'Work', workDisplayText,
+            onTap: () {
+          Navigator.pushNamed(context, '/occupationscreen');
+        }),
+        _buildProfileItem(Icons.school_outlined, 'Education', educationText,
+            onTap: () {
+          Navigator.pushNamed(context, '/educationscreen');
+        }),
+        _buildProfileItem(Icons.person_outline, 'Gender', selectGender,
+            onTap: () {
+          Navigator.pushNamed(context, '/updategenderscreen');
+        }),
+        _buildProfileItem(Icons.location_on_outlined, 'Location', 'Add',
+            onTap: () {
+          Navigator.pushNamed(context, '/citysearchpage');
+        }),
+        _buildProfileItem(Icons.home_outlined, 'Hometown', 'Add', onTap: () {
+          Navigator.pushNamed(context, '/hometownscreen');
+        }),
+      ],
+    );
+  }
 
-Widget _buildMoreAboutYouSection() {
-  final userData = ref.watch(loginProvider);
-  final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+  Widget _buildMoreAboutYouSection() {
+    final userData = ref.watch(loginProvider);
+    final user =
+        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
 
-  final lookingfor = (user?.lookingFor?.isNotEmpty ?? false)
-      ? (user?.lookingFor?.first.value ?? 'Add')
-      : 'Add';
+    final lookingfor = (user?.lookingFor?.isNotEmpty ?? false)
+        ? (user?.lookingFor?.first.value ?? 'Add')
+        : 'Add';
 
-  final religion = (user?.religions?.isNotEmpty ?? false)
-      ? (user?.religions?.first.religion ?? 'Add')
-      : 'Add';
+    final religion = (user?.religions?.isNotEmpty ?? false)
+        ? (user?.religions?.first.religion ?? 'Add')
+        : 'Add';
 
-  final kids = (user?.kids?.isNotEmpty ?? false)
-      ? (user?.kids?.first.kids ?? 'Add')
-      : 'Add';
+    final kids = (user?.kids?.isNotEmpty ?? false)
+        ? (user?.kids?.first.kids ?? 'Add')
+        : 'Add';
 
-  final drinking = (user?.drinking?.isNotEmpty ?? false)
-      ? (user?.drinking?.first.preference ?? 'Add')
-      : 'Add';
+    final drinking = (user?.drinking?.isNotEmpty ?? false)
+        ? (user?.drinking?.first.preference ?? 'Add')
+        : 'Add';
 
-  final  smoking = (user?.smoking?.isNotEmpty ?? false)
-      ? user?.smoking
-      : 'Add';
-  // final  height = (user?.height) != null
-  //     ? user?.height
-  //     : 'Add';
-  
-  // final  newtoarea = (user?.newToArea?.isNotEmpty ?? false)
-  //     ? user?.newToArea
-  //     : 'Add';
-  // final  relationship = (user?.relationship) != null
-  //     ? user?.relationship
-  //     : 'Add';
-  final  educationLevel = (user?.educationLevel?.isNotEmpty ?? false)
-      ? user?.educationLevel
-      : 'Add';
-  final  havekids = (user?.haveKids?.isNotEmpty ?? false)
-      ? user?.haveKids
-      : 'Add';
-  final  industry = (user?.industries?.isNotEmpty ?? false)
-      ? user?.industries
-      : 'Add';
-  final  experiences = (user?.experiences?.isNotEmpty ?? false)
-      ? user?.experiences
-      : 'Add';
-      
+    final smoking =
+        (user?.smoking?.isNotEmpty ?? false) ? user?.smoking : 'Add';
 
-  final starsign = user?.starSign?.name ?? 'Add';
-  final exercise = user?.exercise ?? 'Add';
-    final  height = user?.height
-      ??'Add';
+    final newtoarea =
+        (user?.newToArea?.isNotEmpty ?? false) ? user?.newToArea : 'Add';
+    final relationship = (user?.relationships?.isNotEmpty ?? false)
+        ? (user?.relationships?.first.relation ??
+            'Add') // convert list to string
+        : 'Add';
 
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      const Text(
-        'More About You',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
-      ),
-      const SizedBox(height: 8),
-      Text(
-        'Share More Details About Yourself Are Curious About',
-        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-      ),
-      const SizedBox(height: 16),
-      _buildProfileItem(Icons.place_outlined, 'Height', 'add', onTap: () {
-        Navigator.pushNamed(context,'/heightscreenprofile');
-        
-      }),
-      _buildProfileItem(Icons.search, 'Looking For', lookingfor, onTap: () {
-        Navigator.pushNamed(context,'/lookingforscreen');
-      }),
-      _buildProfileItem(Icons.favorite_border, 'Relationship', 'add', onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => RelationshipScreen()));
-      }),
-      _buildProfileItem(Icons.child_care, 'Kids', kids, onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => HaveKidsScreen()));
-      }),
-      _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', smoking!, onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => SmokingScreen()));
-      }),
-      _buildProfileItem(Icons.local_drink_outlined, 'Drinking', drinking, onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => DrinkingScreen()));
-      }),
-      _buildProfileItem(Icons.fitness_center_outlined, 'Exercise', exercise, onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => ExerciseScreen()));
-      }),
-      _buildProfileItem(Icons.location_city_outlined, 'New To Area', 'Add', onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => NewToAreaScreen()));
-      }),
-      _buildProfileItem(Icons.star_border, 'Star Sign', starsign, onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => StarSignScreen()));
-      }),
-      _buildProfileItem(Icons.place_outlined, 'Religion', religion, onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => ReligionScreen()));
-      }),
-      // ====================================
-      _buildProfileItem(Icons.business_sharp, 'Experience', 'add', onTap: () {
-        Navigator.pushNamed(context, '/experiencescreen');
-      }),
-      _buildProfileItem(Icons.factory, 'Industries', 'add', onTap: () {
-        Navigator.pushNamed(context, '/industryscreen');
-      }),
-      _buildProfileItem(Icons.school, 'EducationLevel', educationLevel!, onTap: () {
-        Navigator.pushNamed(context, '/educaationlevelscreen');
-      }),
-      _buildProfileItem(Icons.baby_changing_station, 'Have Kids', havekids!, onTap: () {
-        Navigator.pushNamed(context, '/havekidscreen');
-      }),
-      
-    ],
-  );
-}
+    final educationLevel = (user?.educationLevel?.isNotEmpty ?? false)
+        ? user?.educationLevel
+        : 'Add';
+    final havekids =
+        (user?.haveKids?.isNotEmpty ?? false) ? user?.haveKids : 'Add';
+    final industry = (user?.industries?.isNotEmpty ?? false)
+        ? (user?.industries?.first.industrie ?? 'Add')
+        : 'add';
+    print('industry........$industry');
+    print('................${user?.experiences?.first.experience}');
+    print('religin...........$religion');
 
+    final experiences = (user?.experiences?.isNotEmpty ?? false)
+        ? (user?.experiences?.first.experience ?? 'Add')
+        : 'Add';
+
+    // final industry = (user?.industries != null && user!.industries!.isNotEmpty)
+    //   ? (user.industries!.first.industries as List).join(', ')   // convert list to string
+    //   : 'Add';
+    // final experiences =
+    //     (user?.experiences != null && user!.experiences!.isNotEmpty)
+    //         ? (user.experiences?.first.userExperiences as List).join(', ')
+    //         : 'Add';
+
+    final starsign = user?.starSign?.name ?? 'Add';
+    final exercise = user?.exercise ?? 'Add';
+    final height = (user?.height != null)
+        ? user?.height.toString() // convert int to string for display
+        : 'Add';
+    print('adding############');
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'More About You',
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Share More Details About Yourself Are Curious About',
+          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+        ),
+        const SizedBox(height: 16),
+        _buildProfileItem(Icons.place_outlined, 'Height', height!, onTap: () {
+          Navigator.pushNamed(context, '/heightscreenprofile');
+        }),
+        _buildProfileItem(Icons.search, 'Looking For', lookingfor, onTap: () {
+          Navigator.pushNamed(context, '/lookingforscreen');
+        }),
+        _buildProfileItem(Icons.favorite_border, 'Relationship', relationship,
+            onTap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => RelationshipScreen()));
+        }),
+        _buildProfileItem(Icons.child_care, 'Kids', kids, onTap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => HaveKidsScreen()));
+        }),
+        _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', smoking!,
+            onTap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => SmokingScreen()));
+        }),
+        _buildProfileItem(Icons.local_drink_outlined, 'Drinking', drinking,
+            onTap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => DrinkingScreen()));
+        }),
+        _buildProfileItem(Icons.fitness_center_outlined, 'Exercise', exercise,
+            onTap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => ExerciseScreen()));
+        }),
+        _buildProfileItem(
+            Icons.location_city_outlined, 'New To Area', newtoarea!, onTap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => NewToAreaScreen()));
+        }),
+        _buildProfileItem(Icons.star_border, 'Star Sign', starsign, onTap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => StarSignScreen()));
+        }),
+        _buildProfileItem(Icons.place_outlined, 'Religion', religion,
+            onTap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => ReligionScreen()));
+        }),
+        // ====================================
+        _buildProfileItem(Icons.business_sharp, 'Experience', experiences,
+            onTap: () {
+          Navigator.pushNamed(context, '/experiencescreen');
+        }),
+        _buildProfileItem(Icons.factory, 'Industries', industry, onTap: () {
+          Navigator.pushNamed(context, '/industryscreen');
+        }),
+        _buildProfileItem(Icons.school, 'EducationLevel', educationLevel!,
+            onTap: () {
+          Navigator.pushNamed(context, '/educaationlevelscreen');
+        }),
+        _buildProfileItem(Icons.baby_changing_station, 'Have Kids', havekids!,
+            onTap: () {
+          Navigator.pushNamed(context, '/havekidscreen');
+          print('adding..............');
+        }),
+      ],
+    );
+  }
 
   Widget _buildPronounsSection() {
     final userData = ref.watch(loginProvider);
@@ -1629,17 +1668,16 @@ Widget _buildMoreAboutYouSection() {
               color: Colors.grey[600],
             ),
           ),
-          if (pronoun!=null)
-  Chip(
-    label: Text(pronoun),
-    backgroundColor: DatingColors.primaryGreen,
-  )
-else
-  Text(
-    'No pronouns added yet.',
-    style: TextStyle(color: DatingColors.middlegrey),
-  ),
-
+          if (pronoun != null)
+            Chip(
+              label: Text(pronoun),
+              backgroundColor: DatingColors.primaryGreen,
+            )
+          else
+            Text(
+              'No pronouns added yet.',
+              style: TextStyle(color: DatingColors.middlegrey),
+            ),
 
           SizedBox(height: 6),
           // SizedBox(height: 16),
@@ -1896,8 +1934,11 @@ else
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               )),
-              Text(value,style: const TextStyle(fontSize: 16, color: DatingColors.middlegrey)),
-              const Icon(Icons.arrow_forward_ios, size: 16, color: DatingColors.middlegrey),
+              Text(value,
+                  style: const TextStyle(
+                      fontSize: 16, color: DatingColors.middlegrey)),
+              const Icon(Icons.arrow_forward_ios,
+                  size: 16, color: DatingColors.middlegrey),
             ],
           ),
         ),

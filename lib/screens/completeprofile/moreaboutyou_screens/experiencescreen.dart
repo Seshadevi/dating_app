@@ -39,7 +39,7 @@ class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
           // Adjust based on your model type
           setState(() {
             selectedExperienceId = first.id; // assuming `id` exists
-            selectedExpereinceName = first.experiences; // assuming `religion` string exists
+            selectedExpereinceName = first.experience; // assuming `religion` string exists
           });
         }
       }

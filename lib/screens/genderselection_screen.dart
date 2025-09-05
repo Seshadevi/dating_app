@@ -56,12 +56,12 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
         decoration: BoxDecoration(
           gradient: isSelected
               ? const LinearGradient(
-                  colors: [DatingColors.primaryGreen, DatingColors.black],
+                  colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 )
               : const LinearGradient(
-                  colors: [DatingColors.lightGreen,DatingColors.lightyellow],
+                  colors: [DatingColors.white,DatingColors.lightpinks],
                 ),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
@@ -83,7 +83,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
             ),
             Icon(
               isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
-              color: isSelected ? DatingColors.white : DatingColors.lightgrey,
+              color: isSelected ? DatingColors.brown : DatingColors.lightgrey,
             ),
           ],
         ),
@@ -110,7 +110,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                     value: 2 / 18,
                     backgroundColor:DatingColors.surfaceGrey,
                     valueColor: const AlwaysStoppedAnimation<Color>(
-                      DatingColors.primaryGreen,
+                      DatingColors.everqpidColor,
                     ),
                   ),
                   // const SizedBox(height: 24),
@@ -164,9 +164,10 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                   const SizedBox(height: 24),
 
                   // Gender options
-                  _buildGenderOption("Woman"),
-                  _buildGenderOption("Man"),
-                  _buildGenderOption("Nonbinary"),
+                  _buildGenderOption("She/Her"),
+                  _buildGenderOption("He/Him"),
+                  // she/her,he/him
+                  // _buildGenderOption("Nonbinary"),
 
                   const SizedBox(height: 12),
 
@@ -219,7 +220,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                     height: screenWidth * 0.125,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [DatingColors.primaryGreen, DatingColors.black],
+                        colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                       ),
@@ -230,19 +231,32 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                           color: DatingColors.white),
                       onPressed: () {
                         if (selectedGender.isNotEmpty) {
-                          Navigator.pushNamed(
+                          // Navigator.pushNamed(
+                          //   context,
+                          //   '/profileshowscreen',
+                          //   arguments: {
+                          //     'latitude': latitude,
+                          //     'longitude': longitude,
+                          //     'dateofbirth': dateofbirth,
+                          //     'userName': userName,
+                          //     'selectgender': selectedGender,
+                          //     'email': entryemail,
+                          //     'mobile': mobile
+                          //   },
+                          // );
+                           Navigator.pushNamed(
                             context,
-                            '/profileshowscreen',
+                            '/emailscreen',
                             arguments: {
                               'latitude': latitude,
                               'longitude': longitude,
-                              'dateofbirth': dateofbirth,
-                              'userName': userName,
-                              'selectgender': selectedGender,
-                              'email': entryemail,
-                              'mobile': mobile
-                            },
-                          );
+                              'dateofbirth':dateofbirth,
+                              'userName':userName,
+                              'selectgender':selectedGender,
+                              // "showonprofile":showGenderOnProfile,
+                              'email':entryemail,
+                              'mobile':mobile
+                            },);
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(

@@ -94,6 +94,14 @@ class LocationScreen extends StatefulWidget {
       body: SafeArea(
         child: Stack(
           children: [
+            // Background image covering entire screen
+            Positioned.fill(
+              child: Image.asset(
+                "assets/everqpidbg.png",
+                fit: BoxFit.cover,
+              ),
+            ),
+            
             Padding(
               padding: EdgeInsets.symmetric(horizontal: width * 0.06),
               child: Column(
@@ -114,7 +122,7 @@ class LocationScreen extends StatefulWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: height * 0.022,
-                      color: DatingColors.black,
+                      color: DatingColors.brown,
                       height: 1.5,
                     ),
                   ),
@@ -137,7 +145,7 @@ class LocationScreen extends StatefulWidget {
                       child: Ink(
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [DatingColors.primaryGreen, DatingColors.black],
+                            colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                           ),
@@ -147,7 +155,7 @@ class LocationScreen extends StatefulWidget {
                           child: Text(
                             "Set Location Services",
                             style: TextStyle(
-                              color: DatingColors.white,
+                              color: DatingColors.brown,
                               fontSize: height * 0.022,
                             ),
                           ),
@@ -184,7 +192,7 @@ class LocationScreen extends StatefulWidget {
                       "Not Now",
                       style: TextStyle(
                         fontSize: height * 0.018,
-                        color: DatingColors.black,
+                        color: DatingColors.brown,
                       ),
                     ),
                   ),
@@ -194,24 +202,24 @@ class LocationScreen extends StatefulWidget {
             ),
 
             /// Circle image
-            Positioned(
-              top: height * 0.02,
-              right: 0,
-              child: Container(
-                height: height * 0.18,
-                width: height * 0.18,
-                decoration: const BoxDecoration(
-                  color: DatingColors.surfaceGrey,
-                  shape: BoxShape.circle,
-                ),
-                child: Image.asset(
-                  'assets/allow_location.png',
-                  height: height * 0.12,
-                  width: height * 0.12,
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
+            // Positioned(
+            //   top: height * 0.02,
+            //   right: 0,
+              // child: Container(
+              //   height: height * 0.18,
+              //   width: height * 0.18,
+              //   decoration: const BoxDecoration(
+              //     color: DatingColors.surfaceGrey,
+              //     shape: BoxShape.circle,
+              //   ),
+                // child: Image.asset(
+                  // 'assets/allow_location.png',
+                  // height: height * 0.12,
+                  // width: height * 0.12,
+                  // fit: BoxFit.contain,
+                // ),
+              // ),
+            // ),
           ],
         ),
       ),

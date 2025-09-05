@@ -84,15 +84,15 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Choose freely — update anytime",
-                  style: TextStyle(
-                    fontFamily: 'Inter',
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w300,
-                    height: 1.3,
-                  ),
-                ),
+                // const Text(
+                //   "Choose freely — update anytime",
+                //   style: TextStyle(
+                //     fontFamily: 'Inter',
+                //     fontSize: 18.0,
+                //     fontWeight: FontWeight.w300,
+                //     height: 1.3,
+                //   ),
+                // ),
                 const SizedBox(height: 20),
                 _buildToggleOption(),
                 const SizedBox(height: 20),
@@ -116,7 +116,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
         value: 7 / 18,
         backgroundColor: DatingColors.lightgrey,
         valueColor:
-            const AlwaysStoppedAnimation<Color>(DatingColors.primaryGreen),
+            const AlwaysStoppedAnimation<Color>(DatingColors.everqpidColor),
       ),
     );
   }
@@ -149,7 +149,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
           ),
           const SizedBox(width: 8),
           const Text(
-            "Who Would Like TO Meet?",
+            "whole Are You Looking",
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -175,7 +175,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
               }
             });
           },
-          activeTrackColor: DatingColors.primaryGreen,
+          activeTrackColor: DatingColors.everqpidColor,
           activeColor: DatingColors.white,
           inactiveTrackColor: DatingColors.lightgrey,
           inactiveThumbColor: DatingColors.white,
@@ -214,11 +214,11 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
         height: 70,
         decoration: BoxDecoration(
           color:
-              isSelected ?  DatingColors.darkGreen : DatingColors.lightyellow,
+              isSelected ?  DatingColors.everqpidColor : DatingColors.lightpinks,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
             width: 2,
-            color: isSelected ? const Color(0xffE9F1C4) : Colors.transparent,
+            color: isSelected ? DatingColors.lightpink : Colors.transparent,
           ),
         ),
         child: Row(
@@ -229,7 +229,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
               style: TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 22,
-                color: isSelected ? DatingColors.white :  DatingColors.secondaryText,
+                color: isSelected ? DatingColors.brown :  DatingColors.secondaryText,
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -239,11 +239,11 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? DatingColors.white :  DatingColors.darkGreen,
+                  color: isSelected ? DatingColors.lightpink :  DatingColors.white,
                   width: 2,
                 ),
                 color:
-                    isSelected ? DatingColors.secondaryText : DatingColors.white,
+                    isSelected ? DatingColors.lightpink : DatingColors.white,
               ),
               child: isSelected
                   ? Center(
@@ -296,7 +296,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
             height: screenWidth * 0.125,
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [DatingColors.primaryGreen, DatingColors.black],
+                colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),

@@ -32,6 +32,7 @@ class Dgapi {
   static const String educationdelete="$baseUrl/education";
   static const String experienceget="$baseUrl/user/experience";
   static const String industryget="$baseUrl/user/industry";
+  static const String  relationshipget= "$baseUrl/user/relationAll";
   // static const String ="$baseUrl/";
   // static const String ="$baseUrl/";
   // static const String ="$baseUrl/";
