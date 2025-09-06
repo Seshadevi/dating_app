@@ -153,7 +153,7 @@ class _OTPScreenState extends ConsumerState<OTPScreen> {
                     borderRadius: BorderRadius.circular(8),
                     fieldHeight: 50,
                     fieldWidth: 45,
-                    activeColor: const Color(0xFF869E23),
+                    activeColor: DatingColors.lightpinks,
                     selectedColor:  DatingColors.lightpinks,
                     inactiveColor: Colors.grey,
                   ),
