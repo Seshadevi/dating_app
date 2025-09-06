@@ -65,7 +65,7 @@ void didChangeDependencies() {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: LinearProgressIndicator(
-                    value: 5 / 18,
+                    value: 3/ 8,
                     backgroundColor: DatingColors.lightgrey,
                     valueColor: const AlwaysStoppedAnimation<Color>(
                       DatingColors.everqpidColor,

@@ -414,7 +414,7 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: LinearProgressIndicator(
-              value: 9 / 18,
+              value: 6/ 8,
               backgroundColor: DatingColors.lightgrey,
               valueColor: const AlwaysStoppedAnimation<Color>(
                   DatingColors.everqpidColor),
@@ -453,7 +453,7 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
                 const Text(
                   "How Tall Are You?",
                   style: TextStyle(
-                    fontSize: 25,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Poppins',
                   ),

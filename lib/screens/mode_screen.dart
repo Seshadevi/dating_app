@@ -461,7 +461,7 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: LinearProgressIndicator(
-                  value: 6 / 18,
+                  value: 4/ 8,
                   backgroundColor: DatingColors.lightgrey,
                   valueColor: const AlwaysStoppedAnimation<Color>(DatingColors.primaryGreen),
                 ),

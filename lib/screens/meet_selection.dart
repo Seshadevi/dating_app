@@ -113,7 +113,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: LinearProgressIndicator(
-        value: 7 / 18,
+        value: 5/ 8,
         backgroundColor: DatingColors.lightgrey,
         valueColor:
             const AlwaysStoppedAnimation<Color>(DatingColors.everqpidColor),
@@ -149,7 +149,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
           ),
           const SizedBox(width: 8),
           const Text(
-            "who are you looking for",
+            "Who Are You Looking For",
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,

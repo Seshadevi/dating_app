@@ -491,7 +491,7 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                 children: [
                   const SizedBox(height: 16),
                   LinearProgressIndicator(
-                    value: 1 / 16,
+                    value: 1 / 8,
                     backgroundColor: DatingColors.lightgrey,
                     valueColor: const AlwaysStoppedAnimation<Color>(
                       DatingColors.everqpidColor,

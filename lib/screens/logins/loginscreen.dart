@@ -47,18 +47,44 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     const SizedBox(height: 25),
                     IntlPhoneField(
-                      controller: controller,
-                      decoration: InputDecoration(
-                        hintText: 'Phone Number',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      initialCountryCode: 'IN',
-                      onChanged: (phone) {
-                        phoneNumber = phone.completeNumber;
-                      },
-                    ),
+  controller: controller,
+  decoration: InputDecoration(
+    hintText: 'Phone Number',
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: const BorderSide(
+        color: Colors.grey, // 👈 Normal border color
+        width: 1.5,
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: const BorderSide(
+        color: DatingColors.everqpidColor, // 👈 Border color when focused
+        width: 2.0,
+      ),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: const BorderSide(
+        color: Colors.redAccent, // 👈 Border color when error
+        width: 2.0,
+      ),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: const BorderSide(
+        color: Colors.red, // 👈 When focused + error
+        width: 2.0,
+      ),
+    ),
+  ),
+  initialCountryCode: 'IN',
+  onChanged: (phone) {
+    phoneNumber = phone.completeNumber;
+  },
+),
+
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 12),
                       child: Row(

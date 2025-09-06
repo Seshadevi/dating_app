@@ -95,7 +95,7 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
           children: [
             SizedBox(height: 20,),
             LinearProgressIndicator(
-                value: 17/ 18,
+                value: 7/ 8,
                 backgroundColor: DatingColors.lightgrey,
                 valueColor: const AlwaysStoppedAnimation<Color>(
                    DatingColors.lightpinks),
@@ -253,8 +253,8 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
                               ),
                             ),
                             Icon(
-                              isSelected ? Icons.check_circle : Icons.circle_outlined,
-                              color: isSelected ? DatingColors.lightpink : DatingColors.lightpinks,
+                              isSelected ? Icons.radio_button_checked : Icons.circle_outlined,
+                              color: isSelected ? DatingColors.lightpink : DatingColors.brown,
                             ),
                           ],
                         ),
@@ -284,16 +284,16 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
                     decoration: BoxDecoration(
                       gradient: selectedMessageIds.length == 3
                           ? const LinearGradient(
-                              colors: [DatingColors.lightpinks, DatingColors.black],
+                              colors: [DatingColors.everqpidColor, DatingColors.everqpidColor],
                             )
                           : LinearGradient(
-                              colors: [DatingColors.lightpinks, DatingColors.everqpidColor,],
+                              colors: [DatingColors.lightpinks, DatingColors.lightpinks,],
                             ),
                       borderRadius: BorderRadius.circular(50),
                     ),
                     child: IconButton(
                       icon: const Icon(Icons.arrow_forward_ios,
-                          color: DatingColors.everqpidColor),
+                          color: DatingColors.brown),
                       onPressed: () {
                         if (selectedMessageIds.length == 3) {
                             Navigator.pushNamed(

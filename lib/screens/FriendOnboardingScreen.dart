@@ -97,32 +97,84 @@ Widget build(BuildContext context) {
           Column(
             children: [
               const Spacer(flex: 9), // push content down a bit
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  'Where every swipe sparks a story',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 65, 17, 20),
-                  ),
-                  textAlign: TextAlign.start,
-                ),
-              ),
-              const SizedBox(height: 12),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: Text(
-                  ' you find new friendships, '
+              Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+  child: Stack(
+    children: [
+      // Background red text (thicker)
+      Text(
+        'Where Every Swipe Sparks A Story',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w900,
+          foreground: Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 6   // thickness of background
+            ..color = const Color.fromARGB(255, 160, 43, 41), // 🔴 Red border
+        ),
+        textAlign: TextAlign.start,
+      ),
+      // Foreground white text
+      const Text(
+        'Where Every Swipe Sparks A Story',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w900,
+          color: Colors.white, // ⚪ White text
+        ),
+        textAlign: TextAlign.start,
+      ),
+    ],
+  ),
+),
+
+              const SizedBox(height: 6),
+               Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+  child: Stack(
+    children: [
+      // Background red text (thicker)
+      Text(
+        ' you find new friendships, '
                   'whether you’re new to a city or just looking to expand your social circle.',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color.fromARGB(255, 65, 17, 20),
-                  ),
-                  textAlign: TextAlign.start,
-                ),
-              ),
-              const Spacer(),
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w100,
+          foreground: Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 4   // thickness of background
+            ..color = DatingColors.lightpink, // 🔴 Red border
+        ),
+        textAlign: TextAlign.center,
+      ),
+      // Foreground white text
+      const Text(
+        ' you find new friendships, '
+                  'whether you’re new to a city or just looking to expand your social circle.',
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w100,
+          color: Colors.white, // ⚪ White text
+        ),
+        textAlign: TextAlign.center,
+      ),
+    ],
+  ),
+),
+              
+              // const Padding(
+              //   padding: EdgeInsets.symmetric(horizontal: 20.0),
+              //   child: Text(
+              //     ' you find new friendships, '
+              //     'whether you’re new to a city or just looking to expand your social circle.',
+              //     style: TextStyle(
+              //       fontSize: 12,
+              //       color: Color.fromARGB(255, 65, 17, 20),
+              //     ),
+              //     textAlign: TextAlign.center,
+              //   ),
+              // ),
+              // const Spacer(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                 child: SizedBox(
@@ -179,7 +231,7 @@ Widget build(BuildContext context) {
                           colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
                         ),
                         border: Border.all(
-                          color: Color.fromARGB(255, 65, 17, 20), // 👈 border color
+                          color: DatingColors.lightpink, // 👈 border color
                           width: 2,            // 👈 border thickness
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(12)),
