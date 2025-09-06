@@ -456,7 +456,7 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
           
           Column(
             children: [
-              const SizedBox(height: 30),
+              const SizedBox(height: 40),
               // Progress bar
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -466,7 +466,7 @@ class _IntroDatecategoryState extends ConsumerState<IntroDatecategory> {
                   valueColor: const AlwaysStoppedAnimation<Color>(DatingColors.primaryGreen),
                 ),
               ),
-              const SizedBox(height: 3),
+              // const SizedBox(height: 3),
               // Back button and title
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),

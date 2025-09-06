@@ -79,10 +79,14 @@ class _FamilyPlanScreenState extends ConsumerState<FamilyPlanScreen> {
     if (selectedKidsIds.contains(id)) {
       selectedKidsIds.remove(id);
     } else {
-      selectedKidsIds.add(id);
+      
+      if (selectedKidsIds.length < 2) {
+          selectedKidsIds.add(id);
+        }
     }
   });
 }
+ 
 
 
   Widget optionButton(String text, int id, double size, double fontSize) {

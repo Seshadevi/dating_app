@@ -87,9 +87,9 @@ class _OTPScreenState extends ConsumerState<OTPScreen> {
             '/locationScreen',
             arguments: {'mobile': phoneNumber},
           );
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("user not found,please signup.")),
-          );
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   const SnackBar(content: Text("user not found,please signup.")),
+          // );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text("Server error ($statusCode). Please try again later.")),
@@ -154,7 +154,7 @@ class _OTPScreenState extends ConsumerState<OTPScreen> {
                     fieldHeight: 50,
                     fieldWidth: 45,
                     activeColor: const Color(0xFF869E23),
-                    selectedColor: const Color(0xFF869E23),
+                    selectedColor:  DatingColors.lightpinks,
                     inactiveColor: Colors.grey,
                   ),
                   onChanged: (value) {},

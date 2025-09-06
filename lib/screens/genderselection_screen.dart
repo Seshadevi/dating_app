@@ -106,6 +106,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Progress bar
+                     const SizedBox(height: 16),
                   LinearProgressIndicator(
                     value: 2 / 18,
                     backgroundColor:DatingColors.surfaceGrey,
@@ -164,8 +165,9 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                   const SizedBox(height: 24),
 
                   // Gender options
+                   _buildGenderOption("He/Him"),
                   _buildGenderOption("She/Her"),
-                  _buildGenderOption("He/Him"),
+                 
                   // she/her,he/him
                   // _buildGenderOption("Nonbinary"),
 

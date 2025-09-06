@@ -149,7 +149,7 @@ class _BumbleDateProfileScreenState
           onPressed: () => Navigator.pushNamed(context, '/custombottomnav'),
         ),
         title: Text(
-          'everquid ${user?.mode ?? ''}',
+          'everqpid ${user?.mode ?? ''}',
           style: TextStyle(
             color: DatingColors.black,
             fontSize: 18,
@@ -1542,7 +1542,7 @@ class _BumbleDateProfileScreenState
         ? (user?.industries?.first.industrie ?? 'Add')
         : 'add';
     print('industry........$industry');
-    print('................${user?.experiences?.first.experience}');
+    print('................${user?.experiences}');
     print('religin...........$religion');
 
     final experiences = (user?.experiences?.isNotEmpty ?? false)

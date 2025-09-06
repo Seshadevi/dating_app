@@ -158,9 +158,9 @@ class _SelectPageState extends ConsumerState<SelectPage> {
                             (route) => false, // remove all previous screens
                           );
                 } else if (statusCode == 404) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("user not found,Please signup.")),
-                  );
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   const SnackBar(content: Text("user not found,Please signup.")),
+                  // );
                    Navigator.pushNamed(
                         context,
                         '/locationScreen',

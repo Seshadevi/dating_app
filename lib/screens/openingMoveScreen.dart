@@ -93,7 +93,7 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 30,),
+            SizedBox(height: 20,),
             LinearProgressIndicator(
                 value: 17/ 18,
                 backgroundColor: DatingColors.lightgrey,

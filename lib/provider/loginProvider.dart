@@ -294,12 +294,12 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
       request.fields['firstName'] = userName;
       request.fields['dob'] = dateOfBirth;
       request.fields['role'] = "user";
-      request.fields['gender'] = selectedGender;
-      request.fields['showOnProfile'] = showGenderOnProfile.toString();
+      // request.fields['gender'] = selectedGender;
+      // request.fields['showOnProfile'] = showGenderOnProfile.toString();
       request.fields['modeId'] = modeid.toString() ;
       request.fields['height'] = selectedHeight.toString();
       request.fields['headLine'] = finalheadline ?? '';
-      request.fields['termsAndConditions'] = termsAndCondition.toString();
+      // request.fields['termsAndConditions'] = termsAndCondition.toString();
       request.fields['mobile'] = mobile;
 
       // // Safe list fields (skip empty ones)
@@ -309,56 +309,56 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
         }
       }
 
-      if (selectionOptionIds.isNotEmpty) {
-        // With this loop
-        for (int i = 0; i < selectionOptionIds.length; i++) {
-          request.fields['lookingFor[$i]'] = selectionOptionIds[i].toString();
-        }
-      }
+      // if (selectionOptionIds.isNotEmpty) {
+      //   // With this loop
+      //   for (int i = 0; i < selectionOptionIds.length; i++) {
+      //     request.fields['lookingFor[$i]'] = selectionOptionIds[i].toString();
+      //   }
+      // }
 
-      if (selectedInterestIds.isNotEmpty) {
-        for (int i = 0; i < selectedInterestIds.length; i++) {
-          request.fields['interests[$i]'] = selectedInterestIds[i].toString();
-        }
-      }
+      // if (selectedInterestIds.isNotEmpty) {
+      //   for (int i = 0; i < selectedInterestIds.length; i++) {
+      //     request.fields['interests[$i]'] = selectedInterestIds[i].toString();
+      //   }
+      // }
 
-      if (selectedqualitiesIDs.isNotEmpty) {
-        for (int i = 0; i < selectedqualitiesIDs.length; i++) {
-          request.fields['qualities[$i]'] = selectedqualitiesIDs[i].toString();
-        }
-      }
+      // if (selectedqualitiesIDs.isNotEmpty) {
+      //   for (int i = 0; i < selectedqualitiesIDs.length; i++) {
+      //     request.fields['qualities[$i]'] = selectedqualitiesIDs[i].toString();
+      //   }
+      // }
 
-      if (selectedhabbits.isNotEmpty) {
-        for (int i = 0; i < selectedhabbits.length; i++) {
-          request.fields['drinking[$i]'] = selectedhabbits[i].toString();
-        }
-      }
+      // if (selectedhabbits.isNotEmpty) {
+      //   for (int i = 0; i < selectedhabbits.length; i++) {
+      //     request.fields['drinking[$i]'] = selectedhabbits[i].toString();
+      //   }
+      // }
 
-      if (selectedkids.isNotEmpty) {
-        for (int i = 0; i < selectedkids.length; i++) {
-          request.fields['kids[$i]'] = selectedkids[i].toString();
-        }
-      }
+      // if (selectedkids.isNotEmpty) {
+      //   for (int i = 0; i < selectedkids.length; i++) {
+      //     request.fields['kids[$i]'] = selectedkids[i].toString();
+      //   }
+      // }
 
-      if (selectedreligions.isNotEmpty) {
-        for (int i = 0; i < selectedreligions.length; i++) {
-          request.fields['religions[$i]'] = selectedreligions[i].toString();
-        }
-      }
+      // if (selectedreligions.isNotEmpty) {
+      //   for (int i = 0; i < selectedreligions.length; i++) {
+      //     request.fields['religions[$i]'] = selectedreligions[i].toString();
+      //   }
+      // }
 
-      if (selectedcauses.isNotEmpty) {
-        for (int i = 0; i < selectedcauses.length; i++) {
-          request.fields['causesAndCommunities[$i]'] =
-              selectedcauses[i].toString();
-        }
-      }
+      // if (selectedcauses.isNotEmpty) {
+      //   for (int i = 0; i < selectedcauses.length; i++) {
+      //     request.fields['causesAndCommunities[$i]'] =
+      //         selectedcauses[i].toString();
+      //   }
+      // }
 
-      if (seletedprompts.isNotEmpty) {
-        // Prompts (Map<int, String>)
-        seletedprompts.forEach((key, value) {
-          request.fields['prompts[$key]'] = value;
-        });
-      }
+      // if (seletedprompts.isNotEmpty) {
+      //   // Prompts (Map<int, String>)
+      //   seletedprompts.forEach((key, value) {
+      //     request.fields['prompts[$key]'] = value;
+      //   });
+      // }
 
       if (defaultmessages.isNotEmpty) {
         for (int i = 0; i < defaultmessages.length; i++) {

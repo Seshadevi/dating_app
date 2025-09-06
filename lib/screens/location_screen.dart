@@ -31,35 +31,35 @@ class LocationScreen extends StatefulWidget {
   }
 
   Future<void> _handleLocationPermissionAndNavigate(BuildContext context) async {
-    bool serviceEnabled;
-    LocationPermission permission;
- 
+      bool serviceEnabled;
+      LocationPermission permission;
+  
 
-    // 1. Check if location services are enabled
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      await Geolocator.openLocationSettings();
-      return;
-    }
-
-    // 2. Check permission status
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
+      // 1. Check if location services are enabled
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        await Geolocator.openLocationSettings();
         return;
       }
-    }
 
-    if (permission == LocationPermission.deniedForever) {
-      await Geolocator.openAppSettings();
-      return;
-    }
+      // 2. Check permission status
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          return;
+        }
+      }
 
-    // 3. Get current position
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
+      if (permission == LocationPermission.deniedForever) {
+        await Geolocator.openAppSettings();
+        return;
+      }
+
+      // 3. Get current position
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
 
     // 4. Pass location to next screen
     // Navigator.push(
@@ -72,7 +72,7 @@ class LocationScreen extends StatefulWidget {
     //   ),
     // );
 
-     Navigator.pushNamed(
+       Navigator.pushNamed(
                         context,
                         '/allownotification',
                         arguments: {
@@ -82,7 +82,7 @@ class LocationScreen extends StatefulWidget {
                           'mobile':mobile
                         },
                       );
-  }
+     }
 
   @override
   Widget build(BuildContext context) {
@@ -166,36 +166,29 @@ class LocationScreen extends StatefulWidget {
                   SizedBox(height: height * 0.02),
 
                   /// Not Now
-                  TextButton(
-                    onPressed: () {
-                      // Skip location screen if needed
-                      // Navigator.push(
-                      //         context,
-                      //         MaterialPageRoute(
-                      //           builder: (context) => AllowNotification(latitude: 0.0,
-                      //           longitude: 0.0,)
-                      //           ),
-                      //         );
-                      Navigator.pushNamed(
-                        context,
-                        '/allownotification',
-                        arguments: {
-                          'latitude': 0.0,
-                          'longitude':0.0,
-                          'email':email,
-                          'mobile':mobile
-                        },
-                      );        
-                           },
+                  // TextButton(
+                  //   onPressed: () {
+                   
+                  //     Navigator.pushNamed(
+                  //       context,
+                  //       '/allownotification',
+                  //       arguments: {
+                  //         'latitude': 0.0,
+                  //         'longitude':0.0,
+                  //         'email':email,
+                  //         'mobile':mobile
+                  //       },
+                  //     );        
+                  //          },
                     
-                    child: Text(
-                      "Not Now",
-                      style: TextStyle(
-                        fontSize: height * 0.018,
-                        color: DatingColors.brown,
-                      ),
-                    ),
-                  ),
+                  //   child: Text(
+                  //     "Not Now",
+                  //     style: TextStyle(
+                  //       fontSize: height * 0.018,
+                  //       color: DatingColors.brown,
+                  //     ),
+                  //   ),
+                  // ),
                   SizedBox(height: height * 0.03),
                 ],
               ),

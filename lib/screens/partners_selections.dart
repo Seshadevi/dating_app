@@ -89,7 +89,7 @@ class InrtoPartneroptionState extends ConsumerState<InrtoPartneroption> {
                 DatingColors.primaryGreen),
           ),
           // ),
-          const SizedBox(height: 15),
+          // const SizedBox(height: 15),
           // Back button and title
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),

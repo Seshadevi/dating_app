@@ -402,6 +402,8 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
     );
   }
 
+  
+
   Future<void> _pickDate(BuildContext context) async {
     final now = DateTime.now();
     final initialDate = selectedDate ?? DateTime(now.year - 18, now.month, now.day);
@@ -487,7 +489,7 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
                   LinearProgressIndicator(
                     value: 1 / 16,
                     backgroundColor: DatingColors.lightgrey,
@@ -516,7 +518,7 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                       const Text(
                         "Qpid Unveiling",
                         style: TextStyle(
-                          fontSize: 35,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Poppins',
                         ),

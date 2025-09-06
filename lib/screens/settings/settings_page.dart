@@ -70,7 +70,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             },
             child: _tileWithTextArrow(
               "Type Of Connection",
-              ref.watch(loginProvider).data!.first.user?.mode ?? "Date",
+              ref.watch(loginProvider).data!.first.user?.mode??"Date",
             ),
           ),
 

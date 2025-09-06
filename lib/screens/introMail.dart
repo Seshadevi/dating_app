@@ -20,7 +20,6 @@ class _IntroMailState extends State<IntroMail> {
    String? dateofbirth;
    String? userName;
    String? selectedgender;
-   bool? showonprofile;
    bool _isInitialized = false;
 
 @override
@@ -39,7 +38,7 @@ void didChangeDependencies() {
       dateofbirth = args['dateofbirth'] ?? '';
       userName = args['userName'] ?? '';
       selectedgender = args['selectgender'] ?? '';
-      showonprofile = args['showonprofile'] ?? true;
+     
     }
     _isInitialized = true; // Mark as initialized
   }
@@ -61,7 +60,7 @@ void didChangeDependencies() {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                 const SizedBox(height: 35),
+                 const SizedBox(height: 40),
                 // 🔵 Progress Bar
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -73,7 +72,7 @@ void didChangeDependencies() {
                     ),
                   ),
                 ),
-                const SizedBox(height: 15),
+                // const SizedBox(height: 5),
 
                 // 🔙 Back button and title
                 Padding(
@@ -85,14 +84,13 @@ void didChangeDependencies() {
                         onPressed: () {
                             Navigator.pushNamed(
                                     context,
-                                    '/profileshowscreen',
+                                    '/genderstaticselection',
                                     arguments: {
                                       'latitude': latitude,
                                       'longitude': longitude,
                                       'dateofbirth':dateofbirth,
                                       'userName':userName,
                                       'selectgender':selectedgender,
-                                      "showonprofile":showonprofile,
                                       'email':emailController.text,
                                       'mobile':mobile
                                     },
@@ -145,59 +143,87 @@ void didChangeDependencies() {
                 ),
                 const SizedBox(height: 50),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Material(
-                        elevation: 10,
-                        borderRadius: BorderRadius.circular(50),
-                        child: Container(
-                          width: screenWidth * 0.125,
-                          height: screenWidth * 0.125,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                            ),
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: IconButton(
-                            color: DatingColors.white,
-                            icon: const Icon(Icons.arrow_forward_ios),
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                 print("latitiude:$latitude");
-                                 print("longitude:$longitude");
-                                 print("dateofbirth:$dateofbirth");
-                                 print("userName:$userName");
-                                 print("selectedgender:$selectedgender");
-                                 print("showonprofile:$showonprofile");
-                                 print("email:$emailController");
-                                 print("mobile:$mobile");
-                                 Navigator.pushNamed(
-                                    context,
-                                    '/modescreen',
-                                    arguments: {
-                                      'latitude': latitude,
-                                      'longitude': longitude,
-                                      'dateofbirth':dateofbirth,
-                                      'userName':userName,
-                                      'selectgender':selectedgender,
-                                      "showonprofile":showonprofile,
-                                      'email':emailController.text,
-                                      'mobile':mobile
-                                    },
-                                );
-                              }
-                            },
-                          ),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // 👈 space out Skip and Arrow
+                  children: [
+                    // 👇 Skip button on the left
+                    TextButton(
+                      onPressed: () {
+                        // Skip means: move ahead without validating email
+                        Navigator.pushNamed(
+                          context,
+                          '/modescreen',
+                          arguments: {
+                            'latitude': latitude,
+                            'longitude': longitude,
+                            'dateofbirth': dateofbirth,
+                            'userName': userName,
+                            'selectgender': selectedgender,
+                            'email': emailController.text, // can be empty if skipped
+                            'mobile': mobile
+                          },
+                        );
+                      },
+                      child: const Text(
+                        "Skip",
+                        style: TextStyle(
+                          color: DatingColors.everqpidColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+
+                    // 👇 Forward arrow on the right
+                    Material(
+                      elevation: 10,
+                      borderRadius: BorderRadius.circular(50),
+                      child: Container(
+                        width: screenWidth * 0.125,
+                        height: screenWidth * 0.125,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: IconButton(
+                          color: DatingColors.white,
+                          icon: const Icon(Icons.arrow_forward_ios),
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              print("latitiude:$latitude");
+                              print("longitude:$longitude");
+                              print("dateofbirth:$dateofbirth");
+                              print("userName:$userName");
+                              print("selectedgender:$selectedgender");
+                              print("email:$emailController");
+                              print("mobile:$mobile");
+                              Navigator.pushNamed(
+                                context,
+                                '/modescreen',
+                                arguments: {
+                                  'latitude': latitude,
+                                  'longitude': longitude,
+                                  'dateofbirth': dateofbirth,
+                                  'userName': userName,
+                                  'selectgender': selectedgender,
+                                  'email': emailController.text,
+                                  'mobile': mobile
+                                },
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
+              ),
+
                 const SizedBox(height: 210),
                 SizedBox(
                   height: 150, // or any height you need

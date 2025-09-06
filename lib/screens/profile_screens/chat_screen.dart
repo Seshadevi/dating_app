@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/model/chat_message.dart';
 import 'package:dating/provider/chat_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 
 class ChatScreen extends ConsumerStatefulWidget {
@@ -23,8 +26,9 @@ class ChatScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatScreenState extends ConsumerState<ChatScreen> {
-  final TextEditingController _controller = TextEditingController();
-  final ScrollController _scrollController = ScrollController(); // ✅ NEW
+  final _controller = TextEditingController();
+  final _scrollController = ScrollController();
+  Timer? _typingDebounce;
 
   @override
   void initState() {
@@ -33,38 +37,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   @override
-  void didUpdateWidget(covariant ChatScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // Optional: Handle changes if needed
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _scrollController.dispose(); // ✅ Dispose it
-    super.dispose();
-  }
-
-  void _scrollToBottom() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     final messages = ref.watch(chatProvider);
+    final isTyping = ref.watch(typingProvider);
+    final presence = ref.watch(presenceProvider);
 
-    // ✅ Scroll to bottom every time messages update
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToBottom();
-    });
+    final items = _withDateHeaders(messages);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
 
     return Scaffold(
       appBar: AppBar(
@@ -72,7 +52,22 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           children: [
             CircleAvatar(backgroundImage: NetworkImage(widget.avatar)),
             const SizedBox(width: 10),
-            Text(widget.userName),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(widget.userName, style: const TextStyle(fontSize: 16)),
+                Text(
+                  presence == null
+                    ? ''
+                    : presence.online
+                      ? 'Online'
+                      : (presence.lastSeen != null
+                          ? 'last seen ${DateFormat('dd MMM, hh:mm a').format(presence.lastSeen!)}'
+                          : 'Offline'),
+                  style: TextStyle(fontSize: 12, color: presence?.online == true ? Colors.green : Colors.grey),
+                )
+              ],
+            ),
           ],
         ),
       ),
@@ -80,11 +75,15 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         children: [
           Expanded(
             child: ListView.builder(
-              controller: _scrollController, // ✅ Attach controller
+              controller: _scrollController,
               padding: const EdgeInsets.all(8),
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                final msg = messages[index];
+              itemCount: items.length,
+              itemBuilder: (_, i) {
+                final it = items[i];
+                if (it.isHeader) {
+                  return _DateHeader(label: it.header!);
+                }
+                final msg = it.message!;
                 final isMe = msg.senderId != widget.userId;
                 return Align(
                   alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -92,36 +91,53 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     padding: const EdgeInsets.all(10),
                     margin: const EdgeInsets.symmetric(vertical: 4),
                     decoration: BoxDecoration(
-                      color: isMe ? DatingColors.lightGreen : DatingColors.lightGreen,
-                      borderRadius: BorderRadius.circular(8),
+                      color: isMe ? const Color(0xFFD1F7C4) : Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: const Color(0xFFE5E5E5)),
                     ),
-                    child: Text(msg.message),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(msg.message),
+                        const SizedBox(height: 4),
+                        Text(DateFormat('hh:mm a').format(msg.timestamp.toLocal()),
+                            style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                      ],
+                    ),
                   ),
                 );
               },
             ),
           ),
+          if (isTyping)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Text('typing…', style: TextStyle(color: Colors.green[700], fontSize: 12)),
+            ),
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _controller,
                     decoration: InputDecoration(
-                      hintText: "Type a message...",
+                      hintText: "Type a message…",
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                     ),
-                    onSubmitted: (_) => _sendMessage(), // Optional: send on "Enter"
+                    onChanged: (_) {
+                      // Debounce typing pings
+                      _typingDebounce?.cancel();
+                      ref.read(chatProvider.notifier).sendTyping(widget.userId);
+                      _typingDebounce = Timer(const Duration(milliseconds: 1200), () {});
+                    },
+                    onSubmitted: (_) => _sendMessage(),
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: _sendMessage,
-                )
+                IconButton(icon: const Icon(Icons.send), onPressed: _sendMessage),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -129,10 +145,66 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   void _sendMessage() {
     final msg = _controller.text.trim();
-    if (msg.isNotEmpty) {
-      ref.read(chatProvider.notifier).sendMessage(widget.userId, msg);
-      _controller.clear();
-      _scrollToBottom(); // ✅ scroll after sending
-    }
+    if (msg.isEmpty) return;
+    ref.read(chatProvider.notifier).sendMessage(widget.userId, msg);
+    _controller.clear();
+    _scrollToBottom();
   }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  // Build a mixed list of date headers + messages
+  List<_Item> _withDateHeaders(List<ChatMessage> msgs) {
+    final out = <_Item>[];
+    DateTime? lastDay;
+    for (final m in msgs..sort((a,b)=>a.timestamp.compareTo(b.timestamp))) {
+      final d = DateTime(m.timestamp.year, m.timestamp.month, m.timestamp.day);
+      if (lastDay == null || d.difference(lastDay!).inDays != 0) {
+        out.add(_Item.header(_labelFor(d)));
+        lastDay = d;
+      }
+      out.add(_Item.message(m));
+    }
+    return out;
+  }
+
+  String _labelFor(DateTime d) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yday = today.subtract(const Duration(days: 1));
+    final day = DateTime(d.year, d.month, d.day);
+    if (day == today) return 'Today';
+    if (day == yday) return 'Yesterday';
+    return DateFormat('dd MMM yyyy').format(d);
+  }
+}
+
+class _DateHeader extends StatelessWidget {
+  final String label;
+  const _DateHeader({required this.label, super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Center(child: Text(label, style: const TextStyle(color: Colors.grey, fontSize: 12))),
+    );
+  }
+}
+
+class _Item {
+  final bool isHeader;
+  final String? header;
+  final ChatMessage? message;
+  _Item.header(this.header) : isHeader = true, message = null;
+  _Item.message(this.message) : isHeader = false, header = null;
 }

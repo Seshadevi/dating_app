@@ -598,6 +598,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                         leading: CircleAvatar(backgroundImage: NetworkImage(match.avatar)),
                         title: Text(match.name),
                         subtitle: Text("Tap to chat"),
+                        
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(

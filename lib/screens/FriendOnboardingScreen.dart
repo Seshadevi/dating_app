@@ -80,88 +80,67 @@ class _FriendOnboardingScreenState extends ConsumerState<FriendOnboardingScreen>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Positioned(
-              top: 90,
-              left: -10, // Adjust this to move it to the left
-              child: SizedBox(
-                height: 280,
-                child: Image.asset(
-                  'assets/womenback.jpg',
-                  fit: BoxFit.contain,
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: SafeArea(
+      child: Stack(
+        children: [
+          // 🔹 Fullscreen background image
+          Positioned.fill(
+            child: Image.asset(
+              'assets/men_women.jpeg',
+              fit: BoxFit.cover, // cover fills entire screen
+            ),
+          ),
+
+          // 🔹 Main content goes above
+          Column(
+            children: [
+              const Spacer(flex: 9), // push content down a bit
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  'Where every swipe sparks a story',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 65, 17, 20),
+                  ),
+                  textAlign: TextAlign.start,
                 ),
               ),
-            ),
-            // Positioned image
-            Stack(
-              children: [
-                Positioned(
-                  top: 10,
-                  left: -10,
-                  child: SizedBox(
-                    height: 350,
-                    child: Image.asset(
-                      'assets/women.png',
-                      fit: BoxFit.contain,
-                    ),
+              const SizedBox(height: 12),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                child: Text(
+                  ' you find new friendships, '
+                  'whether you’re new to a city or just looking to expand your social circle.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Color.fromARGB(255, 65, 17, 20),
                   ),
+                  textAlign: TextAlign.start,
                 ),
-              ],
-            ),
-
-            // Main content
-            Column(
-              children: [
-                const SizedBox(height: 400), // Adjust based on image height
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
-                    'Make New Friends At Every Stage Of Your Life',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: DatingColors.everqpidColor,
-                    ),
-                    textAlign: TextAlign.start,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Text(
-                    'BFF will help you find new friendships, whether you’re new to a city or just looking to expand your social circle.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: DatingColors.everqpidColor,
-                    ),
-                    textAlign: TextAlign.start,
-                  ),
-                ),
-                const Spacer(),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: ElevatedButton(
-                      onPressed: () async {
+              ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: () async {
                       final statuscode = await ref.read(loginProvider.notifier).signupuserApi(
                         email: email ?? '',
-                        mobile:mobile ??'',
+                        mobile: mobile ?? '',
                         latitude: latitude ?? 0.0,
                         longitude: longitude ?? 0.0,
                         userName: userName ?? '',
                         dateOfBirth: dateofbirth ?? '',
                         selectedGender: selectedgender ?? '',
                         showGenderOnProfile: showonprofile ?? false,
-                        modeid:modeid,
-                        modename:modename,
+                        modeid: modeid,
+                        modename: modename,
                         selectedGenderIds: selectedGenderIds ?? [],
                         selectionOptionIds: selectedoptionIds ?? [],
                         selectedHeight: selectedheight ?? 0,
@@ -179,48 +158,50 @@ class _FriendOnboardingScreenState extends ConsumerState<FriendOnboardingScreen>
                       );
 
                       if (statuscode == 200 || statuscode == 201) {
-                          // After successful signup/login:
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (_) => CustomBottomNavigationBar()),
-                            (route) => false, // remove all previous screens
-                          );
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (_) => const CustomBottomNavigationBar()),
+                          (route) => false,
+                        );
                       }
                     },
-
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        backgroundColor:DatingColors.brown,
-                        elevation: 0,
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Ink(
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [DatingColors.lightpinks,DatingColors.everqpidColor],
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                      backgroundColor: DatingColors.brown,
+                      elevation: 0,
+                    ),
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
                         ),
-                        child: const Center(
-                          child: Text(
-                            'Got It',
-                            style: TextStyle(
-                              color: DatingColors.brown,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        border: Border.all(
+                          color: Color.fromARGB(255, 65, 17, 20), // 👈 border color
+                          width: 2,            // 👈 border thickness
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'Got It',
+                          style: TextStyle(
+                            color: DatingColors.brown,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
 }

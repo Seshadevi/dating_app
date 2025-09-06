@@ -171,16 +171,16 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                 //   color: DatingColors.yellow,
                 // ),
                 SizedBox(height: verticalSpacing),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "$userName",
-                    style: TextStyle(
-                      fontSize: labelFontSize,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+                // Align(
+                //   alignment: Alignment.centerLeft,
+                //   child: Text(
+                //     "$userName",
+                //     style: TextStyle(
+                //       fontSize: labelFontSize,
+                //       fontWeight: FontWeight.bold,
+                //     ),
+                //   ),
+                // ),
                 // SizedBox(height: screen.height * 0.01),
                 // Align(
                 //   alignment: Alignment.centerLeft,
@@ -351,6 +351,22 @@ class _AddHeadlineScreenState extends State<AddHeadlineScreen> {
                     //         'email':email,
                     //         'mobile':mobile
                     //       },);
+                    print("latitude:$latitude");
+                    print("longitude:$longitude");
+                    print("username:$userName");
+                    print("dob:$dateofbirth");
+
+                    print("gender:$selectedgender");
+                    print("email:$email");
+                    print("mobile:$mobile");
+                    print("modeid:$modeid");
+                    print("choose for date:$selectedGenderIds");
+                    print("looking for:$selectedoptionIds");
+                    print("height:$selectedheight");
+                    print("messages:$selectedIndexes");
+                    print("images:$selectedImages");
+                    print("headline:$finalHeadline");
+                        
                     Navigator.pushNamed(
                             context,
                             '/finalStageSingupScreen',

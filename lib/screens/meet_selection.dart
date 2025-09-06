@@ -76,7 +76,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
         children: [
           const SizedBox(height: 40),
           _buildProgressBar(),
-          const SizedBox(height: 10),
+          // const SizedBox(height: 10),
           _buildHeader(context),
           const SizedBox(height: 30),
           Padding(
@@ -149,7 +149,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
           ),
           const SizedBox(width: 8),
           const Text(
-            "whole Are You Looking",
+            "who are you looking for",
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -308,7 +308,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
                 if (selectedGenderIds.isNotEmpty) {
                   Navigator.pushNamed(
                     context,
-                    '/partnersSelection',
+                    '/heightscreen',
                     arguments: {
                       'latitude': latitude,
                       'longitude': longitude,
@@ -326,8 +326,8 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                        content: Text(
-                            "Please select at least one gender preference")),
+                       content: Text(
+                          "Please select at least one gender preference")),
                   );
                 }
               },

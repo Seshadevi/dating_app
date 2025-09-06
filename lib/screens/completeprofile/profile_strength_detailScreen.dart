@@ -138,7 +138,7 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
                 ),
                 _buildProfileCard(
                   icon: Icons.info_outline,
-                  title: 'More About You',
+                  title: 'More About',
                   subtitle: '3 Of 9 Added',
                   isCompleted: false,
                   iconColor: DatingColors.yellow,

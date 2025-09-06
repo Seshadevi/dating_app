@@ -1,31 +1,26 @@
-// 📁 File: models/chat_message.dart
-import 'package:intl/intl.dart';
-
 class ChatMessage {
+  final int id;
   final int senderId;
   final int receiverId;
   final String message;
-  final String? media;
   final String type;
-  final String timestamp;
+  final DateTime timestamp; // ✅
 
   ChatMessage({
+    required this.id,
     required this.senderId,
     required this.receiverId,
     required this.message,
     required this.type,
     required this.timestamp,
-    this.media,
   });
 
-  factory ChatMessage.fromJson(Map<String, dynamic> json) {
-    return ChatMessage(
-      senderId: json['senderId'],
-      receiverId: json['receiverId'],
-      message: json['message'] ?? '',
-      media: json['media'],
-      type: json['type'] ?? 'text',
-      timestamp: json['timestamp'] ?? DateFormat('hh:mm a').format(DateTime.now()),
-    );
-  }
+  factory ChatMessage.fromJson(Map<String, dynamic> j) => ChatMessage(
+    id: j['id'],
+    senderId: j['senderId'],
+    receiverId: j['receiverId'],
+    message: j['message'] ?? '',
+    type: j['type'] ?? 'text',
+    timestamp: DateTime.parse(j['timestamp']), // ISO → DateTime
+  );
 }

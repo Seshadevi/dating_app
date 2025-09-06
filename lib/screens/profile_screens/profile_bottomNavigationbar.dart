@@ -368,6 +368,7 @@
 
 
 
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:flutter/material.dart';
 // Import your actual screens here
@@ -378,6 +379,7 @@ import 'package:dating/screens/profile_screens/heartsync_screen.dart';
 import 'package:dating/screens/profile_screens/liked_Screen.dart';
 import 'package:dating/screens/profile_screens/profile_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dating/constants/dating_app_user.dart';
 
 class CustomBottomNavigationBar extends ConsumerStatefulWidget {
   const CustomBottomNavigationBar({super.key});
@@ -478,13 +480,49 @@ class _CustomBottomNavigationBarState extends ConsumerState<CustomBottomNavigati
             width: width,
             height: height,
             fit: BoxFit.contain,
-            color: isSelected ? const Color.fromARGB(255, 91, 110, 4) : null,
+            color: isSelected 
+                ? DatingColors.qpidColor     // icon color selected
+                : DatingColors.lightgrey,
           ),
         ),
       ),
     );
   }
+
+//   Widget _buildNavItem(int index, String assetPath, double width, double height) {
+//   final isSelected = index == _selectedIndex;
+
+//   return GestureDetector(
+//     onTap: () => _onItemTapped(index),
+//     child: SizedBox(
+//       width: 60,
+//       height: 60,
+//       child: Center(
+//         child: Container(
+//           padding: const EdgeInsets.all(8),
+//           // decoration: BoxDecoration(
+//           //   color: isSelected 
+//           //       ? DatingColors.lightpinks   // background for selected
+//           //       : Colors.transparent,
+//           //   shape: BoxShape.circle,
+//           // ),
+//           child: Image.asset(
+//             assetPath,
+//             width: width,
+//             height: height,
+//             fit: BoxFit.contain,
+//             color: isSelected 
+//                 ? DatingColors.qpidColor     // icon color selected
+//                 : DatingColors.lightgrey,    // icon color unselected
+//           ),
+//         ),
+//       ),
+//     ),
+//   );
+// }
+
 }
+
 
 
 

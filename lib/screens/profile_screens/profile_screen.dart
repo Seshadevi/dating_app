@@ -103,7 +103,8 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        '$profileDisplayPercent% COMPLETE',
+                        // '$profileDisplayPercent% COMPLETE',
+                        '20% COMPLETE',
                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                       ),
                     ),
