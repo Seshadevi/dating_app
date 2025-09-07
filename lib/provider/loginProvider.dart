@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http_parser/http_parser.dart'; // for MediaType
-
 import 'package:dating/model/loginmodel.dart';
 import 'package:dating/provider/firebase_auth.dart';
 import 'package:dating/provider/loader.dart';

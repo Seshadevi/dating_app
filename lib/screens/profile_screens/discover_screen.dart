@@ -8,14 +8,14 @@ class DiscoverScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: DatingColors.lightGreen,
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
         backgroundColor: DatingColors.white,
         elevation: 0,
         title: const Text(
           "Discover",
           style: TextStyle(
-            color: DatingColors.black,
+            color: DatingColors.everqpidColor,
             fontWeight: FontWeight.bold,
             fontSize: 22,
           ),
@@ -23,7 +23,7 @@ class DiscoverScreen extends StatelessWidget {
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 12),
-            child: Icon(Icons.info_outline, color: DatingColors.black),
+            child: Icon(Icons.info_outline, color: DatingColors.everqpidColor),
           )
         ],
       ),
@@ -39,7 +39,7 @@ class DiscoverScreen extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 decoration: BoxDecoration(
-                  color: DatingColors.lightGreen,
+                  color: DatingColors.everqpidColor,
                   borderRadius: BorderRadius.circular(30),
                 ),
                 child: const Text(
@@ -52,7 +52,7 @@ class DiscoverScreen extends StatelessWidget {
             const Text(
               "Discover New Genuine Humans With People\nWho Match Your Vibes, Refreshed Every Day.",
               textAlign: TextAlign.center,
-              style: TextStyle(color: DatingColors.black, fontSize: 12),
+              style: TextStyle(color: DatingColors.everqpidColor, fontSize: 12),
             ),
             const SizedBox(height: 30),
             const Text(
@@ -118,12 +118,12 @@ class DiscoverScreen extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
-                  color: DatingColors.lightGreen,
+                  color: DatingColors.everqpidColor,
                   borderRadius: BorderRadius.circular(1),
                 ),
                 child: const Text(
                   "Based On Your Profile And Past Matches",
-                  style: TextStyle(fontSize: 13, color: DatingColors.darkGreen),
+                  style: TextStyle(fontSize: 13),
                 ),
               ),
             ),
@@ -160,12 +160,12 @@ class DiscoverScreen extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         gradient: LinearGradient(
-          colors: [DatingColors.primaryGreen, DatingColors.black],
+          colors: [DatingColors.primaryGreen, DatingColors.everqpidColor],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: const [
-          BoxShadow(color: DatingColors.black, blurRadius: 4, offset: Offset(2, 2))
+          BoxShadow(color: DatingColors.everqpidColor, blurRadius: 4, offset: Offset(2, 2))
         ],
       ),
       child: Icon(icon, color: iconColor, size: 28),
@@ -200,7 +200,7 @@ return Container(
   width: 140,
   decoration: BoxDecoration(
      gradient: LinearGradient(
-          colors: [DatingColors.primaryGreen, DatingColors.black],
+          colors: [DatingColors.primaryGreen, DatingColors.everqpidColor],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -208,7 +208,7 @@ return Container(
     border: Border.all(color: DatingColors.primaryGreen, width: 1.2),
     boxShadow: [
       BoxShadow(
-        color: DatingColors.black.withOpacity(0.1),
+        color: DatingColors.everqpidColor.withOpacity(0.1),
         blurRadius: 6,
         offset: Offset(2, 4),
       ),
@@ -241,7 +241,7 @@ return Container(
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: DatingColors.black,
+              color: DatingColors.everqpidColor,
             ),
           ),
         ),

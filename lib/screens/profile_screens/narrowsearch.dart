@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/signupprocessProviders/choosr_foodies_provider.dart';
 import 'package:dating/provider/signupprocessProviders/genderProvider.dart';
 import 'package:flutter/material.dart';
@@ -179,7 +180,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       decoration: BoxDecoration(
-                        color: activeFilter == 'basic' ? const Color(0xFF434F11) : Colors.grey[200],
+                        color: activeFilter == 'basic' ? DatingColors.everqpidColor : Colors.grey[200],
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -200,7 +201,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       decoration: BoxDecoration(
-                        color: activeFilter == 'advanced' ? const Color(0xFF434F11) : Colors.grey[200],
+                        color: activeFilter == 'advanced' ? DatingColors.everqpidColor : Colors.grey[200],
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -245,7 +246,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
         _buildGenderDropdown(genders),
         const SizedBox(height: 20),
 
-        _buildSectionTitle('How Old Are They?'),
+        _buildSectionTitle('keep choose your age preference '),
         _buildAgeRangeSelector(),
         const SizedBox(height: 20),
 
@@ -356,7 +357,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF869E23), Color(0xFF000000)],
+          colors: [DatingColors.everqpidColor, DatingColors.everqpidColor],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -410,7 +411,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: const Color(0xFF869E23), width: 1),
+        border: Border.all(color: DatingColors.everqpidColor, width: 1),
       ),
       child: DropdownButtonFormField<int?>(
         value: selectedGenderId,
@@ -428,7 +429,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: const Color(0xFF869E23), width: 1),
+        border: Border.all(color: DatingColors.everqpidColor, width: 1),
         borderRadius: BorderRadius.circular(30),
       ),
       child: Column(
@@ -444,7 +445,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
             min: 18,
             max: 60,
             divisions: 42,
-            activeColor: const Color(0xFF434F11),
+            activeColor: DatingColors.everqpidColor,
             inactiveColor: Colors.grey[300],
             onChanged: (v) => setState(() => ageRangeValues = v),
           ),
@@ -464,7 +465,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
                 value: seeYounger,
                 onChanged: (v) => setState(() => seeYounger = v),
                 activeColor: Colors.white,
-                activeTrackColor: const Color(0xFF434F11),
+                activeTrackColor: DatingColors.everqpidColor,
                 inactiveThumbColor: Colors.white,
                 inactiveTrackColor: Colors.grey,
               ),
@@ -480,7 +481,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: const Color(0xFF869E23), width: 1),
+        border: Border.all(color: DatingColors.everqpidColor, width: 1),
         borderRadius: BorderRadius.circular(30),
       ),
       child: Column(
@@ -497,7 +498,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
             divisions: 19,
             label: '${distance.round()} km',
             onChanged: (v) => setState(() => distance = v),
-            activeColor: const Color(0xFF434F11),
+            activeColor: DatingColors.everqpidColor,
             inactiveColor: Colors.grey[300],
           ),
           const SizedBox(height: 8),
@@ -514,7 +515,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
                 value: seeDistant,
                 onChanged: (v) => setState(() => seeDistant = v),
                 activeColor: Colors.white,
-                activeTrackColor: const Color(0xFF434F11),
+                activeTrackColor: DatingColors.everqpidColor,
                 inactiveThumbColor: Colors.white,
                 inactiveTrackColor: Colors.grey[300],
               ),
@@ -531,7 +532,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: const Color(0xFF869E23)),
+        border: Border.all(color: DatingColors.everqpidColor),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -575,7 +576,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
           Container(
             margin: const EdgeInsets.symmetric(vertical: 16),
             height: 1,
-            color: const Color(0xFF869E23),
+            color: DatingColors.everqpidColor,
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -590,7 +591,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
                 value: showOtherInterests,
                 onChanged: (v) => setState(() => showOtherInterests = v),
                 activeColor: Colors.white,
-                activeTrackColor: const Color(0xFF434F11),
+                activeTrackColor: DatingColors.everqpidColor,
                 inactiveThumbColor: Colors.white,
                 inactiveTrackColor: Colors.grey[300],
               ),
@@ -615,11 +616,11 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
           selectedInterestIds.add(safeId);
         }
       }),
-      selectedColor: const Color(0xFFE9F1C4),
-      side: const BorderSide(color: Color(0xFF869E23)),
+      selectedColor:DatingColors.everqpidColor,
+      side: const BorderSide(color: DatingColors.everqpidColor),
       labelStyle: const TextStyle(
         fontWeight: FontWeight.w600,
-        color: Color(0xFF4D5A12),
+        color: Color.fromARGB(255, 44, 42, 42),
       ),
     );
   }
@@ -657,7 +658,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xFF869E23)),
+            border: Border.all(color: DatingColors.everqpidColor),
             borderRadius: BorderRadius.circular(28),
           ),
           child: Row(
@@ -667,14 +668,14 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
                 children: [
                   Text('Verified Only', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                   SizedBox(width: 8),
-                  Icon(Icons.verified, color: Color(0xFF869E23), size: 20),
+                  Icon(Icons.verified, color: DatingColors.everqpidColor, size: 20),
                 ],
               ),
               Switch(
                 value: verified,
                 onChanged: onToggleChanged,
                 activeColor: Colors.white,
-                activeTrackColor: const Color(0xFF434F11),
+                activeTrackColor: DatingColors.everqpidColor,
                 inactiveThumbColor: Colors.white,
                 inactiveTrackColor: Colors.grey[300],
               ),
@@ -692,7 +693,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
       decoration: BoxDecoration(
         color: Colors.grey[100],
         borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: const Color(0xFF869E23), width: 1),
+        border: Border.all(color: DatingColors.everqpidColor, width: 1),
       ),
       child: Row(
         children: [
@@ -727,7 +728,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xFF869E23)),
+            border: Border.all(color: DatingColors.everqpidColor),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Column(
@@ -748,7 +749,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
                   '${heightRange.end.round()}',
                 ),
                 onChanged: onRangeChanged,
-                activeColor: const Color(0xFF434F11),
+                activeColor: DatingColors.everqpidColor,
                 inactiveColor: Colors.grey[300],
               ),
               const SizedBox(height: 8),
@@ -760,7 +761,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
                     value: showOtherHeight,
                     onChanged: onToggleChanged,
                     activeColor: Colors.white,
-                    activeTrackColor: const Color(0xFF434F11),
+                    activeTrackColor: DatingColors.everqpidColor,
                     inactiveThumbColor: Colors.white,
                     inactiveTrackColor: Colors.grey[300],
                   ),
@@ -797,7 +798,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xFF869E23)),
+            border: Border.all(color: DatingColors.everqpidColor),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Column(
@@ -821,14 +822,14 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
                               isSelected ? updated.remove(option) : updated.add(option);
                               onSelectionChanged(updated);
                             },
-                            activeColor: const Color(0xFF434F11),
+                            activeColor: DatingColors.everqpidColor,
                           ),
                           Expanded(child: Text(option, style: const TextStyle(fontSize: 15))),
                         ],
                       ),
                     ),
                     if (option != options.last)
-                      const Divider(color: Color(0xFF869E23), thickness: 1, height: 0),
+                      const Divider(color: DatingColors.everqpidColor, thickness: 1, height: 0),
                   ],
                 );
               }).toList(),
@@ -842,7 +843,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
                     value: showOtherOptions,
                     onChanged: onToggleChanged,
                     activeColor: Colors.white,
-                    activeTrackColor: const Color(0xFF434F11),
+                    activeTrackColor: DatingColors.everqpidColor,
                     inactiveThumbColor: Colors.white,
                     inactiveTrackColor: Colors.grey[300],
                   ),
@@ -922,13 +923,13 @@ class _ExpandableFilterState extends State<ExpandableFilter> {
             decoration: BoxDecoration(
               color: Colors.grey[50],
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.green.shade400),
+              border: Border.all(color: DatingColors.everqpidColor),
             ),
             child: const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Add This Filter', style: TextStyle(fontSize: 15, color: Colors.black87)),
-                Icon(Icons.add, color: Colors.green),
+                Icon(Icons.add, color: DatingColors.everqpidColor),
               ],
             ),
           ),
@@ -942,6 +943,7 @@ class _ExpandableFilterState extends State<ExpandableFilter> {
                 const Divider(),
                 ...widget.options.map((option) => CheckboxListTile(
                       value: selectedOptions.contains(option),
+                      activeColor: DatingColors.everqpidColor,
                       title: Text(option),
                       controlAffinity: ListTileControlAffinity.leading,
                       onChanged: (checked) {
@@ -962,7 +964,7 @@ class _ExpandableFilterState extends State<ExpandableFilter> {
                       value: showOthers,
                       onChanged: (val) => setState(() => showOthers = val),
                       activeColor: Colors.white,
-                      activeTrackColor: const Color(0xFF434F11),
+                      activeTrackColor: DatingColors.everqpidColor,
                       inactiveThumbColor: Colors.white,
                       inactiveTrackColor: Colors.grey[300],
                     ),

@@ -2,11 +2,10 @@ import 'dart:io';
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
-import 'package:dating/screens/profile_screens/profile_screen.dart';
-import 'package:dating/screens/tab_bar/tabScreen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../screens/glitchScreen.dart';
+
 
 class FriendOnboardingScreen extends ConsumerStatefulWidget {
   
@@ -15,7 +14,6 @@ class FriendOnboardingScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState<FriendOnboardingScreen> createState() => _FriendOnboardingScreenState();
 }
-
 
 class _FriendOnboardingScreenState extends ConsumerState<FriendOnboardingScreen> {
 
@@ -109,7 +107,7 @@ Widget build(BuildContext context) {
           fontWeight: FontWeight.w900,
           foreground: Paint()
             ..style = PaintingStyle.stroke
-            ..strokeWidth = 6   // thickness of background
+            ..strokeWidth = 2 // thickness of background
             ..color = const Color.fromARGB(255, 160, 43, 41), // 🔴 Red border
         ),
         textAlign: TextAlign.start,
@@ -142,8 +140,8 @@ Widget build(BuildContext context) {
           fontWeight: FontWeight.w100,
           foreground: Paint()
             ..style = PaintingStyle.stroke
-            ..strokeWidth = 4   // thickness of background
-            ..color = DatingColors.lightpink, // 🔴 Red border
+            ..strokeWidth = 1  // thickness of background
+            ..color = const Color.fromARGB(255, 160, 43, 41), // 🔴 Red border
         ),
         textAlign: TextAlign.center,
       ),
@@ -228,10 +226,10 @@ Widget build(BuildContext context) {
                     child: Ink(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
+                          colors: [DatingColors.lightpinks, DatingColors.lightpinks],
                         ),
                         border: Border.all(
-                          color: DatingColors.lightpink, // 👈 border color
+                          color: DatingColors.everqpidColor, // 👈 border color
                           width: 2,            // 👈 border thickness
                         ),
                         borderRadius: BorderRadius.all(Radius.circular(12)),
@@ -240,7 +238,7 @@ Widget build(BuildContext context) {
                         child: Text(
                           'Got It',
                           style: TextStyle(
-                            color: DatingColors.brown,
+                            color: const Color.fromARGB(255, 160, 43, 41),
                             fontWeight: FontWeight.bold,
                           ),
                         ),

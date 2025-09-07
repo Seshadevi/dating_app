@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/plans/plansfullprovider.dart';
 import 'package:dating/provider/socket_users_combined_provider.dart';
 import 'package:dating/screens/profile_screens/favourate.dart';
@@ -85,12 +86,7 @@ class _LikedYouState extends ConsumerState<LikedYouScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined, color: Colors.black),
-            onPressed: () {},
-          ),
-        ],
+        
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -117,7 +113,7 @@ class _LikedYouState extends ConsumerState<LikedYouScreen> {
               height: 50,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFFB0E300), Colors.black],
+                  colors: [DatingColors.everqpidColor,DatingColors.everqpidColor],
                 ),
                 borderRadius: BorderRadius.circular(12),
               ),
