@@ -17,12 +17,12 @@ class _GenderPronounsScreenState
     'She/Her',
     'He/Him',
     'They/Them',
-    'Ze/Zir',
-    'Xe/Xim',
-    'Co/Co',
-    'Ey/Em',
-    'Ve/Ver',
-    'Per/Per',
+    // 'Ze/Zir',
+    // 'Xe/Xim',
+    // 'Co/Co',
+    // 'Ey/Em',
+    // 'Ve/Ver',
+    // 'Per/Per',
   ];
 
   String? selectedPronoun;
@@ -81,8 +81,8 @@ class _GenderPronounsScreenState
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          "Gender On Bumble",
-          style: TextStyle(color: DatingColors.black),
+          "Select Your Pronoun",
+          style: TextStyle(color: DatingColors.everqpidColor),
         ),
         backgroundColor: DatingColors.white,
         elevation: 0,
@@ -104,10 +104,10 @@ class _GenderPronounsScreenState
                 style: TextStyle(fontSize: 14),
               ),
               const SizedBox(height: 4),
-              TextButton(
-                onPressed: () {},
-                child: const Text("Why Pronouns Matter"),
-              ),
+              // TextButton(
+              //   onPressed: () {},
+              //   child: const Text("Why Pronouns Matter"),
+              // ),
               const Divider(thickness: 1),
               const SizedBox(height: 8),
               const Text(
@@ -124,9 +124,9 @@ class _GenderPronounsScreenState
                     label: Text(pronoun),
                     selected: isSelected,
                     onSelected: (_) => selectPronoun(pronoun),
-                    selectedColor: DatingColors.primaryGreen,
+                    selectedColor: DatingColors.everqpidColor,
                     labelStyle: TextStyle(
-                      color: isSelected ? DatingColors.white : DatingColors.black,
+                      color: isSelected ? DatingColors.brown : DatingColors.black,
                     ),
                     backgroundColor: DatingColors.surfaceGrey,
                   );
@@ -137,7 +137,7 @@ class _GenderPronounsScreenState
                 width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  border: Border.all(color: DatingColors.darkGreen),
+                  border: Border.all(color: DatingColors.everqpidColor),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Column(
@@ -148,7 +148,7 @@ class _GenderPronounsScreenState
                     const SizedBox(height: 6),
                     Text(
                       selectedPronoun ?? "Pick Your Pronoun To Preview",
-                      style: const TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 14,color: DatingColors.everqpidColor),
                     ),
                   ],
                 ),
@@ -163,7 +163,7 @@ class _GenderPronounsScreenState
           onPressed: selectedPronoun == null ? null : updatePronounToApi,
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16),
-            backgroundColor:DatingColors.darkGreen,
+            backgroundColor:DatingColors.everqpidColor,
             disabledBackgroundColor: DatingColors.lightgrey,
           ),
           child: const Text(

@@ -105,10 +105,10 @@ class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: DatingColors.darkGreen,
+                    color: DatingColors.everqpidColor,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(Icons.star_border, color: DatingColors.white),
+                  child: const Icon(Icons.star_border, color: DatingColors.brown),
                 ),
                 const SizedBox(width: 12),
                 const Expanded(
@@ -117,7 +117,7 @@ class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: DatingColors.black,
+                      color: DatingColors.brown,
                     ),
                   ),
                 ),
@@ -148,17 +148,17 @@ class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
                                   decoration: BoxDecoration(
                                     gradient: isSelected
                                         ? const LinearGradient(
-                                            colors: [DatingColors.primaryGreen, DatingColors.black],
+                                            colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
                                             begin: Alignment.centerLeft,
                                             end: Alignment.centerRight,
                                           )
                                         : null,
-                                    color: isSelected ? null : DatingColors.white,
+                                    color: isSelected ? DatingColors.brown : DatingColors.white,
                                     borderRadius: BorderRadius.circular(28),
                                     border: Border.all(
                                       color: isSelected
-                                          ? DatingColors.black
-                                          : DatingColors.darkGreen,
+                                          ? DatingColors.lightgrey
+                                          : DatingColors.everqpidColor,
                                       width: 2,
                                     ),
                                   ),
@@ -168,7 +168,7 @@ class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500,
-                                        color: isSelected ? DatingColors.white : DatingColors.black,
+                                        color: isSelected ? DatingColors.brown : DatingColors.everqpidColor,
                                       ),
                                     ),
                                   ),
@@ -180,20 +180,20 @@ class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
             ),
 
             /// Skip Button
-            Center(
-              child: TextButton(
-                onPressed: () => Navigator.pop(context, null),
-                child: const Text(
-                  'Skip',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: DatingColors.lightgrey,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
+            // Center(
+            //   child: TextButton(
+            //     onPressed: () => Navigator.pop(context, null),
+            //     child: const Text(
+            //       'Skip',
+            //       style: TextStyle(
+            //         fontSize: 16,
+            //         fontWeight: FontWeight.w500,
+            //         color: DatingColors.lightgrey,
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // const SizedBox(height: 20),
           ],
         ),
       ),

@@ -84,10 +84,10 @@ class _QualitiesScreenState extends ConsumerState<QualitiesScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                         decoration: BoxDecoration(
                           color: isSelected
-                              ? DatingColors.surfaceGrey
+                              ? DatingColors.lightpinks
                               : DatingColors.white,
                           borderRadius: BorderRadius.circular(24),
-                          border: Border.all(color: DatingColors.surfaceGrey),
+                          border: Border.all(color: DatingColors.everqpidColor),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -137,7 +137,7 @@ class _QualitiesScreenState extends ConsumerState<QualitiesScreen> {
                     }
                   : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor:DatingColors.darkGreen,
+                backgroundColor:DatingColors.everqpidColor,
                 minimumSize: const Size.fromHeight(50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),

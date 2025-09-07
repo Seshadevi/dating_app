@@ -12,27 +12,22 @@ class NewToAreaScreen extends ConsumerStatefulWidget {
 }
 
 class _NewToAreaScreenState extends ConsumerState<NewToAreaScreen> {
-  List<String> selectedOptions = [];
-   String? selectedOption;
-  
+  String? selectedOption;
+  bool isLoading = false;
+
   final List<String> options = [
     'New To Town',
-    'Im a Local',
+    "I'm a Local",
   ];
 
-  void toggleOption(String option) {
-    setState(() {
-      if (selectedOptions.contains(option)) {
-        selectedOptions.remove(option);
-      } else {
-        selectedOptions.add(option);
-      }
-    });
-  }
   Future<void> selectOption(String option) async {
+    // Update UI immediately for better UX
     setState(() {
       selectedOption = option;
+      isLoading = true;
     });
+
+    print('Selected option: $option');
 
     try {
       await ref.read(loginProvider.notifier).updateProfile(
@@ -47,19 +42,49 @@ class _NewToAreaScreenState extends ConsumerState<NewToAreaScreen> {
           );
 
       if (!mounted) return;
+
+      // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('new area updated successfully!')),
+        SnackBar(
+          content: Text('New area status updated successfully!'),
+          backgroundColor: DatingColors.everqpidColor,
+          behavior: SnackBarBehavior.floating,
+        ),
       );
 
-      Navigator.pop(context, selectedOption);
+      // Auto-navigate after successful update
+      await Future.delayed(const Duration(milliseconds: 500));
+      // if (mounted) {
+      //   Navigator.push(
+      //     context,
+      //     MaterialPageRoute(builder: (context) => const StarSignScreen()),
+      //   );
+      // }
+      Navigator.pop(context);
     } catch (e) {
+      print('Error updating new area: $e');
+
+      // Reset selection on error
+      setState(() {
+        selectedOption = null;
+      });
+
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update new area: $e')),
+        SnackBar(
+          content: Text('Failed to update: ${e.toString()}'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+        ),
       );
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -86,94 +111,127 @@ class _NewToAreaScreenState extends ConsumerState<NewToAreaScreen> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: DatingColors.darkGreen,
+                    color: DatingColors.everqpidColor,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Icon(
                     Icons.location_on_outlined,
-                    color: DatingColors.white,
+                    color: DatingColors.brown,
                     size: 24,
                   ),
                 ),
                 const SizedBox(width: 12),
-                const Text(
-                  'Are you new to the area',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: DatingColors.black,
+                const Flexible(
+                  child: Text(
+                    'Are you new to the area?',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: DatingColors.brown,
+                    ),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 50),
+
             // Options list
             ...options.map((option) {
-              final isSelected = selectedOptions.contains(option);
+              final isSelected = selectedOption == option;
               final isFirstOption = option == 'New To Town';
-              
+
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: GestureDetector(
-                  onTap: () => toggleOption(option),
-                  child: Container(
+                  onTap: isLoading ? null : () => selectOption(option),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
                     width: double.infinity,
                     height: 56,
                     decoration: BoxDecoration(
                       gradient: isSelected
-                          ? (isFirstOption 
-                              ? const LinearGradient(
-                                  colors: [DatingColors.primaryGreen, DatingColors.black],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                )
-                              : const LinearGradient(
-                                  colors: [DatingColors.primaryGreen,DatingColors.black],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                ))
+                          ? const LinearGradient(
+                              colors: [
+                                DatingColors.lightpinks,
+                                DatingColors.everqpidColor
+                              ],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            )
                           : null,
                       color: isSelected ? null : DatingColors.white,
                       borderRadius: BorderRadius.circular(28),
                       border: Border.all(
-                        color: isSelected 
-                            ? DatingColors.black 
-                            : DatingColors.primaryGreen,
+                        color: isSelected
+                            ? DatingColors.lightgrey
+                            : DatingColors.everqpidColor.withOpacity(0.5),
                         width: 2,
                       ),
+                      boxShadow: isSelected
+                          ? [
+                              BoxShadow(
+                                color:
+                                    DatingColors.everqpidColor.withOpacity(0.3),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ]
+                          : null,
                     ),
                     child: Center(
-                      child: Text(
-                        option,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: isSelected ? DatingColors.white : DatingColors.black,
-                        ),
-                      ),
+                      child: isLoading && isSelected
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  DatingColors.brown,
+                                ),
+                              ),
+                            )
+                          : Text(
+                              option,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: isSelected
+                                    ? DatingColors.brown
+                                    : DatingColors.everqpidColor,
+                              ),
+                            ),
                     ),
                   ),
                 ),
               );
             }).toList(),
+
             const Spacer(),
+
             // Skip button
-            Center(
-              child: TextButton(
-                onPressed: () {
-                 Navigator.push(context, MaterialPageRoute(builder: (context) => StarSignScreen(),));
-                },
-                child: const Text(
-                  'Skip',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: DatingColors.lightgrey,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 40),
+            // Center(
+            //   child: TextButton(
+            //     onPressed: isLoading ? null : () {
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) => const StarSignScreen(),
+            //         ),
+            //       );
+            //     },
+            //     child: Text(
+            //       'Skip',
+            //       style: TextStyle(
+            //         fontSize: 16,
+            //         fontWeight: FontWeight.w500,
+            //         color: isLoading
+            //             ? DatingColors.lightgrey.withOpacity(0.5)
+            //             : DatingColors.lightgrey,
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // const SizedBox(height: 40),
           ],
         ),
       ),

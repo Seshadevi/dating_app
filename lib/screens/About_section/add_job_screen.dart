@@ -164,14 +164,14 @@ class _AddJobScreenState extends ConsumerState<AddJobScreen> {
                 child: ElevatedButton(
                   onPressed: isButtonEnabled ? _handleSubmit : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: isButtonEnabled ? DatingColors.darkGreen : DatingColors.lightgrey,
+                    backgroundColor: isButtonEnabled ? DatingColors.everqpidColor : DatingColors.lightgrey,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   child: Text(
                     isEditing ? 'UPDATE' : 'ADD',
-                    style: const TextStyle(fontSize: 16, color: DatingColors.white),
+                    style: const TextStyle(fontSize: 16, color: DatingColors.brown),
                   ),
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/signupprocessProviders/causesProvider.dart';
-import 'package:dating/screens/datePromtSelection.dart';
+// import 'package:dating/provider/signupprocessProviders/causesProvider.dart';
+// import 'package:dating/screens/signupprocess/datePromtSelection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

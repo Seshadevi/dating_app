@@ -86,7 +86,12 @@ class _LikedYouState extends ConsumerState<LikedYouScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: false,
-        
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings_outlined, color: Colors.black),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),

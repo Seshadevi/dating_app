@@ -493,7 +493,7 @@ Future<int> updateProfile({
     if (modeid != null) request.fields['modeId'] = modeid.toString();
     if (modename != null) request.fields['modename'] = modename;
     if (bio != null) request.fields['headLine'] = bio;
-    if (religionId != null) request.fields['religionId'] = religionId.toString();
+    if (religionId != null) request.fields['religions'] = religionId.toString();
     if (experienceId != null) request.fields['experiences'] = experienceId.toString();
     if (industryId != null) request.fields['industries'] = industryId.toString();
     if (jobId != null) request.fields['workId'] = jobId.toString();
@@ -508,7 +508,7 @@ Future<int> updateProfile({
     if (educationLevel != null) request.fields['educationLevel'] =educationLevel.toString();
     if (newarea != null) request.fields['newToArea'] =newarea.toString();
     if (height != null) request.fields['height'] =height.toString();
-    if ( relationshipId != null) request.fields[' relationshipId'] = relationshipId.toString();
+    if ( relationshipId != null) request.fields['relationshipId'] = relationshipId.toString();
     if (industryId != null) request.fields['industryId'] =industryId.toString();
     if (experienceId != null) request.fields['experienceId'] =experienceId.toString();
     

@@ -94,10 +94,10 @@ class _DrinkingScreenState extends ConsumerState<DrinkingScreen> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color:  DatingColors.darkGreen,
+                    color:  DatingColors.everqpidColor,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(Icons.local_drink, color: DatingColors.white),
+                  child: const Icon(Icons.local_drink, color: DatingColors.brown),
                 ),
                 const SizedBox(width: 12),
                 const Text(
@@ -135,7 +135,7 @@ class _DrinkingScreenState extends ConsumerState<DrinkingScreen> {
                           decoration: BoxDecoration(
                             gradient: isSelected
                                 ? const LinearGradient(
-                                    colors: [DatingColors.primaryGreen, DatingColors.black],
+                                    colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
                                     begin: Alignment.centerLeft,
                                     end: Alignment.centerRight,
                                   )
@@ -144,8 +144,8 @@ class _DrinkingScreenState extends ConsumerState<DrinkingScreen> {
                             borderRadius: BorderRadius.circular(28),
                             border: Border.all(
                               color: isSelected
-                                  ? DatingColors.black
-                                  : DatingColors.primaryGreen,
+                                  ? DatingColors.lightgrey
+                                  : DatingColors.everqpidColor,
                               width: 2,
                             ),
                           ),
@@ -155,7 +155,7 @@ class _DrinkingScreenState extends ConsumerState<DrinkingScreen> {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
-                                color: isSelected ? DatingColors.white : DatingColors.black,
+                                color: isSelected ? DatingColors.brown : DatingColors.everqpidColor,
                               ),
                             ),
                           ),

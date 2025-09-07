@@ -37,6 +37,7 @@ class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
         title: const Text('Favorite Qualities'),
         backgroundColor: DatingColors.white,
@@ -77,7 +78,7 @@ class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
                     color: DatingColors.surfaceGrey,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: DatingColors.darkGreen,
+                      color: DatingColors.everqpidColor,
                       width: 1.5,
                     ),
                   ),
@@ -103,7 +104,7 @@ class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
             child: ElevatedButton(
               onPressed: _saveAllQualities,
               style: ElevatedButton.styleFrom(
-                backgroundColor:DatingColors.darkGreen,
+                backgroundColor:DatingColors.everqpidColor,
                 minimumSize: const Size.fromHeight(50),
               ),
               child: const Text('Save All',style:TextStyle(color:DatingColors.white),),

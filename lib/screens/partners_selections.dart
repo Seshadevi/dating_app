@@ -1,8 +1,7 @@
 import 'package:dating/constants/dating_app_user.dart';
-import 'package:dating/provider/loginProvider.dart';
+
 import 'package:dating/provider/signupprocessProviders/lookingProvider.dart';
-import 'package:dating/screens/height_selection_screen.dart';
-import 'package:dating/screens/meet_selection.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

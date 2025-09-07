@@ -2,7 +2,7 @@ import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/signupprocessProviders/genderProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../model/signupprocessmodels/genderModel.dart';
+import '../../../model/signupprocessmodels/genderModel.dart';
 
 class IntroMeetselection extends ConsumerStatefulWidget {
   const IntroMeetselection({super.key});

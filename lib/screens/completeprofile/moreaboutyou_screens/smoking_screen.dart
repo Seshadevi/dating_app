@@ -110,12 +110,12 @@ class _SmokingScreenState extends ConsumerState<SmokingScreen> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: DatingColors.darkGreen,
+                    color: DatingColors.everqpidColor,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Icon(
                     Icons.smoke_free_outlined,
-                    color: DatingColors.white,
+                    color: DatingColors.brown,
                     size: 24,
                   ),
                 ),
@@ -125,7 +125,7 @@ class _SmokingScreenState extends ConsumerState<SmokingScreen> {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
-                    color: DatingColors.black,
+                    color: DatingColors.brown,
                   ),
                 ),
               ],
@@ -143,17 +143,17 @@ class _SmokingScreenState extends ConsumerState<SmokingScreen> {
                     decoration: BoxDecoration(
                       gradient: isSelected
                           ? const LinearGradient(
-                              colors: [DatingColors.darkGreen, DatingColors.black],
+                              colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
                               begin: Alignment.centerLeft,
                               end: Alignment.centerRight,
                             )
                           : null,
-                      color: isSelected ? null : DatingColors.white,
+                      color: isSelected ? DatingColors.brown : DatingColors.white,
                       borderRadius: BorderRadius.circular(28),
                       border: Border.all(
                         color: isSelected
-                            ? DatingColors.black
-                            : DatingColors.primaryGreen,
+                            ? DatingColors.lightgrey
+                            : DatingColors.everqpidColor,
                         width: 2,
                       ),
                     ),
@@ -163,7 +163,7 @@ class _SmokingScreenState extends ConsumerState<SmokingScreen> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: isSelected ? DatingColors.white : DatingColors.black,
+                          color: isSelected ? DatingColors.brown : DatingColors.everqpidColor,
                         ),
                       ),
                     ),
@@ -171,28 +171,28 @@ class _SmokingScreenState extends ConsumerState<SmokingScreen> {
                 ),
               );
             }).toList(),
-            const Spacer(),
-            Center(
-              child: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const DrinkingScreen(),
-                    ),
-                  );
-                },
-                child: const Text(
-                  'Skip',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: DatingColors.lightgrey,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 40),
+            // const Spacer(),
+            // Center(
+            //   child: TextButton(
+            //     onPressed: () {
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) => const DrinkingScreen(),
+            //         ),
+            //       );
+            //     },
+            //     child: const Text(
+            //       'Skip',
+            //       style: TextStyle(
+            //         fontSize: 16,
+            //         fontWeight: FontWeight.w500,
+            //         color: DatingColors.lightgrey,
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // const SizedBox(height: 40),
           ],
         ),
       ),

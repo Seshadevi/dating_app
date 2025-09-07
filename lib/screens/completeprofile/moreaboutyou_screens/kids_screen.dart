@@ -65,7 +65,7 @@ class _HaveKidsScreenState extends ConsumerState<HaveKidsScreen> {
         backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: DatingColors.black),
+          icon: const Icon(Icons.close, color: DatingColors.everqpidColor),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -81,10 +81,10 @@ class _HaveKidsScreenState extends ConsumerState<HaveKidsScreen> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: DatingColors.darkGreen,
+                    color: DatingColors.everqpidColor,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(Icons.child_friendly, color: DatingColors.white),
+                  child: const Icon(Icons.child_friendly, color: DatingColors.brown),
                 ),
                 const SizedBox(width: 12),
                 const Text(
@@ -141,8 +141,8 @@ class _HaveKidsScreenState extends ConsumerState<HaveKidsScreen> {
                                 gradient: isSelected
                                     ? const LinearGradient(
                                         colors: [
-                                          DatingColors.primaryGreen,
-                                          DatingColors.black,
+                                          DatingColors.lightpinks,
+                                          DatingColors.everqpidColor,
                                         ],
                                         begin: Alignment.centerLeft,
                                         end: Alignment.centerRight,
@@ -152,8 +152,8 @@ class _HaveKidsScreenState extends ConsumerState<HaveKidsScreen> {
                                 borderRadius: BorderRadius.circular(28),
                                 border: Border.all(
                                   color: isSelected
-                                      ? DatingColors.black
-                                      : DatingColors.primaryGreen,
+                                      ? DatingColors.lightgrey
+                                      : DatingColors.everqpidColor,
                                   width: 2,
                                 ),
                               ),
@@ -163,7 +163,7 @@ class _HaveKidsScreenState extends ConsumerState<HaveKidsScreen> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
-                                    color: isSelected ? DatingColors.white : DatingColors.black,
+                                    color: isSelected ? DatingColors.brown : DatingColors.black,
                                   ),
                                 ),
                               ),
@@ -177,20 +177,20 @@ class _HaveKidsScreenState extends ConsumerState<HaveKidsScreen> {
             const SizedBox(height: 16),
 
             // Skip Button
-            Center(
-              child: TextButton(
-                onPressed: () => Navigator.pop(context, null),
-                child: const Text(
-                  'Skip',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
+            // Center(
+            //   child: TextButton(
+            //     onPressed: () => Navigator.pop(context, null),
+            //     child: const Text(
+            //       'Skip',
+            //       style: TextStyle(
+            //         fontSize: 16,
+            //         fontWeight: FontWeight.w500,
+            //         color: Colors.grey,
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // const SizedBox(height: 20),
           ],
         ),
       ),

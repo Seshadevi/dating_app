@@ -22,30 +22,31 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final userModel = ref.watch(loginProvider);
-    final user = userModel.data?.isNotEmpty == true ? userModel.data![0].user : null;
+    final user =
+        userModel.data?.isNotEmpty == true ? userModel.data![0].user : null;
 
     final firstName = user?.firstName?.toString() ?? 'User';
     final lastName = user?.lastName?.toString() ?? '';
     final name = '$firstName $lastName'.trim();
+     final first = user?.profilePics?.first;
+      print("IMAGE URL::::: $first");
+    // final img = user.profilePics;
     // final imageUrl = (user?.profilePics != null && user!.profilePics!.isNotEmpty)
     //     ? user.profilePics!.first.toString()
     //     : null;
-   String? imageUrl;
+    String? imageUrl;
 
 if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
-  var first = user.profilePics!.first;
-  if (first is String) {
-    imageUrl = 'http://97.74.93.26:6100/${first.toString().replaceFirst(RegExp(r'^/'), '')}';
-  } else if (first is Map && first.url!= null) {
-    imageUrl = 'http://97.74.93.26:6100/${first.url.toString().replaceFirst(RegExp(r'^/'), '')}';
+  final first = user.profilePics!.first; // this is ProfilePics model
+  if (first.url != null) {
+    imageUrl = 'http://97.74.93.26:6100/${first.url!.replaceFirst(RegExp(r'^/'), '')}';
   }
 }
 
+print("IMAGE URL::::: $imageUrl");
 
-        print("IMAGE URL::::: $imageUrl");
-
-
-    double profilePercent = 0.26; // Later: calculate based on actual profile fields
+    double profilePercent =
+        0.26; // Later: calculate based on actual profile fields
     int profileDisplayPercent = (profilePercent * 100).round();
 
     return DefaultTabController(
@@ -57,21 +58,29 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
             children: [
               // Header
               Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [DatingColors.primaryGreen, DatingColors.black],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(40),
-                    bottomRight: Radius.circular(40),
-                  ),
-                ),
+                decoration: 
+      const BoxDecoration(
+        // gradient: LinearGradient(
+          // colors: [DatingColors.lightpink, DatingColors.everqpidColor],
+          image:const DecorationImage(
+      image: AssetImage("assets/everqpidbg.png"), // your image path
+      fit: BoxFit.cover, // cover, contain, fill, etc.
+    ),
+          // stops: [0.0, 1.0],
+          // begin: AlignmentDirectional(0.0, -1.0),
+          // end: AlignmentDirectional(0, 1.0),
+        // ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(40.0),
+          bottomRight: Radius.circular(40.0),
+        ),
+      ),
                 padding: const EdgeInsets.only(top: 50, bottom: 20),
                 child: Column(
                   children: [
-                    const Text('Profile', style: TextStyle(color: DatingColors.white, fontSize: 20)),
+                    const Text('Profile',
+                        style:
+                            TextStyle(color: DatingColors.brown, fontSize: 20)),
                     const SizedBox(height: 16),
                     Stack(
                       alignment: Alignment.center,
@@ -84,20 +93,24 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
                             strokeWidth: 3,
                             backgroundColor: DatingColors.mediumGrey,
                             valueColor: AlwaysStoppedAnimation<Color>(
-                                profilePercent < 0.3 ? Colors.red : Colors.pink),
+                                profilePercent < 0.3
+                                    ? Colors.red
+                                    : Colors.pink),
                           ),
                         ),
                         CircleAvatar(
                           radius: 80,
                           backgroundImage: imageUrl != null
                               ? NetworkImage(imageUrl)
-                              : const AssetImage('assets/profileImage.jpg') as ImageProvider,
+                              : const AssetImage('assets/profileImage.jpg')
+                                  ,
                         ),
                       ],
                     ),
                     const SizedBox(height: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 4),
                       decoration: BoxDecoration(
                         color: DatingColors.white,
                         borderRadius: BorderRadius.circular(12),
@@ -105,14 +118,17 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
                       child: Text(
                         // '$profileDisplayPercent% COMPLETE',
                         '20% COMPLETE',
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 12),
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       name,
                       style: const TextStyle(
-                          color: DatingColors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                          color: DatingColors.brown,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 16),
 
@@ -127,12 +143,13 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
                             top: 10,
                             child: _CircleButton(
                               icon: Icons.settings,
-                              label: 'SETTINGS',
+                              label: 'Settings',
                               onTap: () {
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => const SettingsScreen()));
+                                        builder: (context) =>
+                                            const SettingsScreen()));
                               },
                             ),
                           ),
@@ -146,7 +163,8 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => BumbleDateProfileScreen()),
+                                      builder: (context) =>
+                                          BumbleDateProfileScreen()),
                                 );
                               },
                             ),
@@ -156,7 +174,7 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
                             top: 10,
                             child: _CircleButton(
                               icon: Icons.security,
-                              label: 'SAFETY',
+                              label: 'Safety',
                               onTap: () {},
                             ),
                           ),
@@ -172,22 +190,29 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
                 Column(
                   children: [
                     const SizedBox(height: 20),
-                    const Text('Heart Sync Platinum',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    const Text('Level Up Every Action You Take On \nHeartsync',
-                        textAlign: TextAlign.center, style: TextStyle(fontSize: 15)),
-                    const SizedBox(height: 8),
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.circle, size: 15, color: DatingColors.lightGreen),
-                        Icon(Icons.circle, size: 15, color: DatingColors.lightGreen),
-                        Icon(Icons.circle, size: 15, color: DatingColors.lightGreen),
-                        Icon(Icons.circle, size: 15, color: DatingColors.lightGreen),
-                        Icon(Icons.circle_outlined, size: 15, color: DatingColors.primaryGreen),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
+                    const Text('HeartSync Premium',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold)),
+                    const Text('Premium features designed to maximize your journey.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 12)),
+                    const SizedBox(height: 38),
+                    //  Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     Icon(Icons.circle,
+                    //         size: 15, color: DatingColors.lightGreen),
+                    //     Icon(Icons.circle,
+                    //         size: 15, color: DatingColors.lightGreen),
+                    //     Icon(Icons.circle,
+                    //         size: 15, color: DatingColors.lightGreen),
+                    //     Icon(Icons.circle,
+                    //         size:const 15, color: DatingColors.lightGreen),
+                    //     Icon(Icons.circle_outlined,
+                    //         size: 15, color: DatingColors.primaryGreen),
+                    //   ],
+                    // ),
+                    // const SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
@@ -196,12 +221,20 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: DatingColors.surfaceGrey,
-                        foregroundColor: DatingColors.black,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                        foregroundColor: DatingColors.everqpidColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide(
+                            color: DatingColors.lightpinks, // ✅ Border color
+                            width: 2,                          // Border thickness
+                          ),
+                            ),
+                            
                       ),
                       child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                        child: Text('LEARN MORE'),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        child: Text('Premium Plans',style: TextStyle(color:DatingColors.brown),),
                       ),
                     ),
                   ],
@@ -211,46 +244,48 @@ if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
               if (showTabBar)
                 Column(
                   children: [
-                 Container(
-  margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 1),
-  decoration: BoxDecoration(
-    color: DatingColors.surfaceGrey, // Background color behind tabs
-    borderRadius: BorderRadius.circular(10),
-    // border: Border.all(color: Colors.grey, width: 1),
-  ),
-  child: TabBar(
-    indicator: BoxDecoration(
-      color: DatingColors.darkGreen, // Active tab background
-      borderRadius: BorderRadius.circular(10),
-    ),
-    labelColor: DatingColors.white, // Selected tab text color
-    unselectedLabelColor: DatingColors.black,
-    indicatorPadding: EdgeInsets.zero,
-    tabs: const [
-      Tab(
-        child: Padding(
-          padding: EdgeInsets.all(12), // Equal padding on all sides
-          child: Text('Pay Plan'),
-        ),
-      ),
-      Tab(
-        child: Padding(
-          padding: EdgeInsets.all(12),
-          child: Text('Insights Profile'),
-        ),
-      ),
-      Tab(
-        child: Padding(
-          padding: EdgeInsets.all(12),
-          child: Text('Safety well'),
-        ),
-      ),
-    ],
-  ),
-),
-
-
-
+                    Container(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 1),
+                      decoration: BoxDecoration(
+                        color: DatingColors
+                            .surfaceGrey, // Background color behind tabs
+                        borderRadius: BorderRadius.circular(10),
+                        // border: Border.all(color: Colors.grey, width: 1),
+                      ),
+                      child: TabBar(
+                        indicator: BoxDecoration(
+                          color:
+                              DatingColors.darkGreen, // Active tab background
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        labelColor:
+                            DatingColors.white, // Selected tab text color
+                        unselectedLabelColor: DatingColors.black,
+                        indicatorPadding: EdgeInsets.zero,
+                        tabs: const [
+                          Tab(
+                            child: Padding(
+                              padding: EdgeInsets.all(
+                                  12), // Equal padding on all sides
+                              child: Text('Pay Plan'),
+                            ),
+                          ),
+                          Tab(
+                            child: Padding(
+                              padding: EdgeInsets.all(12),
+                              child: Text('Insights Profile'),
+                            ),
+                          ),
+                          Tab(
+                            child: Padding(
+                              padding: EdgeInsets.all(12),
+                              child: Text('Safety well'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(
                       height: 500,
                       child: TabBarView(
