@@ -90,10 +90,10 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? DatingColors.lightGreen
+                            ? DatingColors.lightpinks
                             : DatingColors.white,
                         borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: DatingColors.lightgrey),
+                        border: Border.all(color: DatingColors.everqpidColor),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -142,10 +142,10 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
                     }
                   : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: DatingColors.darkGreen,
+                backgroundColor: DatingColors.everqpidColor,
                 minimumSize: const Size.fromHeight(50),
               ),
-              child: const Text("Continue", style: TextStyle(color: DatingColors.white)),
+              child: const Text("Continue", style: TextStyle(color: DatingColors.brown)),
             ),
           ],
         ),

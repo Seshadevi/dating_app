@@ -90,9 +90,9 @@ class _CausesScreenState extends ConsumerState<CausesScreen> {
                               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                               decoration: BoxDecoration(
                                 color: isSelected
-                                    ? DatingColors.surfaceGrey
+                                    ? DatingColors.lightpinks
                                     : DatingColors.white,
-                                border: Border.all(color: DatingColors.lightgrey),
+                                border: Border.all(color: DatingColors.everqpidColor),
                                 borderRadius: BorderRadius.circular(24),
                               ),
                               child: Row(
@@ -101,7 +101,7 @@ class _CausesScreenState extends ConsumerState<CausesScreen> {
                                   Text(
                                     cause.causesAndCommunities ?? '',
                                     style: const TextStyle(
-                                      color: DatingColors.black,
+                                      color: DatingColors.brown,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -143,12 +143,12 @@ class _CausesScreenState extends ConsumerState<CausesScreen> {
                     }
                   : null,
               style: ElevatedButton.styleFrom(
-                backgroundColor: DatingColors.darkGreen,
+                backgroundColor: DatingColors.everqpidColor,
                 minimumSize: const Size.fromHeight(50),
               ),
               child: const Text(
                 "Continue",
-                style: TextStyle(color: DatingColors.white),
+                style: TextStyle(color: DatingColors.brown),
               ),
             ),
           ],

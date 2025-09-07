@@ -85,7 +85,7 @@ class _StarSignScreenState extends ConsumerState<StarSignScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          'Select Zodiac Sign',
+          'Select StarSign',
           style: TextStyle(
             color: Colors.black,
             fontSize: 18,
@@ -142,17 +142,17 @@ class _StarSignScreenState extends ConsumerState<StarSignScreen> {
                   decoration: BoxDecoration(
                     gradient: isSelected
                         ? const LinearGradient(
-                            colors: [DatingColors.primaryGreen, DatingColors.black],
+                            colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
                           )
                         : null,
-                    color: isSelected ? null : DatingColors.white,
+                    color: isSelected ? DatingColors.white : DatingColors.white,
                     borderRadius: BorderRadius.circular(28),
                     border: Border.all(
                       color: isSelected
-                          ? DatingColors.black
-                          : DatingColors.darkGreen,
+                          ? DatingColors.lightgrey
+                          : DatingColors.everqpidColor,
                       width: 2,
                     ),
                   ),
@@ -162,7 +162,7 @@ class _StarSignScreenState extends ConsumerState<StarSignScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: isSelected ? DatingColors.white : DatingColors.black,
+                        color: isSelected ? DatingColors.brown: DatingColors.everqpidColor,
                       ),
                     ),
                   ),

@@ -78,7 +78,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
         backgroundColor:DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.black, size: 24),
+          icon: const Icon(Icons.close, color:DatingColors.everqpidColor, size: 24),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -94,12 +94,12 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: DatingColors.darkGreen,
+                    color: DatingColors.everqpidColor,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Icon(
                     Icons.sports_gymnastics,
-                    color: DatingColors.white,
+                    color: DatingColors.brown,
                     size: 24,
                   ),
                 ),
@@ -109,7 +109,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
-                    color: DatingColors.black,
+                    color: DatingColors.brown,
                   ),
                 ),
               ],
@@ -127,7 +127,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
                     decoration: BoxDecoration(
                       gradient: isSelected
                           ? const LinearGradient(
-                              colors: [DatingColors.primaryGreen, DatingColors.black],
+                              colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
                               begin: Alignment.centerLeft,
                               end: Alignment.centerRight,
                             )
@@ -136,8 +136,8 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
                       borderRadius: BorderRadius.circular(28),
                       border: Border.all(
                         color: isSelected
-                            ? DatingColors.black
-                            : DatingColors.darkGreen,
+                            ? DatingColors.lightgrey
+                            : DatingColors.everqpidColor,
                         width: 2,
                       ),
                     ),
@@ -147,7 +147,7 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: isSelected ? DatingColors.white : DatingColors.black,
+                          color: isSelected ? DatingColors.brown : DatingColors.everqpidColor,
                         ),
                       ),
                     ),
@@ -155,27 +155,27 @@ class _ExerciseScreenState extends ConsumerState<ExerciseScreen> {
                 ),
               );
             }).toList(),
-            const Spacer(),
-            Center(
-              child: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const NewToAreaScreen()),
-                  );
-                },
-                child: const Text(
-                  'Skip',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: DatingColors.lightgrey,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 40),
+            // const Spacer(),
+            // Center(
+            //   child: TextButton(
+            //     onPressed: () {
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //             builder: (context) => const NewToAreaScreen()),
+            //       );
+            //     },
+            //     child: const Text(
+            //       'Skip',
+            //       style: TextStyle(
+            //         fontSize: 16,
+            //         fontWeight: FontWeight.w500,
+            //         color: DatingColors.lightgrey,
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            // const SizedBox(height: 40),
           ],
         ),
       ),

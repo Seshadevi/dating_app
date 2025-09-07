@@ -18,14 +18,14 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
         backgroundColor:DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: DatingColors.black),
+          icon: const Icon(Icons.arrow_back, color: DatingColors.everqpidColor),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Profile Strength',
           style: TextStyle(
-            color: DatingColors.black,
-            fontSize: 18,
+            color: DatingColors.brown,
+            fontSize: 24,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -68,13 +68,13 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
-                      color: DatingColors.accentTeal,
+                      color: DatingColors.everqpidColor,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Text(
                       '20%',
                       style: TextStyle(
-                        color: DatingColors.white,
+                        color: DatingColors.brown,
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                       ),
@@ -89,9 +89,9 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
             const Text(
               'Build Your Profile With Your Favorites',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: DatingColors.black,
+                color: DatingColors.everqpidColor,
               ),
               textAlign: TextAlign.center,
             ),
@@ -120,28 +120,28 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
                   title: 'Bio',
                   subtitle: 'Not Written',
                   isCompleted: false,
-                  iconColor: DatingColors.accentTeal,
+                  iconColor: DatingColors.brown,
                 ),
                 _buildProfileCard(
                   icon: Icons.verified_user_outlined,
                   title: 'Get Verified',
                   subtitle: 'Not Verified',
                   isCompleted: false,
-                  iconColor: DatingColors.accentTeal,
+                  iconColor: DatingColors.brown,
                 ),
                 _buildProfileCard(
                   icon: Icons.person,
                   title: 'Basic Info',
                   subtitle: '1 Of 5 Added',
                   isCompleted: false,
-                  iconColor: DatingColors.errorRed,
+                  iconColor: DatingColors.brown,
                 ),
                 _buildProfileCard(
                   icon: Icons.info_outline,
                   title: 'More About',
                   subtitle: '3 Of 9 Added',
                   isCompleted: false,
-                  iconColor: DatingColors.yellow,
+                  iconColor: DatingColors.brown,
                   hasMoreInfo: true,
                 ),
                 _buildProfileCard(
@@ -149,14 +149,14 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
                   title: 'Photos',
                   subtitle: '1 Of 4 Added',
                   isCompleted: false,
-                  iconColor: DatingColors.darkGreen,
+                  iconColor: DatingColors.brown,
                 ),
                 _buildProfileCard(
                   icon: Icons.chat_bubble_outline,
                   title: 'Prompts',
                   subtitle: '3 Of 9 Added',
                   isCompleted: false,
-                  iconColor: DatingColors.accentTeal,
+                  iconColor: DatingColors.brown,
                 ),
               ],
             ),
@@ -168,7 +168,7 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
               title: 'Interests',
               subtitle: '0 Of 5 Added',
               isCompleted: false,
-              iconColor: DatingColors.lightyellow,
+              iconColor: DatingColors.brown,
             ),
           ],
         ),
@@ -185,10 +185,12 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
     bool hasMoreInfo = false,
   }) {
     return Container(
+      height: 150,
       decoration: BoxDecoration(
         border: Border.all(
-          color: isCompleted ? DatingColors.primaryGreen : DatingColors.yellow!,
+          color: isCompleted ? DatingColors.everqpidColor : DatingColors.lightpink,
           width: 2,
+        
         ),
         borderRadius: BorderRadius.circular(12),
         color: DatingColors.white,
@@ -202,7 +204,7 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
               children: [
                 Icon(
                   icon,
-                  size: 40,
+                  size: 35,
                   color: iconColor,
                 ),
                 if (hasMoreInfo)
@@ -212,7 +214,7 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: DatingColors.yellow,
+                        color: DatingColors.everqpidColor,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Text(
@@ -227,13 +229,13 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
                   ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 6),
             Text(
               title,
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: DatingColors.black,
+                color: DatingColors.everqpidColor,
               ),
             ),
             const SizedBox(height: 4),
@@ -259,10 +261,11 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
     required Color iconColor,
   }) {
     return Container(
+      height: 150,
       width: double.infinity,
       decoration: BoxDecoration(
         border: Border.all(
-          color: isCompleted ? DatingColors.primaryGreen : DatingColors.yellow!,
+          color: isCompleted ? DatingColors.primaryGreen : DatingColors.lightpink,
           width: 2,
         ),
         borderRadius: BorderRadius.circular(12),
@@ -275,16 +278,16 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
           children: [
             Icon(
               icon,
-              size: 40,
+              size: 35,
               color: iconColor,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 6),
             Text(
               title,
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: DatingColors.black,
+                color: DatingColors.everqpidColor,
               ),
             ),
             const SizedBox(height: 4),

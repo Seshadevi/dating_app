@@ -2,7 +2,7 @@ import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
-import 'notification_screen.dart';
+// import 'notification_screen.dart';
 
 class LocationScreen extends StatefulWidget {
   const LocationScreen({super.key});

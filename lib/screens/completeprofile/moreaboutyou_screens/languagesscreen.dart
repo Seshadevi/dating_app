@@ -77,7 +77,7 @@ class _LanguageSelectionScreenState
         title: const Text(
           "Select Languages",
           style: TextStyle(
-            color: DatingColors.darkGreen,
+            color: DatingColors.brown,
             fontSize: 18,
             fontWeight: FontWeight.w600,
           ),
@@ -96,7 +96,7 @@ class _LanguageSelectionScreenState
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: DatingColors.black,
+                      color: DatingColors.everqpidColor,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -187,7 +187,7 @@ class _LanguageSelectionScreenState
                                       color: DatingColors.white,
                                       borderRadius: BorderRadius.circular(12),
                                       border: Border.all(
-                                        color: DatingColors.lightgrey,
+                                        color: DatingColors.everqpidColor,
                                         width: 1,
                                       ),
                                     ),
@@ -199,7 +199,7 @@ class _LanguageSelectionScreenState
                                             style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w500,
-                                              color: DatingColors.black,
+                                              color: DatingColors.brown,
                                             ),
                                           ),
                                         ),
@@ -208,12 +208,12 @@ class _LanguageSelectionScreenState
                                           height: 24,
                                           decoration: BoxDecoration(
                                             color: isSelected
-                                                ? DatingColors.darkGreen
-                                                : DatingColors.black,
+                                                ? DatingColors.everqpidColor
+                                                : DatingColors.backgroundWhite,
                                             border: Border.all(
                                               color: isSelected
-                                                  ? DatingColors.primaryGreen
-                                                  : DatingColors.lightgrey,
+                                                  ? DatingColors.lightgrey
+                                                  : DatingColors.everqpidColor,
                                               width: 2,
                                             ),
                                             borderRadius:
@@ -272,7 +272,7 @@ class _LanguageSelectionScreenState
           style: ElevatedButton.styleFrom(
             backgroundColor: selectedIds.isEmpty
                 ? DatingColors.surfaceGrey
-                : DatingColors.darkGreen,
+                : DatingColors.everqpidColor,
             minimumSize: const Size.fromHeight(56),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(28),
@@ -282,7 +282,7 @@ class _LanguageSelectionScreenState
             "Save (${selectedIds.length}/5)",
             style: TextStyle(
               color:
-                  selectedIds.isEmpty ? DatingColors.middlegrey : DatingColors.white,
+                  selectedIds.isEmpty ? DatingColors.brown : DatingColors.white,
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),

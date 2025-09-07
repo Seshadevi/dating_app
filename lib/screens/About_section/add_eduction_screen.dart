@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/moreabout/educationprovider.dart';
 import 'package:flutter/material.dart';
@@ -140,8 +141,9 @@ class _AddEducationScreenState extends ConsumerState<AddEducationScreen> {
               width: double.infinity,
               height: 48,
               child: ElevatedButton(
+                
                 onPressed: _handleSubmit,
-                child: Text(isEditing ? "Update" : "Add"),
+                child: Text(isEditing ? "Update" : "Add",style: TextStyle(color: DatingColors.brown,),),
               ),
             )
           ],

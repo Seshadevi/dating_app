@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dating/constants/dating_app_user.dart';
-import 'package:dating/screens/FriendOnboardingScreen.dart';
+// import 'package:dating/screens/signupprocess/FriendOnboardingScreen.dart';
 import 'package:flutter/material.dart';
 
 class BeKindScreen extends StatefulWidget {

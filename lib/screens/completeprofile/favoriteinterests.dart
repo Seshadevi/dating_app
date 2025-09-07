@@ -37,6 +37,7 @@ class _FavoriteInterestsState extends ConsumerState<FavoriteInterests> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
         title: const Text('Favorite interest'),
         backgroundColor:DatingColors.white,
@@ -77,7 +78,7 @@ class _FavoriteInterestsState extends ConsumerState<FavoriteInterests> {
                     color: DatingColors.surfaceGrey,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: DatingColors.darkGreen,
+                      color: DatingColors.everqpidColor,
                       width: 1.5,
                     ),
                   ),
@@ -103,10 +104,10 @@ class _FavoriteInterestsState extends ConsumerState<FavoriteInterests> {
             child: ElevatedButton(
               onPressed: _saveAllInterests,
               style: ElevatedButton.styleFrom(
-                backgroundColor:DatingColors.darkGreen,
+                backgroundColor:DatingColors.everqpidColor,
                 minimumSize: const Size.fromHeight(50),
               ),
-              child: const Text('Save All',style:TextStyle(color:DatingColors.white),),
+              child: const Text('Save All',style:TextStyle(color:DatingColors.brown),),
             ),
           ),
         ],

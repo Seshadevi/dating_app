@@ -67,7 +67,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
                     child: Padding(
                       padding: EdgeInsets.all(20.0),
                       child: Text(
-                        'No jobs found.\nAdd your first job above.',
+                        'Add your job ',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: DatingColors.lightgrey,
@@ -102,7 +102,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
               height: 52,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: DatingColors.darkGreen,
+                  backgroundColor: DatingColors.everqpidColor,
                   foregroundColor: DatingColors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -130,6 +130,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
+                        color: DatingColors.brown,
                       ),
                     ),
                   ],
@@ -178,7 +179,7 @@ class _OccupationScreenState extends ConsumerState<OccupationScreen> {
               );
             }
           },
-          activeColor: DatingColors.darkGreen,
+          activeColor: DatingColors.everqpidColor,
         ),
         title: Text(
           job.title ?? 'Unknown Job',

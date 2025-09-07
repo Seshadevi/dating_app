@@ -37,6 +37,7 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: DatingColors.white,
       appBar: AppBar(
         title: const Text('Favorite Cause'),
         backgroundColor: DatingColors.white,
@@ -74,10 +75,11 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   decoration: BoxDecoration(
-                    color: DatingColors.lightgrey,
+                    color: DatingColors.white,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: DatingColors.primaryGreen,
+                      
+                      color: DatingColors.everqpidColor,
                       width: 1.5,
                     ),
                   ),
@@ -103,10 +105,10 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
             child: ElevatedButton(
               onPressed: _saveAllCauses,
               style: ElevatedButton.styleFrom(
-                backgroundColor: DatingColors.darkGreen,
+                backgroundColor: DatingColors.everqpidColor,
                 minimumSize: const Size.fromHeight(50),
               ),
-              child: const Text('Save All',style:TextStyle(color:Colors.white),),
+              child: const Text('Save All',style:TextStyle(color:Colors.brown),),
             ),
           ),
         ],

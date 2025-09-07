@@ -76,7 +76,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
               height: 52,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: DatingColors.darkGreen,
+                  backgroundColor: DatingColors.everqpidColor,
                   foregroundColor: DatingColors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -104,6 +104,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
+                        color: DatingColors.brown
                       ),
                     ),
                   ],
@@ -123,7 +124,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
         child: Padding(
           padding: EdgeInsets.all(20.0),
           child: Text(
-            'No education records found.\nAdd your first education above.',
+            'No education records found.\nAdd your first education',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: DatingColors.lightgrey,
@@ -180,7 +181,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
               );
             }
           },
-          activeColor: DatingColors.darkGreen,
+          activeColor: DatingColors.everqpidColor,
         ),
         title: Text(
           education.institution ?? 'Unknown Institution',

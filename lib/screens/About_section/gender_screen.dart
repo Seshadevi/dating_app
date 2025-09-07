@@ -2,7 +2,7 @@ import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dating/screens/About_section/learn_more_screen.dart';
+// import 'package:dating/screens/About_section/learn_more_screen.dart';
 // import 'package:dating/providers/login_provider.dart';
 
 class UpdateGenderScreen extends ConsumerStatefulWidget {
@@ -72,13 +72,13 @@ class _UpdateGenderScreenState extends ConsumerState<UpdateGenderScreen> {
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         margin: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ?  DatingColors.primaryGreen : DatingColors.black,
+          color: isSelected ?  DatingColors.everqpidColor : DatingColors.white,
           gradient: isSelected
               ? const LinearGradient(
-                  colors: [DatingColors.primaryGreen, DatingColors.black],
+                  colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
                 )
               : null,
-          border: Border.all(color: DatingColors.darkGreen),
+          border: Border.all(color: DatingColors.everqpidColor),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
@@ -87,7 +87,7 @@ class _UpdateGenderScreenState extends ConsumerState<UpdateGenderScreen> {
             Text(
               gender,
               style: TextStyle(
-                color: isSelected ? DatingColors.white : DatingColors.black,
+                color: isSelected ? DatingColors.brown : DatingColors.black,
                 fontSize: 16,
               ),
             ),
@@ -125,26 +125,27 @@ class _UpdateGenderScreenState extends ConsumerState<UpdateGenderScreen> {
                 children: [
                   const Text('Pick Which Best Describes You',
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                  const Text('Then add more about your gender if you like',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                  TextButton(
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const LearnMoreScreen()),
-                    ),
-                    child: const Text(
-                      'Learn What This Means',
-                      style: TextStyle(decoration: TextDecoration.underline),
-                    ),
-                  ),
-                  genderOption("Woman"),
-                  genderOption("Man"),
-                  genderOption("Nonbinary"),
-                  const SizedBox(height: 20),
+                  // const Text('Then add more about your gender if you like',
+                  //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                  // TextButton(
+                  //   onPressed: () => Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(builder: (_) => const LearnMoreScreen()),
+                  //   ),
+                  //   child: const Text(
+                  //     'Learn What This Means',
+                  //     style: TextStyle(decoration: TextDecoration.underline),
+                  //   ),
+                  // ),
+                  const SizedBox(height: 40),
+                  genderOption("He/Him"),
+                  genderOption("She/Her"),
+                  // genderOption("Nonbinary"),
+                  const SizedBox(height: 40),
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      border: Border.all(color: DatingColors.darkGreen),
+                      border: Border.all(color: DatingColors.everqpidColor),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -159,37 +160,37 @@ class _UpdateGenderScreenState extends ConsumerState<UpdateGenderScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: DatingColors.darkGreen,
+                                  color: DatingColors.lightpinks,
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
                                   'Show As: $selectedGender',
-                                  style: const TextStyle(color: DatingColors.white),
+                                  style: const TextStyle(color: DatingColors.brown),
                                 ),
                               ),
                             ]),
                         Switch(
                           value: showOnProfile,
                           onChanged: (value) => setState(() => showOnProfile = value),
-                          activeColor: DatingColors.darkGreen,
+                          activeColor: DatingColors.everqpidColor,
                         )
                       ],
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 180),
                   Center(
                     child: Container(
                       width: double.infinity,
                       height: 50,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                            colors: [DatingColors.primaryGreen, DatingColors.black]),
+                            colors: [DatingColors.everqpidColor, DatingColors.everqpidColor]),
                         borderRadius: BorderRadius.circular(30),
                       ),
                       child: TextButton(
                         onPressed: _updateGender,
-                        child: const Text('Save and close',
-                            style: TextStyle(color: DatingColors.white, fontSize: 16)),
+                        child: const Text('Save',
+                            style: TextStyle(color: DatingColors.brown, fontSize: 16)),
                       ),
                     ),
                   ),
