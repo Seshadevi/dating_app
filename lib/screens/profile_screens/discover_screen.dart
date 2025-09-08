@@ -15,7 +15,7 @@ class DiscoverScreen extends StatelessWidget {
         title: const Text(
           "Discover",
           style: TextStyle(
-            color: DatingColors.everqpidColor,
+            color: Colors.black,
             fontWeight: FontWeight.bold,
             fontSize: 22,
           ),

@@ -28,12 +28,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       backgroundColor: DatingColors.white,
       appBar: AppBar(
         title:
-            const Text("settings", style: TextStyle(color: DatingColors.black)),
+            const Text("settings", style: TextStyle(color: DatingColors.everqpidColor)),
         centerTitle: true,
         backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: DatingColors.black),
+            icon: const Icon(Icons.arrow_back, color: DatingColors.everqpidColor),
             onPressed: () {
               
               Navigator.pushNamed(context, '/custombottomnav');
@@ -76,11 +76,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            _tileWithSwitch("Date Mode", true),
-            const SizedBox(height: 8),
-            Text(
-                'Hide your Profile in Date And just use BFF or BIZZ. If you Do This you Will Loss Your Connections And Chats In Date'),
-            const SizedBox(height: 16),
+            // _tileWithSwitch("Date Mode", true),
+            // const SizedBox(height: 8),
+            // Text(
+            //     'Hide your Profile in Date And just use BFF or BIZZ. If you Do This you Will Loss Your Connections And Chats In Date'),
+            // const SizedBox(height: 16),
             _tileWithSwitch("Snooze Mode", false),
             const SizedBox(height: 8),
             Text(
@@ -98,7 +98,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             const SizedBox(height: 16),
             Text('Location'),
             const SizedBox(height: 16),
-            _tileWithText("Current Location", "Anonymous - India"),
+            _tileWithText("Current Location", "will add by key"),
             const SizedBox(height: 8),
             _tileWithArrow(
               "Travel",
@@ -141,17 +141,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             GestureDetector(
               onTap: () => _showLogoutDialog(context),
               child: _button(
-                  "Log Out", DatingColors.primaryGreen, DatingColors.white),
+                  "Log Out", DatingColors.everqpidColor, DatingColors.white),
             ),
             const SizedBox(height: 10),
             GestureDetector(
                 onTap: () => _showDeleteAccountDialog(context),
-                child: _button("Delete Account", DatingColors.lightGreen,
-                    DatingColors.black)),
+                child: _button("Delete Account", DatingColors.errorRed,
+                    DatingColors.white)),
             const SizedBox(height: 20),
             const Text("Ever Qupid",
                 style: TextStyle(fontWeight: FontWeight.bold)),
-            const Text("Version 6.4.0.0\nCreated With Love.",
+            const Text("Version 1.0.0.\nCreated With Love.",
                 textAlign: TextAlign.center),
             const SizedBox(height: 20),
           ],
@@ -379,7 +379,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: DatingColors.lightGreen,
+        color: DatingColors.middlepink,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: DatingColors.primaryGreen),
       ),
@@ -397,7 +397,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget _tileWithTextArrow(String title, String value) {
     return ListTile(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      tileColor: DatingColors.lightGreen,
+      tileColor: DatingColors.middlepink,
       title: Text(title),
       trailing: Text(value),
     );
@@ -407,7 +407,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: DatingColors.lightGreen,
+        color: DatingColors.middlepink,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: DatingColors.primaryGreen),
       ),
@@ -434,7 +434,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: DatingColors.lightGreen,
+        color: DatingColors.middlepink,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: DatingColors.primaryGreen),
       ),
@@ -452,7 +452,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: DatingColors.lightGreen,
+        color: DatingColors.middlepink,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: DatingColors.primaryGreen),
       ),
@@ -460,7 +460,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         children: [
           const CircleAvatar(
             radius: 18,
-            backgroundColor: DatingColors.primaryGreen,
+            backgroundColor: DatingColors.everqpidColor,
             child:
                 Icon(Icons.travel_explore, size: 20, color: DatingColors.white),
           ),
@@ -491,7 +491,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         decoration: BoxDecoration(
           color: DatingColors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: DatingColors.darkGreen),
+          border: Border.all(color: DatingColors.middlepink),
         ),
         child: Row(
           children: [

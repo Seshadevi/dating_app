@@ -350,7 +350,7 @@ class _CircleButton extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 4),
-        Text(label.toUpperCase(),
+        Text(label,
             style: const TextStyle(color: DatingColors.white, fontSize: 10)),
       ],
     );

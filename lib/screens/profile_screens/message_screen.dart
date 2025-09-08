@@ -568,7 +568,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: const Text('Messages'),
+        title: const Text('Messages',style: TextStyle( fontSize: 22, fontWeight: FontWeight.bold,color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 1,
       ),

@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/signupprocessProviders/modeProvider.dart';
 import 'package:flutter/material.dart';
@@ -123,7 +124,7 @@ class TypeofconnectionState extends ConsumerState<Typeofconnection> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF4A5D23),
+                  backgroundColor: DatingColors.everqpidColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25),
                   ),
@@ -155,10 +156,10 @@ class TypeofconnectionState extends ConsumerState<Typeofconnection> {
         width: double.infinity,
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF8BC34A) : const Color(0xFFE8F5E8),
+          color: isSelected ? DatingColors.middlepink : DatingColors.lightpinks,
           borderRadius: BorderRadius.circular(12),
           border: isSelected
-              ? Border.all(color: const Color(0xFF4A5D23), width: 2)
+              ? Border.all(color: DatingColors.black, width: 2)
               : null,
         ),
         child: Row(
@@ -183,10 +184,10 @@ class TypeofconnectionState extends ConsumerState<Typeofconnection> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                    color: isSelected ? const Color(0xFF4A5D23) : Colors.grey,
+                    color: isSelected ? DatingColors.black : Colors.grey,
                     width: 2),
                 color:
-                    isSelected ? const Color(0xFF4A5D23) : Colors.transparent,
+                    isSelected ? DatingColors.everqpidColor : Colors.transparent,
               ),
               child: isSelected
                   ? const Icon(Icons.check, color: Colors.white, size: 16)

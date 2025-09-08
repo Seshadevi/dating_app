@@ -246,7 +246,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
         _buildGenderDropdown(genders),
         const SizedBox(height: 20),
 
-        _buildSectionTitle('keep choose your age preference '),
+        _buildSectionTitle('Keep Choose Your Age Preference'),
         _buildAgeRangeSelector(),
         const SizedBox(height: 20),
 

@@ -331,16 +331,16 @@ int? _ageFromDob(String dob) {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.arrow_back, color: DatingColors.black),
-                            const SizedBox(width: 16),
+                            // const Icon(Icons.arrow_back, color: DatingColors.black),
+                            // const SizedBox(width: 16),
                             const Expanded(
                               child: Text(
                                 'Heart Sync',
-                                style: TextStyle(color: DatingColors.black, fontSize: 18, fontWeight: FontWeight.w500),
+                                style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.bold),
                               ),
                             ),
                              IconButton(
-                                icon: const Icon(Icons.tune, color: DatingColors.black),
+                                icon: const Icon(Icons.tune, color: Colors.black),
                                   onPressed: () async {
                                     final result = await Navigator.pushNamed(context, '/narrowsearch');
                                     if (result is SearchFilters) {
@@ -427,7 +427,7 @@ int? _ageFromDob(String dob) {
                           child: Text(
                             'All users viewed! No more cards to swipe.',
                             style: TextStyle(
-                              color: DatingColors.darkGreen,
+                              color: DatingColors.everqpidColor,
                               fontWeight: FontWeight.w600,
                               fontSize: 14,
                             ),
@@ -650,7 +650,7 @@ int? _ageFromDob(String dob) {
                         topRight: Radius.circular(30),
                       ),
                       child: Image.asset(
-                        "assets/users_all.png",
+                        "assets/users_all1.png",
                         width: 400,
                         height: 700,
                         fit: BoxFit.cover,
@@ -980,7 +980,7 @@ int? _ageFromDob(String dob) {
                               
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF869E23),
+                              backgroundColor: DatingColors.everqpidColor,
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               shape: RoundedRectangleBorder(

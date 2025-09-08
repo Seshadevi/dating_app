@@ -79,19 +79,19 @@ class _LikedYouState extends ConsumerState<LikedYouScreen> {
           'Liked You',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 24,
+            fontSize: 22,
             color: Colors.black,
           ),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined, color: Colors.black),
-            onPressed: () {},
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: const Icon(Icons.settings_outlined, color: Colors.black),
+        //     onPressed: () {},
+        //   ),
+        // ],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -109,7 +109,7 @@ class _LikedYouState extends ConsumerState<LikedYouScreen> {
             ),
             const SizedBox(height: 32),
             Image.asset(
-              'assets/liked_image.png', // replace with your image asset
+              'assets/Liked_image1.png', // replace with your image asset
               height: 200,
             ),
             const SizedBox(height: 180),
