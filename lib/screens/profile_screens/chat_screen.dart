@@ -91,7 +91,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     padding: const EdgeInsets.all(10),
                     margin: const EdgeInsets.symmetric(vertical: 4),
                     decoration: BoxDecoration(
-                      color: isMe ? const Color(0xFFD1F7C4) : Colors.white,
+                      color: isMe ? DatingColors.everqpidColor : Colors.white,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: const Color(0xFFE5E5E5)),
                     ),
@@ -101,7 +101,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         Text(msg.message),
                         const SizedBox(height: 4),
                         Text(DateFormat('hh:mm a').format(msg.timestamp.toLocal()),
-                            style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                            style: const TextStyle(fontSize: 11, color: Colors.black)),
                       ],
                     ),
                   ),
@@ -112,7 +112,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           if (isTyping)
             Padding(
               padding: const EdgeInsets.only(bottom: 6),
-              child: Text('typing…', style: TextStyle(color: Colors.green[700], fontSize: 12)),
+              child: Text('typing…', style: TextStyle(color: Colors.black, fontSize: 12)),
             ),
           Padding(
             padding: const EdgeInsets.all(8),
@@ -196,7 +196,7 @@ class _DateHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Center(child: Text(label, style: const TextStyle(color: Colors.grey, fontSize: 12))),
+      child: Center(child: Text(label, style: const TextStyle(color: Colors.black, fontSize: 12))),
     );
   }
 }

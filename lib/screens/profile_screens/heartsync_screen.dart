@@ -596,7 +596,7 @@ int? _ageFromDob(String dob) {
                             opacity: _hideFixedImage ? 0.0 : 1.0,
                             duration: const Duration(milliseconds: 300),
                             child: Image.asset(
-                              "assets/usersstar.png",
+                              "assets/users_superswipe.png",
                               width: 60,
                               height: 60,
                             ),
@@ -937,7 +937,7 @@ int? _ageFromDob(String dob) {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             _buildActionButton(
-                              "assets/userscross.png",
+                              "assets/users_wrong.png",
                               () {
                                 if (!allUsersCompleted) {
                                   controller.swipe(CardSwiperDirection.left);
@@ -949,7 +949,7 @@ int? _ageFromDob(String dob) {
                             Transform.translate(
                               offset: const Offset(0, -40), // Move up by 20 pixels
                               child: _buildActionButton(
-                                "assets/usersstar.png",
+                                "assets/users_superswipe.png",
                                 () {
                                   if (!allUsersCompleted) {
                                     controller.swipe(CardSwiperDirection.top);
@@ -960,7 +960,7 @@ int? _ageFromDob(String dob) {
                               ),
                             ),
                             _buildActionButton(
-                              "assets/userslike.png",
+                              "assets/users_right.png",
                               () {
                                 if (!allUsersCompleted) {
                                   controller.swipe(CardSwiperDirection.right);
