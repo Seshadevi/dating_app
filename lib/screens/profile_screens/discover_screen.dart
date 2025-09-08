@@ -12,6 +12,7 @@ class DiscoverScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: DatingColors.white,
         elevation: 0,
+        automaticallyImplyLeading: false, 
         title: const Text(
           "Discover",
           style: TextStyle(

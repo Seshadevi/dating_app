@@ -85,6 +85,7 @@ class _LikedYouState extends ConsumerState<LikedYouScreen> {
         ),
         backgroundColor: Colors.white,
         elevation: 0,
+        automaticallyImplyLeading: false, 
         centerTitle: false,
         // actions: [
         //   IconButton(

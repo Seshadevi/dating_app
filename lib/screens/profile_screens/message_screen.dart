@@ -571,6 +571,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
         title: const Text('Messages',style: TextStyle( fontSize: 22, fontWeight: FontWeight.bold,color: Colors.black)),
         backgroundColor: Colors.white,
         elevation: 1,
+        automaticallyImplyLeading: false, 
       ),
       body: Column(
         children: [

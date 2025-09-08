@@ -80,7 +80,7 @@ print("IMAGE URL::::: $imageUrl");
                   children: [
                     const Text('Profile',
                         style:
-                            TextStyle(color: DatingColors.brown, fontSize: 20)),
+                            TextStyle(color: DatingColors.brown, fontSize: 22,fontWeight: FontWeight.bold)),
                     const SizedBox(height: 16),
                     Stack(
                       alignment: Alignment.center,
