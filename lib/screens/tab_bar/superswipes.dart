@@ -37,17 +37,18 @@ class _SuperSwipesScreenState extends ConsumerState<SuperSwipesScreen> {
     return Scaffold(
       backgroundColor: DatingColors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(planName),
         centerTitle: true,
         backgroundColor: DatingColors.white,
         elevation: 0,
-        foregroundColor: DatingColors.black,
+        foregroundColor: DatingColors.brown,
       ),
       body: Column(
         children: [
           const SizedBox(height: 16),
 
-          Image.asset("assets/usersstar.png", height: 100),
+          Image.asset("assets/users_superswipe.png", height: 100),
 
           const SizedBox(height: 10),
 
@@ -95,11 +96,11 @@ class _SuperSwipesScreenState extends ConsumerState<SuperSwipesScreen> {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? DatingColors.darkGreen
-                        : DatingColors.lightgrey,
+                        ? DatingColors.everqpidColor
+                        : DatingColors.lightpinks,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: isSelected ? DatingColors.black : DatingColors.black,
+                     color: isSelected ? DatingColors.lightgrey : DatingColors.everqpidColor,
                       width: 2,
                     ),
                   ),
@@ -111,7 +112,7 @@ class _SuperSwipesScreenState extends ConsumerState<SuperSwipesScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16,
-                          color: isSelected ? DatingColors.white : DatingColors.black,
+                          color: isSelected ? DatingColors.brown : DatingColors.lightpink,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -120,7 +121,7 @@ class _SuperSwipesScreenState extends ConsumerState<SuperSwipesScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14,
-                          color: isSelected ? DatingColors.white : DatingColors.black,
+                          color: isSelected ? DatingColors.brown : DatingColors.lightpink,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -135,7 +136,7 @@ class _SuperSwipesScreenState extends ConsumerState<SuperSwipesScreen> {
                         child: const Text(
                           "SAVE 38%",
                           style: TextStyle(
-                              fontSize: 10, fontWeight: FontWeight.bold),
+                              fontSize: 10, fontWeight: FontWeight.bold,color: DatingColors.brown),
                         ),
                       ),
                     ],
@@ -176,7 +177,7 @@ class _SuperSwipesScreenState extends ConsumerState<SuperSwipesScreen> {
               height: 48,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: DatingColors.darkGreen,
+                  backgroundColor: DatingColors.everqpidColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -187,7 +188,7 @@ class _SuperSwipesScreenState extends ConsumerState<SuperSwipesScreen> {
                 child: Text(
                   "Get ${selectedPlan.quantity} ${selectedPlan.title} INR For "
                   "${selectedPlan.price ?? "0"}",
-                  style: const TextStyle(fontSize: 16, color: Colors.white),
+                  style: const TextStyle(fontSize: 16, color: Colors.brown),
                 ),
               ),
             ),
@@ -285,8 +286,8 @@ class _SwipingHeaderTextState extends State<SwipingHeaderText> {
               height: 10,
               decoration: BoxDecoration(
                 color: _currentIndex == index
-                    ? DatingColors.darkGreen
-                    : DatingColors.black,
+                    ? DatingColors.lightpink
+                    : DatingColors.lightgrey,
                 shape: BoxShape.circle,
               ),
             ),

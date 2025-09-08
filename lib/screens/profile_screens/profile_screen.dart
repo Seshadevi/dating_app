@@ -256,11 +256,11 @@ print("IMAGE URL::::: $imageUrl");
                       child: TabBar(
                         indicator: BoxDecoration(
                           color:
-                              DatingColors.darkGreen, // Active tab background
+                              DatingColors.everqpidColor, // Active tab background
                           borderRadius: BorderRadius.circular(10),
                         ),
                         labelColor:
-                            DatingColors.white, // Selected tab text color
+                            DatingColors.brown, // Selected tab text color
                         unselectedLabelColor: DatingColors.black,
                         indicatorPadding: EdgeInsets.zero,
                         tabs: const [

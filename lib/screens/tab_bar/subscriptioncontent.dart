@@ -67,7 +67,7 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
         // 🔁 Auto-changing text
         Text(
           swipeTexts[currentBubbleIndex],
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color:DatingColors.brown,),
         ),
 
         const SizedBox(height: 10),
@@ -84,8 +84,8 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
               height: 10,
               decoration: BoxDecoration(
                 color: currentBubbleIndex == index
-                    ? DatingColors.primaryGreen
-                    : DatingColors.lightgrey,
+                     ? DatingColors.everqpidColor
+                        : DatingColors.lightpinks,
                 shape: BoxShape.circle,
               ),
             ),
@@ -123,11 +123,11 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? DatingColors.darkGreen
-                      : DatingColors.lightBlue,
+                       ? DatingColors.everqpidColor
+                        : DatingColors.lightpinks,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: isSelected ? Colors.black : Colors.transparent,
+                    color: isSelected ?DatingColors.lightgrey : DatingColors.lightpink,
                     width: 2,
                   ),
                 ),
@@ -139,7 +139,7 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 16,
-                        color: isSelected ? DatingColors.white : DatingColors.black,
+                        color: isSelected ? DatingColors.brown : DatingColors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -151,7 +151,7 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
-                        color: isSelected ? DatingColors.white : DatingColors.black,
+                        color: isSelected ? DatingColors.brown : DatingColors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -160,7 +160,7 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
-                        color: isSelected ? DatingColors.white :DatingColors.black,
+                        color: isSelected ? DatingColors.brown : DatingColors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -175,7 +175,7 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
                       child: const Text(
                         "SAVE 58%",
                         style: TextStyle(
-                            fontSize: 10, fontWeight: FontWeight.bold),
+                            fontSize: 10, fontWeight: FontWeight.bold,color:DatingColors.lightpink),
                       ),
                     ),
                   ],
@@ -226,7 +226,7 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
               },
               child: Text(
                 "Get ${(selectedPlan.durationDays ?? 0) ~/ 30} ${planName} for ${selectedPlan.price ?? "0"}",
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 16,color: DatingColors.brown,),
               ),
             ),
           ),

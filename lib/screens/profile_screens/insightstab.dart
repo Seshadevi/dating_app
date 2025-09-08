@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/plans/plansfullprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -92,15 +93,15 @@ class ProfileInsightsTab extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: const Color(0xFFDFF5A5),
+                color: DatingColors.lightpinks,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Row(
                 children: const [
                   CircleAvatar(
                     radius: 22,
-                    backgroundColor: Colors.black,
-                    child: Icon(Icons.add, color: Colors.white),
+                    backgroundColor: DatingColors.brown,
+                    child: Icon(Icons.add, color: DatingColors.white),
                   ),
                   SizedBox(width: 12),
                   Expanded(
@@ -140,7 +141,7 @@ class ProfileInsightsTab extends StatelessWidget {
               imagePath: 'assets/profile_insights_tab5.png',
               text: "Add Photos That Show Your Lifestyle And What You're Into.",
               icon: Icons.check,
-              iconColor: Colors.black,
+              iconColor: DatingColors.brown,
             ),
           ],
         ),
@@ -158,7 +159,7 @@ class ProfileInsightsTab extends StatelessWidget {
     padding: const EdgeInsets.all(12),
     margin: const EdgeInsets.only(bottom: 12),
     decoration: BoxDecoration(
-      color: const Color(0xFFDFF5A5),
+      color: DatingColors.lightpinks,
       borderRadius: BorderRadius.circular(16),
     ),
     child: Row(
@@ -229,14 +230,14 @@ class SafetyTab extends StatelessWidget {
                     subtitle:
                         "Help With Dating Anxiety,\nUncertainty Or Burnout",
                     imagePath: "assets/safty_bar1.png", // Replace with actual image
-                    bgColor: const Color(0xFFDFF5A5),
+                    bgColor:  DatingColors.lightpinks,
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: 10),
                   _infoCard(
                     title: "Feelings Of...",
                     subtitle: "Incomplete data",
                     imagePath: "assets/safty_bar2.png", // Replace accordingly
-                    bgColor: const Color(0xFFF6F5F2),
+                     bgColor:  DatingColors.lightpinks,
                   ),
                 ],
               ),
@@ -246,7 +247,7 @@ class SafetyTab extends StatelessWidget {
             // Get Help Button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.lightGreen,
+                backgroundColor: DatingColors.lightpinks,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),
                 ),
@@ -256,7 +257,7 @@ class SafetyTab extends StatelessWidget {
               onPressed: () {},
               child: const Text(
                 "Get Help From Ever Qupid",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.brown),
               ),
             ),
 
@@ -330,14 +331,16 @@ class SafetyTab extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFDFF5A5),
+        color: DatingColors.white,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color:DatingColors.everqpidColor )
       ),
       child: Row(
         children: [
           CircleAvatar(
-            backgroundColor: Colors.lightGreen,
-            child: Icon(icon, color: Colors.white),
+            backgroundColor: DatingColors.white,
+            child: Icon(icon, color: DatingColors.lightpink),
+            
           ),
           const SizedBox(width: 12),
           Expanded(

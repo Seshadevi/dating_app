@@ -114,7 +114,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                   featureName,
                   style: TextStyle(
                     fontSize: 15,
-                    color: DatingColors.black,
+                    color: DatingColors.brown,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -126,7 +126,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: DatingColors.lightBlue,
+                      color: DatingColors.everqpidColor,
                       width: 1,
                     ),
                   ),
@@ -135,7 +135,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                       'i',
                       style: TextStyle(
                         fontSize: 10,
-                        color: DatingColors.mediumGrey,
+                        color: DatingColors.brown,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -148,7 +148,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
           // Check mark (always shown since we only display available features)
           Icon(
             Icons.check,
-            color: DatingColors.primaryGreen,
+            color: DatingColors.accentTeal,
             size: 20,
           ),
         ],
@@ -330,7 +330,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 16,
-                    color: DatingColors.black,
+                    color: DatingColors.brown,
                   ),
                 ),
                 Text(
@@ -338,7 +338,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
-                    color: DatingColors.darkGreen,
+                    color: DatingColors.everqpidColor,
                   ),
                 ),
               ],
@@ -363,12 +363,12 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                 final plan = entry.value;
                 final isSelected = selectedPlanIndex == index;
                 
-                Color planColor = DatingColors.darkGreen;
+                Color planColor = DatingColors.everqpidColor;
                 final title = plan.title?.toLowerCase() ?? '';
                 if (title.contains('premium++') || title.contains('premium +')) {
                   planColor = DatingColors.accentTeal;
                 } else if (title.contains('boost')) {
-                  planColor = DatingColors.yellow;
+                  planColor = DatingColors.lightBlue;
                 }
                 
                 return Expanded(
@@ -387,7 +387,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                         child: Text(
                           plan.title ?? '',
                           style: TextStyle(
-                            color: isSelected ? planColor : DatingColors.lightgrey,
+                            color: isSelected ? DatingColors.lightgrey : DatingColors.lightgrey,
                             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                             fontSize: 14,
                           ),
@@ -462,7 +462,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
     if (boostPlan != null) featurePlans.add(boostPlan);
 
     return Scaffold(
-      backgroundColor: DatingColors.lightGreen,
+      backgroundColor: DatingColors.white,
       body: model.isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -492,11 +492,11 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                               margin: const EdgeInsets.only(right: 8),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: DatingColors.darkGreen),
+                                border: Border.all(color: DatingColors.everqpidColor),
                               ),
                               child: Column(
                                 children: [
-                                  Icon(Icons.highlight, size: 32, color: DatingColors.darkGreen),
+                                  Icon(Icons.highlight, size: 32, color: DatingColors.everqpidColor),
                                   const SizedBox(height: 8),
                                   Text(
                                     spotlightPlan.title ?? '',
@@ -537,11 +537,11 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                               margin: const EdgeInsets.only(left: 8),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: DatingColors.primaryGreen),
+                                border: Border.all(color: DatingColors.everqpidColor),
                               ),
                               child: Column(
                                 children: [
-                                  Icon(Icons.favorite, size: 32, color: DatingColors.primaryGreen),
+                                  Icon(Icons.favorite, size: 32, color: DatingColors.everqpidColor),
                                   const SizedBox(height: 8),
                                   Text(
                                     superswipePlan.title ?? '',
@@ -578,7 +578,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                           final plan = featurePlans[index];
                           final isSelected = selectedPlanIndex == index;
                           
-                          Color planColor = DatingColors.primaryGreen;
+                          Color planColor = DatingColors.everqpidColor;
                           IconData planIcon = Icons.star;
                           
                           return GestureDetector(
@@ -588,7 +588,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                               margin: const EdgeInsets.only(right: 16),
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
-                                color: isSelected ? planColor : DatingColors.lightyellow,
+                                color: isSelected ? planColor : DatingColors.lightpinks,
                                 borderRadius: BorderRadius.circular(12),
                                 border: isSelected 
                                     ? Border.all(color: planColor, width: 2)
@@ -602,7 +602,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                                       Icon(
                                         planIcon,
                                         size: 24,
-                                        color: isSelected ? DatingColors.white : planColor,
+                                        color: isSelected ? DatingColors.white : DatingColors.white,
                                       ),
                                       const SizedBox(width: 8),
                                       Expanded(
@@ -611,7 +611,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
-                                            color: isSelected ? DatingColors.white : DatingColors.black,
+                                            color: isSelected ? DatingColors.brown : DatingColors.lightgrey,
                                           ),
                                         ),
                                       ),
@@ -623,7 +623,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                                       plan.planType?.description ?? '',
                                       style: TextStyle(
                                         fontSize: 12,
-                                        color: isSelected ? DatingColors.mediumGrey : DatingColors.middlegrey,
+                                        color: isSelected ? DatingColors.brown : DatingColors.lightgrey,
                                       ),
                                       maxLines: 3,
                                       overflow: TextOverflow.ellipsis,
@@ -650,7 +650,10 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                                           borderRadius: BorderRadius.circular(8),
                                         ),
                                       ),
-                                      child: const Text("Explore More"),
+                                      child: const Text("Explore More",style: TextStyle(
+                                        fontSize: 12,
+                                        color:  DatingColors.lightgrey,
+                                      ),),
                                     ),
                                   ),
                                 ],

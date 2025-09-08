@@ -37,11 +37,12 @@ class _SpotlightScreenState extends ConsumerState<SpotlightScreen> {
     return Scaffold(
       backgroundColor: DatingColors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(planName),
         centerTitle: true,
         backgroundColor: DatingColors.white,
         elevation: 0,
-        foregroundColor: DatingColors.black,
+        foregroundColor: DatingColors.brown,
       ),
       body: Column(
         children: [
@@ -95,11 +96,11 @@ class _SpotlightScreenState extends ConsumerState<SpotlightScreen> {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? DatingColors.primaryGreen
-                        : DatingColors.black,
+                        ? DatingColors.everqpidColor
+                        : DatingColors.lightpinks,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: isSelected ? DatingColors.black : DatingColors.black,
+                      color: isSelected ? DatingColors.lightgrey : DatingColors.everqpidColor,
                       width: 2,
                     ),
                   ),
@@ -111,7 +112,7 @@ class _SpotlightScreenState extends ConsumerState<SpotlightScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16,
-                          color: isSelected ? DatingColors.white : DatingColors.black,
+                          color: isSelected ? DatingColors.brown : DatingColors.lightpink,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -120,7 +121,7 @@ class _SpotlightScreenState extends ConsumerState<SpotlightScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14,
-                          color: isSelected ? DatingColors.white : DatingColors.black,
+                          color: isSelected ? DatingColors.brown : DatingColors.lightpink,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -135,7 +136,7 @@ class _SpotlightScreenState extends ConsumerState<SpotlightScreen> {
                         child: const Text(
                           "SAVE 38%",
                           style: TextStyle(
-                              fontSize: 10, fontWeight: FontWeight.bold),
+                              fontSize: 10, fontWeight: FontWeight.bold,color: DatingColors.everqpidColor,),
                         ),
                       ),
                     ],
@@ -187,7 +188,7 @@ class _SpotlightScreenState extends ConsumerState<SpotlightScreen> {
                 child: Text(
                   "Get ${selectedPlan.quantity} ${selectedPlan.title} INR For "
                   "${selectedPlan.price ?? "0"}",
-                  style: const TextStyle(fontSize: 16, color: DatingColors.white),
+                  style: const TextStyle(fontSize: 16, color: DatingColors.brown),
                 ),
               ),
             ),
@@ -285,8 +286,8 @@ class _SwipingHeaderTextState extends State<SwipingHeaderText> {
               height: 10,
               decoration: BoxDecoration(
                 color: _currentIndex == index
-                    ? DatingColors.darkGreen
-                    : DatingColors.lightyellow,
+                    ? DatingColors.everqpidColor
+                    : DatingColors.lightgrey,
                 shape: BoxShape.circle,
               ),
             ),
