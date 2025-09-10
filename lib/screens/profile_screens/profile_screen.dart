@@ -28,8 +28,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final firstName = user?.firstName?.toString() ?? 'User';
     final lastName = user?.lastName?.toString() ?? '';
     final name = '$firstName $lastName'.trim();
-     final first = user?.profilePics?.first;
-      print("IMAGE URL::::: $first");
+    //  final first = user?.profilePics?.first;
+      // print("IMAGE URL::::: $first");
     // final img = user.profilePics;
     // final imageUrl = (user?.profilePics != null && user!.profilePics!.isNotEmpty)
     //     ? user.profilePics!.first.toString()

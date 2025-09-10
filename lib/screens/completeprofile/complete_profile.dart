@@ -57,32 +57,84 @@ class _BumbleDateProfileScreenState
   String? userDrink;
   String? userReligion;
   bool hasUserUpdatedDrink = false;
-  final GlobalKey _workSectionKey = GlobalKey();
+  final GlobalKey _bioSectionKey = GlobalKey();
+  final GlobalKey _aboutSectionKey = GlobalKey();
+  final GlobalKey _moreaboutSectionKey = GlobalKey();
+  final GlobalKey _promptsSectionKey = GlobalKey();
+  final GlobalKey _photosSectionKey = GlobalKey();
+  final GlobalKey _interestsSectionKey = GlobalKey();
+  final GlobalKey _verificationSectionKey = GlobalKey();
+
+  final bool _highlightBio = false;
+
 
   final ImagePicker _picker = ImagePicker();
   // final TextEditingController _bioController = TextEditingController();
   // String selectedGender = 'Man';
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
 
-    final args = ModalRoute.of(context)?.settings.arguments;
-    if (args == 'work_section') {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final contextForSection = _workSectionKey.currentContext;
-        if (contextForSection != null) {
-          Scrollable.ensureVisible(
-            contextForSection,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-          );
-          debugPrint("✅ Scrolled to Work Section");
-        } else {
-          debugPrint("⚠ Work section not found in widget tree");
-        }
-      });
-    }
+  //   final args = ModalRoute.of(context)?.settings.arguments;
+  //   if (args == 'work_section') {
+  //     WidgetsBinding.instance.addPostFrameCallback((_) {
+  //       final contextForSection = _workSectionKey.currentContext;
+  //       if (contextForSection != null) {
+  //         Scrollable.ensureVisible(
+  //           contextForSection,
+  //           duration: const Duration(milliseconds: 500),
+  //           curve: Curves.easeInOut,
+  //         );
+  //         debugPrint("✅ Scrolled to Work Section");
+  //       } else {
+  //         debugPrint("⚠ Work section not found in widget tree");
+  //       }
+  //     });
+  //   }
+  // }
+  @override
+void didChangeDependencies() {
+  super.didChangeDependencies();
+
+  final args = ModalRoute.of(context)?.settings.arguments;
+  if (args != null) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (args == 'bio_section') {
+        _scrollToSection(_bioSectionKey);
+      } 
+      else if (args == 'about_section') {
+        _scrollToSection(_aboutSectionKey);
+      } else if (args == 'Interest_section') {
+        _scrollToSection(_interestsSectionKey);
+      }
+       else if (args == 'moreabout_section') {
+        _scrollToSection(_moreaboutSectionKey);
+      }
+       else if (args == 'photos_section') {
+        _scrollToSection(_photosSectionKey);
+      }
+       else if (args == 'prompts_section') {
+        _scrollToSection(_promptsSectionKey);
+      }
+       else if (args == 'getverify_section') {
+        _scrollToSection(_verificationSectionKey);
+      }
+      // add more mappings as needed
+    });
   }
+}
+
+void _scrollToSection(GlobalKey key) {
+  final contextForSection = key.currentContext;
+  if (contextForSection != null) {
+    Scrollable.ensureVisible(
+      contextForSection,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
+  }
+}
+
 
   @override
   void initState() {
@@ -151,7 +203,7 @@ class _BumbleDateProfileScreenState
           onPressed: () => Navigator.pushNamed(context, '/custombottomnav'),
         ),
         title: Text(
-          'EverQpid ${user?.mode ?? ''}',
+          'EverQpid ${user?.mode?.first.mode ?? ''}',
           style: TextStyle(
             color: DatingColors.brown,
             fontSize: 18,
@@ -241,7 +293,11 @@ class _BumbleDateProfileScreenState
               MaterialPageRoute(
                 builder: (context) => ProfileStrengthDetailScreen(),
               ),
-            );
+            ).then((result) {
+            if (result == 'bio_section') {
+              // scroll or do something
+            }
+          });
           },
           child: Container(
             decoration: BoxDecoration(
@@ -298,6 +354,7 @@ class _BumbleDateProfileScreenState
 
   Widget _buildPhotosVideosSection() {
     return Column(
+       key: _photosSectionKey,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -548,6 +605,7 @@ class _BumbleDateProfileScreenState
         );
       },
       child: Container(
+         key: _verificationSectionKey,
         padding: EdgeInsets.symmetric(vertical: 12),
         child: Row(
           children: [
@@ -760,6 +818,7 @@ class _BumbleDateProfileScreenState
     print('interests...........$interests');
 
     return Column(
+       key: _interestsSectionKey,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
@@ -1095,6 +1154,7 @@ class _BumbleDateProfileScreenState
     );
 
     return Column(
+       key: _promptsSectionKey,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
@@ -1306,6 +1366,7 @@ class _BumbleDateProfileScreenState
   }
 
   Widget _buildBioSection() {
+    
     final userData = ref.watch(loginProvider);
     final user =
         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
@@ -1314,117 +1375,128 @@ class _BumbleDateProfileScreenState
     final String headline =
         isEditing ? _bioController.text.trim() : (serverHeadline?.trim() ?? '');
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Bio',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: DatingColors.brown,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Write a few short words about you',
-          style: TextStyle(
-            fontSize: 14,
-            color: DatingColors.middlegrey,
-          ),
-        ),
-        const SizedBox(height: 10),
-        if (isEditing)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-            decoration: BoxDecoration(
-              color: DatingColors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: DatingColors.everqpidColor),
+    return AnimatedContainer(
+       key: _bioSectionKey,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: _highlightBio ? DatingColors.lightgrey : Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        //  key: _bioSectionKey, 
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Bio',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: DatingColors.brown,
             ),
-            child: TextField(
-              controller: _bioController,
-              maxLines: 5,
-              textInputAction: TextInputAction.done,
-              keyboardType: TextInputType.multiline,
-              style: const TextStyle(fontSize: 12, color: DatingColors.black),
-              decoration: InputDecoration(
-                hintText: 'Write about you',
-                border: InputBorder.none,
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.check, color: DatingColors.black),
-                  onPressed: () async {
-                    final updatedHeadline = _bioController.text.trim();
-
-                    try {
-                      await ref.read(loginProvider.notifier).updateProfile(
-                            image: null,
-                            modeid: null,
-                            bio: updatedHeadline,
-                            modename: null,
-                            prompt: null,
-                            qualityId: null,
-                          );
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Headline updated successfully!')),
-                      );
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text('Failed to upload headline: $e')),
-                      );
-                    }
-
-                    setState(() {
-                      isEditing = false;
-                    });
-                  },
-                ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Write a few short words about you',
+            style: TextStyle(
+              fontSize: 14,
+              color: DatingColors.middlegrey,
+            ),
+          ),
+          const SizedBox(height: 10),
+          if (isEditing)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+              decoration: BoxDecoration(
+                color: DatingColors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: DatingColors.everqpidColor),
               ),
-            ),
-          )
-        else
-          Container(
-            width: double.infinity,
-            margin: const EdgeInsets.only(bottom: 16),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-            decoration: BoxDecoration(
-              color: DatingColors.surfaceGrey,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: DatingColors.everqpidColor),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    headline.isNotEmpty ? headline : 'Write about you',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: headline.isNotEmpty
-                          ? DatingColors.black
-                          : DatingColors.black,
-                      fontStyle: headline.isNotEmpty
-                          ? FontStyle.normal
-                          : FontStyle.italic,
-                    ),
+              child: TextField(
+                controller: _bioController,
+                maxLines: 5,
+                textInputAction: TextInputAction.done,
+                keyboardType: TextInputType.multiline,
+                style: const TextStyle(fontSize: 12, color: DatingColors.black),
+                decoration: InputDecoration(
+                  hintText: 'Write about you',
+                  border: InputBorder.none,
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.check, color: DatingColors.black),
+                    onPressed: () async {
+                      final updatedHeadline = _bioController.text.trim();
+      
+                      try {
+                        await ref.read(loginProvider.notifier).updateProfile(
+                              image: null,
+                              modeid: null,
+                              bio: updatedHeadline,
+                              modename: null,
+                              prompt: null,
+                              qualityId: null,
+                            );
+      
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Headline updated successfully!')),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Failed to upload headline: $e')),
+                        );
+                      }
+      
+                      setState(() {
+                        isEditing = false;
+                      });
+                    },
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.edit, size: 15),
-                  onPressed: () {
-                    setState(() {
-                      isEditing = true;
-                      _bioController.text = serverHeadline ?? '';
-                    });
-                  },
-                ),
-              ],
+              ),
+            )
+          else
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.only(bottom: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              decoration: BoxDecoration(
+                color: DatingColors.surfaceGrey,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: DatingColors.everqpidColor),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      headline.isNotEmpty ? headline : 'Write about you',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: headline.isNotEmpty
+                            ? DatingColors.black
+                            : DatingColors.black,
+                        fontStyle: headline.isNotEmpty
+                            ? FontStyle.normal
+                            : FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.edit, size: 15),
+                    onPressed: () {
+                      setState(() {
+                        isEditing = true;
+                        _bioController.text = serverHeadline ?? '';
+                      });
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -1476,6 +1548,7 @@ class _BumbleDateProfileScreenState
     final selectGender = user?.gender ?? 'Add';
 
     return Column(
+       key: _aboutSectionKey,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
@@ -1573,6 +1646,7 @@ class _BumbleDateProfileScreenState
     print('adding############');
 
     return Column(
+       key: _moreaboutSectionKey,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(

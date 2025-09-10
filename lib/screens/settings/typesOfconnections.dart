@@ -111,16 +111,18 @@ class TypeofconnectionState extends ConsumerState<Typeofconnection> {
 
                     //   // Delay for user to read the message before popping
                     //   await Future.delayed(const Duration(milliseconds: 600));
-                    //   Navigator.pop(context);
+                      Navigator.pop(context);
+                      // print('')
                     // } else {
-                    //   ScaffoldMessenger.of(context).showSnackBar(
-                    //     SnackBar(
-                    //       content:
-                    //           Text("Failed to update mode. Please try again."),
-                    //       backgroundColor: Colors.red,
-                    //     ),
-                    //   );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content:
+                              Text("mode updated succesfully."),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
                     // }
+
                   }
                 },
                 style: ElevatedButton.styleFrom(

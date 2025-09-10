@@ -454,6 +454,7 @@ Future<int> updateProfile({
   String? newarea,
   int? height,
   int? relationshipId,
+  String? email,
 }) async {
   final loadingState = ref.read(loadingProvider.notifier);
   loadingState.state = true;
@@ -511,6 +512,7 @@ Future<int> updateProfile({
     if ( relationshipId != null) request.fields['relationshipId'] = relationshipId.toString();
     if (industryId != null) request.fields['industryId'] =industryId.toString();
     if (experienceId != null) request.fields['experienceId'] =experienceId.toString();
+    if (email != null) request.fields['email'] =email.toString();
     
     // Add list fields as indexed keys
     void addListField(String key, List<int>? values) {

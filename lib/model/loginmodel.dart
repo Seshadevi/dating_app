@@ -1,3 +1,5 @@
+import 'package:dating/model/signupprocessmodels/lookingModel.dart';
+
 class UserModel {
   int? statusCode;
   bool? success;
@@ -109,7 +111,7 @@ class User {
   bool? showOnProfile;
   String? headLine;
   bool? termsAndConditions;
-  String? mode;
+  List<Modes>? mode;
   List<Qualities>? qualities;
   List<Drinking>? drinking;
   List<Kids>? kids;
@@ -150,7 +152,7 @@ class User {
       this.showOnProfile,
       this.headLine,
       this.termsAndConditions,
-      this.mode,
+      // this.mode,
       this.qualities,
       this.drinking,
       this.kids,
@@ -177,7 +179,8 @@ class User {
       this.newToArea,
       this.experiences,
       this.industries,
-      this.relationships});
+      this.relationships,
+      this.mode});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -191,7 +194,7 @@ class User {
     showOnProfile = json['showOnProfile'];
     headLine = json['headLine'];
     termsAndConditions = json['termsAndConditions'];
-    mode = json['mode'];
+    // mode = json['mode'];
     if (json['qualities'] != null) {
       qualities = <Qualities>[];
       json['qualities'].forEach((v) {
@@ -214,6 +217,12 @@ class User {
       religions = <Religions>[];
       json['religions'].forEach((v) {
         religions!.add(Religions.fromJson(v));
+      });
+    }
+    if (json['modes'] != null) {
+      mode = <Modes>[];
+      json['modes'].forEach((v) {
+        mode!.add(Modes.fromJson(v));
       });
     }
      if (json['industries'] != null) {
@@ -315,7 +324,7 @@ class User {
     data['showOnProfile'] = showOnProfile;
     data['headLine'] = headLine;
     data['termsAndConditions'] = termsAndConditions;
-    data['mode'] = mode;
+    // data['mode'] = mode;
     if (qualities != null) {
       data['qualities'] = qualities!.map((v) => v.toJson()).toList();
     }
@@ -327,6 +336,9 @@ class User {
     }
     if (religions != null) {
       data['religions'] = religions!.map((v) => v.toJson()).toList();
+    }
+     if (mode != null) {
+      data['modes'] = mode!.map((v) => v.toJson()).toList();
     }
      if (industries != null) {
       data['industries'] = industries!.map((v) => v.toJson()).toList();
@@ -399,7 +411,7 @@ class User {
     bool? showOnProfile,
     String? headLine,
     bool? termsAndConditions,
-    String? mode,
+    List<Modes>? mode,
     List<Qualities>? qualities,
     List<Drinking>? drinking,
     List<Kids>? kids,
@@ -1001,6 +1013,79 @@ class UserKids {
     return UserKids();
   }
 }
+class Modes {
+  int? id;
+  String? mode;
+  UserMode? usermode;
+
+  Modes({this.id, this.mode, this.usermode});
+
+  Modes.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    mode = json['value'];
+    usermode= json['user_rvalue'] != null
+        ? UserMode.fromJson(json['user_value'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['value'] = mode;
+    if (usermode != null) {
+      data['user_value'] = usermode!.toJson();
+    }
+    return data;
+  }
+
+  Modes copyWith({
+    int? id,
+    String? mode,
+    UserMode? usermode,
+  }) {
+    return Modes(
+      id: id ?? this.id,
+      mode: mode ?? this.mode,
+      usermode: usermode ?? this.usermode,
+    );
+  }
+
+  static Modes initial() {
+    return Modes();
+  }
+}
+class UserMode {
+  int? userId;
+  int? modeId;
+
+  UserMode({this.userId, this.modeId});
+
+  UserMode.fromJson(Map<String, dynamic> json) {
+    userId = json['user_id'];
+    modeId = json['value_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['user_id'] = userId;
+    data['value_id'] = modeId;
+    return data;
+  }
+
+ UserMode copyWith({
+    int? userId,
+    int? modeId,
+  }) {
+    return UserMode(
+      userId: userId ?? this.userId,
+      modeId: modeId ?? this.modeId,
+    );
+  }
+
+  static UserMode initial() {
+    return UserMode();
+  }
+}
 
 class Religions {
   int? id;
@@ -1043,6 +1128,7 @@ class Religions {
     return Religions();
   }
 }
+
 
 class UserReligion {
   int? userId;
