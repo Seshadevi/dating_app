@@ -201,7 +201,7 @@ return Container(
   width: 140,
   decoration: BoxDecoration(
      gradient: LinearGradient(
-          colors: [DatingColors.primaryGreen, DatingColors.everqpidColor],
+          colors: [DatingColors.middlepink, DatingColors.everqpidColor],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -242,7 +242,7 @@ return Container(
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: DatingColors.everqpidColor,
+              color: Colors.black,
             ),
           ),
         ),
@@ -252,7 +252,7 @@ return Container(
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 14,
-            color: DatingColors.mediumGrey,
+            color: Colors.black,
           ),
         ),
       ],

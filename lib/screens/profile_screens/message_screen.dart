@@ -544,6 +544,7 @@
 // }
 
 
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../provider/match_provider.dart';
@@ -585,6 +586,20 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                 filled: true,
                 fillColor: Colors.grey[200],
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide.none),
+                 // When not focused
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide(color: DatingColors.middlepink, width: 1),
+                ),
+
+                // When focused
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide(
+                    color: DatingColors.everqpidColor, // your accent color
+                    width: 2,
+                  ),
+                ),
               ),
             ),
           ),

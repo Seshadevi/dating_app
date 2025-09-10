@@ -195,7 +195,7 @@ print("IMAGE URL::::: $imageUrl");
                             fontSize: 16, fontWeight: FontWeight.bold)),
                     const Text('Premium features designed to maximize your journey.',
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 12)),
+                        style: TextStyle(fontSize: 13)),
                     const SizedBox(height: 38),
                     //  Row(
                     //   mainAxisAlignment: MainAxisAlignment.center,
@@ -351,7 +351,7 @@ class _CircleButton extends StatelessWidget {
         ),
         const SizedBox(height: 4),
         Text(label,
-            style: const TextStyle(color: DatingColors.white, fontSize: 10)),
+            style: const TextStyle(color: Colors.black, fontSize: 11)),
       ],
     );
   }
