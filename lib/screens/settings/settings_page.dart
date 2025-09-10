@@ -176,7 +176,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       
       // Update user's location in backend/provider
       // You can implement this method in your loginProvider
-      // await ref.read(loginProvider.notifier).updateUserLocation(_currentLat!, _currentLng!);
+      await ref.read(loginProvider.notifier).updateProfile(currentLat:_currentLat, currentLng:_currentLng);
       
       if (mounted) {
         _showSuccessSnackBar("Location updated successfully");

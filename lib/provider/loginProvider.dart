@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:geocoding/geocoding.dart';
 import 'package:http_parser/http_parser.dart'; // for MediaType
 import 'package:dating/model/loginmodel.dart';
 import 'package:dating/provider/firebase_auth.dart';
@@ -455,11 +456,14 @@ Future<int> updateProfile({
   int? height,
   int? relationshipId,
   String? email,
+  double?  currentLat, 
+  double?  currentLng,
+  String? citylocation
 }) async {
   final loadingState = ref.read(loadingProvider.notifier);
   loadingState.state = true;
    print(
-        'updated data....lookingfor:$lookingfor,mode:$modeid,smoking:$smoking, modename:$modename, causedId:$causeId, intrestId:$interestId, qualityId:$qualityId, bio:$bio, prompt:$prompt, image:${image?.length},languages:$languagesId,work:$jobId,education:$educationId,starsign:$starsignId');
+        'updated data..city:$citylocation,.lookingfor:$lookingfor,mode:$modeid,smoking:$smoking, modename:$modename, causedId:$causeId, intrestId:$interestId, qualityId:$qualityId, bio:$bio, prompt:$prompt, image:${image?.length},languages:$languagesId,work:$jobId,education:$educationId,starsign:$starsignId');
 
   try {
     final String apiUrl = Dgapi.updateprofile;
@@ -513,6 +517,18 @@ Future<int> updateProfile({
     if (industryId != null) request.fields['industryId'] =industryId.toString();
     if (experienceId != null) request.fields['experienceId'] =experienceId.toString();
     if (email != null) request.fields['email'] =email.toString();
+    if (currentLat != null) request.fields['latitude'] =currentLat.toString();
+    if (currentLng != null) request.fields['longitude'] =currentLng.toString();
+    // Suppose you used geocoding and got a Placemark
+      // Placemark place = placemarks.first;
+      // String? citylocation = place.locality; // ✅ Only city name
+
+      if (citylocation != null && citylocation.isNotEmpty) {
+        request.fields['name'] = citylocation;
+      }
+
+     if (citylocation != null) request.fields['name'] =citylocation.toString();
+    
     
     // Add list fields as indexed keys
     void addListField(String key, List<int>? values) {

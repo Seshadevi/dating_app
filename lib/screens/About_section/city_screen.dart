@@ -1,17 +1,19 @@
 import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/loginProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
 
 
 
-class CitySearchPage extends StatefulWidget {
+class CitySearchPage extends ConsumerStatefulWidget {
   @override
   _CitySearchPageState createState() => _CitySearchPageState();
 }
 
-class _CitySearchPageState extends State<CitySearchPage> {
+class _CitySearchPageState extends ConsumerState<CitySearchPage> {
   final TextEditingController _searchController = TextEditingController();
   List<Place> _suggestions = [];
   List<Place> _recentCities = [];
@@ -55,7 +57,7 @@ class _CitySearchPageState extends State<CitySearchPage> {
     if (query.isEmpty) return [];
     
     try {
-      final String apiKey = "AIzaSyB_7QtF9EUbVs_5mVFxZWS-NdzYwV9dbU0"; 
+      final String apiKey = "AIzaSyB_7VzP_TEnUsZ41tDzFSBZQgL9Om4v9Yg"; 
       
       // Modified URL to search for all administrative areas including districts
       final url =
@@ -154,7 +156,7 @@ class _CitySearchPageState extends State<CitySearchPage> {
     });
   }
 
-  void _selectCity(String cityName) {
+  void _selectCity(String cityName) async{
     setState(() {
       _selectedCity = cityName;
       _searchController.text = cityName;
@@ -181,11 +183,14 @@ class _CitySearchPageState extends State<CitySearchPage> {
           _recentCities.insert(0, city);
         });
       }
+      await ref.read(loginProvider.notifier).updateProfile(
+          citylocation: cityName,
+          );
     
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("Selected: $cityName"),
-        backgroundColor: DatingColors.darkGreen,
+        backgroundColor: DatingColors.lightpink,
         duration: Duration(seconds: 2),
       ),
     );
@@ -221,7 +226,7 @@ class _CitySearchPageState extends State<CitySearchPage> {
           // Search Bar
           Container(
             padding: EdgeInsets.all(16.0),
-            color: Colors.blue,
+            color: DatingColors.lightpinks,
             child: TextField(
               controller: _searchController,
               onChanged: _onSearchChanged,
