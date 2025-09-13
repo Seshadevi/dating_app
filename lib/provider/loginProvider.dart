@@ -626,50 +626,126 @@ Future<int> updateProfile({
   }
 }
 
+  // Future<String> restoreAccessToken() async {
+  //   const url = Dgapi.refreshToken;
+  //   final prefs = await SharedPreferences.getInstance();
+
+  //   try {
+  //     final currentUser = ref.read(loginProvider);
+  //     final currentRefreshToken = currentUser.data?.first.refreshToken;
+
+  //     if (currentRefreshToken == null || currentRefreshToken.isEmpty) {
+  //       throw Exception("No valid refresh token found.");
+  //     }
+
+  //     print("Using refresh token: $currentRefreshToken");
+
+  //     final response = await http.post(
+  //       Uri.parse(url),
+  //       headers: {
+  //         'Authorization': 'Bearer $currentRefreshToken',
+  //         'Content-Type': 'application/json; charset=UTF-8',
+  //       },
+  //       body: json.encode({"refresh_token": currentRefreshToken}),
+  //     );
+
+  //     final userDetails = json.decode(response.body);
+  //     print('Token refresh response: $userDetails');
+
+  //     if (response.statusCode == 200) {
+  //       final newAccessToken = userDetails['data']['access_token'];
+  //       final newRefreshToken = userDetails['data']['refresh_token'];
+
+  //       print('New access token: $newAccessToken');
+  //       print('New refresh token: $newRefreshToken');
+
+  //       // You can update the UserModel here if needed
+  //       return newAccessToken;
+  //     } else {
+  //       print("Failed to refresh token. Status: ${response.statusCode}");
+  //     }
+  //   } catch (e) {
+  //     print('Exception while refreshing token: $e');
+  //   }
+
+  //   return '';
+  // }
+
   Future<String> restoreAccessToken() async {
-    const url = Dgapi.refreshToken;
-    final prefs = await SharedPreferences.getInstance();
+  final url = Uri.parse(Dgapi.refreshToken);
 
-    try {
-      final currentUser = ref.read(loginProvider);
-      final currentRefreshToken = currentUser.data?.first.refreshToken;
+  // read from current state (source of truth)
+  final current = ref.read(loginProvider);
+  final currentRefreshToken = current.data?.first.refreshToken;
 
-      if (currentRefreshToken == null || currentRefreshToken.isEmpty) {
-        throw Exception("No valid refresh token found.");
+  if (currentRefreshToken == null || currentRefreshToken.isEmpty) {
+    throw Exception("No valid refresh token found.");
+  }
+
+  try {
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json; charset=UTF-8'},
+      body: jsonEncode({"refresh_token": currentRefreshToken}),
+    );
+
+    final Map<String, dynamic> body = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      final newAccessToken  = body['data']?['access_token'] as String?;
+      final newRefreshToken = body['data']?['refresh_token'] as String?;
+
+      if (newAccessToken == null || newAccessToken.isEmpty) {
+        throw Exception("Refresh endpoint did not return access_token.");
       }
 
-      print("Using refresh token: $currentRefreshToken");
+      // write back to UserModel + SharedPreferences
+      await ref
+          .read(loginProvider.notifier)
+          .updateTokens(accessToken: newAccessToken, refreshToken: newRefreshToken);
 
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {
-          'Authorization': 'Bearer $currentRefreshToken',
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: json.encode({"refresh_token": currentRefreshToken}),
-      );
+      return newAccessToken;
+    } else {
+      final msg = body['message'] ?? 'Failed to refresh token';
+      throw Exception("$msg (status ${response.statusCode})");
+    }
+  } catch (e) {
+    // bubble up so caller (e.g., RetryClient) can handle
+    rethrow;
+  }
+}
 
-      final userDetails = json.decode(response.body);
-      print('Token refresh response: $userDetails');
+  Future<void> updateTokens({
+    required String accessToken,
+    String? refreshToken,
+  }) async {
+    final current = state;
 
-      if (response.statusCode == 200) {
-        final newAccessToken = userDetails['data']['access_token'];
-        final newRefreshToken = userDetails['data']['refresh_token'];
-
-        print('New access token: $newAccessToken');
-        print('New refresh token: $newRefreshToken');
-
-        // You can update the UserModel here if needed
-        return newAccessToken;
-      } else {
-        print("Failed to refresh token. Status: ${response.statusCode}");
-      }
-    } catch (e) {
-      print('Exception while refreshing token: $e');
+    // build next `data` list
+    final List<Data> newData;
+    if ((current.data?.isNotEmpty ?? false)) {
+      final first = current.data!.first;
+      newData = [
+        first.copyWith(
+          accessToken: accessToken,
+          refreshToken: (refreshToken != null && refreshToken.isNotEmpty)
+              ? refreshToken
+              : first.refreshToken,
+        ),
+        ...current.data!.skip(1),
+      ];
+    } else {
+      newData = [Data(accessToken: accessToken, refreshToken: refreshToken)];
     }
 
-    return '';
+    // update state
+    state = current.copyWith(data: newData);
+
+    // persist
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userData', jsonEncode(state.toJson()));
   }
+
 }
 
 final loginProvider =

@@ -73,8 +73,8 @@ print("IMAGE URL::::: $imageUrl");
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(40.0),
           bottomRight: Radius.circular(40.0),
-        ),
-      ),
+          ),
+         ),
                 padding: const EdgeInsets.only(top: 50, bottom: 20),
                 child: Column(
                   children: [

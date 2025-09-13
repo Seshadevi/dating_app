@@ -58,7 +58,7 @@ class LikeDislikeProvider extends StateNotifier<LikeDislikeModel> {
             // Handle token restoration logic on the first retry
             String? newAccessToken =
                 await ref.read(loginProvider.notifier).restoreAccessToken();
-            print('Restored Token:++++++++++ $newAccessToken');
+            print('Restored Token: $newAccessToken');
             req.headers['Authorization'] = 'Bearer $newAccessToken';
           }
         },

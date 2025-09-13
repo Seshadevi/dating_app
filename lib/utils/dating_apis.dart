@@ -13,7 +13,7 @@ class Dgapi {
   static const String religion = "$baseUrl/user/religion";
   static const String defaultMessages = "$baseUrl/user/defaultMessages";
   static const String qualities = "$baseUrl/user/qualities";
-  static const String refreshToken = "$baseUrl/auth/refresh-token";
+  static const String refreshToken = "$baseUrl/refresh-token";
   static const String interests = "$baseUrl/user/getAllInterests";
   static const String peoplesAll = "$baseUrl/users/all";
   static const String plans = "$baseUrl/admin/plan/get";
@@ -35,6 +35,7 @@ class Dgapi {
   static const String  relationshipget= "$baseUrl/user/relationAll";
   static const String postsnooze ="$baseUrl/me/snooz";
   static const String traveladd="$baseUrl/travel-mode";
+  static const String verification ="$baseUrl/users/userid/verification";
   // static const String ="$baseUrl/";
   // static const String ="$baseUrl/";
   // static const String ="$baseUrl/";

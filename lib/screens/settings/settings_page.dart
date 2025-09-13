@@ -453,7 +453,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
             // App Info
             const Text(
-              "Ever Qupid",
+              "Ever Qpid",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const Text(

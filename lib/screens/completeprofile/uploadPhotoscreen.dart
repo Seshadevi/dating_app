@@ -85,10 +85,10 @@ class UploadPhotoScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 16),
                     // ID options
-                    _buildIDOption('Passport', true),
-                    _buildIDOption('Driver\'s License', true),
-                    _buildIDOption('Residence Permit', true),
-                    _buildIDOption('Government-Issued ID', true),
+                    _buildIDOption('Pan', true),
+                    // _buildIDOption('Driver\'s License', true),
+                    // _buildIDOption('Residence Permit', true),
+                    _buildIDOption('AdhaarID', true),
                     SizedBox(height: 24),
                     // Warning box
                     Container(
@@ -202,7 +202,7 @@ class UploadPhotoScreen extends StatelessWidget {
             height: 20,
            decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Color(0xFF869E23), Color(0xFF000000)],
+                        colors: [DatingColors.everqpidColor, DatingColors.everqpidColor],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),

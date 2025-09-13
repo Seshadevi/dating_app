@@ -1,11 +1,7 @@
-
 import 'package:dating/model/moreabout/languagemodel.dart';
-
 import 'package:dating/provider/loader.dart';
-
 import 'package:dating/utils/dating_apis.dart';
 import 'package:http/http.dart' as http;
-
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,7 +14,7 @@ class LanguagesProvider extends StateNotifier<LanguagesModel> {
     final loadingState = ref.read(loadingProvider.notifier);
     try {
       loadingState.state = true;
-      
+                             
       print('get languages');
 
      final response = await http.get(
@@ -26,7 +22,7 @@ class LanguagesProvider extends StateNotifier<LanguagesModel> {
       final responseBody = response.body;
       print('Get modes Status Code: ${response.statusCode}');
       print('Get modes Response Body: $responseBody');
-
+      
       if (response.statusCode == 200 || response.statusCode == 201) {
         try {
           final res = jsonDecode(responseBody);

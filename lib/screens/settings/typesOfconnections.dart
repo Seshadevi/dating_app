@@ -118,7 +118,7 @@ class TypeofconnectionState extends ConsumerState<Typeofconnection> {
                         SnackBar(
                           content:
                               Text("mode updated succesfully."),
-                          backgroundColor: Colors.red,
+                          backgroundColor: Colors.green,
                         ),
                       );
                     // }
