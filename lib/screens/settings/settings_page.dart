@@ -1,7 +1,9 @@
+
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/logout_notitifier.dart';
 import 'package:dating/provider/signupprocessProviders/modeProvider.dart';
+import 'package:dating/provider/snooze/post_snooze_provider.dart';
 import 'package:dating/screens/feedback/feedback_screen.dart';
 import 'package:dating/screens/notifications/notifications.dart';
 import 'package:dating/screens/profile_screens/profile_screen.dart';
@@ -31,6 +33,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   double? _currentLat;
   double? _currentLng;
 
+  bool _snoozeMode = false;
+  bool _incognitoMode = false;
+  bool _autoSpotlight = false;
+
   @override
   void initState() {
     super.initState();
@@ -46,9 +52,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     print('User location data: ${user?.location}');
     
     if (user?.location?.latitude != null && user?.location?.longitude != null) {
-      _currentLat = double.tryParse(user?.location?.latitude.toString() ?? '');
-      _currentLng = double.tryParse(user?.location?.longitude.toString() ?? '');
-      
+    _currentLat = user?.location?.latitude?.toDouble();
+    _currentLng = user?.location?.longitude?.toDouble();
+
+
       print('Parsed coordinates: lat: $_currentLat, lng: $_currentLng');
       
       if (_currentLat != null && _currentLng != null) {
@@ -228,7 +235,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final userdata = ref.watch(loginProvider);
     final user = userdata.data?.isNotEmpty == true ? userdata.data![0].user : null;
     
-    print('mode............${user?.mode?.first.mode}');
+    print('mode............${(user?.mode != null && user!.mode!.isNotEmpty) ? user.mode!.first.mode : "No mode"}');
     print('religion............${user?.email}');
     print('location............${user?.location}');
 
@@ -280,13 +287,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               },
               child: _tileWithTextArrow(
                 "Type Of Connection",
-                user?.mode?.first.mode ?? "Date",
+                (user?.mode != null && user!.mode!.isNotEmpty) 
+                  ? user.mode!.first.mode.toString() 
+                  : "Date"
+
               ),
             ),
             const SizedBox(height: 16),
 
             // Snooze Mode
-            _tileWithSwitch("Snooze Mode", false),
+           _tileWithSwitch("Snooze Mode", ref.watch(postSnoozeProvider), (val) async {
+              try {
+                await ref.read(postSnoozeProvider.notifier).toggleSnooze(val);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(val ? "Snooze Activated" : "Snooze Deactivated")),
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Failed to update snooze")),
+                );
+              }
+            }),
+
             const SizedBox(height: 8),
             const Text(
               'Hide Your Profile Temporarily, in All Modes You Wont Loss Any Connections And Chats',
@@ -294,8 +316,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             const SizedBox(height: 16),
 
-            // Incognito Mode
-            _tileWithSwitch("Incognito Mode For Date", false),
+                _tileWithSwitch("Incognito Mode For Date", ref.watch(postIncogintoeProvider), (val) async {
+              try {
+                await ref.read(postIncogintoeProvider.notifier).toggleIncognito(val);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(val ? "Incognito Mode For Date Activated" : "Incognito Mode For Date Deactivated")),
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Failed to update Incognito Mode For Date")),
+                );
+              }
+            }),
+
+            // _tileWithSwitch("Incognito Mode For Date", _incognitoMode, (val) {
+            //   setState(() => _incognitoMode = val);
+            // }),
             const SizedBox(height: 8),
             const Text(
               'Only People Youve Swiped Right on Already Or Swipe Right On Later Will See You Profile. If You Turn On Incognito Mode For Date This Wont Apply Bizz or BFF',
@@ -303,13 +339,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             const SizedBox(height: 16),
 
-            // Auto Spotlight
-            _tileWithSwitch("Auto - Spotlight", false),
+            _tileWithSwitch("Auto - Spotlight", _autoSpotlight, (val) {
+              setState(() => _autoSpotlight = val);
+            }),
             const SizedBox(height: 8),
             const Text(
               'Well Use Spotlight Automatically TO Boost Your Profile When Most People See It.',
               style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
             ),
+
             const SizedBox(height: 16),
 
             // Location Section
@@ -858,35 +896,31 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _tileWithSwitch(String title, bool value) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: DatingColors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: DatingColors.lightpink),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+ Widget _tileWithSwitch(String title, bool value, ValueChanged<bool> onChanged) {
+  return Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: DatingColors.white,
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(color: DatingColors.lightpink),
+    ),
+    child: Row(
+      children: [
+        Expanded(
+          child: Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          Switch(
-            value: value,
-            onChanged: (newValue) {
-              setState(() {
-                // Update your state management here
-              });
-            },
-            activeColor: DatingColors.primaryGreen,
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+        Switch(
+          value: value,
+          onChanged: onChanged,
+          activeColor: DatingColors.primaryGreen,
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _tileWithText(String title, String value) {
     return Container(

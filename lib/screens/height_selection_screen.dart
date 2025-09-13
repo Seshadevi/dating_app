@@ -427,7 +427,7 @@ class _HeightSelectionScreenState extends State<HeightSelectionScreen> {
             child: Row(
               children: [
                 IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
+                  icon: const Icon(Icons.arrow_back_ios),iconSize: 30,
                   onPressed: () {
                     Navigator.pushNamed(
                       context,

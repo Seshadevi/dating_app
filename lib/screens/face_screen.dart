@@ -130,21 +130,22 @@ class _PhotoUploadScreenState extends State<PhotoUploadScreen> {
       backgroundColor: DatingColors.white,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 24, ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 8),
               LinearProgressIndicator(
                 value: 7.8 / 8,
-                backgroundColor: DatingColors.surfaceGrey,
+                backgroundColor: DatingColors.lightgrey,
                 valueColor: const AlwaysStoppedAnimation<Color>(
                     DatingColors.everqpidColor),
               ),
-              const SizedBox(height: 16),
+              
               Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back_ios),
+                    icon: const Icon(Icons.arrow_back_ios),iconSize: 30,
                     onPressed: (){
                         if(modeid == 4){
                               Navigator.pushNamed(

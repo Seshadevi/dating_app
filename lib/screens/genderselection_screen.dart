@@ -96,30 +96,30 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      backgroundColor:DatingColors.white,
+      backgroundColor:DatingColors.white,    
       body: SafeArea(
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 1),
+              padding: const EdgeInsets.symmetric(horizontal: 24, ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Progress bar
-                     const SizedBox(height: 16),
+                     const SizedBox(height: 10),
                   LinearProgressIndicator(
                     value: 2 / 8,
-                    backgroundColor:DatingColors.surfaceGrey,
+                    backgroundColor:DatingColors.lightgrey,
                     valueColor: const AlwaysStoppedAnimation<Color>(
                       DatingColors.everqpidColor,
                     ),
                   ),
-                  // const SizedBox(height: 24),
+                 //  const SizedBox(height: 24),
                   Row(children: [
                     IconButton(
                       icon: const Icon(
                         Icons.arrow_back_ios,
-                      ),
+                      ),iconSize: 30,
                       onPressed: () {
                         Navigator.pushNamed(
                           context,
@@ -153,7 +153,7 @@ class _GenderSelectionScreenState extends State<GenderSelectionScreen> {
                   //     height: 1.5,
                   //   ),
                   // ),
-                  const SizedBox(height: 28),
+                 // const SizedBox(height: 28),
                   const Text(
                     "Please Select Your Gender?",
                     style: TextStyle(

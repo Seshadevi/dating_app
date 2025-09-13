@@ -311,6 +311,8 @@
 //     );
 //   }
 // }
+
+
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // for formatting date
@@ -592,28 +594,39 @@ class _IntroPageScreenState extends State<IntroPageScreen> {
                   child: IconButton(
                     icon: const Icon(Icons.arrow_forward_ios, color: DatingColors.lightGreen),
                     onPressed: () {
-                      final name = _nameController.text.trim();
-                      print("username: $name, date of birth: $dateOfBirth");
+                    final name = _nameController.text.trim();
+                    List<String> errors = [];
 
-                      if (selectedDate != null) {
-                        Navigator.pushNamed(
-                          context,
-                          '/genderstaticselection',
-                          arguments: {
-                            'latitude': latitude,
-                            'longitude': longitude,
-                            'dateofbirth': dateOfBirth,
-                            'userName': name,
-                            'email': entryemail,
-                            'mobile': mobile,
-                          },
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Please select your birthday")),
-                        );
-                      }
-                    },
+                    if (name.isEmpty) {
+                      errors.add("Please enter your name");
+                    }
+
+                    if (selectedDate == null) {
+                      errors.add("Please select your birthday");
+                    }
+
+                    if (errors.isNotEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(errors.join("\n"))),
+                      );
+                      return;
+                    }
+
+                    // ✅ If no errors, go to next screen
+                    Navigator.pushNamed(
+                      context,
+                      '/genderstaticselection',
+                      arguments: {
+                        'latitude': latitude,
+                        'longitude': longitude,
+                        'dateofbirth': dateOfBirth,
+                        'userName': name,
+                        'email': entryemail,
+                        'mobile': mobile,
+                      },
+                    );
+                  },
+
                   ),
                 ),
               ),

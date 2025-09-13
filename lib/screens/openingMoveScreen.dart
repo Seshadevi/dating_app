@@ -98,13 +98,13 @@ class _OpeningMoveScreenState extends ConsumerState<OpeningMoveScreen> {
                 value: 7/ 8,
                 backgroundColor: DatingColors.lightgrey,
                 valueColor: const AlwaysStoppedAnimation<Color>(
-                   DatingColors.lightpinks),
+                   DatingColors.everqpidColor,),
               ),
               // const SizedBox(height: 16),
               Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back_ios),
+                    icon: const Icon(Icons.arrow_back_ios),iconSize: 30,
                     onPressed: () {
                     //  Navigator.pushNamed(
                     //       context,
