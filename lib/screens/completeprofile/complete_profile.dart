@@ -22,9 +22,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-class 
-
-BumbleDateProfileScreen extends ConsumerStatefulWidget {
+class BumbleDateProfileScreen extends ConsumerStatefulWidget {
   const BumbleDateProfileScreen({super.key});
 
   @override
@@ -67,7 +65,6 @@ class _BumbleDateProfileScreenState
 
   final bool _highlightBio = false;
 
-
   final ImagePicker _picker = ImagePicker();
   // final TextEditingController _bioController = TextEditingController();
   // String selectedGender = 'Man';
@@ -93,105 +90,131 @@ class _BumbleDateProfileScreenState
   //   }
   // }
   @override
-void didChangeDependencies() {
-  super.didChangeDependencies();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
 
-  final args = ModalRoute.of(context)?.settings.arguments;
-  if (args != null) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (args == 'bio_section') {
-        _scrollToSection(_bioSectionKey);
-      } 
-      else if (args == 'about_section') {
-        _scrollToSection(_aboutSectionKey);
-      } else if (args == 'Interest_section') {
-        _scrollToSection(_interestsSectionKey);
-      }
-       else if (args == 'moreabout_section') {
-        _scrollToSection(_moreaboutSectionKey);
-      }
-       else if (args == 'photos_section') {
-        _scrollToSection(_photosSectionKey);
-      }
-       else if (args == 'prompts_section') {
-        _scrollToSection(_promptsSectionKey);
-      }
-       else if (args == 'getverify_section') {
-        _scrollToSection(_verificationSectionKey);
-      }
-      // add more mappings as needed
-    });
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (args == 'bio_section') {
+          _scrollToSection(_bioSectionKey);
+        } else if (args == 'about_section') {
+          _scrollToSection(_aboutSectionKey);
+        } else if (args == 'Interest_section') {
+          _scrollToSection(_interestsSectionKey);
+        } else if (args == 'moreabout_section') {
+          _scrollToSection(_moreaboutSectionKey);
+        } else if (args == 'photos_section') {
+          _scrollToSection(_photosSectionKey);
+        } else if (args == 'prompts_section') {
+          _scrollToSection(_promptsSectionKey);
+        } else if (args == 'getverify_section') {
+          _scrollToSection(_verificationSectionKey);
+        }
+        // add more mappings as needed
+      });
+    }
   }
-}
 
-void _scrollToSection(GlobalKey key) {
-  final contextForSection = key.currentContext;
-  if (contextForSection != null) {
-    Scrollable.ensureVisible(
-      contextForSection,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
+  void _scrollToSection(GlobalKey key) {
+    final contextForSection = key.currentContext;
+    if (contextForSection != null) {
+      Scrollable.ensureVisible(
+        contextForSection,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    }
   }
-}
-
 
   @override
-  void initState() {
-    super.initState();
-    _loadUserProfileImages();
-    //  _bioController.text = serverHeadline ?? '';
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final userData = ref.read(loginProvider);
-      final user =
-          userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+void initState() {
+  super.initState();
+  _loadUserProfileImages();
+  
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    final userData = ref.read(loginProvider);
+    final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
 
-      if (user != null) {
-        setState(() {
-          final lookingForList = user.lookingFor;
-
-          if (lookingForList != null &&
-              lookingForList.isNotEmpty &&
-              lookingForList[0] is Map &&
-              lookingForList[0].value != null) {
-            userLooking = lookingForList[0].value.toString();
+    if (user != null) {
+      setState(() {
+        // Safe access to lookingFor
+        final lookingForList = user.lookingFor;
+        if (lookingForList != null && lookingForList.isNotEmpty) {
+          try {
+            // Check if the first element exists and has a value property
+            final firstLookingFor = lookingForList[0];
+            if (firstLookingFor != null && firstLookingFor.value != null) {
+              userLooking = firstLookingFor.value.toString();
+            }
+          } catch (e) {
+            print('Error accessing lookingFor: $e');
+            userLooking = null;
           }
+        }
 
-          final userkidList = user.kids;
-          if (userkidList != null &&
-              userkidList.isNotEmpty &&
-              userkidList[0] is Map &&
-              userkidList[0].kids != null) {
-            userkid = userkidList[0].kids.toString();
+        // Safe access to kids
+        final userkidList = user.kids;
+        if (userkidList != null && userkidList.isNotEmpty) {
+          try {
+            final firstKid = userkidList[0];
+            if (firstKid != null && firstKid.kids != null) {
+              userkid = firstKid.kids.toString();
+            }
+          } catch (e) {
+            print('Error accessing kids: $e');
+            userkid = null;
           }
+        }
 
-          final userDrinkList = user.drinking;
-          if (userDrinkList != null &&
-              userDrinkList.isNotEmpty &&
-              userDrinkList[0] is Map &&
-              userDrinkList[0].preference != null) {
-            userDrink = userDrinkList[0].preference.toString();
+        // Safe access to drinking
+        final userDrinkList = user.drinking;
+        if (userDrinkList != null && userDrinkList.isNotEmpty) {
+          try {
+            final firstDrink = userDrinkList[0];
+            if (firstDrink != null && firstDrink.preference != null) {
+              userDrink = firstDrink.preference.toString();
+            }
+          } catch (e) {
+            print('Error accessing drinking: $e');
+            userDrink = null;
           }
-          final userReligionList = user.religions;
-          if (userReligionList != null &&
-              userReligionList.isNotEmpty &&
-              userkidList![0] is Map &&
-              userReligionList[0].religion != null) {
-            userReligion = userReligionList[0].religion.toString();
-          }
+        }
 
-          // Add other fields if needed (smoking, starSign, etc.)
-          print('lookingfor:::$userLooking');
-        });
-      }
-    });
-  }
+        // Safe access to religions
+        final userReligionList = user.religions;
+        if (userReligionList != null && userReligionList.isNotEmpty) {
+          try {
+            final firstReligion = userReligionList[0];
+            if (firstReligion != null && firstReligion.religion != null) {
+              userReligion = firstReligion.religion.toString();
+            }
+          } catch (e) {
+            print('Error accessing religion: $e');
+            userReligion = null;
+          }
+        }
+
+        print('lookingfor:::$userLooking');
+        print('kids:::$userkid');
+        print('drink:::$userDrink');
+        print('religion:::$userReligion');
+      });
+    } else {
+      print('User data is null');
+    }
+  });
+}
 
   @override
   Widget build(BuildContext context) {
     final userData = ref.watch(loginProvider);
     final user =
         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+
+    
+    final modeId = user?.mode?.isNotEmpty == true ? user?.mode?.first.id : null;
+    final modeName = user?.mode?.isNotEmpty == true ? user?.mode?.first.value : '';
 
     return Scaffold(
       backgroundColor: DatingColors.backgroundWhite,
@@ -203,7 +226,7 @@ void _scrollToSection(GlobalKey key) {
           onPressed: () => Navigator.pushNamed(context, '/custombottomnav'),
         ),
         title: Text(
-          'EverQpid ${user?.mode?.first.mode ?? ''}',
+          'EverQpid ${modeName  ?? ''}',
           style: TextStyle(
             color: DatingColors.brown,
             fontSize: 18,
@@ -218,54 +241,61 @@ void _scrollToSection(GlobalKey key) {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Profile Strength Section
-            _buildProfileStrengthSection(),
+          
+            _buildProfileStrengthSection(), //=======================
             SizedBox(height: 15),
 
             // Photos and Videos Section
-            _buildPhotosVideosSection(),
+            _buildPhotosVideosSection(), //=======================
             SizedBox(height: 15),
 
             // Get Verified Section
-            _buildGetVerifiedSection(),
+            _buildGetVerifiedSection(), //=======================
             SizedBox(height: 15),
 
             // My Life Section
+            if (modeId== 4) ...[
             _buildQualitiesSection(context),
             SizedBox(height: 15),
+            ],
 
             // Interests Section
-            _buildInterestsSection(context),
+            if (modeId== 4 || modeId == 5)...[
+              _buildInterestsSection(context),
             SizedBox(height: 15),
+            ],
             // Interests Section
+            if (modeId== 4)...[
             _buildCausesSection(context),
             SizedBox(height: 15),
+            ],
 
             // Prompts Section
-            _buildPromptsSection(context),
+            _buildPromptsSection(context), //=======================
             SizedBox(height: 15),
 
             // Bio Section
             _buildBioSection(),
-            SizedBox(height: 15),
+            SizedBox(height: 15), //=======================
 
             // About You Section
             _buildAboutYouSection(),
-            SizedBox(height: 15),
+            SizedBox(height: 15), //=======================
 
             // More About You Section
             _buildMoreAboutYouSection(),
             SizedBox(height: 15),
 
             // Pronouns Section
-            _buildPronounsSection(),
+            _buildPronounsSection(), //=======================
             SizedBox(height: 15),
 
             // Languages Section
-            _buildLanguagesSection(),
+            _buildLanguagesSection(), //=======================
             SizedBox(height: 15),
 
             // Connected Accounts Section
-            _buildConnectedAccountsSection(),
+            _buildConnectedAccountsSection(), //=======================
             SizedBox(height: 15),
           ],
         ),
@@ -294,15 +324,18 @@ void _scrollToSection(GlobalKey key) {
                 builder: (context) => ProfileStrengthDetailScreen(),
               ),
             ).then((result) {
-            if (result == 'bio_section') {
-              // scroll or do something
-            }
-          });
+              if (result == 'bio_section') {
+                // scroll or do something
+              }
+            });
           },
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [DatingColors.everqpidColor, DatingColors.everqpidColor],
+                colors: [
+                  DatingColors.everqpidColor,
+                  DatingColors.everqpidColor
+                ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -354,7 +387,7 @@ void _scrollToSection(GlobalKey key) {
 
   Widget _buildPhotosVideosSection() {
     return Column(
-       key: _photosSectionKey,
+      key: _photosSectionKey,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -605,7 +638,7 @@ void _scrollToSection(GlobalKey key) {
         );
       },
       child: Container(
-         key: _verificationSectionKey,
+        key: _verificationSectionKey,
         padding: EdgeInsets.symmetric(vertical: 12),
         child: Row(
           children: [
@@ -627,9 +660,9 @@ void _scrollToSection(GlobalKey key) {
                 color: DatingColors.surfaceGrey,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                          color: DatingColors.everqpidColor, // 👈 border color
-                          width: 2,            // 👈 border thickness
-                        ),
+                  color: DatingColors.everqpidColor, // 👈 border color
+                  width: 2, // 👈 border thickness
+                ),
               ),
               child: Text(
                 'Not ID Verified',
@@ -714,8 +747,7 @@ void _scrollToSection(GlobalKey key) {
                       ),
                       Spacer(),
                       Icon(Icons.arrow_forward_ios,
-                          size: 16, color: DatingColors.lightgrey
-                          ),
+                          size: 16, color: DatingColors.lightgrey),
                     ],
                   ),
                 ),
@@ -818,7 +850,7 @@ void _scrollToSection(GlobalKey key) {
     print('interests...........$interests');
 
     return Column(
-       key: _interestsSectionKey,
+      key: _interestsSectionKey,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
@@ -1154,7 +1186,7 @@ void _scrollToSection(GlobalKey key) {
     );
 
     return Column(
-       key: _promptsSectionKey,
+      key: _promptsSectionKey,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
@@ -1366,7 +1398,6 @@ void _scrollToSection(GlobalKey key) {
   }
 
   Widget _buildBioSection() {
-    
     final userData = ref.watch(loginProvider);
     final user =
         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
@@ -1376,7 +1407,7 @@ void _scrollToSection(GlobalKey key) {
         isEditing ? _bioController.text.trim() : (serverHeadline?.trim() ?? '');
 
     return AnimatedContainer(
-       key: _bioSectionKey,
+      key: _bioSectionKey,
       duration: const Duration(milliseconds: 500),
       curve: Curves.easeInOut,
       padding: const EdgeInsets.all(8),
@@ -1385,7 +1416,7 @@ void _scrollToSection(GlobalKey key) {
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
-        //  key: _bioSectionKey, 
+        //  key: _bioSectionKey,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
@@ -1426,7 +1457,7 @@ void _scrollToSection(GlobalKey key) {
                     icon: const Icon(Icons.check, color: DatingColors.black),
                     onPressed: () async {
                       final updatedHeadline = _bioController.text.trim();
-      
+
                       try {
                         await ref.read(loginProvider.notifier).updateProfile(
                               image: null,
@@ -1436,7 +1467,7 @@ void _scrollToSection(GlobalKey key) {
                               prompt: null,
                               qualityId: null,
                             );
-      
+
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                               content: Text('Headline updated successfully!')),
@@ -1447,7 +1478,7 @@ void _scrollToSection(GlobalKey key) {
                               content: Text('Failed to upload headline: $e')),
                         );
                       }
-      
+
                       setState(() {
                         isEditing = false;
                       });
@@ -1544,11 +1575,18 @@ void _scrollToSection(GlobalKey key) {
     final educationText = education != null
         ? education.institution! + (' in ${education.gradYear}')
         : 'Add';
+    // final hometown = user?.hometown;
+    final hometown = (user?.hometown?.isNotEmpty ?? false)
+        ? (user?.hometown ?? 'Add')
+        : 'Add';
+    final locationname = (user?.location?.name?.isNotEmpty ?? false)
+        ? (user?.location?.name ?? 'Add')
+        : 'Add';
 
     final selectGender = user?.gender ?? 'Add';
 
     return Column(
-       key: _aboutSectionKey,
+      key: _aboutSectionKey,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
@@ -1571,11 +1609,11 @@ void _scrollToSection(GlobalKey key) {
             onTap: () {
           Navigator.pushNamed(context, '/updategenderscreen');
         }),
-        _buildProfileItem(Icons.location_on_outlined, 'Location', 'Add',
+        _buildProfileItem(Icons.location_on_outlined, 'Location', locationname,
             onTap: () {
           Navigator.pushNamed(context, '/citysearchpage');
         }),
-        _buildProfileItem(Icons.home_outlined, 'Hometown', 'Add', onTap: () {
+        _buildProfileItem(Icons.home_outlined, 'Hometown', hometown, onTap: () {
           Navigator.pushNamed(context, '/hometownscreen');
         }),
       ],
@@ -1644,9 +1682,10 @@ void _scrollToSection(GlobalKey key) {
         ? user?.height.toString() // convert int to string for display
         : 'Add';
     print('adding############');
+    final modeId = user?.mode?.isNotEmpty == true ? user!.mode!.first.id : null;
 
     return Column(
-       key: _moreaboutSectionKey,
+      key: _moreaboutSectionKey,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
@@ -1660,67 +1699,117 @@ void _scrollToSection(GlobalKey key) {
           style: TextStyle(fontSize: 14, color: Colors.grey[600]),
         ),
         const SizedBox(height: 16),
-        _buildProfileItem(Icons.place_outlined, 'Height', height!, onTap: () {
-          Navigator.pushNamed(context, '/heightscreenprofile');
-        }),
+
+        if (user?.mode != null &&
+    user!.mode!.isNotEmpty && modeId== 4)...[
+          _buildProfileItem(Icons.place_outlined, 'Height', height!, onTap: () {
+            Navigator.pushNamed(context, '/heightscreenprofile');
+          }),
+        ],
+
+    
         _buildProfileItem(Icons.search, 'Looking For', lookingfor, onTap: () {
           Navigator.pushNamed(context, '/lookingforscreen');
         }),
-        _buildProfileItem(Icons.favorite_border, 'Relationship', relationship,
-            onTap: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => RelationshipScreen()));
-        }),
-        _buildProfileItem(Icons.child_care, 'Kids', kids, onTap: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => HaveKidsScreen()));
-        }),
-        _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', smoking!,
-            onTap: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => SmokingScreen()));
-        }),
-        _buildProfileItem(Icons.local_drink_outlined, 'Drinking', drinking,
-            onTap: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => DrinkingScreen()));
-        }),
-        _buildProfileItem(Icons.fitness_center_outlined, 'Exercise', exercise,
-            onTap: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => ExerciseScreen()));
-        }),
-        _buildProfileItem(
-            Icons.location_city_outlined, 'New To Area', newtoarea!, onTap: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => NewToAreaScreen()));
-        }),
-        _buildProfileItem(Icons.star_border, 'Star Sign', starsign, onTap: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => StarSignScreen()));
-        }),
-        _buildProfileItem(Icons.place_outlined, 'Religion', religion,
-            onTap: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => ReligionScreen()));
-        }),
+
+        if (user?.mode != null &&
+    user!.mode!.isNotEmpty &&modeId == 4 || modeId == 5)...[
+          _buildProfileItem(Icons.favorite_border, 'Relationship', relationship,
+              onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (_) => RelationshipScreen()));
+          }),
+        ],
+
+        if (user?.mode != null &&
+    user!.mode!.isNotEmpty &&modeId == 4)...[
+          _buildProfileItem(Icons.child_care, 'Kids', kids, onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => HaveKidsScreen()));
+          }),
+        ],
+        if (user?.mode != null &&
+    user!.mode!.isNotEmpty &&modeId == 4 || modeId == 5)...[
+          _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', smoking!,
+              onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => SmokingScreen()));
+          }),
+        ],
+        if (user?.mode != null &&
+    user!.mode!.isNotEmpty &&modeId == 4 || modeId== 5)...[
+          _buildProfileItem(Icons.local_drink_outlined, 'Drinking', drinking,
+              onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => DrinkingScreen()));
+          }),
+        ],
+        if (user?.mode != null &&
+    user!.mode!.isNotEmpty &&modeId == 4 ||modeId == 5)...[
+          _buildProfileItem(Icons.fitness_center_outlined, 'Exercise', exercise,
+              onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => ExerciseScreen()));
+          }),
+        ],
+        if (user?.mode != null &&
+            user!.mode!.isNotEmpty && modeId== 4 || modeId== 5)...[
+          _buildProfileItem(
+              Icons.location_city_outlined, 'New To Area', newtoarea!,
+              onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => NewToAreaScreen()));
+          }),
+        ],
+
+        if (user?.mode != null &&
+    user!.mode!.isNotEmpty &&modeId == 4|| modeId == 5)...[
+          _buildProfileItem(Icons.star_border, 'Star Sign', starsign,
+              onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => StarSignScreen()));
+          }),
+        ],
+
+        if (user?.mode != null &&
+    user!.mode!.isNotEmpty &&modeId == 4 || modeId == 5)...[
+          _buildProfileItem(Icons.place_outlined, 'Religion', religion,
+              onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => ReligionScreen()));
+          }),
+        ],
         // ====================================
-        _buildProfileItem(Icons.business_sharp, 'Experience', experiences,
-            onTap: () {
-          Navigator.pushNamed(context, '/experiencescreen');
-        }),
-        _buildProfileItem(Icons.factory, 'Industries', industry, onTap: () {
-          Navigator.pushNamed(context, '/industryscreen');
-        }),
-        _buildProfileItem(Icons.school, 'EducationLevel', educationLevel!,
-            onTap: () {
-          Navigator.pushNamed(context, '/educaationlevelscreen');
-        }),
-        _buildProfileItem(Icons.baby_changing_station, 'Have Kids', havekids!,
-            onTap: () {
-          Navigator.pushNamed(context, '/havekidscreen');
-          print('adding..............');
-        }),
+        if (user?.mode != null &&
+    user!.mode!.isNotEmpty &&modeId == 6)...[
+          _buildProfileItem(Icons.business_sharp, 'Experience', experiences,
+              onTap: () {
+            Navigator.pushNamed(context, '/experiencescreen');
+          }),
+        ],
+
+        if (user?.mode != null &&
+    user!.mode!.isNotEmpty &&modeId == 6)...[
+          _buildProfileItem(Icons.factory, 'Industries', industry, onTap: () {
+            Navigator.pushNamed(context, '/industryscreen');
+          }),
+        ],
+
+        if (user?.mode != null &&
+    user!.mode!.isNotEmpty &&modeId == 6)...[
+          _buildProfileItem(Icons.school, 'EducationLevel', educationLevel!,
+              onTap: () {
+            Navigator.pushNamed(context, '/educaationlevelscreen');
+          }),
+        ],
+        if (user?.mode != null &&
+    user!.mode!.isNotEmpty &&modeId == 4 || modeId == 5)...[
+          _buildProfileItem(Icons.baby_changing_station, 'Have Kids', havekids!,
+              onTap: () {
+            Navigator.pushNamed(context, '/havekidscreen');
+            print('adding..............');
+          }),
+        ],
       ],
     );
   }

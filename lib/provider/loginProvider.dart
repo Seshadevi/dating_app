@@ -458,7 +458,8 @@ Future<int> updateProfile({
   String? email,
   double?  currentLat, 
   double?  currentLng,
-  String? citylocation
+  String? citylocation,
+  String? homelocation
 }) async {
   final loadingState = ref.read(loadingProvider.notifier);
   loadingState.state = true;
@@ -519,15 +520,16 @@ Future<int> updateProfile({
     if (email != null) request.fields['email'] =email.toString();
     if (currentLat != null) request.fields['latitude'] =currentLat.toString();
     if (currentLng != null) request.fields['longitude'] =currentLng.toString();
+     if (homelocation!= null) request.fields['hometown'] =homelocation.toString();
     // Suppose you used geocoding and got a Placemark
       // Placemark place = placemarks.first;
       // String? citylocation = place.locality; // ✅ Only city name
 
-      if (citylocation != null && citylocation.isNotEmpty) {
-        request.fields['name'] = citylocation;
-      }
+      // if (citylocation != null && citylocation.isNotEmpty) {
+      //   request.fields['name'] = citylocation;
+      // }
 
-     if (citylocation != null) request.fields['name'] =citylocation.toString();
+     if (citylocation != null) request.fields['location'] =citylocation.toString();
     
     
     // Add list fields as indexed keys

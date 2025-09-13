@@ -1,17 +1,23 @@
 import "package:dating/constants/dating_app_user.dart";
+import "package:dating/provider/loginProvider.dart";
 import "package:flutter/material.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
 
 
-class ProfileStrengthDetailScreen extends StatefulWidget {
+class ProfileStrengthDetailScreen extends ConsumerStatefulWidget {
   const ProfileStrengthDetailScreen({Key? key}) : super(key: key);
 
   @override
-  State<ProfileStrengthDetailScreen> createState() => _ProfileStrengthDetailScreenState();
+  ConsumerState<ProfileStrengthDetailScreen> createState() => _ProfileStrengthDetailScreenState();
 }
 
-class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScreen> {
+class _ProfileStrengthDetailScreenState extends ConsumerState<ProfileStrengthDetailScreen> {
   @override
   Widget build(BuildContext context) {
+    final userData = ref.read(loginProvider);
+    final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+    final modeId = user?.mode?.isNotEmpty == true ? user?.mode?.first.id : null;
+    final modeName = user?.mode?.isNotEmpty == true ? user?.mode?.first.value : '';
     return Scaffold(
       backgroundColor: DatingColors.white,
       appBar: AppBar(
@@ -115,61 +121,85 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
               mainAxisSpacing: 15,
               childAspectRatio: 1.1,
               children: [
-                GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context, 'bio_section');
+               if (user?.headLine == null || user!.headLine!.isEmpty) ...[
+  GestureDetector(
+    onTap: () {
+      Navigator.pushReplacementNamed(
+        context,
+        '/completeprofile',
+        arguments: 'bio_section',
+      );
+    },
+    child: _buildProfileCard(
+      icon: Icons.person,
+      title: 'Bio',
+      subtitle: '',
+      isCompleted: false,
+      iconColor: DatingColors.brown,
+    ),
+  ),
+],
 
-                        Navigator.pushReplacementNamed(
-                          context,
-                          '/completeprofile',
-                          arguments: 'bio_section', // 👈 pass the section you want
-                        );
-                      },
-                      child: _buildProfileCard(
-                        icon: Icons.person,
-                        title: 'Bio',
-                        subtitle: '',
-                        isCompleted: false,
-                        iconColor: DatingColors.brown,
-                      ),
-                            ),
-                GestureDetector(
-                  onTap:
-                  (){
-                     Navigator.pop(context, 'getverify_section');
+                // if (user?.headLine == null || user! == false) ...[
+  GestureDetector(
+    onTap: () {
+      Navigator.pushReplacementNamed(
+        context,
+        '/completeprofile',
+        arguments: 'getverify_section',
+      );
+    },
+    child: _buildProfileCard(
+      icon: Icons.verified_user_outlined,
+      title: 'Get Verified',
+      subtitle: 'Not Verified',
+      isCompleted: false,
+      iconColor: DatingColors.brown,
+    ),
+  ),
+// ],
 
-                        Navigator.pushReplacementNamed(
-                          context,
-                          '/completeprofile',
-                          arguments: 'getverify_section', // 👈 pass the section you want
-                        );
+               if ((user?.work == null ) &&
+    (user?.education == null ) &&
+    user?.gender == null &&
+    (user?.location == null ) &&
+    (user?.hometown == null || user!.hometown!.isEmpty)) ...[
+  GestureDetector(
+    onTap: () {
+      Navigator.pushReplacementNamed(
+        context,
+        '/completeprofile',
+        arguments: 'about_section',
+      );
+    },
+    child: _buildProfileCard(
+      icon: Icons.person,
+      title: 'About',
+      subtitle: '',
+      isCompleted: false,
+      iconColor: DatingColors.brown,
+    ),
+  ),
+],
 
-                  },
-                  child: _buildProfileCard(
-                    icon: Icons.verified_user_outlined,
-                    title: 'Get Verified',
-                    subtitle: 'Not Verified',
-                    isCompleted: false,
-                    iconColor: DatingColors.brown,
-                  ),
-                ),
-                GestureDetector(
-                  onTap: (){
-                     Navigator.pushReplacementNamed(
-                          context,
-                          '/completeprofile',
-                          arguments: 'about_section', // 👈 pass the section you want
-                        );
+                // if ((modeId == 4 || modeId == 5||modeId==6) && user?.height == null&&user?.lookingFor==null&&user?.relationships==null&&user?.kids==null&&user?.smoking==null&&user?.drinking==null&&user?.exercise==null&&user?.newToArea==null&&user?.starSign==null&&user?.religions==null&&user?.haveKids==null)...[
+               if ((modeId == 4 || modeId == 5 || modeId == 6) &&
+    (
+      user?.height == null ||
+      (user?.lookingFor == null || user!.lookingFor!.isEmpty) ||
+      (user.relationships == null || user.relationships!.isEmpty) ||
+      (user.kids == null || user.kids!.isEmpty) ||
+      (user.smoking == null || user.smoking!.isEmpty) ||
+      (user.drinking == null || user.drinking!.isEmpty) ||
+      (user.exercise == null || user.exercise!.isEmpty) ||
+      (user.newToArea == null || user.newToArea!.isEmpty) ||
+      user.starSign == null ||
+      (user.religions == null || user.religions!.isEmpty) ||
+      (user.haveKids == null || user.haveKids!.isEmpty)
+    )
+) ...[
+                
 
-                  },
-                  child: _buildProfileCard(
-                    icon: Icons.person,
-                    title: 'About',
-                    subtitle: '1 Of 5 Added',
-                    isCompleted: false,
-                    iconColor: DatingColors.brown,
-                  ),
-                ),
                 GestureDetector(
                   onTap: (){
 
@@ -183,12 +213,14 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
                   child: _buildProfileCard(
                     icon: Icons.info_outline,
                     title: 'More About',
-                    subtitle: '3 Of 9 Added',
+                    subtitle: '',
                     isCompleted: false,
                     iconColor: DatingColors.brown,
                     hasMoreInfo: true,
                   ),
                 ),
+                ],
+                if(user?.profilePics==null&&user!.profilePics!.isEmpty)...[
                 GestureDetector(
                   onTap: (){
                      Navigator.pushReplacementNamed(
@@ -200,11 +232,13 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
                   child: _buildProfileCard(
                     icon: Icons.photo_library_outlined,
                     title: 'Photos',
-                    subtitle: '1 Of 4 Added',
+                    subtitle: '',
                     isCompleted: false,
                     iconColor: DatingColors.brown,
                   ),
                 ),
+                ],
+                if(user?.prompts==null&&user!.prompts!.isEmpty)...[
                 GestureDetector(
                   onTap: (){
                      Navigator.pushReplacementNamed(
@@ -216,33 +250,40 @@ class _ProfileStrengthDetailScreenState extends State<ProfileStrengthDetailScree
                   child: _buildProfileCard(
                     icon: Icons.chat_bubble_outline,
                     title: 'Prompts',
-                    subtitle: '3 Of 9 Added',
+                    subtitle: '',
                     isCompleted: false,
                     iconColor: DatingColors.brown,
                   ),
                 ),
+                ],
               ],
             ),
             const SizedBox(height: 15),
             
             // Interests card (single width)
-            GestureDetector(
-              onTap: () {
-                 Navigator.pushReplacementNamed(
-                          context,
-                          '/completeprofile',
-                          arguments: 'Interest_section', // 👈 pass the section you want
-                        );
-              },
-              child: _buildSingleProfileCard(
-                icon: Icons.interests_outlined,
-                title: 'Interests',
-                subtitle: '0 Of 5 Added',
-                isCompleted: false,
-                iconColor: DatingColors.brown,
-              ),
-            ),
-          ],
+           if ((modeId == 4 || modeId == 5) &&
+    (user?.interests == null || user!.interests!.isEmpty)) ...[
+  GestureDetector(
+    onTap: () {
+      Navigator.pushReplacementNamed(
+        context,
+        '/completeprofile',
+        arguments: 'Interest_section',
+      );
+    },
+    child: _buildSingleProfileCard(
+      icon: Icons.interests_outlined,
+      title: 'Interests',
+      subtitle: '',
+      isCompleted: false,
+      iconColor: DatingColors.brown,
+    ),
+  ),
+],
+
+
+            ],
+          
         ),
       ),
     );

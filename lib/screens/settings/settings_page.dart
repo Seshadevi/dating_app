@@ -1,7 +1,8 @@
-
 import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/loader.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/logout_notitifier.dart';
+import 'package:dating/provider/settings/travelprovider.dart';
 import 'package:dating/provider/signupprocessProviders/modeProvider.dart';
 import 'package:dating/provider/snooze/post_snooze_provider.dart';
 import 'package:dating/screens/feedback/feedback_screen.dart';
@@ -32,9 +33,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _isLoadingLocation = false;
   double? _currentLat;
   double? _currentLng;
-
-  bool _snoozeMode = false;
-  bool _incognitoMode = false;
   bool _autoSpotlight = false;
 
   @override
@@ -47,17 +45,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   void _loadUserLocationData() {
     final userdata = ref.read(loginProvider);
-    final user = userdata.data?.isNotEmpty == true ? userdata.data![0].user : null;
-    
-    print('User location data: ${user?.location}');
-    
-    if (user?.location?.latitude != null && user?.location?.longitude != null) {
-    _currentLat = user?.location?.latitude?.toDouble();
-    _currentLng = user?.location?.longitude?.toDouble();
+    final user =
+        userdata.data?.isNotEmpty == true ? userdata.data![0].user : null;
 
+    print('User location data: ${user?.location}');
+
+    if (user?.location?.latitude != null && user?.location?.longitude != null) {
+      _currentLat = double.tryParse(user?.location?.latitude.toString() ?? '');
+      _currentLng = double.tryParse(user?.location?.longitude.toString() ?? '');
 
       print('Parsed coordinates: lat: $_currentLat, lng: $_currentLng');
-      
+
       if (_currentLat != null && _currentLng != null) {
         _getAddressFromCoordinates(_currentLat!, _currentLng!);
       } else {
@@ -74,7 +72,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Future<void> _getAddressFromCoordinates(double lat, double lng) async {
     if (!mounted) return;
-    
+
     try {
       setState(() {
         _isLoadingLocation = true;
@@ -82,7 +80,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
       List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng)
           .timeout(const Duration(seconds: 10));
-      
+
       if (placemarks.isNotEmpty && mounted) {
         String address = _formatAddress(placemarks.first);
         setState(() {
@@ -112,8 +110,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       placemark.country,
     ].where((component) => component != null && component.isNotEmpty).toList();
 
-    return addressComponents.isNotEmpty 
-        ? addressComponents.join(', ') 
+    return addressComponents.isNotEmpty
+        ? addressComponents.join(', ')
         : "Selected location";
   }
 
@@ -161,8 +159,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       }
 
       // Get location
-      loc.LocationData locationData = await location.getLocation()
-          .timeout(const Duration(seconds: 15));
+      loc.LocationData locationData =
+          await location.getLocation().timeout(const Duration(seconds: 15));
 
       if (locationData.latitude == null || locationData.longitude == null) {
         if (mounted) {
@@ -175,20 +173,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         return;
       }
 
-      _currentLat = locationData.latitude;
-      _currentLng = locationData.longitude;
+      _currentLat = locationData.latitude?.toDouble();
+      _currentLng = locationData.longitude?.toDouble();
 
       // Get address
       await _getAddressFromCoordinates(_currentLat!, _currentLng!);
-      
+
       // Update user's location in backend/provider
       // You can implement this method in your loginProvider
-      await ref.read(loginProvider.notifier).updateProfile(currentLat:_currentLat, currentLng:_currentLng);
-      
+      await ref
+          .read(loginProvider.notifier)
+          .updateProfile(currentLat: _currentLat, currentLng: _currentLng);
+
       if (mounted) {
         _showSuccessSnackBar("Location updated successfully");
       }
-      
     } catch (e) {
       debugPrint('Error getting current location: $e');
       if (mounted) {
@@ -233,25 +232,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final userdata = ref.watch(loginProvider);
-    final user = userdata.data?.isNotEmpty == true ? userdata.data![0].user : null;
-    
-    print('mode............${(user?.mode != null && user!.mode!.isNotEmpty) ? user.mode!.first.mode : "No mode"}');
+    final user =
+        userdata.data?.isNotEmpty == true ? userdata.data![0].user : null;
+
+    // print('mode............${user?.mode?.first.value}');
+    // print('modeid............${user?.mode?.first.id}');
     print('religion............${user?.email}');
     print('location............${user?.location}');
 
     return Scaffold(
       backgroundColor: DatingColors.white,
       appBar: AppBar(
-        title: const Text("Settings", style: TextStyle(color: DatingColors.brown)),
+        title:
+            const Text("Settings", style: TextStyle(color: DatingColors.brown)),
         centerTitle: true,
         backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: DatingColors.everqpidColor),
-          onPressed: () {
-            Navigator.pushNamed(context, '/custombottomnav');
-          }
-        ),
+            icon:
+                const Icon(Icons.arrow_back, color: DatingColors.everqpidColor),
+            onPressed: () {
+              Navigator.pushNamed(context, '/custombottomnav');
+            }),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -286,21 +288,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 );
               },
               child: _tileWithTextArrow(
-                "Type Of Connection",
-                (user?.mode != null && user!.mode!.isNotEmpty) 
-                  ? user.mode!.first.mode.toString() 
-                  : "Date"
-
-              ),
+                  "Type Of Connection",
+                  (user?.mode != null && user!.mode!.isNotEmpty)
+                      ? user.mode!.first.value.toString()
+                      : "Date"),
             ),
             const SizedBox(height: 16),
 
             // Snooze Mode
-           _tileWithSwitch("Snooze Mode", ref.watch(postSnoozeProvider), (val) async {
+            // Snooze Mode
+            _tileWithSwitch("Snooze Mode", ref.watch(postSnoozeProvider),
+                (val) async {
               try {
                 await ref.read(postSnoozeProvider.notifier).toggleSnooze(val);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(val ? "Snooze Activated" : "Snooze Deactivated")),
+                  SnackBar(
+                      content: Text(
+                          val ? "Snooze Activated" : "Snooze Deactivated")),
                 );
               } catch (e) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -316,15 +320,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             const SizedBox(height: 16),
 
-                _tileWithSwitch("Incognito Mode For Date", ref.watch(postIncogintoeProvider), (val) async {
+            _tileWithSwitch(
+                "Incognito Mode For Date", ref.watch(postIncogintoeProvider),
+                (val) async {
               try {
-                await ref.read(postIncogintoeProvider.notifier).toggleIncognito(val);
+                await ref
+                    .read(postIncogintoeProvider.notifier)
+                    .toggleIncognito(val);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(val ? "Incognito Mode For Date Activated" : "Incognito Mode For Date Deactivated")),
+                  SnackBar(
+                      content: Text(val
+                          ? "Incognito Mode For Date Activated"
+                          : "Incognito Mode For Date Deactivated")),
                 );
               } catch (e) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Failed to update Incognito Mode For Date")),
+                  const SnackBar(
+                      content:
+                          Text("Failed to update Incognito Mode For Date")),
                 );
               }
             }),
@@ -339,6 +352,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             const SizedBox(height: 16),
 
+            // Auto Spotlight
             _tileWithSwitch("Auto - Spotlight", _autoSpotlight, (val) {
               setState(() => _autoSpotlight = val);
             }),
@@ -347,7 +361,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               'Well Use Spotlight Automatically TO Boost Your Profile When Most People See It.',
               style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
             ),
-
             const SizedBox(height: 16),
 
             // Location Section
@@ -362,23 +375,27 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
             // Enhanced Current Location with button
             _tileWithLocationButton(
-              "Current Location", 
-              _isLoadingLocation ? "Getting location..." : _currentLocationName
-            ),
+                "Current Location",
+                _isLoadingLocation
+                    ? "Getting location..."
+                    : _currentLocationName),
             const SizedBox(height: 8),
+
             const Text(
               'Tap the location icon to update your current location',
               style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
             ),
+
             const SizedBox(height: 16),
 
             // Travel
-            _tileWithArrow("Travel"),
+            _tileWithTravelToggle("Travel"),
             const SizedBox(height: 8),
             const Text(
               'Change Your Location To Connect With People In Other Locations',
               style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
             ),
+
             const SizedBox(height: 16),
 
             // Settings Options
@@ -491,12 +508,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             child: Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: _isLoadingLocation 
+                color: _isLoadingLocation
                     ? DatingColors.mediumGrey.withOpacity(0.3)
                     : DatingColors.primaryGreen.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
-                  color: _isLoadingLocation 
+                  color: _isLoadingLocation
                       ? DatingColors.mediumGrey
                       : DatingColors.primaryGreen,
                   width: 1.5,
@@ -896,31 +913,32 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
- Widget _tileWithSwitch(String title, bool value, ValueChanged<bool> onChanged) {
-  return Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: DatingColors.white,
-      borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: DatingColors.lightpink),
-    ),
-    child: Row(
-      children: [
-        Expanded(
-          child: Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+  Widget _tileWithSwitch(
+      String title, bool value, ValueChanged<bool> onChanged) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: DatingColors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: DatingColors.lightpink),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ),
-        ),
-        Switch(
-          value: value,
-          onChanged: onChanged,
-          activeColor: DatingColors.primaryGreen,
-        ),
-      ],
-    ),
-  );
-}
+          Switch(
+            value: value,
+            onChanged: onChanged,
+            activeColor: DatingColors.primaryGreen,
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _tileWithText(String title, String value) {
     return Container(
@@ -943,35 +961,130 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _tileWithArrow(String title) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: DatingColors.middlepink,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: DatingColors.primaryGreen),
-      ),
-      child: Row(
-        children: [
-          const CircleAvatar(
-            radius: 18,
-            backgroundColor: DatingColors.everqpidColor,
-            child: Icon(
-              Icons.travel_explore,
-              size: 20,
-              color: DatingColors.white,
-            ),
+  // Add this method to your _SettingsScreenState class:
+  Widget _tileWithTravelToggle(String title) {
+    return Consumer(
+      builder: (context, ref, child) {
+        final travelState = ref.watch(travelProvider);
+        final isLoadingTravel = ref.watch(loadingProvider);
+        final userdata = ref.watch(loginProvider);
+        final user =
+            userdata.data?.isNotEmpty == true ? userdata.data![0].user : null;
+
+        // Get current user location
+        final currentLat = user?.location?.latitude != null
+            ? double.tryParse(user!.location!.latitude.toString())
+            : _currentLat;
+        final currentLng = user?.location?.longitude != null
+            ? double.tryParse(user!.location!.longitude.toString())
+            : _currentLng;
+
+        final isTravelModeOn = travelState.travelMode == 1;
+
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: DatingColors.middlepink,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: DatingColors.primaryGreen),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 18,
+                    backgroundColor: isTravelModeOn
+                        ? DatingColors.primaryGreen
+                        : DatingColors.everqpidColor,
+                    child: const Icon(
+                      Icons.travel_explore,
+                      size: 20,
+                      color: DatingColors.white,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        if (isTravelModeOn)
+                          const Text(
+                            'Travel mode is ON',
+                            style: TextStyle(
+                              color: DatingColors.brown,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  if (isLoadingTravel)
+                    const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          DatingColors.primaryGreen,
+                        ),
+                      ),
+                    )
+                  else
+                    Switch(
+                      value: isTravelModeOn,
+                      onChanged: (value) async {
+                        if (currentLat != null && currentLng != null) {
+                          try {
+                            await ref.read(travelProvider.notifier).addTravel(
+                                  value,
+                                  currentLat,
+                                  currentLng,
+                                );
+
+                            // Show success message
+                            _showSuccessSnackBar(
+                              value
+                                  ? 'Travel mode enabled'
+                                  : 'Travel mode disabled',
+                            );
+                          } catch (error) {
+                            // Show error message
+                            _showErrorSnackBar(
+                                'Error updating travel mode: $error');
+                          }
+                        } else {
+                          _showErrorSnackBar(
+                              'Location not available. Please update your location first.');
+                        }
+                      },
+                      activeColor: DatingColors.primaryGreen,
+                    ),
+                ],
+              ),
+              if (isTravelModeOn &&
+                  travelState.location != null &&
+                  travelState.location!.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    'Travel location: ${travelState.location}',
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: DatingColors.mediumGrey,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+            ],
           ),
-          const Icon(Icons.arrow_forward_ios, size: 20),
-        ],
-      ),
+        );
+      },
     );
   }
 

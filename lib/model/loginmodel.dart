@@ -111,7 +111,7 @@ class User {
   bool? showOnProfile;
   String? headLine;
   bool? termsAndConditions;
-  List<Modes>? mode;
+  List<Mode>? mode;
   List<Qualities>? qualities;
   List<Drinking>? drinking;
   List<Kids>? kids;
@@ -220,9 +220,9 @@ class User {
       });
     }
     if (json['modes'] != null) {
-      mode = <Modes>[];
+      mode = <Mode>[];
       json['modes'].forEach((v) {
-        mode!.add(Modes.fromJson(v));
+        mode!.add(Mode.fromJson(v));
       });
     }
      if (json['industries'] != null) {
@@ -411,7 +411,7 @@ class User {
     bool? showOnProfile,
     String? headLine,
     bool? termsAndConditions,
-    List<Modes>? mode,
+    List<Mode>? mode,
     List<Qualities>? qualities,
     List<Drinking>? drinking,
     List<Kids>? kids,
@@ -1013,80 +1013,51 @@ class UserKids {
     return UserKids();
   }
 }
-class Modes {
-  int? id;
-  String? mode;
-  UserMode? usermode;
+class Mode {
+  final int id;
+  final String value;
 
-  Modes({this.id, this.mode, this.usermode});
+  Mode({required this.id, required this.value});
 
-  Modes.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    mode = json['value'];
-    usermode= json['user_rvalue'] != null
-        ? UserMode.fromJson(json['user_value'])
-        : null;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['value'] = mode;
-    if (usermode != null) {
-      data['user_value'] = usermode!.toJson();
-    }
-    return data;
-  }
-
-  Modes copyWith({
-    int? id,
-    String? mode,
-    UserMode? usermode,
-  }) {
-    return Modes(
-      id: id ?? this.id,
-      mode: mode ?? this.mode,
-      usermode: usermode ?? this.usermode,
+  factory Mode.fromJson(Map<String, dynamic> json) {
+    return Mode(
+      id: json['id'],
+      value: json['value'],
     );
   }
 
-  static Modes initial() {
-    return Modes();
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'value': value,
+    };
   }
 }
-class UserMode {
-  int? userId;
-  int? modeId;
 
-  UserMode({this.userId, this.modeId});
+class ModesData {
+  final List<Mode> modes;
 
-  UserMode.fromJson(Map<String, dynamic> json) {
-    userId = json['user_id'];
-    modeId = json['value_id'];
-  }
+  ModesData({required this.modes});
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['user_id'] = userId;
-    data['value_id'] = modeId;
-    return data;
-  }
-
- UserMode copyWith({
-    int? userId,
-    int? modeId,
-  }) {
-    return UserMode(
-      userId: userId ?? this.userId,
-      modeId: modeId ?? this.modeId,
+  factory ModesData.fromJson(Map<String, dynamic> json) {
+    return ModesData(
+      modes: (json['modes'] as List)
+          .map((mode) => Mode.fromJson(mode))
+          .toList(),
     );
   }
 
-  static UserMode initial() {
-    return UserMode();
+  Map<String, dynamic> toJson() {
+    return {
+      'modes': modes.map((mode) => mode.toJson()).toList(),
+    };
   }
 }
 
+// Usage:
+// String jsonString = '{"modes": [{"id": 5, "value": "BOND"}]}';
+// Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+// ModesData modesData = ModesData.fromJson(jsonMap);
 class Religions {
   int? id;
   String? religion;

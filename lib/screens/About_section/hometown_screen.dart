@@ -267,7 +267,7 @@ class _HomeTownSelectionScreenState extends ConsumerState<HomeTownSelectionScree
         });
       }
       await ref.read(loginProvider.notifier).updateProfile(
-          citylocation: cityName,
+          homelocation: cityName,
           );
     
     ScaffoldMessenger.of(context).showSnackBar(
