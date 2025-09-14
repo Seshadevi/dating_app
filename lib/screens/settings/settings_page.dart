@@ -389,12 +389,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             const SizedBox(height: 16),
 
             // Travel
-            _tileWithTravelToggle("Travel"),
-            const SizedBox(height: 8),
-            const Text(
-              'Change Your Location To Connect With People In Other Locations',
-              style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
-            ),
+           travelToggleTile(context, ref, "Travel"),
+    const SizedBox(height: 8),
+    const Text(
+      'Change Your Location To Connect With People In Other Locations',
+      style: TextStyle(fontSize: 12, color: Colors.grey),
+    ),
+    // const SizedBox(height: 8),
+    // const Text(
+    //   'Change Your Location To Connect With People In Other Locations',
+    //   style: TextStyle(fontSize: 12, color: Colors.grey),
+    // ),
 
             const SizedBox(height: 16),
 
@@ -472,9 +477,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: DatingColors.middlepink,
+        color: DatingColors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: DatingColors.primaryGreen),
+        border: Border.all(color: DatingColors.lightpink),
       ),
       child: Row(
         children: [
@@ -510,12 +515,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               decoration: BoxDecoration(
                 color: _isLoadingLocation
                     ? DatingColors.mediumGrey.withOpacity(0.3)
-                    : DatingColors.primaryGreen.withOpacity(0.15),
+                    : DatingColors.lightpink.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: _isLoadingLocation
                       ? DatingColors.mediumGrey
-                      : DatingColors.primaryGreen,
+                      : DatingColors.lightpink,
                   width: 1.5,
                 ),
               ),
@@ -532,7 +537,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     )
                   : const Icon(
                       Icons.my_location,
-                      color: DatingColors.primaryGreen,
+                      color: DatingColors.lightpink,
                       size: 22,
                     ),
             ),
@@ -556,7 +561,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           color: DatingColors.white,
           borderRadius: BorderRadius.circular(20),
           border:
-              Border.all(color: DatingColors.lightpink ?? DatingColors.brown),
+              Border.all(color: DatingColors.lightpink),
         ),
         child: Row(
           children: [
@@ -571,7 +576,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   const SizedBox(height: 4),
                   Text(
                     hasEmail
-                        ? userEmail!
+                        ? userEmail
                         : "Sign Up to Be Notified With Important Event Type Updates",
                     style: TextStyle(
                       fontSize: hasEmail ? 14 : 12,
@@ -705,108 +710,91 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
+  showDialog(
+    context: context,
+    barrierDismissible: false, // Prevent dismiss on outside tap
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: DatingColors.primaryGreen,
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: DatingColors.primaryGreen,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: 20),
-                const Text(
-                  "We'll Be Here If You Need Us Again",
-                  style: TextStyle(
-                    color: DatingColors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Are you sure you want to logout?",
+                style: TextStyle(
+                  color: DatingColors.brown,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
-                const SizedBox(height: 16),
-                const Text(
-                  "You Can Use Any Of Your Linked Login Methods To Come Back Anytime",
-                  style: TextStyle(
-                    color: DatingColors.white,
-                    fontSize: 14,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 24),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: DatingColors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(8),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Cancel Button
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: DatingColors.brown),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
-                      child: const Icon(
-                        Icons.g_mobiledata,
-                        color: DatingColors.white,
-                        size: 24,
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(
+                          color: DatingColors.brown,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    const Text(
-                      "Google\nKrish",
-                      style: TextStyle(
-                        color: DatingColors.white,
-                        fontSize: 14,
+                  ),
+                  const SizedBox(width: 15),
+                  // Logout Button
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _performLogout(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: DatingColors.errorRed,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      child: const Text(
+                        "Log Out",
+                        style: TextStyle(
+                          color: DatingColors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Add new login method functionality
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: DatingColors.white.withOpacity(0.2),
-                      foregroundColor: DatingColors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0),
-                      ),
-                    ),
-                    child: const Text("Add New Login Method"),
                   ),
-                ),
-                const SizedBox(height: 16),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    _performLogout(context);
-                  },
-                  child: const Text(
-                    "Log Out",
-                    style: TextStyle(
-                      color: DatingColors.errorRed,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10),
-              ],
-            ),
+                ],
+              ),
+            ],
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
 
   void _showDeleteAccountDialog(BuildContext context) {
     showDialog(
@@ -962,131 +950,92 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   // Add this method to your _SettingsScreenState class:
-  Widget _tileWithTravelToggle(String title) {
-    return Consumer(
-      builder: (context, ref, child) {
-        final travelState = ref.watch(travelProvider);
-        final isLoadingTravel = ref.watch(loadingProvider);
-        final userdata = ref.watch(loginProvider);
-        final user =
-            userdata.data?.isNotEmpty == true ? userdata.data![0].user : null;
+  Widget travelToggleTile(BuildContext context, WidgetRef ref, String title) {
+  final travelState = ref.watch(travelProvider);
+  final isLoading = ref.watch(loadingProvider);
+  final userdata = ref.watch(loginProvider);
+  final user = userdata.data?.isNotEmpty == true ? userdata.data![0].user : null;
 
-        // Get current user location
-        final currentLat = user?.location?.latitude != null
-            ? double.tryParse(user!.location!.latitude.toString())
-            : _currentLat;
-        final currentLng = user?.location?.longitude != null
-            ? double.tryParse(user!.location!.longitude.toString())
-            : _currentLng;
+  // get user location
+  final currentLat = user?.location?.latitude != null
+      ? double.tryParse(user!.location!.latitude.toString())
+      : _currentLat;
+  final currentLng = user?.location?.longitude != null
+      ? double.tryParse(user!.location!.longitude.toString())
+      : _currentLng;
 
-        final isTravelModeOn = travelState.travelMode == 1;
+  final isTravelOn = travelState.travelMode == 1;
 
-        return Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: DatingColors.middlepink,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: DatingColors.primaryGreen),
+  return Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(
+        color: isTravelOn ?DatingColors.lightpink : Colors.grey,
+        width: 2,
+      ),
+    ),
+    child: Row(
+      children: [
+        CircleAvatar(
+          radius: 18,
+          backgroundColor: isTravelOn ? Colors.white: Colors.grey,
+          child: const Icon(Icons.travel_explore, color: Colors.white, size: 20),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: isTravelOn ?DatingColors.lightpinks : Colors.black,
+            ),
           ),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 18,
-                    backgroundColor: isTravelModeOn
-                        ? DatingColors.primaryGreen
-                        : DatingColors.everqpidColor,
-                    child: const Icon(
-                      Icons.travel_explore,
-                      size: 20,
-                      color: DatingColors.white,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        if (isTravelModeOn)
-                          const Text(
-                            'Travel mode is ON',
-                            style: TextStyle(
-                              color: DatingColors.brown,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  if (isLoadingTravel)
-                    const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          DatingColors.primaryGreen,
-                        ),
-                      ),
-                    )
-                  else
-                    Switch(
-                      value: isTravelModeOn,
-                      onChanged: (value) async {
-                        if (currentLat != null && currentLng != null) {
-                          try {
-                            await ref.read(travelProvider.notifier).addTravel(
-                                  value,
-                                  currentLat,
-                                  currentLng,
-                                );
+        ),
+        if (isLoading)
+          const SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          )
+        else
+          Switch(
+            value: isTravelOn,
+            onChanged: (val) async {
+              if (currentLat != null && currentLng != null) {
+                try {
+                  await ref.read(travelProvider.notifier).addTravel(
+                        val,
+                        currentLat,
+                        currentLng,
+                      );
 
-                            // Show success message
-                            _showSuccessSnackBar(
-                              value
-                                  ? 'Travel mode enabled'
-                                  : 'Travel mode disabled',
-                            );
-                          } catch (error) {
-                            // Show error message
-                            _showErrorSnackBar(
-                                'Error updating travel mode: $error');
-                          }
-                        } else {
-                          _showErrorSnackBar(
-                              'Location not available. Please update your location first.');
-                        }
-                      },
-                      activeColor: DatingColors.primaryGreen,
+                  // ✅ Success message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                          val ? "Travel mode enabled" : "Travel mode disabled"),
                     ),
-                ],
-              ),
-              if (isTravelModeOn &&
-                  travelState.location != null &&
-                  travelState.location!.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(
-                    'Travel location: ${travelState.location}',
-                    style: const TextStyle(
-                      fontSize: 11,
-                      color: DatingColors.mediumGrey,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ),
-            ],
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Error: $e")),
+                  );
+                }
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                      content: Text("Location not available. Update first.")),
+                );
+              }
+            },
+            activeColor: const Color.fromARGB(255, 227, 114, 186),
           ),
-        );
-      },
-    );
-  }
+      ],
+    ),
+  );
+}
 
   Widget _simpleArrowTile(String title, VoidCallback onTap) {
     return GestureDetector(
