@@ -39,7 +39,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
   final first = user.profilePics!.first; // this is ProfilePics model
   if (first.url != null) {
-    imageUrl = 'http://97.74.93.26:6100/${first.url!.replaceFirst(RegExp(r'^/'), '')}';
+    imageUrl = 'http://97.74.93.26:6100/${first.imagePath!.replaceFirst(RegExp(r'^/'), '')}';
   }
 }
 

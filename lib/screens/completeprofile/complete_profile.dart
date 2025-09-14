@@ -379,7 +379,7 @@ void initState() {
     if (user != null && user.profilePics != null) {
       final profilePics = user.profilePics;
       for (int i = 0; i < profilePics!.length && i < 6; i++) {
-        final fullUrl = "http://97.74.93.26:6100${profilePics[i].url}";
+        final fullUrl = "http://97.74.93.26:6100${profilePics[i].imagePath}";
         selectedImages[i] = NetworkImage(fullUrl);
       }
     }

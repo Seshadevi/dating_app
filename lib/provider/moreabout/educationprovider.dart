@@ -200,11 +200,29 @@ class EducationProvider extends StateNotifier<Educationmodel> {
       if (token == null || token.isEmpty) {
         throw Exception("User token is invalid. Please log in again.");
       }
+       final client = RetryClient(
+        http.Client(),
+        retries: 3,
+        when: (response) =>
+            response.statusCode == 401 || response.statusCode == 400,
+        onRetry: (req, res, retryCount) async {
+          if (retryCount == 0 &&
+              (res?.statusCode == 401 || res?.statusCode == 400)) {
+            print("Token expired, refreshing...");
+            String? newAccessToken =
+                await ref.read(loginProvider.notifier).restoreAccessToken();
+
+            await prefs.setString('accessToken', newAccessToken ?? '');
+            token = newAccessToken;
+            req.headers['Authorization'] = 'Bearer $newAccessToken';
+          }
+        },
+      );
 
       // You'll need to add this API endpoint to your Dgapi class
       final apiUrl = Uri.parse("${Dgapi.educationUpdate}/$educationId");
  // Add this to your API constants
-      final request = await http.put(
+      final request = await client.put(
         // or patch, depending on your API
         apiUrl,
         headers: {
@@ -266,8 +284,27 @@ class EducationProvider extends StateNotifier<Educationmodel> {
         throw Exception("User token is invalid. Please log in again.");
       }
 
+       final client = RetryClient(
+        http.Client(),
+        retries: 3,
+        when: (response) =>
+            response.statusCode == 401 || response.statusCode == 400,
+        onRetry: (req, res, retryCount) async {
+          if (retryCount == 0 &&
+              (res?.statusCode == 401 || res?.statusCode == 400)) {
+            print("Token expired, refreshing...");
+            String? newAccessToken =
+                await ref.read(loginProvider.notifier).restoreAccessToken();
 
-      final response = await http.delete(
+            await prefs.setString('accessToken', newAccessToken ?? '');
+            token = newAccessToken;
+            req.headers['Authorization'] = 'Bearer $newAccessToken';
+          }
+        },
+      );
+
+
+      final response = await client.delete(
         Uri.parse(deleteUrl),
         headers: {
           'Accept': 'application/json',

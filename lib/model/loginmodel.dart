@@ -1559,6 +1559,7 @@ class DefaultMessages {
 class ProfilePics {
   int? id;
   String? url;
+  String?imagePath;
   bool? isPrimary;
   int? userId;
   String? createdAt;
@@ -1567,6 +1568,7 @@ class ProfilePics {
   ProfilePics({
     this.id,
     this.url,
+    this.imagePath,
     this.isPrimary,
     this.userId,
     this.createdAt,
@@ -1576,6 +1578,7 @@ class ProfilePics {
   ProfilePics.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     url = json['url'];
+    imagePath =json['imagePath'];
     isPrimary = json['isPrimary'];
     userId = json['user_id'];
     createdAt = json['createdAt'];
@@ -1586,6 +1589,7 @@ class ProfilePics {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['url'] = url;
+    data['imagePath'] =imagePath;
     data['isPrimary'] = isPrimary;
     data['user_id'] = userId;
     data['createdAt'] = createdAt;
@@ -1596,6 +1600,7 @@ class ProfilePics {
   ProfilePics copyWith({
     int? id,
     String? url,
+    String?imagePath,
     bool? isPrimary,
     int? userId,
     String? createdAt,
@@ -1604,6 +1609,7 @@ class ProfilePics {
     return ProfilePics(
       id: id ?? this.id,
       url: url ?? this.url,
+      imagePath:imagePath??this.imagePath,
       isPrimary: isPrimary ?? this.isPrimary,
       userId: userId ?? this.userId,
       createdAt: createdAt ?? this.createdAt,
