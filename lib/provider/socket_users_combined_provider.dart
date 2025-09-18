@@ -153,7 +153,7 @@ class SocketUserNotifier extends StateNotifier<List<Map<String, dynamic>>> {
         _reconnectWithToken(newTok);
       }
     });
-
+    
     _connect();
   }
 
