@@ -1,6 +1,7 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/model/loginmodel.dart';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/provider/userdetails_socket_provider.dart';
 import 'package:dating/screens/completeprofile/causeScreen.dart';
 import 'package:dating/screens/completeprofile/id_verification_screen.dart';
 import 'package:dating/screens/completeprofile/interests.dart';
@@ -128,83 +129,84 @@ class _BumbleDateProfileScreenState
   }
 
   @override
-void initState() {
-  super.initState();
-  _loadUserProfileImages();
-  
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    final userData = ref.read(loginProvider);
-    final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+  void initState() {
+    super.initState();
+    _loadUserProfileImages();
 
-    if (user != null) {
-      setState(() {
-        // Safe access to lookingFor
-        final lookingForList = user.lookingFor;
-        if (lookingForList != null && lookingForList.isNotEmpty) {
-          try {
-            // Check if the first element exists and has a value property
-            final firstLookingFor = lookingForList[0];
-            if (firstLookingFor != null && firstLookingFor.value != null) {
-              userLooking = firstLookingFor.value.toString();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userData = ref.read(loginProvider);
+      final user =
+          userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+
+      if (user != null) {
+        setState(() {
+          // Safe access to lookingFor
+          final lookingForList = user.lookingFor;
+          if (lookingForList != null && lookingForList.isNotEmpty) {
+            try {
+              // Check if the first element exists and has a value property
+              final firstLookingFor = lookingForList[0];
+              if (firstLookingFor != null && firstLookingFor.value != null) {
+                userLooking = firstLookingFor.value.toString();
+              }
+            } catch (e) {
+              print('Error accessing lookingFor: $e');
+              userLooking = null;
             }
-          } catch (e) {
-            print('Error accessing lookingFor: $e');
-            userLooking = null;
           }
-        }
 
-        // Safe access to kids
-        final userkidList = user.kids;
-        if (userkidList != null && userkidList.isNotEmpty) {
-          try {
-            final firstKid = userkidList[0];
-            if (firstKid != null && firstKid.kids != null) {
-              userkid = firstKid.kids.toString();
+          // Safe access to kids
+          final userkidList = user.kids;
+          if (userkidList != null && userkidList.isNotEmpty) {
+            try {
+              final firstKid = userkidList[0];
+              if (firstKid != null && firstKid.kids != null) {
+                userkid = firstKid.kids.toString();
+              }
+            } catch (e) {
+              print('Error accessing kids: $e');
+              userkid = null;
             }
-          } catch (e) {
-            print('Error accessing kids: $e');
-            userkid = null;
           }
-        }
 
-        // Safe access to drinking
-        final userDrinkList = user.drinking;
-        if (userDrinkList != null && userDrinkList.isNotEmpty) {
-          try {
-            final firstDrink = userDrinkList[0];
-            if (firstDrink != null && firstDrink.preference != null) {
-              userDrink = firstDrink.preference.toString();
+          // Safe access to drinking
+          final userDrinkList = user.drinking;
+          if (userDrinkList != null && userDrinkList.isNotEmpty) {
+            try {
+              final firstDrink = userDrinkList[0];
+              if (firstDrink != null && firstDrink.preference != null) {
+                userDrink = firstDrink.preference.toString();
+              }
+            } catch (e) {
+              print('Error accessing drinking: $e');
+              userDrink = null;
             }
-          } catch (e) {
-            print('Error accessing drinking: $e');
-            userDrink = null;
           }
-        }
 
-        // Safe access to religions
-        final userReligionList = user.religions;
-        if (userReligionList != null && userReligionList.isNotEmpty) {
-          try {
-            final firstReligion = userReligionList[0];
-            if (firstReligion != null && firstReligion.religion != null) {
-              userReligion = firstReligion.religion.toString();
+          // Safe access to religions
+          final userReligionList = user.religions;
+          if (userReligionList != null && userReligionList.isNotEmpty) {
+            try {
+              final firstReligion = userReligionList[0];
+              if (firstReligion != null && firstReligion.religion != null) {
+                userReligion = firstReligion.religion.toString();
+              }
+            } catch (e) {
+              print('Error accessing religion: $e');
+              userReligion = null;
             }
-          } catch (e) {
-            print('Error accessing religion: $e');
-            userReligion = null;
           }
-        }
 
-        print('lookingfor:::$userLooking');
-        print('kids:::$userkid');
-        print('drink:::$userDrink');
-        print('religion:::$userReligion');
-      });
-    } else {
-      print('User data is null');
-    }
-  });
-}
+          print('lookingfor:::$userLooking');
+          print('kids:::$userkid');
+          print('drink:::$userDrink');
+          print('religion:::$userReligion');
+        });
+      } else {
+        print('User data is null');
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -212,9 +214,11 @@ void initState() {
     final user =
         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
 
-    
     final modeId = user?.mode?.isNotEmpty == true ? user?.mode?.first.id : null;
-    final modeName = user?.mode?.isNotEmpty == true ? user?.mode?.first.value : '';
+    final modeName =
+        user?.mode?.isNotEmpty == true ? user?.mode?.first.value : '';
+    final usersocket = ref.read(meRawProvider);
+    print('socket uers,.....$usersocket');
 
     return Scaffold(
       backgroundColor: DatingColors.backgroundWhite,
@@ -226,7 +230,7 @@ void initState() {
           onPressed: () => Navigator.pushNamed(context, '/custombottomnav'),
         ),
         title: Text(
-          'EverQpid ${modeName  ?? ''}',
+          'EverQpid ${modeName ?? ''}',
           style: TextStyle(
             color: DatingColors.brown,
             fontSize: 18,
@@ -241,7 +245,7 @@ void initState() {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Profile Strength Section
-          
+
             _buildProfileStrengthSection(), //=======================
             SizedBox(height: 15),
 
@@ -254,20 +258,20 @@ void initState() {
             SizedBox(height: 15),
 
             // My Life Section
-            if (modeId== 4) ...[
-            _buildQualitiesSection(context),
-            SizedBox(height: 15),
+            if (modeId == 4) ...[
+              _buildQualitiesSection(context),
+              SizedBox(height: 15),
             ],
 
             // Interests Section
-            if (modeId== 4 || modeId == 5)...[
+            if (modeId == 4 || modeId == 5) ...[
               _buildInterestsSection(context),
-            SizedBox(height: 15),
+              SizedBox(height: 15),
             ],
             // Interests Section
-            if (modeId== 4)...[
-            _buildCausesSection(context),
-            SizedBox(height: 15),
+            if (modeId == 4) ...[
+              _buildCausesSection(context),
+              SizedBox(height: 15),
             ],
 
             // Prompts Section
@@ -1700,20 +1704,18 @@ void initState() {
         ),
         const SizedBox(height: 16),
 
-        if (user?.mode != null &&
-    user!.mode!.isNotEmpty && modeId== 4)...[
+        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4) ...[
           _buildProfileItem(Icons.place_outlined, 'Height', height!, onTap: () {
             Navigator.pushNamed(context, '/heightscreenprofile');
           }),
         ],
 
-    
         _buildProfileItem(Icons.search, 'Looking For', lookingfor, onTap: () {
           Navigator.pushNamed(context, '/lookingforscreen');
         }),
 
-        if (user?.mode != null &&
-    user!.mode!.isNotEmpty &&modeId == 4 || modeId == 5)...[
+        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
+            modeId == 5) ...[
           _buildProfileItem(Icons.favorite_border, 'Relationship', relationship,
               onTap: () {
             Navigator.push(context,
@@ -1721,39 +1723,38 @@ void initState() {
           }),
         ],
 
-        if (user?.mode != null &&
-    user!.mode!.isNotEmpty &&modeId == 4)...[
+        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4) ...[
           _buildProfileItem(Icons.child_care, 'Kids', kids, onTap: () {
             Navigator.push(
                 context, MaterialPageRoute(builder: (_) => HaveKidsScreen()));
           }),
         ],
-        if (user?.mode != null &&
-    user!.mode!.isNotEmpty &&modeId == 4 || modeId == 5)...[
+        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
+            modeId == 5) ...[
           _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', smoking!,
               onTap: () {
             Navigator.push(
                 context, MaterialPageRoute(builder: (_) => SmokingScreen()));
           }),
         ],
-        if (user?.mode != null &&
-    user!.mode!.isNotEmpty &&modeId == 4 || modeId== 5)...[
+        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
+            modeId == 5) ...[
           _buildProfileItem(Icons.local_drink_outlined, 'Drinking', drinking,
               onTap: () {
             Navigator.push(
                 context, MaterialPageRoute(builder: (_) => DrinkingScreen()));
           }),
         ],
-        if (user?.mode != null &&
-    user!.mode!.isNotEmpty &&modeId == 4 ||modeId == 5)...[
+        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
+            modeId == 5) ...[
           _buildProfileItem(Icons.fitness_center_outlined, 'Exercise', exercise,
               onTap: () {
             Navigator.push(
                 context, MaterialPageRoute(builder: (_) => ExerciseScreen()));
           }),
         ],
-        if (user?.mode != null &&
-            user!.mode!.isNotEmpty && modeId== 4 || modeId== 5)...[
+        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
+            modeId == 5) ...[
           _buildProfileItem(
               Icons.location_city_outlined, 'New To Area', newtoarea!,
               onTap: () {
@@ -1762,8 +1763,8 @@ void initState() {
           }),
         ],
 
-        if (user?.mode != null &&
-    user!.mode!.isNotEmpty &&modeId == 4|| modeId == 5)...[
+        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
+            modeId == 5) ...[
           _buildProfileItem(Icons.star_border, 'Star Sign', starsign,
               onTap: () {
             Navigator.push(
@@ -1771,8 +1772,8 @@ void initState() {
           }),
         ],
 
-        if (user?.mode != null &&
-    user!.mode!.isNotEmpty &&modeId == 4 || modeId == 5)...[
+        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
+            modeId == 5) ...[
           _buildProfileItem(Icons.place_outlined, 'Religion', religion,
               onTap: () {
             Navigator.push(
@@ -1780,30 +1781,27 @@ void initState() {
           }),
         ],
         // ====================================
-        if (user?.mode != null &&
-    user!.mode!.isNotEmpty &&modeId == 6)...[
+        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 6) ...[
           _buildProfileItem(Icons.business_sharp, 'Experience', experiences,
               onTap: () {
             Navigator.pushNamed(context, '/experiencescreen');
           }),
         ],
 
-        if (user?.mode != null &&
-    user!.mode!.isNotEmpty &&modeId == 6)...[
+        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 6) ...[
           _buildProfileItem(Icons.factory, 'Industries', industry, onTap: () {
             Navigator.pushNamed(context, '/industryscreen');
           }),
         ],
 
-        if (user?.mode != null &&
-    user!.mode!.isNotEmpty &&modeId == 6)...[
+        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 6) ...[
           _buildProfileItem(Icons.school, 'EducationLevel', educationLevel!,
               onTap: () {
             Navigator.pushNamed(context, '/educaationlevelscreen');
           }),
         ],
-        if (user?.mode != null &&
-    user!.mode!.isNotEmpty &&modeId == 4 || modeId == 5)...[
+        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
+            modeId == 5) ...[
           _buildProfileItem(Icons.baby_changing_station, 'Have Kids', havekids!,
               onTap: () {
             Navigator.pushNamed(context, '/havekidscreen');

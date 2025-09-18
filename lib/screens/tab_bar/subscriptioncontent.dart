@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/provider/plans/planspurchaseprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../provider/plans/plansfullprovider.dart';
@@ -221,8 +223,27 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              onPressed: () {
+              onPressed: () async{
                 // Handle purchase or next
+                final userData = ref.read(loginProvider);
+                    final user =
+                        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+                  // TODO: Payment action
+                   try{
+                    await ref.read(purchaseProvider.notifier).addPurchase(userId:user?.id, purchaseId:selectedPlan.id);
+                     print('✅ add the purchase');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('purchase successfully Added !')),
+                        );
+
+                        Navigator.pop(context);
+
+                  }catch(e){
+                    ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Failed to upload interests: $e')),
+                  );
+
+                  }
               },
               child: Text(
                 "Get ${(selectedPlan.durationDays ?? 0) ~/ 30} ${planName} for ${selectedPlan.price ?? "0"}",

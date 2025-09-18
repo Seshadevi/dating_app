@@ -512,6 +512,7 @@ class ProfilePics {
   int? id;
   String? url;
   bool? isPrimary;
+  
 
   ProfilePics({this.id, this.url, this.isPrimary});
 

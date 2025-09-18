@@ -36,8 +36,8 @@ class Dgapi {
   static const String postsnooze ="$baseUrl/me/snooz";
   static const String traveladd="$baseUrl/travel-mode";
   static const String verification ="$baseUrl/users/userid/verification";
-  // static const String ="$baseUrl/";
-  // static const String ="$baseUrl/";
+  static const String purchaseplan="$baseUrl/user/purchase";
+  static const String likedusers="$baseUrl/user/like-dislike";
   // static const String ="$baseUrl/";
   // static const String ="$baseUrl/";
 
