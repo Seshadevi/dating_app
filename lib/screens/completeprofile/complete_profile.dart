@@ -217,8 +217,9 @@ class _BumbleDateProfileScreenState
     final modeId = user?.mode?.isNotEmpty == true ? user?.mode?.first.id : null;
     final modeName =
         user?.mode?.isNotEmpty == true ? user?.mode?.first.value : '';
-    final usersocket = ref.read(meRawProvider);
-    print('socket uers,.....$usersocket');
+
+   final meSocket = ref.watch(meRawProvider);
+  print('socket users,.....$meSocket');
 
     return Scaffold(
       backgroundColor: DatingColors.backgroundWhite,
@@ -245,9 +246,15 @@ class _BumbleDateProfileScreenState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Profile Strength Section
+            // Profile Strength Section with socket data
+          meSocket.when(
+            loading: () => _buildProfileStrengthSection(socketData: null),
+            error: (error, stack) => _buildProfileStrengthSection(socketData: null),
+            data: (socketData) => _buildProfileStrengthSection(socketData: socketData),
+          ),
 
-            _buildProfileStrengthSection(), //=======================
-            SizedBox(height: 15),
+            // _buildProfileStrengthSection(), //=======================
+            // SizedBox(height: 15),
 
             // Photos and Videos Section
             _buildPhotosVideosSection(), //=======================
@@ -307,74 +314,214 @@ class _BumbleDateProfileScreenState
     );
   }
 
-  Widget _buildProfileStrengthSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Profile Strength',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: DatingColors.brown,
-          ),
-        ),
-        SizedBox(height: 12),
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ProfileStrengthDetailScreen(),
-              ),
-            ).then((result) {
-              if (result == 'bio_section') {
-                // scroll or do something
-              }
-            });
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  DatingColors.everqpidColor,
-                  DatingColors.everqpidColor
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            padding: EdgeInsets.all(2), // This simulates the border thickness
-            child: Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: DatingColors.white,
-                borderRadius: BorderRadius.circular(
-                    14), // Slightly smaller for inner container
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    '20% Complete',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: DatingColors.brown,
-                    ),
-                  ),
-                  Spacer(),
-                  Icon(Icons.arrow_forward_ios,
-                      color: DatingColors.darkGrey, size: 16),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
+  // Widget _buildProfileStrengthSection() {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text(
+  //         'Profile Strength',
+  //         style: TextStyle(
+  //           fontSize: 18,
+  //           fontWeight: FontWeight.w600,
+  //           color: DatingColors.brown,
+  //         ),
+  //       ),
+  //       SizedBox(height: 12),
+  //       GestureDetector(
+  //         onTap: () {
+  //           Navigator.push(
+  //             context,
+  //             MaterialPageRoute(
+  //               builder: (context) => ProfileStrengthDetailScreen(),
+  //             ),
+  //           ).then((result) {
+  //             if (result == 'bio_section') {
+  //               // scroll or do something
+  //             }
+  //           });
+  //         },
+  //         child: Container(
+  //           decoration: BoxDecoration(
+  //             gradient: LinearGradient(
+  //               colors: [
+  //                 DatingColors.everqpidColor,
+  //                 DatingColors.everqpidColor
+  //               ],
+  //               begin: Alignment.topCenter,
+  //               end: Alignment.bottomCenter,
+  //             ),
+  //             borderRadius: BorderRadius.circular(16),
+  //           ),
+  //           padding: EdgeInsets.all(2), // This simulates the border thickness
+  //           child: Container(
+  //             padding: EdgeInsets.all(10),
+  //             decoration: BoxDecoration(
+  //               color: DatingColors.white,
+  //               borderRadius: BorderRadius.circular(
+  //                   14), // Slightly smaller for inner container
+  //             ),
+  //             child: Row(
+  //               children: [
+  //                 Text(
+  //                   '20% Complete',
+  //                   style: TextStyle(
+  //                     fontSize: 16,
+  //                     fontWeight: FontWeight.w500,
+  //                     color: DatingColors.brown,
+  //                   ),
+  //                 ),
+  //                 Spacer(),
+  //                 Icon(Icons.arrow_forward_ios,
+  //                     color: DatingColors.darkGrey, size: 16),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
+Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
+  final userData = ref.watch(loginProvider);
+  final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+  final modeId = user?.mode?.isNotEmpty == true ? user?.mode?.first.id : null;
+
+  // Extract profile completion data from socket
+  int? profileCompletion;
+  String completionText = "Complete your profile";
+  bool hasValidData = false;
+  
+  if (socketData != null) {
+    // Get mode-specific completion data first (prioritize mode-specific data)
+    final profileCompletionByMode = socketData['profileCompletionByMode'] as Map<String, dynamic>?;
+    
+    if (profileCompletionByMode != null && modeId != null) {
+      // Get data for current mode using modeId as string key
+      final currentModeData = profileCompletionByMode[modeId.toString()] as Map<String, dynamic>?;
+      
+      if (currentModeData != null) {
+        final percentage = currentModeData['percentage'] as int?;
+        if (percentage != null && percentage > 0) {
+          profileCompletion = percentage;
+          final completed = currentModeData['completed'] as int? ?? 0;
+          final totalRequired = currentModeData['totalRequired'] as int? ?? 0;
+          final mode = currentModeData['mode'] as String? ?? '';
+          
+          completionText = "$profileCompletion% Complete ($completed/$totalRequired)";
+          hasValidData = true;
+        }
+      }
+    } else {
+      // Fallback to overall completion if mode-specific data not available
+      final overallCompletion = socketData['profileCompletion'] as int?;
+      if (overallCompletion != null && overallCompletion > 0) {
+        profileCompletion = overallCompletion;
+        completionText = "$profileCompletion% Complete";
+        hasValidData = true;
+      }
+    }
   }
 
+  // Determine progress color based on completion percentage
+  Color progressColor = hasValidData && profileCompletion != null
+      ? (profileCompletion >= 80 
+          ? Colors.green 
+          : profileCompletion >= 50 
+              ? Colors.orange 
+              : Colors.red)
+      : Colors.grey;
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        'Profile Strength',
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+          color: DatingColors.brown,
+        ),
+      ),
+      SizedBox(height: 12),
+      GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProfileStrengthDetailScreen(),
+            ),
+          ).then((result) {
+            if (result == 'bio_section') {
+              // scroll or do something
+            }
+          });
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                DatingColors.everqpidColor,
+                DatingColors.everqpidColor
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          padding: EdgeInsets.all(2),
+          child: Container(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: DatingColors.white,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      completionText,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: hasValidData ? DatingColors.brown : Colors.grey,
+                      ),
+                    ),
+                    Spacer(),
+                    Icon(Icons.arrow_forward_ios,
+                        color: DatingColors.darkGrey, size: 16),
+                  ],
+                ),
+                SizedBox(height: 12),
+                // Progress bar
+                Container(
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                  child: hasValidData && profileCompletion != null
+                      ? FractionallySizedBox(
+                          alignment: Alignment.centerLeft,
+                          widthFactor: profileCompletion / 100.0,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: progressColor,
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                          ),
+                        )
+                      : Container(), // Empty progress bar when no data
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+}
   void _loadUserProfileImages() {
     final userData = ref.read(loginProvider);
     final user =

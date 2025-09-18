@@ -1,13 +1,16 @@
 import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/userdetails_socket_provider.dart';
 import 'package:dating/screens/completeprofile/complete_profile.dart';
 import 'package:dating/screens/profile_screens/insightstab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/screens/settings/settings_page.dart';
-import 'package:dating/widgets/profile_header_layout.dart';
 import 'package:dating/screens/profile_screens/tabbar_content_widgets.dart';
 import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
+
+// ✅ also import your socket provider
+// import 'package:dating/provider/socket_provider.dart'; // adjust path if needed
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -28,26 +31,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final firstName = user?.firstName?.toString() ?? 'User';
     final lastName = user?.lastName?.toString() ?? '';
     final name = '$firstName $lastName'.trim();
-    //  final first = user?.profilePics?.first;
-      // print("IMAGE URL::::: $first");
-    // final img = user.profilePics;
-    // final imageUrl = (user?.profilePics != null && user!.profilePics!.isNotEmpty)
-    //     ? user.profilePics!.first.toString()
-    //     : null;
-    String? imageUrl;
 
-if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
-  final first = user.profilePics!.first; // this is ProfilePics model
-  if (first.url != null) {
-    imageUrl = 'http://97.74.93.26:6100/${first.imagePath!.replaceFirst(RegExp(r'^/'), '')}';
-  }
-}
-
-print("IMAGE URL::::: $imageUrl");
-
-    double profilePercent =
-        0.26; // Later: calculate based on actual profile fields
-    int profileDisplayPercent = (profilePercent * 100).round();
+    /// ✅ Watch your socket provider here
+    final meSocket = ref.watch(meRawProvider);
+    print('socket users,.....$meSocket');
 
     return DefaultTabController(
       length: 3,
@@ -58,77 +45,45 @@ print("IMAGE URL::::: $imageUrl");
             children: [
               // Header
               Container(
-                decoration: 
-      const BoxDecoration(
-        // gradient: LinearGradient(
-          // colors: [DatingColors.lightpink, DatingColors.everqpidColor],
-          image:const DecorationImage(
-      image: AssetImage("assets/everqpidbg.png"), // your image path
-      fit: BoxFit.cover, // cover, contain, fill, etc.
-    ),
-          // stops: [0.0, 1.0],
-          // begin: AlignmentDirectional(0.0, -1.0),
-          // end: AlignmentDirectional(0, 1.0),
-        // ),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(40.0),
-          bottomRight: Radius.circular(40.0),
-          ),
-         ),
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/everqpidbg.png"),
+                    fit: BoxFit.cover,
+                  ),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(40.0),
+                    bottomRight: Radius.circular(40.0),
+                  ),
+                ),
                 padding: const EdgeInsets.only(top: 50, bottom: 20),
                 child: Column(
                   children: [
-                    const Text('Profile',
-                        style:
-                            TextStyle(color: DatingColors.brown, fontSize: 22,fontWeight: FontWeight.bold)),
+                    const Text(
+                      'Profile',
+                      style: TextStyle(
+                        color: DatingColors.brown,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 16),
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        SizedBox(
-                          height: 165,
-                          width: 165,
-                          child: CircularProgressIndicator(
-                            value: profilePercent,
-                            strokeWidth: 3,
-                            backgroundColor: DatingColors.mediumGrey,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                                profilePercent < 0.3
-                                    ? Colors.red
-                                    : Colors.pink),
-                          ),
-                        ),
-                        CircleAvatar(
-                          radius: 80,
-                          backgroundImage: imageUrl != null
-                              ? NetworkImage(imageUrl)
-                              : const AssetImage('assets/profileImage.jpg')
-                                  ,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: DatingColors.white,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        // '$profileDisplayPercent% COMPLETE',
-                        '20% COMPLETE',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 12),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
+
+                    /// ✅ Dynamic Profile Strength Section
+                    // _buildProfileStrengthSection(socketData: meSocket),
+                     meSocket.when(
+            loading: () => _buildProfileStrengthSection(socketData: null),
+            error: (error, stack) => _buildProfileStrengthSection(socketData: null),
+            data: (socketData) => _buildProfileStrengthSection(socketData: socketData),
+          ),
+
+                    // const SizedBox(height: 16),
                     Text(
                       name,
                       style: const TextStyle(
-                          color: DatingColors.brown,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold),
+                        color: DatingColors.brown,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 16),
 
@@ -146,10 +101,11 @@ print("IMAGE URL::::: $imageUrl");
                               label: 'Settings',
                               onTap: () {
                                 Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const SettingsScreen()));
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const SettingsScreen(),
+                                  ),
+                                );
                               },
                             ),
                           ),
@@ -163,8 +119,8 @@ print("IMAGE URL::::: $imageUrl");
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          BumbleDateProfileScreen()),
+                                    builder: (context) => BumbleDateProfileScreen(),
+                                  ),
                                 );
                               },
                             ),
@@ -185,34 +141,21 @@ print("IMAGE URL::::: $imageUrl");
                 ),
               ),
 
-              // Promo section
+              // Premium / TabBar content remains same ↓
               if (!showTabBar)
                 Column(
                   children: [
                     const SizedBox(height: 20),
-                    const Text('HeartSync Premium',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold)),
-                    const Text('Premium features designed to maximize your journey.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 13)),
+                    const Text(
+                      'HeartSync Premium',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const Text(
+                      'Premium features designed to maximize your journey.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 13),
+                    ),
                     const SizedBox(height: 38),
-                    //  Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: [
-                    //     Icon(Icons.circle,
-                    //         size: 15, color: DatingColors.lightGreen),
-                    //     Icon(Icons.circle,
-                    //         size: 15, color: DatingColors.lightGreen),
-                    //     Icon(Icons.circle,
-                    //         size: 15, color: DatingColors.lightGreen),
-                    //     Icon(Icons.circle,
-                    //         size:const 15, color: DatingColors.lightGreen),
-                    //     Icon(Icons.circle_outlined,
-                    //         size: 15, color: DatingColors.primaryGreen),
-                    //   ],
-                    // ),
-                    // const SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
@@ -223,66 +166,46 @@ print("IMAGE URL::::: $imageUrl");
                         backgroundColor: DatingColors.surfaceGrey,
                         foregroundColor: DatingColors.everqpidColor,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                            side: BorderSide(
-                            color: DatingColors.lightpinks, // ✅ Border color
-                            width: 2,                          // Border thickness
+                          borderRadius: BorderRadius.circular(20),
+                          side: BorderSide(
+                            color: DatingColors.lightpinks,
+                            width: 2,
                           ),
-                            ),
-                            
+                        ),
                       ),
                       child: const Padding(
                         padding:
                             EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                        child: Text('Premium Plans',style: TextStyle(color:DatingColors.brown),),
+                        child: Text(
+                          'Premium Plans',
+                          style: TextStyle(color: DatingColors.brown),
+                        ),
                       ),
                     ),
                   ],
                 ),
-
-              // Tabs
               if (showTabBar)
                 Column(
                   children: [
                     Container(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 1),
+                      margin:
+                          const EdgeInsets.symmetric(vertical: 5, horizontal: 1),
                       decoration: BoxDecoration(
-                        color: DatingColors
-                            .surfaceGrey, // Background color behind tabs
+                        color: DatingColors.surfaceGrey,
                         borderRadius: BorderRadius.circular(10),
-                        // border: Border.all(color: Colors.grey, width: 1),
                       ),
                       child: TabBar(
                         indicator: BoxDecoration(
-                          color:
-                              DatingColors.everqpidColor, // Active tab background
+                          color: DatingColors.everqpidColor,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        labelColor:
-                            DatingColors.brown, // Selected tab text color
+                        labelColor: DatingColors.brown,
                         unselectedLabelColor: DatingColors.black,
                         indicatorPadding: EdgeInsets.zero,
                         tabs: const [
-                          Tab(
-                            child: Padding(
-                              padding: EdgeInsets.all(
-                                  12), // Equal padding on all sides
-                              child: Text('Pay Plan'),
-                            ),
-                          ),
-                          Tab(
-                            child: Padding(
-                              padding: EdgeInsets.all(12),
-                              child: Text('Insights Profile'),
-                            ),
-                          ),
-                          Tab(
-                            child: Padding(
-                              padding: EdgeInsets.all(12),
-                              child: Text('Safety well'),
-                            ),
-                          ),
+                          Tab(child: Padding(padding: EdgeInsets.all(12), child: Text('Pay Plan'))),
+                          Tab(child: Padding(padding: EdgeInsets.all(12), child: Text('Insights Profile'))),
+                          Tab(child: Padding(padding: EdgeInsets.all(12), child: Text('Safety well'))),
                         ],
                       ),
                     ),
@@ -301,9 +224,183 @@ print("IMAGE URL::::: $imageUrl");
             ],
           ),
         ),
-        // bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 0),
       ),
     );
+  }
+
+  /// ✅ Reuse helper widget from above
+  Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
+    final userData = ref.watch(loginProvider);
+    final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+    final modeId = user?.mode?.isNotEmpty == true ? user?.mode?.first.id : null;
+
+    int profileCompletion = 0;
+    String completionText = "Complete your profile";
+    bool hasValidData = false;
+
+    if (socketData != null) {
+      final profileCompletionByMode = socketData['profileCompletionByMode'] as Map<String, dynamic>?;
+
+      if (profileCompletionByMode != null && modeId != null) {
+        final currentModeData = profileCompletionByMode[modeId.toString()] as Map<String, dynamic>?;
+
+        if (currentModeData != null) {
+          final percentage = currentModeData['percentage'] as int?;
+          if (percentage != null && percentage > 0) {
+            profileCompletion = percentage;
+            final completed = currentModeData['completed'] as int? ?? 0;
+            final totalRequired = currentModeData['totalRequired'] as int? ?? 0;
+
+            completionText = "$profileCompletion% Complete ($completed/$totalRequired)";
+            hasValidData = true;
+          }
+        }
+      } else {
+        final overallCompletion = socketData['profileCompletion'] as int?;
+        if (overallCompletion != null && overallCompletion > 0) {
+          profileCompletion = overallCompletion;
+          completionText = "$profileCompletion% Complete";
+          hasValidData = true;
+        }
+      }
+    }
+
+    Color progressColor = hasValidData && profileCompletion > 0
+        ? (profileCompletion >= 80
+            ? Colors.green
+            : profileCompletion >= 50
+                ? DatingColors.accentTeal
+                : DatingColors.lightpink)
+        : Colors.grey;
+
+    // ✅ Use your imageUrl
+    String? imageUrl;
+    if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
+      final first = user.profilePics!.first;
+      if (first.imagePath != null) {
+        imageUrl = 'http://97.74.93.26:6100/${first.imagePath!.replaceFirst(RegExp(r'^/'), '')}';
+      }
+    }
+
+    return Column(
+      children: [
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              width: 140,
+              height: 140,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: progressColor.withOpacity(0.3),
+                    blurRadius: 15,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 130,
+              height: 130,
+              child: CircularProgressIndicator(
+                value: profileCompletion / 100.0,
+                strokeWidth: 6,
+                backgroundColor: Colors.grey.shade200,
+                valueColor: AlwaysStoppedAnimation<Color>(progressColor),
+                strokeCap: StrokeCap.round,
+              ),
+            ),
+            Container(
+              width: 110,
+              height: 110,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 3),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(55),
+                child: imageUrl != null
+                    ? Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(Icons.person, size: 50, color: Colors.white);
+                        },
+                      )
+                    : const Icon(Icons.person, size: 50, color: Colors.white),
+              ),
+            ),
+            Positioned(
+              bottom: 8,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: progressColor,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: progressColor.withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  '$profileCompletion%',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        // const SizedBox(height: 16),
+        // Text(
+        //   'Profile Strength',
+        //   style: TextStyle(
+        //     fontSize: 20,
+        //     fontWeight: FontWeight.w600,
+        //     color: DatingColors.brown,
+        //   ),
+        // ),
+        // const SizedBox(height: 4),
+        // Text(
+        //   completionText,
+        //   style: TextStyle(
+        //     fontSize: 14,
+        //     fontWeight: FontWeight.w500,
+        //     color: hasValidData ? DatingColors.brown : Colors.grey,
+        //   ),
+        // ),
+        // const SizedBox(height: 8),
+        // Text(
+        //   _getMotivationalMessage(profileCompletion),
+        //   style: TextStyle(fontSize: 12, color: DatingColors.lightgrey),
+        //   textAlign: TextAlign.center,
+        // ),
+      ],
+    );
+  }
+
+  String _getMotivationalMessage(int percentage) {
+    if (percentage == 0) return "Let's get you started!";
+    if (percentage < 25) return "Great start! Keep going!";
+    if (percentage < 50) return "You're making great progress!";
+    if (percentage < 75) return "Almost there, keep it up!";
+    if (percentage < 100) return "So close to perfection!";
+    return "Your profile looks amazing!";
   }
 }
 
@@ -350,8 +447,7 @@ class _CircleButton extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 4),
-        Text(label,
-            style: const TextStyle(color: Colors.black, fontSize: 11)),
+        Text(label, style: const TextStyle(color: Colors.black, fontSize: 11)),
       ],
     );
   }
