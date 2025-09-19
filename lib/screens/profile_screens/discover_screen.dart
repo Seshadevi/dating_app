@@ -1,4 +1,5 @@
 import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/socket_users_combined_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,14 +28,42 @@ class DiscoverScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final users = ref.watch(socketUserProvider);
 
-    // 🔹 Separate users into categories
-    final similarInterestUsers = users
-        .where((u) => u['interests'] != null && u['interests'].isNotEmpty)
-        .toList();
+    // 🔹 Current logged in user
+    final myUser = ref.watch(loginProvider);
 
-    final sameGoalUsers = users
-        .where((u) => u['lookingFor'] != null && u['lookingFor'].isNotEmpty)
-        .toList();
+   
+ // ✅ Extract my interests
+final myInterests = myUser?.data?.first.user?.interests
+        ?.map((i) => i.interests ?? "")
+        .where((i) => i.isNotEmpty)
+        .toList() 
+    ?? [];
+
+// ✅ Extract my goals (lookingFor)
+final myGoals = myUser?.data?.first.user?.lookingFor
+        ?.map((g) => g.value ?? "")
+        .where((g) => g.isNotEmpty)
+        .toList() 
+    ?? [];
+
+
+    // 🔹 Filter: similar interests
+    final similarInterestUsers = users.where((u) {
+      final userInterests = (u['interests'] as List?)
+              ?.map((i) => i['interests'].toString())
+              .toList() ??
+          [];
+      return userInterests.any((i) => myInterests.contains(i));
+    }).toList();
+
+    // 🔹 Filter: same goals
+    final sameGoalUsers = users.where((u) {
+      final userGoals = (u['lookingFor'] as List?)
+              ?.map((g) => g['value'].toString())
+              .toList() ??
+          [];
+      return userGoals.any((g) => myGoals.contains(g));
+    }).toList();
 
     return Scaffold(
       backgroundColor: DatingColors.white,
@@ -89,7 +118,6 @@ class DiscoverScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
 
-            // Example big profile card (first user if available)
             if (users.isNotEmpty) _bigProfileCard(users.first) else _noDataCard(),
 
             const SizedBox(height: 40),
@@ -119,7 +147,7 @@ class DiscoverScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 30),
 
-            // Similar Interests
+            // ✅ Similar Interests
             const Text("similar interests",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
             const SizedBox(height: 20),
@@ -127,7 +155,7 @@ class DiscoverScreen extends ConsumerWidget {
 
             const SizedBox(height: 24),
 
-            // Same Goals
+            // ✅ Same Goals
             const Text("same dating goals",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
             const SizedBox(height: 20),
@@ -188,7 +216,6 @@ class DiscoverScreen extends ConsumerWidget {
     );
   }
 
-  // 🔹 No users fallback
   Widget _noDataCard() {
     return Container(
       height: 420,
@@ -201,7 +228,6 @@ class DiscoverScreen extends ConsumerWidget {
     );
   }
 
-  // 🔹 Gradient circle button
   Widget _gradientCircleButton(IconData icon, Color iconColor) {
     return Container(
       width: 64,
@@ -238,10 +264,8 @@ class DiscoverScreen extends ConsumerWidget {
           final user = profiles[index];
           final hasImage = user['profile_pics'] != null && user['profile_pics'].isNotEmpty;
           final imgUrl = hasImage ? "http://97.74.93.26:6100${user['profile_pics'][0]['url']}" : null;
-
           final age = _calculateAge(user['dob']);
 
-          // Collect all tags (interests/goals)
           List<String> tags = [];
           if (type == "interest" && user['interests'] != null) {
             tags = (user['interests'] as List)
@@ -293,7 +317,6 @@ class DiscoverScreen extends ConsumerWidget {
                           ),
                   ),
                   const SizedBox(height: 8),
-                  // Multiple tags
                   Wrap(
                     spacing: 6,
                     runSpacing: -6,
@@ -329,6 +352,11 @@ class DiscoverScreen extends ConsumerWidget {
     );
   }
 }
+
+
+
+
+
 
 
 
