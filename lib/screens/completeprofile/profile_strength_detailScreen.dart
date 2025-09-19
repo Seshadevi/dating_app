@@ -63,6 +63,14 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
               ? DatingColors.accentTeal
               : DatingColors.lightpink)
       : Colors.grey;
+       // ✅ Use your imageUrl
+    String? imageUrl;
+    if (user?.profilePics != null && user!.profilePics!.isNotEmpty) {
+      final first = user.profilePics!.first;
+      if (first.imagePath != null) {
+        imageUrl = 'http://97.74.93.26:6100/${first.imagePath!.replaceFirst(RegExp(r'^/'), '')}';
+      }
+    }
 
   return Column(
     children: [
@@ -117,46 +125,20 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(55),
-              child: user?.profilePics?.isNotEmpty == true
-                  ? Image.network(
-                      user!.profilePics!.first.imagePath ?? '',
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [DatingColors.everqpidColor, DatingColors.accentTeal],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                          ),
-                          child: Icon(
-                            Icons.person,
-                            size: 50,
-                            color: Colors.white,
-                          ),
-                        );
-                      },
-                    )
-                  : Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [DatingColors.everqpidColor, DatingColors.accentTeal],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                      ),
-                      child: Icon(
-                        Icons.person,
-                        size: 50,
-                        color: Colors.white,
-                      ),
-                    ),
+              child: imageUrl != null
+                    ? Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(Icons.person, size: 50, color: Colors.white);
+                        },
+                      )
+                    : const Icon(Icons.person, size: 50, color: Colors.white),
             ),
           ),
           // Percentage Badge
           Positioned(
-            bottom: 8,
+            bottom: 2,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
@@ -165,7 +147,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                 boxShadow: [
                   BoxShadow(
                     color: progressColor.withOpacity(0.3),
-                    blurRadius: 8,
+                    blurRadius: 0,
                     offset: Offset(0, 2),
                   ),
                 ],
@@ -194,15 +176,15 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
       //   ),
       // ),
       // const SizedBox(height: 4),
-      Text(
-        completionText,
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-          color: hasValidData ? DatingColors.everqpidColor : Colors.grey,
-        ),
-      ),
-      const SizedBox(height: 8),
+      // Text(
+      //   completionText,
+      //   style: TextStyle(
+      //     fontSize: 14,
+      //     fontWeight: FontWeight.w500,
+      //     color: hasValidData ? DatingColors.everqpidColor : Colors.grey,
+      //   ),
+      // ),
+      // const SizedBox(height: 8),
       
       // Motivational message based on completion
       Text(
