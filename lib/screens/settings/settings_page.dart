@@ -240,233 +240,244 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     print('religion............${user?.email}');
     print('location............${user?.location}');
 
-    return Scaffold(
-      backgroundColor: DatingColors.white,
-      appBar: AppBar(
-        title:
-            const Text("Settings", style: TextStyle(color: DatingColors.brown)),
-        centerTitle: true,
+    return WillPopScope(
+      onWillPop: () async {
+      // Handle device back button press
+      Navigator.pushNamedAndRemoveUntil(
+        context, 
+        '/custombottomnav', 
+        (route) => false
+      );
+      return false; // Prevent default back behavior
+    },
+      child: Scaffold(
         backgroundColor: DatingColors.white,
-        elevation: 0,
-        leading: IconButton(
-            icon:
-                const Icon(Icons.arrow_back, color: DatingColors.everqpidColor),
-            onPressed: () {
-              Navigator.pushNamed(context, '/custombottomnav');
-            }),
+        appBar: AppBar(
+          title:
+              const Text("Settings", style: TextStyle(color: DatingColors.brown)),
+          centerTitle: true,
+          backgroundColor: DatingColors.white,
+          elevation: 0,
+          leading: IconButton(
+              icon:
+                  const Icon(Icons.arrow_back, color: DatingColors.everqpidColor),
+              onPressed: () {
+                Navigator.pushNamed(context, '/custombottomnav');
+              }),
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            children: [
+              // Email section with dynamic content
+              _emailTile(user?.email),
+              const SizedBox(height: 16),
+      
+              // Type of Connection
+              GestureDetector(
+                onTap: () {
+                  final loginModel = ref.watch(loginProvider);
+                  final user = loginModel.data!.first.user;
+                  final userModeValue = user?.mode;
+      
+                  final modeList = ref.watch(modesProvider).data ?? [];
+      
+                  final matchedMode = modeList.firstWhere(
+                    (mode) => mode.value == userModeValue,
+                    orElse: () => Data(id: 0, value: 'Not set'),
+                  );
+      
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => Typeofconnection(
+                        selectedModeId: matchedMode.id ?? 0,
+                        selectedModeName: matchedMode.value ?? 'Not set',
+                      ),
+                    ),
+                  );
+                },
+                child: _tileWithTextArrow(
+                    "Type Of Connection",
+                    (user?.mode != null && user!.mode!.isNotEmpty)
+                        ? user.mode!.first.value.toString()
+                        : "Date"),
+              ),
+              const SizedBox(height: 16),
+      
+              // Snooze Mode
+              // Snooze Mode
+              _tileWithSwitch("Snooze Mode", ref.watch(postSnoozeProvider),
+                  (val) async {
+                try {
+                  await ref.read(postSnoozeProvider.notifier).toggleSnooze(val);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text(
+                            val ? "Snooze Activated" : "Snooze Deactivated")),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Failed to update snooze")),
+                  );
+                }
+              }),
+      
+              const SizedBox(height: 8),
+              const Text(
+                'Hide Your Profile Temporarily, in All Modes You Wont Loss Any Connections And Chats',
+                style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
+              ),
+              const SizedBox(height: 16),
+      
+              _tileWithSwitch(
+                  "Incognito Mode For Date", ref.watch(postIncogintoeProvider),
+                  (val) async {
+                try {
+                  await ref
+                      .read(postIncogintoeProvider.notifier)
+                      .toggleIncognito(val);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text(val
+                            ? "Incognito Mode For Date Activated"
+                            : "Incognito Mode For Date Deactivated")),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content:
+                            Text("Failed to update Incognito Mode For Date")),
+                  );
+                }
+              }),
+      
+              // _tileWithSwitch("Incognito Mode For Date", _incognitoMode, (val) {
+              //   setState(() => _incognitoMode = val);
+              // }),
+              const SizedBox(height: 8),
+              const Text(
+                'Only People Youve Swiped Right on Already Or Swipe Right On Later Will See You Profile. If You Turn On Incognito Mode For Date This Wont Apply Bizz or BFF',
+                style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
+              ),
+              const SizedBox(height: 16),
+      
+              // Auto Spotlight
+              _tileWithSwitch("Auto - Spotlight", _autoSpotlight, (val) {
+                setState(() => _autoSpotlight = val);
+              }),
+              const SizedBox(height: 8),
+              const Text(
+                'Well Use Spotlight Automatically TO Boost Your Profile When Most People See It.',
+                style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
+              ),
+              const SizedBox(height: 16),
+      
+              // Location Section
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Location',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(height: 16),
+      
+              // Enhanced Current Location with button
+              _tileWithLocationButton(
+                  "Current Location",
+                  _isLoadingLocation
+                      ? "Getting location..."
+                      : _currentLocationName),
+              const SizedBox(height: 8),
+      
+              const Text(
+                'Tap the location icon to update your current location',
+                style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
+              ),
+      
+              const SizedBox(height: 16),
+      
+              // Travel
+             travelToggleTile(context, ref, "Travel"),
+      const SizedBox(height: 8),
+      const Text(
+        'Change Your Location To Connect With People In Other Locations',
+        style: TextStyle(fontSize: 12, color: Colors.grey),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Column(
-          children: [
-            // Email section with dynamic content
-            _emailTile(user?.email),
-            const SizedBox(height: 16),
-
-            // Type of Connection
-            GestureDetector(
-              onTap: () {
-                final loginModel = ref.watch(loginProvider);
-                final user = loginModel.data!.first.user;
-                final userModeValue = user?.mode;
-
-                final modeList = ref.watch(modesProvider).data ?? [];
-
-                final matchedMode = modeList.firstWhere(
-                  (mode) => mode.value == userModeValue,
-                  orElse: () => Data(id: 0, value: 'Not set'),
-                );
-
+      // const SizedBox(height: 8),
+      // const Text(
+      //   'Change Your Location To Connect With People In Other Locations',
+      //   style: TextStyle(fontSize: 12, color: Colors.grey),
+      // ),
+      
+              const SizedBox(height: 16),
+      
+              // Settings Options
+              _simpleArrowTile("Video Autoplay Settings", () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => Typeofconnection(
-                      selectedModeId: matchedMode.id ?? 0,
-                      selectedModeName: matchedMode.value ?? 'Not set',
-                    ),
-                  ),
+                  MaterialPageRoute(builder: (_) => const VideoAutoplayScreen()),
                 );
-              },
-              child: _tileWithTextArrow(
-                  "Type Of Connection",
-                  (user?.mode != null && user!.mode!.isNotEmpty)
-                      ? user.mode!.first.value.toString()
-                      : "Date"),
-            ),
-            const SizedBox(height: 16),
-
-            // Snooze Mode
-            // Snooze Mode
-            _tileWithSwitch("Snooze Mode", ref.watch(postSnoozeProvider),
-                (val) async {
-              try {
-                await ref.read(postSnoozeProvider.notifier).toggleSnooze(val);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: Text(
-                          val ? "Snooze Activated" : "Snooze Deactivated")),
+              }),
+      
+              _simpleArrowTile("Notification Setting", () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => NotificationsScreen()),
                 );
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Failed to update snooze")),
+              }),
+      
+              _simpleArrowTile("Payment Setting", () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => Feedbackpage()),
                 );
-              }
-            }),
-
-            const SizedBox(height: 8),
-            const Text(
-              'Hide Your Profile Temporarily, in All Modes You Wont Loss Any Connections And Chats',
-              style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
-            ),
-            const SizedBox(height: 16),
-
-            _tileWithSwitch(
-                "Incognito Mode For Date", ref.watch(postIncogintoeProvider),
-                (val) async {
-              try {
-                await ref
-                    .read(postIncogintoeProvider.notifier)
-                    .toggleIncognito(val);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: Text(val
-                          ? "Incognito Mode For Date Activated"
-                          : "Incognito Mode For Date Deactivated")),
+              }),
+      
+              _simpleArrowTile("Content And FAQ", () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => Contactandfaq()),
                 );
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content:
-                          Text("Failed to update Incognito Mode For Date")),
+              }),
+      
+              _simpleArrowTile("Security And Privacy", () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => Privacysetting()),
                 );
-              }
-            }),
-
-            // _tileWithSwitch("Incognito Mode For Date", _incognitoMode, (val) {
-            //   setState(() => _incognitoMode = val);
-            // }),
-            const SizedBox(height: 8),
-            const Text(
-              'Only People Youve Swiped Right on Already Or Swipe Right On Later Will See You Profile. If You Turn On Incognito Mode For Date This Wont Apply Bizz or BFF',
-              style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
-            ),
-            const SizedBox(height: 16),
-
-            // Auto Spotlight
-            _tileWithSwitch("Auto - Spotlight", _autoSpotlight, (val) {
-              setState(() => _autoSpotlight = val);
-            }),
-            const SizedBox(height: 8),
-            const Text(
-              'Well Use Spotlight Automatically TO Boost Your Profile When Most People See It.',
-              style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
-            ),
-            const SizedBox(height: 16),
-
-            // Location Section
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Location',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              }),
+      
+              const SizedBox(height: 16),
+      
+              // Logout Button
+              GestureDetector(
+                onTap: () => _showLogoutDialog(context),
+                child: _button(
+                    "Log Out", DatingColors.everqpidColor, DatingColors.white),
               ),
-            ),
-            const SizedBox(height: 16),
-
-            // Enhanced Current Location with button
-            _tileWithLocationButton(
-                "Current Location",
-                _isLoadingLocation
-                    ? "Getting location..."
-                    : _currentLocationName),
-            const SizedBox(height: 8),
-
-            const Text(
-              'Tap the location icon to update your current location',
-              style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
-            ),
-
-            const SizedBox(height: 16),
-
-            // Travel
-           travelToggleTile(context, ref, "Travel"),
-    const SizedBox(height: 8),
-    const Text(
-      'Change Your Location To Connect With People In Other Locations',
-      style: TextStyle(fontSize: 12, color: Colors.grey),
-    ),
-    // const SizedBox(height: 8),
-    // const Text(
-    //   'Change Your Location To Connect With People In Other Locations',
-    //   style: TextStyle(fontSize: 12, color: Colors.grey),
-    // ),
-
-            const SizedBox(height: 16),
-
-            // Settings Options
-            _simpleArrowTile("Video Autoplay Settings", () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const VideoAutoplayScreen()),
-              );
-            }),
-
-            _simpleArrowTile("Notification Setting", () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => NotificationsScreen()),
-              );
-            }),
-
-            _simpleArrowTile("Payment Setting", () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => Feedbackpage()),
-              );
-            }),
-
-            _simpleArrowTile("Content And FAQ", () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => Contactandfaq()),
-              );
-            }),
-
-            _simpleArrowTile("Security And Privacy", () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => Privacysetting()),
-              );
-            }),
-
-            const SizedBox(height: 16),
-
-            // Logout Button
-            GestureDetector(
-              onTap: () => _showLogoutDialog(context),
-              child: _button(
-                  "Log Out", DatingColors.everqpidColor, DatingColors.white),
-            ),
-            const SizedBox(height: 10),
-
-            // Delete Account Button
-            GestureDetector(
-                onTap: () => _showDeleteAccountDialog(context),
-                child: _button("Delete Account", DatingColors.errorRed,
-                    DatingColors.white)),
-            const SizedBox(height: 20),
-
-            // App Info
-            const Text(
-              "Ever Qpid",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const Text(
-              "Version 1.0.0.\nCreated With Love.",
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-          ],
+              const SizedBox(height: 10),
+      
+              // Delete Account Button
+              GestureDetector(
+                  onTap: () => _showDeleteAccountDialog(context),
+                  child: _button("Delete Account", DatingColors.errorRed,
+                      DatingColors.white)),
+              const SizedBox(height: 20),
+      
+              // App Info
+              const Text(
+                "Ever Qpid",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const Text(
+                "Version 1.0.0.\nCreated With Love.",
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

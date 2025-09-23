@@ -26,7 +26,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage> {
   int currentCardIndex = 0;
   int viewedUsersCount = 0; // Track viewed users
   bool allUsersCompleted = false; // Track if all users are completed
-  
+
   // Current user location (you'll need to get this from your login model/API)
   double? currentUserLatitude;
   double? currentUserLongitude;
@@ -38,97 +38,98 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage> {
   SearchFilters? _filters;
 
   @override
-void initState() {
-  super.initState();
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    // ref.read(peoplesProvider.notifier).getPeoplesAll();
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // ref.read(peoplesProvider.notifier).getPeoplesAll();
 
-    ref.read(socketUserProvider.notifier).reset();
+      ref.read(socketUserProvider.notifier).reset();
 
-    final userModel = ref.read(loginProvider); // <- use `read` instead of `watch` inside initState
+      final userModel = ref.read(
+          loginProvider); // <- use `read` instead of `watch` inside initState
 
-  //  final userModel = ref.read(loginProvider);
-  final location = userModel.data != null && userModel.data!.isNotEmpty
-      ? userModel.data!.first.user?.location
-      : null;
+      //  final userModel = ref.read(loginProvider);
+      final location = userModel.data != null && userModel.data!.isNotEmpty
+          ? userModel.data!.first.user?.location
+          : null;
 
+      currentUserLatitude = location?.latitude?.toDouble();
+      currentUserLongitude = location?.longitude?.toDouble();
 
-    currentUserLatitude = location?.latitude?.toDouble();
-    currentUserLongitude = location?.longitude?.toDouble();
+      _scrollController.addListener(_checkVisibility);
+    });
+  }
 
-    _scrollController.addListener(_checkVisibility);
-  });
-}
+  List<Users> _applyClientFilters(List<Users> input) {
+    final f = _filters;
+    if (f == null) return input; // nothing selected yet
+    return input.where((u) => _matchesFilters(u, f)).toList();
+  }
 
-List<Users> _applyClientFilters(List<Users> input) {
-  final f = _filters;
-  if (f == null) return input; // nothing selected yet
-  return input.where((u) => _matchesFilters(u, f)).toList();
-}
+  bool _matchesFilters(Users u, SearchFilters f) {
+    // Age (from dob)
+    final dob = u.dob;
+    if (dob != null && dob.isNotEmpty) {
+      final age = _ageFromDob(dob);
+      if (age != null) {
+        final min = f.minAge - (f.relaxAge ? 2 : 0);
+        final max = f.maxAge + (f.relaxAge ? 2 : 0);
+        if (age < min || age > max) return false;
+      }
+    }
 
-bool _matchesFilters(Users u, SearchFilters f) {
-  // Age (from dob)
-  final dob = u.dob;
-  if (dob != null && dob.isNotEmpty) {
-    final age = _ageFromDob(dob);
-    if (age != null) {
-      final min = f.minAge - (f.relaxAge ? 2 : 0);
-      final max = f.maxAge + (f.relaxAge ? 2 : 0);
-      if (age < min || age > max) return false;
+    // Distance (needs both sides to have coords)
+    if (u.latitude != null &&
+        u.longitude != null &&
+        currentUserLatitude != null &&
+        currentUserLongitude != null) {
+      final limitKm = f.maxDistanceKm + (f.relaxDistance ? 20 : 0);
+      final dKm = _calculateDistance(currentUserLatitude!,
+          currentUserLongitude!, u.latitude!, u.longitude!);
+      if (dKm > limitKm) return false;
+    }
+
+    // Interests -> your "qualities" IDs
+    if (f.interestIds.isNotEmpty) {
+      final qids =
+          (u.qualities ?? []).map((q) => q.id).whereType<int>().toSet();
+      if (qids.intersection(f.interestIds).isEmpty) return false;
+    }
+
+    // Languages (if present on this Users model)
+    if (f.languageNames.isNotEmpty && u.languages != null) {
+      final userLangs = u.languages!
+          .map((l) => l.name?.toLowerCase())
+          .whereType<String>()
+          .toSet();
+      final wanted = f.languageNames.map((s) => s.toLowerCase()).toSet();
+      if (userLangs.intersection(wanted).isEmpty) return false;
+    }
+
+    // Height (if your Users has height)
+    if (u.height != null) {
+      final minH = f.minHeightCm - (f.relaxHeight ? 5 : 0);
+      final maxH = f.maxHeightCm + (f.relaxHeight ? 5 : 0);
+      if (u.height! < minH || u.height! > maxH) return false;
+    }
+
+    // (Optional) genderId + relationship if your Users exposes those as IDs/strings.
+
+    return true;
+  }
+
+  int? _ageFromDob(String dob) {
+    try {
+      final b = DateTime.parse(dob);
+      final now = DateTime.now();
+      var age = now.year - b.year;
+      if (now.month < b.month || (now.month == b.month && now.day < b.day))
+        age--;
+      return age;
+    } catch (_) {
+      return null;
     }
   }
-
-  // Distance (needs both sides to have coords)
-  if (u.latitude != null && u.longitude != null &&
-      currentUserLatitude != null && currentUserLongitude != null) {
-    final limitKm = f.maxDistanceKm + (f.relaxDistance ? 20 : 0);
-    final dKm = _calculateDistance(
-      currentUserLatitude!, currentUserLongitude!, u.latitude!, u.longitude!
-    );
-    if (dKm > limitKm) return false;
-  }
-
-  // Interests -> your "qualities" IDs
-  if (f.interestIds.isNotEmpty) {
-    final qids = (u.qualities ?? []).map((q) => q.id).whereType<int>().toSet();
-    if (qids.intersection(f.interestIds).isEmpty) return false;
-  }
-
-  // Languages (if present on this Users model)
-  if (f.languageNames.isNotEmpty && u.languages != null) {
-    final userLangs = u.languages!
-        .map((l) => l.name?.toLowerCase())
-        .whereType<String>()
-        .toSet();
-    final wanted = f.languageNames.map((s) => s.toLowerCase()).toSet();
-    if (userLangs.intersection(wanted).isEmpty) return false;
-  }
-
-  // Height (if your Users has height)
-  if (u.height != null) {
-    final minH = f.minHeightCm - (f.relaxHeight ? 5 : 0);
-    final maxH = f.maxHeightCm + (f.relaxHeight ? 5 : 0);
-    if (u.height! < minH || u.height! > maxH) return false;
-  }
-
-  // (Optional) genderId + relationship if your Users exposes those as IDs/strings.
-
-  return true;
-}
-
-int? _ageFromDob(String dob) {
-  try {
-    final b = DateTime.parse(dob);
-    final now = DateTime.now();
-    var age = now.year - b.year;
-    if (now.month < b.month || (now.month == b.month && now.day < b.day)) age--;
-    return age;
-  } catch (_) {
-    return null;
-  }
-}
-
-
 
   void _checkVisibility() {
     // Check if scrollable image is visible
@@ -157,47 +158,80 @@ int? _ageFromDob(String dob) {
 
   // Method to get current user location from your login model/API
   // void _getCurrentUserLocation() {
-    // TODO: Replace with actual API call to get current user location
-    // Example:
-    // final currentUser = ref.read(currentUserProvider);
-    // currentUserLatitude = currentUser.latitude;
-    // currentUserLongitude = currentUser.longitude;
-    
-    // For now, using dummy data - replace with your actual implementation
+  // TODO: Replace with actual API call to get current user location
+  // Example:
+  // final currentUser = ref.read(currentUserProvider);
+  // currentUserLatitude = currentUser.latitude;
+  // currentUserLongitude = currentUser.longitude;
+
+  // For now, using dummy data - replace with your actual implementation
   //   currentUserLatitude = 17.3850; // Hyderabad latitude
   //   currentUserLongitude = 78.4867; // Hyderabad longitude
   // }
-  
+
   Future<String> _getPlaceName(double latitude, double longitude) async {
     try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+
       if (placemarks.isNotEmpty) {
         final Placemark place = placemarks.first;
-        // You can customize how much of the address you want to show
-        return "${place.locality}, ${place.administrativeArea}";
+
+        // Build address parts, handling null values
+        List<String> addressParts = [];
+
+        // Add locality (city/town)
+        if (place.locality != null && place.locality!.isNotEmpty) {
+          addressParts.add(place.locality!);
+        } else if (place.subLocality != null && place.subLocality!.isNotEmpty) {
+          addressParts.add(place.subLocality!);
+        }
+
+        // Add administrative area (state/province)
+        if (place.administrativeArea != null &&
+            place.administrativeArea!.isNotEmpty) {
+          addressParts.add(place.administrativeArea!);
+        }
+
+        // Add country if needed (optional)
+        if (place.country != null && place.country!.isNotEmpty) {
+          addressParts.add(place.country!);
+        }
+
+        // Return formatted address
+        if (addressParts.isNotEmpty) {
+          return addressParts.join(", ");
+        } else {
+          // Fallback to any available information
+          return place.name ?? place.thoroughfare ?? "Unknown location";
+        }
       } else {
         return "Unknown location";
       }
     } catch (e) {
-      return "Location error";
+      print("Geocoding error: $e");
+      return "Location unavailable";
     }
   }
 
   // Calculate distance between two coordinates
- double _calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-  const double earthRadius = 6371; // in kilometers
+  double _calculateDistance(
+      double lat1, double lon1, double lat2, double lon2) {
+    const double earthRadius = 6371; // in kilometers
 
-  double dLat = _toRadians(lat2 - lat1);
-  double dLon = _toRadians(lon2 - lon1);
+    double dLat = _toRadians(lat2 - lat1);
+    double dLon = _toRadians(lon2 - lon1);
 
-  double a = math.sin(dLat / 2) * math.sin(dLat / 2) +
-      math.cos(_toRadians(lat1)) * math.cos(_toRadians(lat2)) *
-      math.sin(dLon / 2) * math.sin(dLon / 2);
+    double a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(_toRadians(lat1)) *
+            math.cos(_toRadians(lat2)) *
+            math.sin(dLon / 2) *
+            math.sin(dLon / 2);
 
-  double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
+    double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
 
-  return earthRadius * c;
-}
+    return earthRadius * c;
+  }
 
   double _toRadians(double degrees) {
     return degrees * math.pi / 180;
@@ -209,27 +243,27 @@ int? _ageFromDob(String dob) {
     _checkVisibility(); // ✅ Recheck visibility when widget updates
   }
 
- String _getDistanceText(Users user) {
-  if (currentUserLatitude == null || currentUserLongitude == null) {
-    return "Location not available";
+  String _getDistanceText(Users user) {
+    if (currentUserLatitude == null || currentUserLongitude == null) {
+      return "Location not available";
+    }
+
+    double userLat = user.latitude ?? 0.0;
+    double userLon = user.longitude ?? 0.0;
+
+    double distance = _calculateDistance(
+      currentUserLatitude!,
+      currentUserLongitude!,
+      userLat,
+      userLon,
+    );
+
+    if (distance < 1) {
+      return "${(distance * 1000).round()} meters away";
+    } else {
+      return "${distance.toStringAsFixed(1)} km away";
+    }
   }
-
-  double userLat = user.latitude ?? 0.0;
-  double userLon = user.longitude ?? 0.0;
-
-  double distance = _calculateDistance(
-    currentUserLatitude!,
-    currentUserLongitude!,
-    userLat,
-    userLon,
-  );
-
-  if (distance < 1) {
-    return "${(distance * 1000).round()} meters away";
-  } else {
-    return "${distance.toStringAsFixed(1)} km away";
-  }
-}
 
   // Method to update progress and check completion
   void _updateProgress() {
@@ -249,7 +283,8 @@ int? _ageFromDob(String dob) {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('All Users Viewed!'),
-          content: const Text('You have viewed all available users. Would you like to refresh and see more users?'),
+          content: const Text(
+              'You have viewed all available users. Would you like to refresh and see more users?'),
           actions: [
             TextButton(
               onPressed: () {
@@ -290,12 +325,13 @@ int? _ageFromDob(String dob) {
     print("📡 Total socket users in UI: ${users.length}");
     // Update allUsers when new data comes
     allUsers = users.map((e) => Users.fromJson(e)).toList();
-    final visibleUsers = _applyClientFilters(allUsers); 
+    final visibleUsers = _applyClientFilters(allUsers);
     // after: allUsers = users.map((e) => Users.fromJson(e)).toList();
     final int cardsCount = allUsers.length;
-    final int displayed = cardsCount >= 2 ? 2 : cardsCount; // 1 when only one user
+    final int displayed =
+        cardsCount >= 2 ? 2 : cardsCount; // 1 when only one user
 
-    // if (users.isNotEmpty && allUsers.isEmpty) {                                                                
+    // if (users.isNotEmpty && allUsers.isEmpty) {
     //   allUsers = List.from(users);
     // }
 
@@ -311,38 +347,47 @@ int? _ageFromDob(String dob) {
                 children: [
                   CircularProgressIndicator(),
                   SizedBox(height: 10),
-                  Text("Loading users...", style: TextStyle(fontSize: 18, color: DatingColors.mediumGrey))
+                  Text("Loading users...",
+                      style: TextStyle(
+                          fontSize: 18, color: DatingColors.mediumGrey))
                 ],
               ),
             )
-          :cardsCount == 0
-        ? const Center(
-            child: Text(
-              "Users not found",
-              style: TextStyle(fontSize: 18, color: Colors.grey),
-            ),
-          ):Column(
-              children: [
-                // Custom AppBar with Progress Bar
-                SafeArea(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Column(
-                      children: [
-                        Row(
+          : cardsCount == 0
+              ? const Center(
+                  child: Text(
+                    "Users not found",
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                  ),
+                )
+              : Column(
+                  children: [
+                    // Custom AppBar with Progress Bar
+                    SafeArea(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        child: Column(
                           children: [
-                            // const Icon(Icons.arrow_back, color: DatingColors.black),
-                            // const SizedBox(width: 16),
-                            const Expanded(
-                              child: Text(
-                                'Heart Sync',
-                                style: TextStyle(color: Colors.black, fontSize: 22, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                             IconButton(
-                                icon: const Icon(Icons.tune, color: Colors.black),
+                            Row(
+                              children: [
+                                // const Icon(Icons.arrow_back, color: DatingColors.black),
+                                // const SizedBox(width: 16),
+                                const Expanded(
+                                  child: Text(
+                                    'Heart Sync',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.tune,
+                                      color: Colors.black),
                                   onPressed: () async {
-                                    final result = await Navigator.pushNamed(context, '/narrowsearch');
+                                    final result = await Navigator.pushNamed(
+                                        context, '/narrowsearch');
                                     if (result is SearchFilters) {
                                       setState(() {
                                         _filters = result;
@@ -353,274 +398,301 @@ int? _ageFromDob(String dob) {
                                       });
                                     }
                                   },
-                              ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        // Progress Bar
-                        Container(
-                          width: double.infinity,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: DatingColors.mediumGrey,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Stack(
-                            children: [
-                              AnimatedContainer(
-                                duration: const Duration(milliseconds: 300),
-                                width: MediaQuery.of(context).size.width * 
-                                    (viewedUsersCount / allUsers.length),
-                                height: 8,
-                                decoration: BoxDecoration(
-                                  color: allUsersCompleted ? DatingColors.errorRed: DatingColors.primaryGreen,
-                                  borderRadius: BorderRadius.circular(4),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // const SizedBox(height: 8),
-                        // Progress Text
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Viewed: $viewedUsersCount/${visibleUsers.length}',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: DatingColors.mediumGrey,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            Text(
-                              allUsersCompleted ? 'Completed!' : '${(viewedUsersCount / (visibleUsers.isEmpty ? 1 : visibleUsers.length) * 100).toInt()}%',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: allUsersCompleted ? DatingColors.primaryGreen :DatingColors.lightpink,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                
-                // Completion Message (if all users are viewed)
-                if (allUsersCompleted)
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: DatingColors.lightGreen,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: DatingColors.lightGreen),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.check_circle, color: DatingColors.darkGreen, size: 24),
-                        const SizedBox(width: 12),
-                        const Expanded(
-                          child: Text(
-                            'All users viewed! No more cards to swipe.',
-                            style: TextStyle(
-                              color: DatingColors.everqpidColor,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: _resetProgress,
-                          child: const Text('Refresh'),
-                        ),
-                      ],
-                    ),
-                  ),
-                
-                // Full Screen Card Content
-                Expanded(
-                  child: Stack(
-                    children: [
-                      // Show card swiper only if not all users are completed
-                      if (!allUsersCompleted)
-                        CardSwiper(
-                          controller: controller,
-                          cardsCount: cardsCount,
-                          numberOfCardsDisplayed: displayed,
-                          isLoop: false, // Disable loop when tracking progress
-                          allowedSwipeDirection: const AllowedSwipeDirection.symmetric(horizontal: true),
-                          backCardOffset: const Offset(0, 20),
-                          padding: EdgeInsets.zero,
-                          
-                          onSwipe: (previousIndex, currentIndex, direction) {
-                             setState(() {
-                            currentCardIndex = currentIndex ?? 0;
-                            _swipeDirection = direction;
-                            _showOverlay = true;
-                            viewedUsersCount++;
-                            allUsersCompleted = viewedUsersCount >= cardsCount; // << filtered total
-                          });
-
-                          // Hide overlay after 300ms
-                          Future.delayed(const Duration(milliseconds: 300), () {
-                            if (mounted) {
-                              setState(() {
-                                _showOverlay = false;
-                              });
-                            }
-                          });
-                                                    
-                            // Update progress
-                            _updateProgress();
-                            
-                            // Show completion dialog when all users are viewed
-                            if (allUsersCompleted) {
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                _showCompletionDialog();
-                              });
-                            }
-                            
-                            // if (currentIndex != null && currentIndex >= allUsers.length - 3 && !isLoadingMore) {
-                            //   _loadMoreUsers();
-                            // }
-                            if (currentIndex != null) {
-                                      ref.read(socketUserProvider.notifier).fetchNextPageIfNearEnd(currentIndex);
-                                    }
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                              _checkVisibility(); // ✅ This ensures visibility is rechecked after card changes
-                            });
-
-                            if (direction == CardSwiperDirection.left) {
-                              _handleReject(previousIndex);
-                            } else if (direction == CardSwiperDirection.right) {
-                              _handleLike(previousIndex);
-                            }
-                            
-                            return true;
-                          },
-                          // cardBuilder: (BuildContext context, int index, int hOffset, int vOffset) {
-                          //   if (index >= allUsers.length) return Container();
-                          //   return _buildUserCard(allUsers[index % allUsers.length]);
-                          // },
-                          cardBuilder: (BuildContext context, int index, int hOffset, int vOffset) {
-                            if (index >= visibleUsers.length) return Container();
-
-                            return Stack(
-                              children: [
-                                _buildUserCard(visibleUsers[index % allUsers.length]),
-
-                               if (_showOverlay && _swipeDirection != null)
-                              Positioned(
-                                top: 250,
-                                left: _swipeDirection == CardSwiperDirection.right ? 140 : null,
-                                right: _swipeDirection == CardSwiperDirection.left ? 140 : null,
-                                child: Icon(
-                                  _swipeDirection == CardSwiperDirection.right
-                                      ? Icons.check_circle
-                                      : Icons.cancel,
-                                  size: 80,
-                                  color: _swipeDirection == CardSwiperDirection.right
-                                      ? DatingColors.primaryGreen
-                                      : DatingColors.errorRed,
-                                ),
-                              ),
-
                               ],
-                            );
-                          },
-
-                        ),
-                      
-                      // Show completion screen when all users are viewed
-                      if (allUsersCompleted)
-                        Container(
-                          width: double.infinity,
-                          height: double.infinity,
-                          color: Colors.white,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.favorite,
-                                size: 80,
-                                color: DatingColors.lightpink,
-                              ),
-                              const SizedBox(height: 20),
-                              const Text(
-                                'All Done!',
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              const Text(
-                                'You have viewed all available users.\nCheck back later for more profiles!',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: DatingColors.lightgrey,
-                                ),
-                              ),
-                              const SizedBox(height: 30),
-                              ElevatedButton(
-                                onPressed: _resetProgress,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: DatingColors.darkGreen,
-                                  foregroundColor: DatingColors.white,
-                                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                                child: const Text(
-                                  'View Again',
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      
-                      // Fixed image (not moving while scrolling)
-                      if (!_hideFixedImage && !allUsersCompleted)
-                        Positioned(
-                          right: 30,
-                          top: 500,
-                          child: AnimatedOpacity(
-                            opacity: _hideFixedImage ? 0.0 : 1.0,
-                            duration: const Duration(milliseconds: 300),
-                            child: Image.asset(
-                              "assets/users_superswipe.png",
-                              width: 60,
-                              height: 60,
                             ),
-                          ),
+                            const SizedBox(height: 2),
+                            // Progress Bar
+                            Container(
+                              width: double.infinity,
+                              height: 5,
+                              decoration: BoxDecoration(
+                                color: DatingColors.mediumGrey,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Stack(
+                                children: [
+                                  AnimatedContainer(
+                                    duration: const Duration(milliseconds: 300),
+                                    width: MediaQuery.of(context).size.width *
+                                        (viewedUsersCount / allUsers.length),
+                                    height: 8,
+                                    decoration: BoxDecoration(
+                                      color: allUsersCompleted
+                                          ? DatingColors.errorRed
+                                          : DatingColors.lightpink,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // const SizedBox(height: 8),
+                            // Progress Text
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //   children: [
+                            //     Text(
+                            //       'Viewed: $viewedUsersCount/${visibleUsers.length}',
+                            //       style: const TextStyle(
+                            //         fontSize: 12,
+                            //         color: DatingColors.mediumGrey,
+                            //         fontWeight: FontWeight.w500,
+                            //       ),
+                            //     ),
+                            //     Text(
+                            //       allUsersCompleted ? 'Completed!' : '${(viewedUsersCount / (visibleUsers.isEmpty ? 1 : visibleUsers.length) * 100).toInt()}%',
+                            //       style: TextStyle(
+                            //         fontSize: 12,
+                            //         color: allUsersCompleted ? DatingColors.primaryGreen :DatingColors.lightpink,
+                            //         fontWeight: FontWeight.w600,
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
+                          ],
                         ),
-                    ],
-                  ),
+                      ),
+                    ),
+
+                    // Completion Message (if all users are viewed)
+                    if (allUsersCompleted)
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: DatingColors.lightGreen,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: DatingColors.lightGreen),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.check_circle,
+                                color: DatingColors.darkGreen, size: 24),
+                            const SizedBox(width: 12),
+                            const Expanded(
+                              child: Text(
+                                'All users viewed! No more cards to swipe.',
+                                style: TextStyle(
+                                  color: DatingColors.everqpidColor,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: _resetProgress,
+                              child: const Text('Refresh'),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                    // Full Screen Card Content
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          // Show card swiper only if not all users are completed
+                          if (!allUsersCompleted)
+                            CardSwiper(
+                              controller: controller,
+                              cardsCount: cardsCount,
+                              numberOfCardsDisplayed: displayed,
+                              isLoop:
+                                  false, // Disable loop when tracking progress
+                              allowedSwipeDirection:
+                                  const AllowedSwipeDirection.symmetric(
+                                      horizontal: true),
+                              backCardOffset: const Offset(0, 20),
+                              padding: EdgeInsets.zero,
+
+                              onSwipe:
+                                  (previousIndex, currentIndex, direction) {
+                                setState(() {
+                                  currentCardIndex = currentIndex ?? 0;
+                                  _swipeDirection = direction;
+                                  _showOverlay = true;
+                                  viewedUsersCount++;
+                                  allUsersCompleted = viewedUsersCount >=
+                                      cardsCount; // << filtered total
+                                });
+
+                                // Hide overlay after 300ms
+                                Future.delayed(
+                                    const Duration(milliseconds: 300), () {
+                                  if (mounted) {
+                                    setState(() {
+                                      _showOverlay = false;
+                                    });
+                                  }
+                                });
+
+                                // Update progress
+                                _updateProgress();
+
+                                // Show completion dialog when all users are viewed
+                                if (allUsersCompleted) {
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    _showCompletionDialog();
+                                  });
+                                }
+
+                                // if (currentIndex != null && currentIndex >= allUsers.length - 3 && !isLoadingMore) {
+                                //   _loadMoreUsers();
+                                // }
+                                if (currentIndex != null) {
+                                  ref
+                                      .read(socketUserProvider.notifier)
+                                      .fetchNextPageIfNearEnd(currentIndex);
+                                }
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
+                                  _checkVisibility(); // ✅ This ensures visibility is rechecked after card changes
+                                });
+
+                                if (direction == CardSwiperDirection.left) {
+                                  _handleReject(previousIndex);
+                                } else if (direction ==
+                                    CardSwiperDirection.right) {
+                                  _handleLike(previousIndex);
+                                }
+
+                                return true;
+                              },
+                              // cardBuilder: (BuildContext context, int index, int hOffset, int vOffset) {
+                              //   if (index >= allUsers.length) return Container();
+                              //   return _buildUserCard(allUsers[index % allUsers.length]);
+                              // },
+                              cardBuilder: (BuildContext context, int index,
+                                  int hOffset, int vOffset) {
+                                if (index >= visibleUsers.length)
+                                  return Container();
+
+                                return Stack(
+                                  children: [
+                                    _buildUserCard(
+                                        visibleUsers[index % allUsers.length]),
+                                    if (_showOverlay && _swipeDirection != null)
+                                      Positioned(
+                                        top: 250,
+                                        left: _swipeDirection ==
+                                                CardSwiperDirection.right
+                                            ? 140
+                                            : null,
+                                        right: _swipeDirection ==
+                                                CardSwiperDirection.left
+                                            ? 140
+                                            : null,
+                                        child: Icon(
+                                          _swipeDirection ==
+                                                  CardSwiperDirection.right
+                                              ? Icons.check_circle
+                                              : Icons.cancel,
+                                          size: 80,
+                                          color: _swipeDirection ==
+                                                  CardSwiperDirection.right
+                                              ? DatingColors.lightpink
+                                              : DatingColors.errorRed,
+                                        ),
+                                      ),
+                                  ],
+                                );
+                              },
+                            ),
+
+                          // Show completion screen when all users are viewed
+                          if (allUsersCompleted)
+                            Container(
+                              width: double.infinity,
+                              height: double.infinity,
+                              color: Colors.white,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.favorite,
+                                    size: 80,
+                                    color: DatingColors.lightpink,
+                                  ),
+                                  const SizedBox(height: 20),
+                                  const Text(
+                                    'All Done!',
+                                    style: TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  const Text(
+                                    'You have viewed all available users.\nCheck back later for more profiles!',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: DatingColors.lightgrey,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 30),
+                                  ElevatedButton(
+                                    onPressed: _resetProgress,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: DatingColors.darkGreen,
+                                      foregroundColor: DatingColors.white,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 32, vertical: 16),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      'View Again',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                          // Fixed image (not moving while scrolling)
+                          if (!_hideFixedImage && !allUsersCompleted)
+                            Positioned(
+                              right: 30,
+                              top: 500,
+                              child: AnimatedOpacity(
+                                opacity: _hideFixedImage ? 0.0 : 1.0,
+                                duration: const Duration(milliseconds: 300),
+                                child: Image.asset(
+                                  "assets/users_superswipe.png",
+                                  width: 60,
+                                  height: 60,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
       // bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 2),
     );
   }
 
   Widget _buildUserCard(Users user) {
-    final profilePic = user.profilePics?.firstWhere(
-      (pic) => pic.isPrimary == true,
-      orElse: () => ProfilePics(url: null),
-    ).url;
+    final profilePic = user.profilePics
+        ?.firstWhere(
+          (pic) => pic.isPrimary == true,
+          orElse: () => ProfilePics(url: null),
+        )
+        .url;
 
     final fullUrl = profilePic != null && profilePic.isNotEmpty
         ? 'http://97.74.93.26:6100$profilePic'
         : null;
-        
 
     final remainingImages =
         user.profilePics?.where((pic) => pic.isPrimary != true).toList() ?? [];
@@ -643,8 +715,8 @@ int? _ageFromDob(String dob) {
                   // Background gradient image
                   Positioned(
                     top: 10,
-                    left: 20,
-                    right: 20,
+                    left: 10,
+                    right: 10,
                     child: ClipRRect(
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(30),
@@ -652,8 +724,8 @@ int? _ageFromDob(String dob) {
                       ),
                       child: Image.asset(
                         "assets/users_all1.png",
-                        width: 400,
-                        height: 700,
+                        width: 450,
+                        height: 750,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -662,11 +734,12 @@ int? _ageFromDob(String dob) {
                   // Main curved user image
                   Positioned(
                     top: 20,
-                    left: (MediaQuery.of(context).size.width - 300) / 2,
+                    left: 20,
+                    right: 20,
                     child: ClipPath(
                       clipper: CustomCornerClipper(
-                        topLeft: 30,
-                        topRight: 30,
+                        topLeft: 40,
+                        topRight: 40,
                         bottomLeft: 0,
                         bottomRight: 200,
                       ),
@@ -681,40 +754,14 @@ int? _ageFromDob(String dob) {
                             : Container(
                                 color: DatingColors.lightgrey,
                                 child: const Center(
-                                  child: Icon(Icons.person, size: 80, color: DatingColors.lightgrey),
+                                  child: Icon(Icons.person,
+                                      size: 80, color: DatingColors.lightgrey),
                                 ),
                               ),
                       ),
                     ),
                   ),
-                  
-                  // Action buttons
-                  // Positioned(
-                  //   top: 545,
-                  //   left: 40,
-                  //   child: SizedBox(
-                  //     width: 250,
-                  //     child: Row(
-                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //       children: [
-                  //         GestureDetector(
-                  //           onTap: () {
-                  //             if (!allUsersCompleted) {
-                  //               print("Like tapped");
-                  //             }
-                  //           },
-                  //           child: Image.asset(
-                  //             "assets/userslike.png",
-                  //             width: 50,
-                  //             height: 50,
-                  //             fit: BoxFit.cover,
-                  //           ),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-                  
+
                   // User name and age overlay
                   Positioned(
                     bottom: 0,
@@ -722,7 +769,8 @@ int? _ageFromDob(String dob) {
                     left: 10,
                     right: 0,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
@@ -788,8 +836,6 @@ int? _ageFromDob(String dob) {
                     spacing: 10,
                     runSpacing: 10,
                     children: [
-                      // if (user.height != null && user.height!.isNotEmpty)
-                      //   _buildInfoChip("📏", user.height!),
                       if (user.education != null && user.education!.isNotEmpty)
                         _buildInfoChip("🎓", user.education!),
                       if (user.zodiac != null && user.zodiac!.isNotEmpty)
@@ -819,7 +865,8 @@ int? _ageFromDob(String dob) {
                       spacing: 10,
                       runSpacing: 10,
                       children: user.qualities!
-                          .map((quality) => _buildInterestChip(quality.name ?? ''))
+                          .map((quality) =>
+                              _buildInterestChip(quality.name ?? ''))
                           .toList(),
                     ),
                     const SizedBox(height: 20),
@@ -884,7 +931,8 @@ int? _ageFromDob(String dob) {
                       children: [
                         Row(
                           children: [
-                            const Icon(Icons.location_on, color: Colors.red, size: 20),
+                            const Icon(Icons.location_on,
+                                color: Colors.red, size: 20),
                             const SizedBox(width: 8),
                             Text(
                               _getDistanceText(user),
@@ -898,9 +946,11 @@ int? _ageFromDob(String dob) {
                         ),
                         const SizedBox(height: 8),
                         FutureBuilder<String>(
-                          future: _getPlaceName(user.latitude ?? 17.4065, user.longitude ?? 78.4772),
+                          future: _getPlaceName(user.latitude ?? 17.4065,
+                              user.longitude ?? 78.4772),
                           builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
                               return const Text("Loading location...");
                             } else if (snapshot.hasError || !snapshot.hasData) {
                               return const Text("Location unavailable");
@@ -933,7 +983,7 @@ int? _ageFromDob(String dob) {
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     child: Column(
                       children: [
-                        // Three action buttons
+                        // Two action buttons (removed super like from middle)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -946,20 +996,6 @@ int? _ageFromDob(String dob) {
                                 }
                               },
                             ),
-                            // ⭐ Super Like button → lift it upward
-                            Transform.translate(
-                              offset: const Offset(0, -40), // Move up by 20 pixels
-                              child: _buildActionButton(
-                                "assets/users_superswipe.png",
-                                () {
-                                  if (!allUsersCompleted) {
-                                    controller.swipe(CardSwiperDirection.top);
-                                    _handleSuperLike(currentCardIndex);
-                                  }
-                                },
-                                key: _imageKey,
-                              ),
-                            ),
                             _buildActionButton(
                               "assets/users_right.png",
                               () {
@@ -971,15 +1007,40 @@ int? _ageFromDob(String dob) {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 20),
+
+                        // Super Like button as separate row (optional)
+                        GestureDetector(
+                          onTap: () {
+                            if (!allUsersCompleted) {
+                              // Handle super like without swiping up
+                              _handleSuperLike(currentCardIndex);
+                              // Move to next card manually
+                              setState(() {
+                                currentCardIndex++;
+                              });
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              // color: Colors.blue,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Image.asset(
+                              "assets/users_superswipe.png",
+                              width: 70,
+                              height: 70,
+                            ),
+                          ),
+                        ),
                         const SizedBox(height: 30),
-                        
+
                         // Suggest to friends button
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: () {
-                              
-                            },
+                            onPressed: () {},
                             style: ElevatedButton.styleFrom(
                               backgroundColor: DatingColors.everqpidColor,
                               foregroundColor: Colors.white,
@@ -1047,96 +1108,96 @@ int? _ageFromDob(String dob) {
     );
   }
 
-  
-
-
   Widget _buildRemainingImages(List<ProfilePics> images) {
-  return GridView.builder(
-    shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(),
-    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 1,
-      crossAxisSpacing: 0,
-      mainAxisSpacing: 16,
-      childAspectRatio: 0.5,
-    ),
-    itemCount: images.length,
-    itemBuilder: (context, index) {
-      final imageUrl = images[index].url;
-      final fullUrl = imageUrl != null && imageUrl.isNotEmpty
-          ? 'http://97.74.93.26:6100$imageUrl'
-          : null;
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 1,
+        crossAxisSpacing: 0,
+        mainAxisSpacing: 16,
+        childAspectRatio: 0.5,
+      ),
+      itemCount: images.length,
+      itemBuilder: (context, index) {
+        final imageUrl = images[index].url;
+        final fullUrl = imageUrl != null && imageUrl.isNotEmpty
+            ? 'http://97.74.93.26:6100$imageUrl'
+            : null;
 
-      return Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: fullUrl != null
-                  ? Image.network(
-                      fullUrl,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      height: double.infinity,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                          color: Colors.grey[300],
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.grey[300],
-                          child: const Center(
-                            child: Icon(Icons.broken_image, size: 40, color: Colors.grey),
-                          ),
-                        );
-                      },
-                    )
-                  : Container(
-                      color: Colors.grey[300],
-                      child: const Center(
-                        child: Icon(Icons.image, size: 40, color: Colors.grey),
+        return Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: fullUrl != null
+                    ? Image.network(
+                        fullUrl,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Container(
+                            color: Colors.grey[300],
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.grey[300],
+                            child: const Center(
+                              child: Icon(Icons.broken_image,
+                                  size: 40, color: Colors.grey),
+                            ),
+                          );
+                        },
+                      )
+                    : Container(
+                        color: Colors.grey[300],
+                        child: const Center(
+                          child:
+                              Icon(Icons.image, size: 40, color: Colors.grey),
+                        ),
                       ),
-                    ),
+              ),
             ),
-          ),
 
-          // 👇 Positioned icon (your action icon like "userslike.png")
-          // Positioned(
-          //   bottom: 8,
-          //   right: 230,
-          //   child: GestureDetector(
-          //     onTap: () {
-          //       // TODO: handle tap
-          //       print("Icon tapped on image $index");
-          //     },
-          //     child: Image.asset(
-          //       "assets/userslike.png", // replace with your asset path
-          //       width: 76,
-          //       height: 76,
-          //     ),
-          //   ),
-          // ),
-        ],
-      );
-    },
-  );
-}
- Widget _buildInterestChip(String label) {
+            // 👇 Positioned icon (your action icon like "userslike.png")
+            // Positioned(
+            //   bottom: 8,
+            //   right: 230,
+            //   child: GestureDetector(
+            //     onTap: () {
+            //       // TODO: handle tap
+            //       print("Icon tapped on image $index");
+            //     },
+            //     child: Image.asset(
+            //       "assets/userslike.png", // replace with your asset path
+            //       width: 76,
+            //       height: 76,
+            //     ),
+            //   ),
+            // ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildInterestChip(String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
@@ -1186,14 +1247,14 @@ int? _ageFromDob(String dob) {
 
   void _loadMoreUsers() async {
     if (isLoadingMore) return;
-    
+
     setState(() => isLoadingMore = true);
-    
+
     try {
       await ref.read(peoplesProvider.notifier).getPeoplesAll();
       final peoplesModel = ref.read(peoplesProvider);
       final newUsers = peoplesModel.users ?? [];
-      
+
       if (newUsers.isNotEmpty) {
         setState(() {
           allUsers.addAll(newUsers);
@@ -1206,33 +1267,31 @@ int? _ageFromDob(String dob) {
     }
   }
 
- void _handleLike(int index) {
-  if (index < allUsers.length) {
-    final user = allUsers[index];
-    print('Liked user: ${user.firstName}');
+  void _handleLike(int index) {
+    if (index < allUsers.length) {
+      final user = allUsers[index];
+      print('Liked user: ${user.firstName}');
 
-    // Trigger the like API via provider
-    ref.read(likedDislikeProvider.notifier).addLikeDislike(
-      user.id.toString(), // or just user.userId if it's already a String
-      'right',
-    );
+      // Trigger the like API via provider
+      ref.read(likedDislikeProvider.notifier).addLikeDislike(
+            user.id.toString(), // or just user.userId if it's already a String
+            'right',
+          );
+    }
   }
-}
 
+  void _handleReject(int index) {
+    if (index < allUsers.length) {
+      final user = allUsers[index];
+      print('Rejected user: ${user.firstName}');
 
-void _handleReject(int index) {
-  if (index < allUsers.length) {
-    final user = allUsers[index];
-    print('Rejected user: ${user.firstName}');
-
-    // Trigger the dislike API via provider
-    ref.read(likedDislikeProvider.notifier).addLikeDislike(
-      user.id.toString(), // ensure it's a string if your API expects one
-      'left',
-    );
+      // Trigger the dislike API via provider
+      ref.read(likedDislikeProvider.notifier).addLikeDislike(
+            user.id.toString(), // ensure it's a string if your API expects one
+            'left',
+          );
+    }
   }
-}
-
 
   void _handleSuperLike(int index) {
     if (index < allUsers.length) {
@@ -1242,14 +1301,12 @@ void _handleReject(int index) {
     }
   }
 
- 
-
   String _getAge(String dob) {
     try {
       final birthDate = DateTime.parse(dob);
       final today = DateTime.now();
       int age = today.year - birthDate.year;
-      if (today.month < birthDate.month || 
+      if (today.month < birthDate.month ||
           (today.month == birthDate.month && today.day < birthDate.day)) {
         age--;
       }
@@ -1266,7 +1323,8 @@ class CurvedBottomRightClipper extends CustomClipper<Path> {
     final path = Path();
     path.lineTo(0, size.height);
     path.lineTo(size.width - 40, size.height);
-    path.quadraticBezierTo(size.width, size.height, size.width, size.height - 40);
+    path.quadraticBezierTo(
+        size.width, size.height, size.width, size.height - 40);
     path.lineTo(size.width, 0);
     path.close();
     return path;
@@ -1299,7 +1357,8 @@ class CustomCornerClipper extends CustomClipper<Path> {
     path.quadraticBezierTo(size.width, 0, size.width, topRight);
 
     path.lineTo(size.width, size.height - bottomRight);
-    path.quadraticBezierTo(size.width, size.height, size.width - bottomRight, size.height);
+    path.quadraticBezierTo(
+        size.width, size.height, size.width - bottomRight, size.height);
 
     path.lineTo(bottomLeft, size.height);
     path.quadraticBezierTo(0, size.height, 0, size.height - bottomLeft);
