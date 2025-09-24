@@ -429,27 +429,27 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage> {
                             ),
                             // const SizedBox(height: 8),
                             // Progress Text
-                            // Row(
-                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            //   children: [
-                            //     Text(
-                            //       'Viewed: $viewedUsersCount/${visibleUsers.length}',
-                            //       style: const TextStyle(
-                            //         fontSize: 12,
-                            //         color: DatingColors.mediumGrey,
-                            //         fontWeight: FontWeight.w500,
-                            //       ),
-                            //     ),
-                            //     Text(
-                            //       allUsersCompleted ? 'Completed!' : '${(viewedUsersCount / (visibleUsers.isEmpty ? 1 : visibleUsers.length) * 100).toInt()}%',
-                            //       style: TextStyle(
-                            //         fontSize: 12,
-                            //         color: allUsersCompleted ? DatingColors.primaryGreen :DatingColors.lightpink,
-                            //         fontWeight: FontWeight.w600,
-                            //       ),
-                            //     ),
-                            //   ],
-                            // ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Viewed: $viewedUsersCount/${visibleUsers.length}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: DatingColors.mediumGrey,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                Text(
+                                  allUsersCompleted ? 'Completed!' : '${(viewedUsersCount / (visibleUsers.isEmpty ? 1 : visibleUsers.length) * 100).toInt()}%',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: allUsersCompleted ? DatingColors.primaryGreen :DatingColors.lightpink,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),

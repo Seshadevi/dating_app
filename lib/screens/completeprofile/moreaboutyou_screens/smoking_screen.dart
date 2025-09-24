@@ -1,6 +1,6 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
-import 'package:dating/screens/completeprofile/moreaboutyou_screens/drinking_screen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,10 +15,10 @@ class SmokingScreen extends ConsumerStatefulWidget {
 
 class _SmokingScreenState extends ConsumerState<SmokingScreen> {
   final List<String> options = [
-    'I Smoke Sometimes',
-    'No I don\'t Smoke',
-    'Yes, I Smoke',
-    'I\'m Trying To Quit',
+    "Teetotaller",
+      "No, I don't smoke",
+      "Yes, I smoke",
+      "I'm trying to quit",
   ];
 
   @override

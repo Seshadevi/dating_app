@@ -4,21 +4,20 @@ import 'package:dating/provider/loginProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Educationlevelscreen extends ConsumerStatefulWidget {
-  const Educationlevelscreen({super.key});
+final selectedOptionProvider = StateProvider<String?>((ref) => null);
+
+class Sleepinghabitsscreen extends ConsumerStatefulWidget {
+  const Sleepinghabitsscreen({super.key});
 
   @override
-  ConsumerState<Educationlevelscreen> createState() =>
-      _EducationlevelscreenState();
+  ConsumerState<Sleepinghabitsscreen> createState() => _SleepinghabitsscreenState();
 }
 
-class _EducationlevelscreenState extends ConsumerState<Educationlevelscreen> {
-  String? selectedOption; // Preselected from user profile
-
+class _SleepinghabitsscreenState extends ConsumerState<Sleepinghabitsscreen> {
   final List<String> options = [
-    'Masters',
-     'Bachelors',
-     'In College'
+     'Early Bird',
+    'Night Owl', 
+    'In a Spectrum'
 
   ];
 
@@ -26,63 +25,76 @@ class _EducationlevelscreenState extends ConsumerState<Educationlevelscreen> {
   void initState() {
     super.initState();
 
-    // Load preselected data from loginProvider after first frame
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final userState = ref.read(loginProvider);
-      final user = userState.data != null && userState.data!.isNotEmpty
-          ? userState.data![0].user
-          : null;
+    Future.microtask(() {
+      final user = ref.read(loginProvider).data?.first.user;
 
-      if (user != null &&
-          user.educationLevel != null &&
-          user.educationLevel!.isNotEmpty) {
-        setState(() {
-          selectedOption = user.educationLevel; // Match exact string
-        });
+      if (user != null && user.smoking != null) {
+        String? preselected;
+
+        // Case 1: smoking stored as Map with a name field
+        if (user.smoking is Map && (user.smoking as Map).containsKey('name')) {
+          preselected = user.smoking?.toString();
+        }
+        // Case 2: smoking is already a String
+        else if (user.smoking is String) {
+          preselected = user.smoking;
+        }
+
+        if (preselected != null &&
+            preselected.isNotEmpty &&
+            options.contains(preselected)) {
+          ref.read(selectedOptionProvider.notifier).state = preselected;
+        }
       }
     });
   }
 
-  Future<void> selectOption(String option) async {
-    setState(() {
-      selectedOption = option;
-    });
+  Future<void> toggleOption(String option) async {
+    final loginNotifier = ref.read(loginProvider.notifier);
 
     try {
-      await ref.read(loginProvider.notifier).updateProfile(
-            image: null,
-            modeid: null,
-            bio: null,
-            modename: null,
-            prompt: null,
-            qualityId: null,
-            jobId: null,
-            educationLevel: option,
-          );
+      // Select only one option at a time
+      ref.read(selectedOptionProvider.notifier).state = option;
 
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('educationLevel updated successfully!')),
+      // Update API
+      await loginNotifier.updateProfile(
+        causeId: null,
+        image: null,
+        modeid: null,
+        bio: null,
+        modename: null,
+        prompt: null,
+        qualityId: null,
+        sleeping: option,
       );
 
-      Navigator.pop(context, selectedOption);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Smoking status updated successfully!')),
+        );
+        await Future.delayed(const Duration(milliseconds: 300));
+        Navigator.pop(context);
+      }
     } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update educationLevel: $e')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update smoking status: $e')),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final selectedOption = ref.watch(selectedOptionProvider);
+
     return Scaffold(
       backgroundColor: DatingColors.white,
       appBar: AppBar(
         backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: DatingColors.everqpidColor, size: 24),
+          icon: const Icon(Icons.close, color: DatingColors.black, size: 24),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -90,7 +102,7 @@ class _EducationlevelscreenState extends ConsumerState<Educationlevelscreen> {
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           children: [
-            const SizedBox(height: 50),
+            const SizedBox(height: 150),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -102,14 +114,14 @@ class _EducationlevelscreenState extends ConsumerState<Educationlevelscreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Icon(
-                    Icons.sports_gymnastics,
+                    Icons.smoke_free_outlined,
                     color: DatingColors.brown,
                     size: 24,
                   ),
                 ),
                 const SizedBox(width: 12),
                 const Text(
-                  'Do You Work Out',
+                  'SleepingHabits',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
@@ -124,22 +136,19 @@ class _EducationlevelscreenState extends ConsumerState<Educationlevelscreen> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: GestureDetector(
-                  onTap: () => selectOption(option),
+                  onTap: () => toggleOption(option),
                   child: Container(
                     width: double.infinity,
                     height: 56,
                     decoration: BoxDecoration(
                       gradient: isSelected
                           ? const LinearGradient(
-                              colors: [
-                                DatingColors.lightpinks,
-                                DatingColors.everqpidColor
-                              ],
+                              colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
                               begin: Alignment.centerLeft,
                               end: Alignment.centerRight,
                             )
                           : null,
-                      color: isSelected ? DatingColors.white : DatingColors.white,
+                      color: isSelected ? DatingColors.brown : DatingColors.white,
                       borderRadius: BorderRadius.circular(28),
                       border: Border.all(
                         color: isSelected
@@ -154,9 +163,7 @@ class _EducationlevelscreenState extends ConsumerState<Educationlevelscreen> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: isSelected
-                              ? DatingColors.brown
-                              : DatingColors.everqpidColor,
+                          color: isSelected ? DatingColors.brown : DatingColors.everqpidColor,
                         ),
                       ),
                     ),
@@ -168,12 +175,12 @@ class _EducationlevelscreenState extends ConsumerState<Educationlevelscreen> {
             // Center(
             //   child: TextButton(
             //     onPressed: () {
-            //       // Navigator.push(
-            //       //   context,
-            //       //   MaterialPageRoute(
-            //       //       builder: (context) => const NewToAreaScreen()),
-            //       // );
-            //       Navigator.pop(context);
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) => const DrinkingScreen(),
+            //         ),
+            //       );
             //     },
             //     child: const Text(
             //       'Skip',

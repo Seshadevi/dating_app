@@ -712,6 +712,21 @@ class ChatNotifier extends StateNotifier<List<ChatMessage>> {
     _socket?.emit('sendMessage', {
       'receiverId': receiverId,
       'message': message,
+      'type': 'text',
+    });
+  }
+
+  /// NEW: Send image message with optional caption
+  void sendImageMessage({
+    required int receiverId,
+    required List<String> media,
+    String? message,
+  }) {
+    _socket?.emit('sendMessage', {
+      'receiverId': receiverId,
+      'media': media,
+      'message': message,
+      'type': 'image',
     });
   }
 
@@ -727,4 +742,3 @@ class ChatNotifier extends StateNotifier<List<ChatMessage>> {
     super.dispose();
   }
 }
-

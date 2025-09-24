@@ -108,6 +108,7 @@ class User {
   String? lastName;
   String? gender;
   String? pronouns;
+
   bool? showOnProfile;
   String? headLine;
   bool? termsAndConditions;
@@ -129,6 +130,8 @@ class User {
   Location? location;
   String? educationLevel;
   String? exercise;
+  String? sleepingHabits;
+  String? dietaryPreference;
   String? haveKids;
   List<GenderIdentities>? genderIdentities;
   String? smoking;
@@ -170,6 +173,8 @@ class User {
       this.location,
       this.educationLevel,
       this.exercise,
+      this.dietaryPreference,
+      this.sleepingHabits,
       this.haveKids,
       this.genderIdentities,
       this.smoking,
@@ -225,19 +230,19 @@ class User {
         mode!.add(Mode.fromJson(v));
       });
     }
-     if (json['industries'] != null) {
+    if (json['industries'] != null) {
       industries = <Industries>[];
       json['industries'].forEach((v) {
         industries!.add(Industries.fromJson(v));
       });
     }
-     if (json['experiences'] != null) {
+    if (json['experiences'] != null) {
       experiences = <Experiences>[];
       json['experiences'].forEach((v) {
         experiences!.add(Experiences.fromJson(v));
       });
     }
-     if (json['relationships'] != null) {
+    if (json['relationships'] != null) {
       relationships = <Relationships>[];
       json['relationships'].forEach((v) {
         relationships!.add(Relationships.fromJson(v));
@@ -297,6 +302,8 @@ class User {
         json['location'] != null ? Location.fromJson(json['location']) : null;
     educationLevel = json['educationLevel'];
     exercise = json['exercise'];
+    dietaryPreference = json['dietaryPreference'];
+    sleepingHabits = json['sleepingHabits'];
     haveKids = json['haveKids'];
     newToArea = json['newToArea'];
     if (json['genderIdentities'] != null) {
@@ -337,16 +344,16 @@ class User {
     if (religions != null) {
       data['religions'] = religions!.map((v) => v.toJson()).toList();
     }
-     if (mode != null) {
+    if (mode != null) {
       data['modes'] = mode!.map((v) => v.toJson()).toList();
     }
-     if (industries != null) {
+    if (industries != null) {
       data['industries'] = industries!.map((v) => v.toJson()).toList();
     }
-     if (experiences != null) {
+    if (experiences != null) {
       data['experiences'] = experiences!.map((v) => v.toJson()).toList();
     }
-     if (relationships != null) {
+    if (relationships != null) {
       data['relationships'] = relationships!.map((v) => v.toJson()).toList();
     }
     if (interests != null) {
@@ -386,6 +393,8 @@ class User {
     }
     data['educationLevel'] = educationLevel;
     data['exercise'] = exercise;
+    data['sleepingHabits'] = sleepingHabits;
+    data['dietaryPreference'] = dietaryPreference;
     data['haveKids'] = haveKids;
     data['newToArea'] = newToArea;
     if (genderIdentities != null) {
@@ -416,8 +425,6 @@ class User {
     List<Drinking>? drinking,
     List<Kids>? kids,
     List<Religions>? religions,
-
-
     List<Interests>? interests,
     List<LookingFor>? lookingFor,
     List<CausesAndCommunities>? causesAndCommunities,
@@ -431,6 +438,8 @@ class User {
     Location? location,
     String? educationLevel,
     String? exercise,
+    String? dietaryPreference,
+    String? sleepingHabits,
     String? haveKids,
     List<GenderIdentities>? genderIdentities,
     String? smoking,
@@ -440,9 +449,7 @@ class User {
     String? newToArea,
     List<Experiences>? experiences,
     List<Industries>? industries,
-    
     List<Relationships>? relationships,
-
   }) {
     return User(
       id: id ?? this.id,
@@ -461,9 +468,9 @@ class User {
       drinking: drinking ?? this.drinking,
       kids: kids ?? this.kids,
       religions: religions ?? this.religions,
-      industries: industries?? this.industries,
-      experiences: experiences?? this.experiences,
-      relationships: relationships?? this.relationships,
+      industries: industries ?? this.industries,
+      experiences: experiences ?? this.experiences,
+      relationships: relationships ?? this.relationships,
       interests: interests ?? this.interests,
       lookingFor: lookingFor ?? this.lookingFor,
       causesAndCommunities: causesAndCommunities ?? this.causesAndCommunities,
@@ -477,8 +484,10 @@ class User {
       location: location ?? this.location,
       educationLevel: educationLevel ?? this.educationLevel,
       exercise: exercise ?? this.exercise,
+      sleepingHabits:sleepingHabits??this.sleepingHabits,
+      dietaryPreference: dietaryPreference??this.dietaryPreference,
       haveKids: haveKids ?? this.haveKids,
-      newToArea:newToArea??this.newToArea,
+      newToArea: newToArea ?? this.newToArea,
       genderIdentities: genderIdentities ?? this.genderIdentities,
       smoking: smoking ?? this.smoking,
       politics: politics ?? this.politics,
@@ -585,7 +594,6 @@ class UserExperiences {
   }
 }
 
-
 class Industries {
   int? id;
   String? industrie;
@@ -634,7 +642,6 @@ class Industries {
   }
 }
 
-
 class UserIndustries {
   int? userId;
   int? industriesId;
@@ -667,6 +674,7 @@ class UserIndustries {
     return UserIndustries();
   }
 }
+
 class Relationships {
   int? id;
   String? relation;
@@ -752,7 +760,6 @@ class UserRelation {
     );
   }
 }
-
 
 class Qualities {
   int? id;
@@ -1013,6 +1020,7 @@ class UserKids {
     return UserKids();
   }
 }
+
 class Mode {
   final int id;
   final String value;
@@ -1041,9 +1049,8 @@ class ModesData {
 
   factory ModesData.fromJson(Map<String, dynamic> json) {
     return ModesData(
-      modes: (json['modes'] as List)
-          .map((mode) => Mode.fromJson(mode))
-          .toList(),
+      modes:
+          (json['modes'] as List).map((mode) => Mode.fromJson(mode)).toList(),
     );
   }
 
@@ -1099,7 +1106,6 @@ class Religions {
     return Religions();
   }
 }
-
 
 class UserReligion {
   int? userId;
@@ -1559,7 +1565,7 @@ class DefaultMessages {
 class ProfilePics {
   int? id;
   String? url;
-  String?imagePath;
+  String? imagePath;
   bool? isPrimary;
   int? userId;
   String? createdAt;
@@ -1578,7 +1584,7 @@ class ProfilePics {
   ProfilePics.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     url = json['url'];
-    imagePath =json['imagePath'];
+    imagePath = json['imagePath'];
     isPrimary = json['isPrimary'];
     userId = json['user_id'];
     createdAt = json['createdAt'];
@@ -1589,7 +1595,7 @@ class ProfilePics {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['url'] = url;
-    data['imagePath'] =imagePath;
+    data['imagePath'] = imagePath;
     data['isPrimary'] = isPrimary;
     data['user_id'] = userId;
     data['createdAt'] = createdAt;
@@ -1600,7 +1606,7 @@ class ProfilePics {
   ProfilePics copyWith({
     int? id,
     String? url,
-    String?imagePath,
+    String? imagePath,
     bool? isPrimary,
     int? userId,
     String? createdAt,
@@ -1609,7 +1615,7 @@ class ProfilePics {
     return ProfilePics(
       id: id ?? this.id,
       url: url ?? this.url,
-      imagePath:imagePath??this.imagePath,
+      imagePath: imagePath ?? this.imagePath,
       isPrimary: isPrimary ?? this.isPrimary,
       userId: userId ?? this.userId,
       createdAt: createdAt ?? this.createdAt,

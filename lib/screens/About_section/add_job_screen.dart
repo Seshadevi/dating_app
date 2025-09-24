@@ -1,97 +1,51 @@
-import 'dart:ui';
-
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/moreabout/workprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AddJobScreen extends ConsumerStatefulWidget {
-  const AddJobScreen({super.key});
+class UpdateWorkScreen extends ConsumerStatefulWidget {
+  const UpdateWorkScreen({super.key});
 
   @override
-  ConsumerState<AddJobScreen> createState() => _AddJobScreenState();
+  ConsumerState<UpdateWorkScreen> createState() => _UpdateWorkScreenState();
 }
 
-class _AddJobScreenState extends ConsumerState<AddJobScreen> {
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController companyController = TextEditingController();
-
+class _UpdateWorkScreenState extends ConsumerState<UpdateWorkScreen> {
+  final TextEditingController workController = TextEditingController();
   bool isButtonEnabled = false;
-  int? _editingId; // null = adding mode, not null = editing mode
 
   @override
   void initState() {
     super.initState();
-    titleController.addListener(_checkInput);
-    companyController.addListener(_checkInput);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    // Get arguments only once when the route is first built
-    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-
-    if (args != null && _editingId == null) { // Only set if not already set
-      _editingId = args['id'] as int?;
-      titleController.text = args['title'] ?? '';
-      companyController.text = args['company'] ?? '';
-      
-      // Check input after setting initial values
-      _checkInput();
-    }
+    workController.addListener(_checkInput);
   }
 
   void _checkInput() {
-    final isFilled = titleController.text.trim().isNotEmpty &&
-        companyController.text.trim().isNotEmpty;
+    final isFilled = workController.text.trim().isNotEmpty;
     if (isButtonEnabled != isFilled) {
-      setState(() {
-        isButtonEnabled = isFilled;
-      });
+      setState(() => isButtonEnabled = isFilled);
     }
   }
 
-  Future<void> _handleSubmit() async {
-    final title = titleController.text.trim();
-    final company = companyController.text.trim();
+  Future<void> _handleUpdate() async {
+    final workText = workController.text.trim();
 
-    if (title.isEmpty || company.isEmpty) {
+    if (workText.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please fill in all fields")),
+        const SnackBar(content: Text("Please enter your work")),
       );
       return;
     }
 
     try {
-      if (_editingId == null) {
-        // ADD MODE
-        final userId = ref.read(loginProvider).data![0].user?.id ?? '';
-        final success = await ref.read(workProvider.notifier).addwork(
-          title: title,
-          company: company,
-        );
+      // ✅ Call API with just the work text
+      await ref.read(loginProvider.notifier).updateProfile(work:workText);
 
-        if (success) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Job added successfully!')),
-          );
-          Navigator.pop(context);
-        }
-      } else {
-        // EDIT MODE - Replace with your actual update method
-        await ref.read(workProvider.notifier).updateSelectedwork(
-          _editingId!,
-          title,
-          company,
-        );
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Job updated successfully!')),
-        );
-        Navigator.pop(context);
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Work updated successfully!')),
+      );
+      Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${e.toString()}')),
@@ -101,22 +55,16 @@ class _AddJobScreenState extends ConsumerState<AddJobScreen> {
 
   @override
   void dispose() {
-    titleController.dispose();
-    companyController.dispose();
+    workController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final isEditing = _editingId != null;
-
     return Scaffold(
       backgroundColor: DatingColors.white,
       appBar: AppBar(
-        title: Text(
-          isEditing ? 'Edit Job' : 'Add Job',
-          style: const TextStyle(color: Colors.black),
-        ),
+        title: const Text('Update Work', style: TextStyle(color: Colors.black)),
         backgroundColor: DatingColors.white,
         elevation: 0,
         leading: IconButton(
@@ -133,20 +81,9 @@ class _AddJobScreenState extends ConsumerState<AddJobScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
                   child: TextField(
-                    controller: titleController,
+                    controller: workController,
                     decoration: const InputDecoration(
-                      labelText: 'Title',
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-                const Divider(height: 1),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
-                  child: TextField(
-                    controller: companyController,
-                    decoration: const InputDecoration(
-                      labelText: 'Company',
+                      labelText: 'Work',
                       border: InputBorder.none,
                     ),
                   ),
@@ -162,16 +99,18 @@ class _AddJobScreenState extends ConsumerState<AddJobScreen> {
                 width: double.infinity,
                 height: 50,
                 child: ElevatedButton(
-                  onPressed: isButtonEnabled ? _handleSubmit : null,
+                  onPressed: isButtonEnabled ? _handleUpdate : null,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: isButtonEnabled ? DatingColors.everqpidColor : DatingColors.lightgrey,
+                    backgroundColor: isButtonEnabled
+                        ? DatingColors.everqpidColor
+                        : DatingColors.lightgrey,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: Text(
-                    isEditing ? 'UPDATE' : 'ADD',
-                    style: const TextStyle(fontSize: 16, color: DatingColors.brown),
+                  child: const Text(
+                    'UPDATE',
+                    style: TextStyle(fontSize: 16, color: DatingColors.brown),
                   ),
                 ),
               ),

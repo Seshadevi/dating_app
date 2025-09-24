@@ -459,7 +459,11 @@ Future<int> updateProfile({
   double?  currentLat, 
   double?  currentLng,
   String? citylocation,
-  String? homelocation
+  String? homelocation,
+  String? sleeping,
+  String? diet,
+  String? work,
+  
 }) async {
   final loadingState = ref.read(loadingProvider.notifier);
   loadingState.state = true;
@@ -521,6 +525,9 @@ Future<int> updateProfile({
     if (currentLat != null) request.fields['latitude'] =currentLat.toString();
     if (currentLng != null) request.fields['longitude'] =currentLng.toString();
      if (homelocation!= null) request.fields['hometown'] =homelocation.toString();
+      if (sleeping!= null) request.fields['sleepingHabits'] =sleeping.toString();
+       if (diet!= null) request.fields['dietaryPreference'] =diet.toString();
+        if (work!= null) request.fields['work'] =work.toString();
     // Suppose you used geocoding and got a Placemark
       // Placemark place = placemarks.first;
       // String? citylocation = place.locality; // ✅ Only city name

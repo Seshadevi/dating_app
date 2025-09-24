@@ -6,6 +6,7 @@ import 'package:dating/screens/completeprofile/causeScreen.dart';
 import 'package:dating/screens/completeprofile/id_verification_screen.dart';
 import 'package:dating/screens/completeprofile/interests.dart';
 import 'package:dating/screens/completeprofile/lifeBadgesScreen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/dietarypreference.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/drinking_screen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/exercise_screen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/kids_screen.dart';
@@ -13,6 +14,7 @@ import 'package:dating/screens/completeprofile/moreaboutyou_screens/languagesscr
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/new_to_area_screen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/relationship_screen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/religion_screen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/sleepinghabitsscreen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/smoking_screen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/star_sign_screen.dart';
 import 'package:dating/screens/completeprofile/profile_strength_detailScreen.dart';
@@ -1750,7 +1752,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
         const SizedBox(height: 16),
         _buildProfileItem(Icons.work_outline, 'Work', workDisplayText,
             onTap: () {
-          Navigator.pushNamed(context, '/occupationscreen');
+          Navigator.pushNamed(context, '/addoccupation');
         }),
         _buildProfileItem(Icons.school_outlined, 'Education', educationText,
             onTap: () {
@@ -1829,6 +1831,8 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
 
     final starsign = user?.starSign?.name ?? 'Add';
     final exercise = user?.exercise ?? 'Add';
+    final sleepinghabits = user?.sleepingHabits ?? 'Add';
+    final dietcontrol = user?.dietaryPreference ?? 'Add';
     final height = (user?.height != null)
         ? user?.height.toString() // convert int to string for display
         : 'Add';
@@ -1898,6 +1902,22 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
               onTap: () {
             Navigator.push(
                 context, MaterialPageRoute(builder: (_) => ExerciseScreen()));
+          }),
+        ],
+         if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
+            modeId == 5) ...[
+          _buildProfileItem(Icons.fitness_center_outlined, 'SleepingHabits', sleepinghabits,
+              onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => Sleepinghabitsscreen()));
+          }),
+        ],
+         if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
+            modeId == 5) ...[
+          _buildProfileItem(Icons.fitness_center_outlined, 'Diet', dietcontrol,
+              onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => Dietarypreference()));
           }),
         ],
         if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
