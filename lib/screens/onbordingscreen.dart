@@ -42,6 +42,9 @@ class _FriendOnboardingScreenState extends ConsumerState<FriendOnboardingScreen>
    List<File?>? selectedImages;
    String? finalHeadline;
    bool? termsAndCondition;
+   
+   // Add loading state
+   bool _isLoading = false;
 
   @override
   void didChangeDependencies() {
@@ -150,7 +153,7 @@ Widget build(BuildContext context) {
       const Text(
         ' you find new friendships, '
                   'whether you’re new to a city or just looking to expand your social circle.',
-        style: TextStyle(
+                   style: TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w100,
           color: DatingColors.white, // ⚪ White text
@@ -161,91 +164,131 @@ Widget build(BuildContext context) {
   ),
 ),
               
-              // const Padding(
-              //   padding: EdgeInsets.symmetric(horizontal: 20.0),
-              //   child: Text(
-              //     ' you find new friendships, '
-              //     'whether you’re new to a city or just looking to expand your social circle.',
-              //     style: TextStyle(
-              //       fontSize: 12,
-              //       color: Color.fromARGB(255, 65, 17, 20),
-              //     ),
-              //     textAlign: TextAlign.center,
-              //   ),
-              // ),
-              // const Spacer(),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                 child: SizedBox(
                   width: double.infinity,
                   height: 48,
                   child: ElevatedButton(
-                    onPressed: () async {
-                      final statuscode = await ref.read(loginProvider.notifier).signupuserApi(
-                        email: email ?? '',
-                        mobile: mobile ?? '',
-                        latitude: latitude ?? 0.0,
-                        longitude: longitude ?? 0.0,
-                        userName: userName ?? '',
-                        dateOfBirth: dateofbirth ?? '',
-                        selectedGender: selectedgender ?? '',
-                        showGenderOnProfile: showonprofile ?? false,
-                        modeid: modeid,
-                        modename: modename,
-                        selectedGenderIds: selectedGenderIds ?? [],
-                        selectionOptionIds: selectedoptionIds ?? [],
-                        selectedHeight: selectedheight ?? 0,
-                        selectedInterestIds: selectedinterestsIds ?? [],
-                        selectedqualitiesIDs: selectedQualitiesIds ?? [],
-                        selectedhabbits: selectedHabitIds ?? [],
-                        selectedkids: selectedKidsIds ?? [],
-                        selectedreligions: selectedReligionIds ?? [],
-                        selectedcauses: selectedcausesIds ?? [],
-                        seletedprompts: seletedprompts ?? {},
-                        choosedimages: selectedImages ?? [],
-                        defaultmessages: selectedIndexes ?? [],
-                        finalheadline: finalHeadline,
-                        termsAndCondition: termsAndCondition ?? false,
-                      );
+  onPressed: _isLoading ? null : () async {
+    // Set loading state to true
+    setState(() {
+      _isLoading = true;
+    });
 
-                      if (statuscode == 200 || statuscode == 201) {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (_) => const CustomBottomNavigationBar()),
-                          (route) => false,
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      backgroundColor: DatingColors.brown,
-                      elevation: 0,
-                    ),
-                    child: Ink(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [DatingColors.lightpinks, DatingColors.lightpinks],
-                        ),
-                        border: Border.all(
-                          color: DatingColors.everqpidColor, // 👈 border color
-                          width: 2,            // 👈 border thickness
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          'Got It',
-                          style: TextStyle(
-                            color: const Color.fromARGB(255, 160, 43, 41),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+    try {
+      final result = await ref.read(loginProvider.notifier).signupuserApi(
+        email: email ?? '',
+        mobile: mobile ?? '',
+        latitude: latitude ?? 0.0,
+        longitude: longitude ?? 0.0,
+        userName: userName ?? '',
+        dateOfBirth: dateofbirth ?? '',
+        selectedGender: selectedgender ?? '',
+        showGenderOnProfile: showonprofile ?? false,
+        modeid: modeid,
+        modename: modename,
+        selectedGenderIds: selectedGenderIds ?? [],
+        selectionOptionIds: selectedoptionIds ?? [],
+        selectedHeight: selectedheight ?? 0,
+        selectedInterestIds: selectedinterestsIds ?? [],
+        selectedqualitiesIDs: selectedQualitiesIds ?? [],
+        selectedhabbits: selectedHabitIds ?? [],
+        selectedkids: selectedKidsIds ?? [],
+        selectedreligions: selectedReligionIds ?? [],
+        selectedcauses: selectedcausesIds ?? [],
+        seletedprompts: seletedprompts ?? {},
+        choosedimages: selectedImages ?? [],
+        defaultmessages: selectedIndexes ?? [],
+        finalheadline: finalHeadline,
+        termsAndCondition: termsAndCondition ?? false,
+      );
+
+      // If your API now returns Map<String, dynamic> with 'status' & 'message'
+      final statusCode = result['status'];
+      final message = result['message'];
+
+      // Show Snackbar
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message ?? "Something went wrong"),
+            backgroundColor: (statusCode == 200 || statusCode == 201) 
+                ? Colors.green 
+                : Colors.red,
+          ),
+        );
+      }
+
+      // Navigate if success
+      if ((statusCode == 200 || statusCode == 201) && mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const CustomBottomNavigationBar()),
+          (route) => false,
+        );
+      }
+    } catch (e) {
+      // Handle any errors
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("An error occurred. Please try again."),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      // Set loading state to false
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  },
+  style: ElevatedButton.styleFrom(
+    padding: EdgeInsets.zero,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+    ),
+    backgroundColor: DatingColors.brown,
+    elevation: 0,
+  ),
+  child: Ink(
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [DatingColors.lightpinks, DatingColors.lightpinks],
+      ),
+      border: Border.all(
+        color: DatingColors.everqpidColor,
+        width: 2,
+      ),
+      borderRadius: BorderRadius.all(Radius.circular(12)),
+    ),
+    child: Center(
+      child: _isLoading 
+        ? const SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                Color.fromARGB(255, 160, 43, 41),
+              ),
+            ),
+          )
+        : const Text(
+            'Got It',
+            style: TextStyle(
+              color: Color.fromARGB(255, 160, 43, 41),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+    ),
+  ),
+)
+
                 ),
               ),
             ],

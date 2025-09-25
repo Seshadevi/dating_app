@@ -248,7 +248,7 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
     }
   }
 
-  Future<int> signupuserApi({
+  Future<Map<String, dynamic>> signupuserApi({
     required String email,
     required String mobile,
     required double latitude,
@@ -413,14 +413,27 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
         final userData = json.encode(userDetails);
         await prefs.setString('userData', userData);
         print('User data saved in SharedPreferences.');
-        return response.statusCode;
+        String message = userDetails['message'] ?? "Signup successful";
+        return {
+    "status": response.statusCode,
+    "message": message,
+  };
       } else {
         print("❌ Signup failed with status: ${response.statusCode}");
-        return response.statusCode;
+         final errorData = jsonDecode(responseBody);
+         final message = errorData['message'] ?? "Signup failed";
+        return {
+      "status": response.statusCode,
+      "message": message,
+    };
       }
     } catch (e) {
       print("❗ Exception during signup: $e");
-      return 500;
+      return {
+      "status": 500,
+      "message": "Signup failed",
+    };
+
     }
   }
 

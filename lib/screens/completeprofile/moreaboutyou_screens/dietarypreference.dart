@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final selectedOptionProvider = StateProvider<String?>((ref) => null);
+final isLoadingProvider = StateProvider<bool>((ref) => true); // Add loading state
 
 class Dietarypreference extends ConsumerStatefulWidget {
   const Dietarypreference({super.key});
@@ -20,14 +21,20 @@ class _DietarypreferenceState extends ConsumerState<Dietarypreference> {
      "Pescatarian",
      "Non-Vegan",
      "Other",
-
   ];
 
   @override
   void initState() {
     super.initState();
 
-    Future.microtask(() {
+    // Initialize loading state
+    Future.microtask(() async {
+      // Set loading to true
+      ref.read(isLoadingProvider.notifier).state = true;
+      
+      // Add a small delay to show the loader (optional)
+      await Future.delayed(const Duration(milliseconds: 500));
+      
       final user = ref.read(loginProvider).data?.first.user;
 
       if (user != null && user.smoking != null) {
@@ -48,6 +55,9 @@ class _DietarypreferenceState extends ConsumerState<Dietarypreference> {
           ref.read(selectedOptionProvider.notifier).state = preselected;
         }
       }
+      
+      // Set loading to false after data is processed
+      ref.read(isLoadingProvider.notifier).state = false;
     });
   }
 
@@ -72,7 +82,7 @@ class _DietarypreferenceState extends ConsumerState<Dietarypreference> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Smoking status updated successfully!')),
+          const SnackBar(content: Text('Dietary preference updated successfully!')),
         );
         await Future.delayed(const Duration(milliseconds: 300));
         Navigator.pop(context);
@@ -80,7 +90,7 @@ class _DietarypreferenceState extends ConsumerState<Dietarypreference> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update smoking status: $e')),
+          SnackBar(content: Text('Failed to update dietary preference: $e')),
         );
       }
     }
@@ -89,6 +99,7 @@ class _DietarypreferenceState extends ConsumerState<Dietarypreference> {
   @override
   Widget build(BuildContext context) {
     final selectedOption = ref.watch(selectedOptionProvider);
+    final isLoading = ref.watch(isLoadingProvider);
 
     return Scaffold(
       backgroundColor: DatingColors.white,
@@ -100,103 +111,110 @@ class _DietarypreferenceState extends ConsumerState<Dietarypreference> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 150),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: DatingColors.everqpidColor,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Icon(
-                    Icons.smoke_free_outlined,
-                    color: DatingColors.brown,
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                const Text(
-                  'DietaryPreference',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: DatingColors.brown,
-                  ),
-                ),
-              ],
+      body: isLoading 
+        ? _buildLoadingState()
+        : _buildMainContent(selectedOption),
+    );
+  }
+
+  Widget _buildLoadingState() {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(
+            color: DatingColors.everqpidColor,
+            strokeWidth: 3,
+          ),
+          SizedBox(height: 16),
+          Text(
+            'Loading dietary preferences...',
+            style: TextStyle(
+              fontSize: 16,
+              color: DatingColors.lightgrey,
+              fontWeight: FontWeight.w500,
             ),
-            const SizedBox(height: 50),
-            ...options.map((option) {
-              final isSelected = selectedOption == option;
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
-                child: GestureDetector(
-                  onTap: () => toggleOption(option),
-                  child: Container(
-                    width: double.infinity,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      gradient: isSelected
-                          ? const LinearGradient(
-                              colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                            )
-                          : null,
-                      color: isSelected ? DatingColors.brown : DatingColors.white,
-                      borderRadius: BorderRadius.circular(28),
-                      border: Border.all(
-                        color: isSelected
-                            ? DatingColors.lightgrey
-                            : DatingColors.everqpidColor,
-                        width: 2,
-                      ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMainContent(String? selectedOption) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Column(
+        children: [
+          const SizedBox(height: 150),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: DatingColors.everqpidColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Icon(
+                  Icons.restaurant_outlined,
+                  color: DatingColors.brown,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'Dietary Preference',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: DatingColors.brown,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 50),
+          ...options.map((option) {
+            final isSelected = selectedOption == option;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: GestureDetector(
+                onTap: () => toggleOption(option),
+                child: Container(
+                  width: double.infinity,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    gradient: isSelected
+                        ? const LinearGradient(
+                            colors: [DatingColors.lightpinks, DatingColors.everqpidColor],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                          )
+                        : null,
+                    color: isSelected ? DatingColors.brown : DatingColors.white,
+                    borderRadius: BorderRadius.circular(28),
+                    border: Border.all(
+                      color: isSelected
+                          ? DatingColors.lightgrey
+                          : DatingColors.everqpidColor,
+                      width: 2,
                     ),
-                    child: Center(
-                      child: Text(
-                        option,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: isSelected ? DatingColors.brown : DatingColors.everqpidColor,
-                        ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      option,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: isSelected ? DatingColors.brown : DatingColors.everqpidColor,
                       ),
                     ),
                   ),
                 ),
-              );
-            }).toList(),
-            // const Spacer(),
-            // Center(
-            //   child: TextButton(
-            //     onPressed: () {
-            //       Navigator.push(
-            //         context,
-            //         MaterialPageRoute(
-            //           builder: (context) => const DrinkingScreen(),
-            //         ),
-            //       );
-            //     },
-            //     child: const Text(
-            //       'Skip',
-            //       style: TextStyle(
-            //         fontSize: 16,
-            //         fontWeight: FontWeight.w500,
-            //         color: DatingColors.lightgrey,
-            //       ),
-            //     ),
-            //   ),
-            // ),
-            // const SizedBox(height: 40),
-          ],
-        ),
+              ),
+            );
+          }).toList(),
+        ],
       ),
     );
   }

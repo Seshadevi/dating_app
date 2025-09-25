@@ -1,16 +1,15 @@
+import 'dart:ui';
 import 'package:dating/constants/dating_app_user.dart';
-import 'package:dating/model/peoples_all_model.dart';
 import 'package:dating/provider/likes/likedislikeprovider.dart';
 import 'package:dating/provider/loginProvider.dart';
-import 'package:dating/provider/peoples_all_provider.dart';
-import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:dating/provider/socket_users_combined_provider.dart';
 import 'package:dating/screens/profile_screens/narrowsearch.dart';
 import 'dart:math' as math;
-import 'package:geocoding/geocoding.dart';
+import 'package:intl/intl.dart';
 
 class MyHeartsyncPage extends ConsumerStatefulWidget {
   const MyHeartsyncPage({super.key});
@@ -19,36 +18,118 @@ class MyHeartsyncPage extends ConsumerStatefulWidget {
   ConsumerState<MyHeartsyncPage> createState() => _MyHeartsyncPageState();
 }
 
-class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage> {
+class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
+    with TickerProviderStateMixin {
   bool isLoadingMore = false;
   final CardSwiperController controller = CardSwiperController();
-  List<Users> allUsers = [];
+  List<Map<String, dynamic>> allUsers = [];
   int currentCardIndex = 0;
-  int viewedUsersCount = 0; // Track viewed users
-  bool allUsersCompleted = false; // Track if all users are completed
+  int viewedUsersCount = 0;
+  bool allUsersCompleted = false;
 
-  // Current user location (you'll need to get this from your login model/API)
+  // Current user location
   double? currentUserLatitude;
   double? currentUserLongitude;
   final ScrollController _scrollController = ScrollController();
-  final GlobalKey _imageKey = GlobalKey();
+  final GlobalKey _bottomActionsKey = GlobalKey();
   bool _hideFixedImage = false;
   CardSwiperDirection? _swipeDirection;
   bool _showOverlay = false;
-  SearchFilters? _filters;
+
+  // Animation controllers for enhanced UI
+  late AnimationController _pulseController;
+  late AnimationController _slideController;
+  late Animation<double> _pulseAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  // Super Like animation controllers - Bumble style
+  bool _isSuperLikeAnimating = false;
+  late AnimationController _superLikeController;
+  late Animation<double> _superLikeScaleAnimation;
+  late Animation<double> _superLikeOpacityAnimation;
+  late Animation<double> _superLikeGlowAnimation;
+
+  // Floating star button visibility
+  bool _showFloatingStar = true;
+  late AnimationController _floatingStarController;
+  late Animation<double> _floatingStarOpacity;
+
+  // Enhanced variables
+  int _currentImageIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // ref.read(peoplesProvider.notifier).getPeoplesAll();
 
+    // Initialize animation controllers
+    _pulseController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _slideController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+
+    _superLikeController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+
+    _floatingStarController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _pulseAnimation = Tween<double>(
+      begin: 0.8,
+      end: 1.2,
+    ).animate(
+        CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut));
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 1),
+      end: const Offset(0, 0),
+    ).animate(CurvedAnimation(parent: _slideController, curve: Curves.easeOut));
+
+    // Super Like animations
+    _superLikeScaleAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.3,
+    ).animate(CurvedAnimation(
+      parent: _superLikeController,
+      curve: Curves.elasticOut,
+    ));
+
+    _superLikeOpacityAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _superLikeController,
+      curve: const Interval(0.0, 0.5, curve: Curves.easeIn),
+    ));
+
+    _superLikeGlowAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _superLikeController,
+      curve: Curves.easeInOut,
+    ));
+
+    _floatingStarOpacity = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _floatingStarController,
+      curve: Curves.easeInOut,
+    ));
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(socketUserProvider.notifier).reset();
 
-      final userModel = ref.read(
-          loginProvider); // <- use `read` instead of `watch` inside initState
-
-      //  final userModel = ref.read(loginProvider);
+      final userModel = ref.read(loginProvider);
       final location = userModel.data != null && userModel.data!.isNotEmpty
           ? userModel.data!.first.user?.location
           : null;
@@ -56,202 +137,130 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage> {
       currentUserLatitude = location?.latitude?.toDouble();
       currentUserLongitude = location?.longitude?.toDouble();
 
-      _scrollController.addListener(_checkVisibility);
+      _scrollController.addListener(_checkFloatingStarVisibility);
+
+      _floatingStarController.forward();
     });
   }
 
-  List<Users> _applyClientFilters(List<Users> input) {
-    final f = _filters;
-    if (f == null) return input; // nothing selected yet
-    return input.where((u) => _matchesFilters(u, f)).toList();
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    _slideController.dispose();
+    _scrollController.dispose();
+    _superLikeController.dispose();
+    _floatingStarController.dispose();
+    super.dispose();
   }
 
-  bool _matchesFilters(Users u, SearchFilters f) {
-    // Age (from dob)
-    final dob = u.dob;
-    if (dob != null && dob.isNotEmpty) {
-      final age = _ageFromDob(dob);
-      if (age != null) {
-        final min = f.minAge - (f.relaxAge ? 2 : 0);
-        final max = f.maxAge + (f.relaxAge ? 2 : 0);
-        if (age < min || age > max) return false;
-      }
-    }
+  void _checkFloatingStarVisibility() {
+    final RenderBox? bottomActionsBox =
+        _bottomActionsKey.currentContext?.findRenderObject() as RenderBox?;
 
-    // Distance (needs both sides to have coords)
-    if (u.latitude != null &&
-        u.longitude != null &&
-        currentUserLatitude != null &&
-        currentUserLongitude != null) {
-      final limitKm = f.maxDistanceKm + (f.relaxDistance ? 20 : 0);
-      final dKm = _calculateDistance(currentUserLatitude!,
-          currentUserLongitude!, u.latitude!, u.longitude!);
-      if (dKm > limitKm) return false;
-    }
-
-    // Interests -> your "qualities" IDs
-    if (f.interestIds.isNotEmpty) {
-      final qids =
-          (u.qualities ?? []).map((q) => q.id).whereType<int>().toSet();
-      if (qids.intersection(f.interestIds).isEmpty) return false;
-    }
-
-    // Languages (if present on this Users model)
-    if (f.languageNames.isNotEmpty && u.languages != null) {
-      final userLangs = u.languages!
-          .map((l) => l.name?.toLowerCase())
-          .whereType<String>()
-          .toSet();
-      final wanted = f.languageNames.map((s) => s.toLowerCase()).toSet();
-      if (userLangs.intersection(wanted).isEmpty) return false;
-    }
-
-    // Height (if your Users has height)
-    if (u.height != null) {
-      final minH = f.minHeightCm - (f.relaxHeight ? 5 : 0);
-      final maxH = f.maxHeightCm + (f.relaxHeight ? 5 : 0);
-      if (u.height! < minH || u.height! > maxH) return false;
-    }
-
-    // (Optional) genderId + relationship if your Users exposes those as IDs/strings.
-
-    return true;
-  }
-
-  int? _ageFromDob(String dob) {
-    try {
-      final b = DateTime.parse(dob);
-      final now = DateTime.now();
-      var age = now.year - b.year;
-      if (now.month < b.month || (now.month == b.month && now.day < b.day))
-        age--;
-      return age;
-    } catch (_) {
-      return null;
-    }
-  }
-
-  void _checkVisibility() {
-    // Check if scrollable image is visible
-    final box = _imageKey.currentContext?.findRenderObject() as RenderBox?;
-    if (box != null) {
-      final position = box.localToGlobal(Offset.zero).dy;
+    if (bottomActionsBox != null) {
+      final position = bottomActionsBox.localToGlobal(Offset.zero);
       final screenHeight = MediaQuery.of(context).size.height;
 
-      if (position > 0 && position < screenHeight) {
-        // Image is on screen → hide fixed one
-        if (!_hideFixedImage) {
-          setState(() {
-            _hideFixedImage = true;
-          });
-        }
-      } else {
-        // Image is off screen → show fixed one
-        if (_hideFixedImage) {
-          setState(() {
-            _hideFixedImage = false;
-          });
-        }
+      final shouldHide = position.dy < screenHeight - 100;
+
+      if (shouldHide && _showFloatingStar) {
+        setState(() => _showFloatingStar = false);
+        _floatingStarController.reverse();
+      } else if (!shouldHide && !_showFloatingStar && !allUsersCompleted) {
+        setState(() => _showFloatingStar = true);
+        _floatingStarController.forward();
       }
     }
   }
 
-  // Method to get current user location from your login model/API
-  // void _getCurrentUserLocation() {
-  // TODO: Replace with actual API call to get current user location
-  // Example:
-  // final currentUser = ref.read(currentUserProvider);
-  // currentUserLatitude = currentUser.latitude;
-  // currentUserLongitude = currentUser.longitude;
-
-  // For now, using dummy data - replace with your actual implementation
-  //   currentUserLatitude = 17.3850; // Hyderabad latitude
-  //   currentUserLongitude = 78.4867; // Hyderabad longitude
-  // }
-
-  Future<String> _getPlaceName(double latitude, double longitude) async {
+  // Age calculation method
+  int _calculateAge(String? dobString) {
+    if (dobString == null || dobString.isEmpty) return 0;
     try {
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(latitude, longitude);
-
-      if (placemarks.isNotEmpty) {
-        final Placemark place = placemarks.first;
-
-        // Build address parts, handling null values
-        List<String> addressParts = [];
-
-        // Add locality (city/town)
-        if (place.locality != null && place.locality!.isNotEmpty) {
-          addressParts.add(place.locality!);
-        } else if (place.subLocality != null && place.subLocality!.isNotEmpty) {
-          addressParts.add(place.subLocality!);
-        }
-
-        // Add administrative area (state/province)
-        if (place.administrativeArea != null &&
-            place.administrativeArea!.isNotEmpty) {
-          addressParts.add(place.administrativeArea!);
-        }
-
-        // Add country if needed (optional)
-        if (place.country != null && place.country!.isNotEmpty) {
-          addressParts.add(place.country!);
-        }
-
-        // Return formatted address
-        if (addressParts.isNotEmpty) {
-          return addressParts.join(", ");
-        } else {
-          // Fallback to any available information
-          return place.name ?? place.thoroughfare ?? "Unknown location";
-        }
-      } else {
-        return "Unknown location";
+      final dob = DateFormat("dd/MM/yyyy").parse(dobString);
+      final now = DateTime.now();
+      int age = now.year - dob.year;
+      if (now.month < dob.month ||
+          (now.month == dob.month && now.day < dob.day)) {
+        age--;
       }
-    } catch (e) {
-      print("Geocoding error: $e");
-      return "Location unavailable";
+      return age;
+    } catch (_) {
+      return 0;
     }
   }
 
-  // Calculate distance between two coordinates
-  double _calculateDistance(
-      double lat1, double lon1, double lat2, double lon2) {
-    const double earthRadius = 6371; // in kilometers
+  // Super Like animation
+  void _animateSuperLikeOnImage() {
+    if (_isSuperLikeAnimating) return;
 
-    double dLat = _toRadians(lat2 - lat1);
-    double dLon = _toRadians(lon2 - lon1);
+    setState(() {
+      _isSuperLikeAnimating = true;
+    });
 
-    double a = math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.cos(_toRadians(lat1)) *
-            math.cos(_toRadians(lat2)) *
-            math.sin(dLon / 2) *
-            math.sin(dLon / 2);
+    HapticFeedback.mediumImpact();
 
-    double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
-
-    return earthRadius * c;
-  }
-
-  double _toRadians(double degrees) {
-    return degrees * math.pi / 180;
-  }
-
-  @override
-  void didUpdateWidget(covariant MyHeartsyncPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _checkVisibility(); // ✅ Recheck visibility when widget updates
-  }
-
-  String _getDistanceText(Users user) {
-    if (currentUserLatitude == null || currentUserLongitude == null) {
-      return "Location not available";
+    _superLikeController.forward().then((_) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        _superLikeController.reset();
+        setState(() {
+          _isSuperLikeAnimating = false;
+        });
+      });
+      });
     }
 
-    double userLat = user.latitude ?? 0.0;
-    double userLon = user.longitude ?? 0.0;
+  void _superLikeFromFloatingButton() {
+    if (_isSuperLikeAnimating || allUsersCompleted) return;
 
-    double distance = _calculateDistance(
+    _floatingStarController.reverse();
+    _animateSuperLikeOnImage();
+
+    Future.delayed(const Duration(milliseconds: 200), () {
+      if (!allUsersCompleted) {
+        controller.swipe(CardSwiperDirection.top);
+      }
+    });
+  }
+
+  // Helper methods for extracting user data - UPDATED for new JSON structure
+  String _getUserName(Map<String, dynamic> user) {
+    final firstName = user['firstName'] ?? '';
+    final lastName = user['lastName'] ?? '';
+    if (firstName.isEmpty && lastName.isEmpty) {
+      return 'User ${user['id'] ?? ''}';
+    }
+    return '$firstName $lastName'.trim();
+  }
+
+  String _getUserNameWithAge(Map<String, dynamic> user) {
+    final firstName = user['firstName'] ?? '';
+    final dob = user['dob'];
+    final age = _calculateAge(dob);
+
+    if (age > 0) {
+      return '$firstName, $age';
+    } else {
+      return firstName.isNotEmpty ? firstName : 'User ${user['id'] ?? ''}';
+    }
+  }
+
+  String _getUserDistance(Map<String, dynamic> user) {
+    final location = user['location'];
+    if (location == null ||
+        currentUserLatitude == null ||
+        currentUserLongitude == null) {
+      return 'Location not available';
+    }
+
+    final userLat = location['latitude']?.toDouble();
+    final userLon = location['longitude']?.toDouble();
+
+    if (userLat == null || userLon == null) {
+      return 'Location not available';
+    }
+
+    final distance = _calculateDistance(
       currentUserLatitude!,
       currentUserLongitude!,
       userLat,
@@ -265,979 +274,272 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage> {
     }
   }
 
-  // Method to update progress and check completion
+  // UPDATED: Profile images with new server path format - MULTIPLE IMAGES SUPPORT
+  List<String> _getUserProfileImages(Map<String, dynamic> user) {
+    final profilePics = user['profile_pics'] as List?;
+    final userId = user['id'];
+
+    if (profilePics == null || profilePics.isEmpty || userId == null) return [];
+
+    return profilePics
+        .map((pic) {
+          String? imagePath = pic['imagePath'] ?? '';
+
+          // Extract filename from path like "/Uploadsdating/531/1758611355333_1000110215.jpg"
+          if (imagePath!.startsWith('/')) {
+            imagePath = imagePath.substring(1); // Remove leading slash
+          }
+
+          // Build full URL
+          if (imagePath!.isNotEmpty) {
+            return 'http://97.74.93.26:6100/$imagePath';
+          }
+
+          return '';
+        })
+        .where((url) => url.isNotEmpty)
+        .toList();
+  }
+
+  String _getUserBio(Map<String, dynamic> user) {
+    return user['headLine'] ?? '';
+  }
+
+  List<String> _getUserModes(Map<String, dynamic> user) {
+    final modes = user['modes'] as List?;
+    if (modes == null) return [];
+    return modes
+        .map((mode) => mode['value']?.toString() ?? '')
+        .where((mode) => mode.isNotEmpty)
+        .toList();
+  }
+
+  List<String> _getUserInterests(Map<String, dynamic> user) {
+    final raw = user['interests'];
+    if (raw == null) return [];
+
+    if (raw is List) {
+      final interests = raw
+          .map((interest) {
+            if (interest is Map) {
+              final name = interest['interests'] ??
+                  interest['name'] ??
+                  interest['title'] ??
+                  interest['value'] ??
+                  '';
+              return name.toString().trim();
+            }
+            if (interest is String) {
+              return interest.trim();
+            }
+            return '';
+          })
+          .where((interest) => interest.isNotEmpty)
+          .toList();
+
+      return interests;
+    }
+
+    if (raw is String) {
+      if (raw.isEmpty) return [];
+      final interests = raw
+          .split(',')
+          .map((s) => s.trim())
+          .where((s) => s.isNotEmpty)
+          .toList();
+      return interests;
+    }
+
+    return [];
+  }
+
+  String _getUserEducation(Map<String, dynamic> user) {
+    final educations = user['educations'] as List?;
+    if (educations == null || educations.isEmpty) return '';
+
+    final education = educations.first['institution']?.toString() ??
+        educations.first['name']?.toString() ??
+        '';
+    return education.trim();
+  }
+
+  String _getUserWork(Map<String, dynamic> user) {
+    final work = user['work'];
+    if (work != null && work is Map) {
+      return work['title']?.toString()?.trim() ?? '';
+    }
+
+    final industries = user['industries'] as List?;
+    if (industries == null || industries.isEmpty) return '';
+    final industry = industries.first['industry']?.toString() ?? '';
+    return industry.trim();
+  }
+
+  String _getUserQualities(Map<String, dynamic> user) {
+    final qualities = user['qualities'] as List?;
+    if (qualities == null) return '';
+    return qualities
+        .map((q) => q['name']?.toString() ?? '')
+        .where((q) => q.isNotEmpty)
+        .join(', ');
+  }
+
+  String _getUserReligion(Map<String, dynamic> user) {
+    final religions = user['religions'] as List?;
+    if (religions == null || religions.isEmpty) return '';
+    return religions.first['religion']?.toString()?.trim() ?? '';
+  }
+
+  String _getUserDrinking(Map<String, dynamic> user) {
+    final drinking = user['drinking'] as List?;
+    if (drinking == null || drinking.isEmpty) return '';
+    return drinking.first['preference']?.toString()?.trim() ?? '';
+  }
+
+  double _calculateDistance(
+      double lat1, double lon1, double lat2, double lon2) {
+    const double earthRadius = 6371;
+    double dLat = _toRadians(lat2 - lat1);
+    double dLon = _toRadians(lon2 - lon1);
+
+    double a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(_toRadians(lat1)) *
+            math.cos(_toRadians(lat2)) *
+            math.sin(dLon / 2) *
+            math.sin(dLon / 2);
+
+    double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
+    return earthRadius * c;
+  }
+
+  double _toRadians(double degrees) => degrees * math.pi / 180;
+
   void _updateProgress() {
     setState(() {
       viewedUsersCount++;
       if (viewedUsersCount >= allUsers.length) {
         allUsersCompleted = true;
+        _showFloatingStar = false;
+        _floatingStarController.reverse();
       }
     });
   }
 
-  // Method to show completion dialog
-  void _showCompletionDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('All Users Viewed!'),
-          content: const Text(
-              'You have viewed all available users. Would you like to refresh and see more users?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _resetProgress();
-              },
-              child: const Text('Refresh'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop(); // Go back to previous screen
-              },
-              child: const Text('Exit'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  // Method to reset progress
   void _resetProgress() {
     setState(() {
       viewedUsersCount = 0;
       allUsersCompleted = false;
       currentCardIndex = 0;
+      _showFloatingStar = true;
     });
-    // Optionally reload users
-    ref.read(peoplesProvider.notifier).getPeoplesAll();
+    _floatingStarController.forward();
+    ref.read(socketUserProvider.notifier).reset();
   }
 
   @override
   Widget build(BuildContext context) {
-    // final peoplesModel = ref.watch(peoplesProvider);
-    // final users = peoplesModel.users ?? [];
-    final users = ref.watch(socketUserProvider);
-    print("📡 Total socket users in UI: ${users.length}");
-    // Update allUsers when new data comes
-    allUsers = users.map((e) => Users.fromJson(e)).toList();
-    final visibleUsers = _applyClientFilters(allUsers);
-    // after: allUsers = users.map((e) => Users.fromJson(e)).toList();
+    final socketUsers = ref.watch(socketUserProvider);
+
+    allUsers = List<Map<String, dynamic>>.from(socketUsers);
     final int cardsCount = allUsers.length;
-    final int displayed =
-        cardsCount >= 2 ? 2 : cardsCount; // 1 when only one user
-
-    // if (users.isNotEmpty && allUsers.isEmpty) {
-    //   allUsers = List.from(users);
-    // }
-
-    // print("PeoplesModel: ${peoplesModel}");
-    // print("Users: ${peoplesModel.users}");
+    final int displayed = cardsCount >= 2 ? 2 : cardsCount;
 
     return Scaffold(
-      backgroundColor: DatingColors.white,
-      body: visibleUsers.isEmpty
-          ? const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 10),
-                  Text("Loading users...",
-                      style: TextStyle(
-                          fontSize: 18, color: DatingColors.mediumGrey))
-                ],
-              ),
-            )
-          : cardsCount == 0
-              ? const Center(
-                  child: Text(
-                    "Users not found",
-                    style: TextStyle(fontSize: 18, color: Colors.grey),
-                  ),
-                )
-              : Column(
+      backgroundColor: DatingColors.backgroundWhite,
+      body: socketUsers.isEmpty
+          ? _buildLoadingWidget()
+          : Stack(
+              children: [
+                Column(
                   children: [
-                    // Custom AppBar with Progress Bar
-                    SafeArea(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                // const Icon(Icons.arrow_back, color: DatingColors.black),
-                                // const SizedBox(width: 16),
-                                const Expanded(
-                                  child: Text(
-                                    'Heart Sync',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.tune,
-                                      color: Colors.black),
-                                  onPressed: () async {
-                                    final result = await Navigator.pushNamed(
-                                        context, '/narrowsearch');
-                                    if (result is SearchFilters) {
-                                      setState(() {
-                                        _filters = result;
-                                        // reset progress when filters change
-                                        viewedUsersCount = 0;
-                                        allUsersCompleted = false;
-                                        currentCardIndex = 0;
-                                      });
-                                    }
-                                  },
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 2),
-                            // Progress Bar
-                            Container(
-                              width: double.infinity,
-                              height: 5,
-                              decoration: BoxDecoration(
-                                color: DatingColors.mediumGrey,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Stack(
-                                children: [
-                                  AnimatedContainer(
-                                    duration: const Duration(milliseconds: 300),
-                                    width: MediaQuery.of(context).size.width *
-                                        (viewedUsersCount / allUsers.length),
-                                    height: 8,
-                                    decoration: BoxDecoration(
-                                      color: allUsersCompleted
-                                          ? DatingColors.errorRed
-                                          : DatingColors.lightpink,
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            // const SizedBox(height: 8),
-                            // Progress Text
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'Viewed: $viewedUsersCount/${visibleUsers.length}',
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: DatingColors.mediumGrey,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                Text(
-                                  allUsersCompleted ? 'Completed!' : '${(viewedUsersCount / (visibleUsers.isEmpty ? 1 : visibleUsers.length) * 100).toInt()}%',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: allUsersCompleted ? DatingColors.primaryGreen :DatingColors.lightpink,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    // Completion Message (if all users are viewed)
-                    if (allUsersCompleted)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: DatingColors.lightGreen,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: DatingColors.lightGreen),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.check_circle,
-                                color: DatingColors.darkGreen, size: 24),
-                            const SizedBox(width: 12),
-                            const Expanded(
-                              child: Text(
-                                'All users viewed! No more cards to swipe.',
-                                style: TextStyle(
-                                  color: DatingColors.everqpidColor,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: _resetProgress,
-                              child: const Text('Refresh'),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                    // Full Screen Card Content
+                    _buildEnhancedAppBar(),
+                    if (allUsersCompleted) _buildCompletionBanner(),
                     Expanded(
-                      child: Stack(
-                        children: [
-                          // Show card swiper only if not all users are completed
-                          if (!allUsersCompleted)
-                            CardSwiper(
-                              controller: controller,
-                              cardsCount: cardsCount,
-                              numberOfCardsDisplayed: displayed,
-                              isLoop:
-                                  false, // Disable loop when tracking progress
-                              allowedSwipeDirection:
-                                  const AllowedSwipeDirection.symmetric(
-                                      horizontal: true),
-                              backCardOffset: const Offset(0, 20),
-                              padding: EdgeInsets.zero,
-
-                              onSwipe:
-                                  (previousIndex, currentIndex, direction) {
-                                setState(() {
-                                  currentCardIndex = currentIndex ?? 0;
-                                  _swipeDirection = direction;
-                                  _showOverlay = true;
-                                  viewedUsersCount++;
-                                  allUsersCompleted = viewedUsersCount >=
-                                      cardsCount; // << filtered total
-                                });
-
-                                // Hide overlay after 300ms
-                                Future.delayed(
-                                    const Duration(milliseconds: 300), () {
-                                  if (mounted) {
-                                    setState(() {
-                                      _showOverlay = false;
-                                    });
-                                  }
-                                });
-
-                                // Update progress
-                                _updateProgress();
-
-                                // Show completion dialog when all users are viewed
-                                if (allUsersCompleted) {
-                                  WidgetsBinding.instance
-                                      .addPostFrameCallback((_) {
-                                    _showCompletionDialog();
-                                  });
-                                }
-
-                                // if (currentIndex != null && currentIndex >= allUsers.length - 3 && !isLoadingMore) {
-                                //   _loadMoreUsers();
-                                // }
-                                if (currentIndex != null) {
-                                  ref
-                                      .read(socketUserProvider.notifier)
-                                      .fetchNextPageIfNearEnd(currentIndex);
-                                }
-                                WidgetsBinding.instance
-                                    .addPostFrameCallback((_) {
-                                  _checkVisibility(); // ✅ This ensures visibility is rechecked after card changes
-                                });
-
-                                if (direction == CardSwiperDirection.left) {
-                                  _handleReject(previousIndex);
-                                } else if (direction ==
-                                    CardSwiperDirection.right) {
-                                  _handleLike(previousIndex);
-                                }
-
-                                return true;
-                              },
-                              // cardBuilder: (BuildContext context, int index, int hOffset, int vOffset) {
-                              //   if (index >= allUsers.length) return Container();
-                              //   return _buildUserCard(allUsers[index % allUsers.length]);
-                              // },
-                              cardBuilder: (BuildContext context, int index,
-                                  int hOffset, int vOffset) {
-                                if (index >= visibleUsers.length)
-                                  return Container();
-
-                                return Stack(
-                                  children: [
-                                    _buildUserCard(
-                                        visibleUsers[index % allUsers.length]),
-                                    if (_showOverlay && _swipeDirection != null)
-                                      Positioned(
-                                        top: 250,
-                                        left: _swipeDirection ==
-                                                CardSwiperDirection.right
-                                            ? 140
-                                            : null,
-                                        right: _swipeDirection ==
-                                                CardSwiperDirection.left
-                                            ? 140
-                                            : null,
-                                        child: Icon(
-                                          _swipeDirection ==
-                                                  CardSwiperDirection.right
-                                              ? Icons.check_circle
-                                              : Icons.cancel,
-                                          size: 80,
-                                          color: _swipeDirection ==
-                                                  CardSwiperDirection.right
-                                              ? DatingColors.lightpink
-                                              : DatingColors.errorRed,
-                                        ),
-                                      ),
-                                  ],
-                                );
-                              },
-                            ),
-
-                          // Show completion screen when all users are viewed
-                          if (allUsersCompleted)
-                            Container(
-                              width: double.infinity,
-                              height: double.infinity,
-                              color: Colors.white,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.favorite,
-                                    size: 80,
-                                    color: DatingColors.lightpink,
-                                  ),
-                                  const SizedBox(height: 20),
-                                  const Text(
-                                    'All Done!',
-                                    style: TextStyle(
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black87,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  const Text(
-                                    'You have viewed all available users.\nCheck back later for more profiles!',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: DatingColors.lightgrey,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 30),
-                                  ElevatedButton(
-                                    onPressed: _resetProgress,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: DatingColors.darkGreen,
-                                      foregroundColor: DatingColors.white,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 32, vertical: 16),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                    child: const Text(
-                                      'View Again',
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                          // Fixed image (not moving while scrolling)
-                          if (!_hideFixedImage && !allUsersCompleted)
-                            Positioned(
-                              right: 30,
-                              top: 500,
-                              child: AnimatedOpacity(
-                                opacity: _hideFixedImage ? 0.0 : 1.0,
-                                duration: const Duration(milliseconds: 300),
-                                child: Image.asset(
-                                  "assets/users_superswipe.png",
-                                  width: 60,
-                                  height: 60,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
+                        child:
+                            _buildCardStack(allUsers, cardsCount, displayed)),
                   ],
                 ),
-      // bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 2),
-    );
-  }
-
-  Widget _buildUserCard(Users user) {
-    final profilePic = user.profilePics
-        ?.firstWhere(
-          (pic) => pic.isPrimary == true,
-          orElse: () => ProfilePics(url: null),
-        )
-        .url;
-
-    final fullUrl = profilePic != null && profilePic.isNotEmpty
-        ? 'http://97.74.93.26:6100$profilePic'
-        : null;
-
-    final remainingImages =
-        user.profilePics?.where((pic) => pic.isPrimary != true).toList() ?? [];
-
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      margin: EdgeInsets.zero,
-      padding: EdgeInsets.zero,
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            // Main image section with background
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height * 0.85,
-              child: Stack(
-                children: [
-                  // Background gradient image
-                  Positioned(
-                    top: 10,
-                    left: 10,
-                    right: 10,
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30),
-                      ),
-                      child: Image.asset(
-                        "assets/users_all1.png",
-                        width: 450,
-                        height: 750,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-
-                  // Main curved user image
-                  Positioned(
-                    top: 20,
-                    left: 20,
-                    right: 20,
-                    child: ClipPath(
-                      clipper: CustomCornerClipper(
-                        topLeft: 40,
-                        topRight: 40,
-                        bottomLeft: 0,
-                        bottomRight: 200,
-                      ),
-                      child: Container(
-                        width: 300,
-                        height: 550,
-                        child: fullUrl != null
-                            ? Image.network(
-                                fullUrl,
-                                fit: BoxFit.cover,
-                              )
-                            : Container(
-                                color: DatingColors.lightgrey,
-                                child: const Center(
-                                  child: Icon(Icons.person,
-                                      size: 80, color: DatingColors.lightgrey),
-                                ),
-                              ),
-                      ),
-                    ),
-                  ),
-
-                  // User name and age overlay
-                  Positioned(
-                    bottom: 0,
-                    top: 485,
-                    left: 10,
-                    right: 0,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '${user.firstName ?? ''}, ${_getAge(user.dob ?? '')}',
-                            style: const TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Scrollable profile info section
-            Container(
-              width: MediaQuery.of(context).size.width,
-              color: Colors.white,
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // About section
-                  if (user.bio != null && user.bio!.isNotEmpty) ...[
-                    const Text(
-                      "About",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      user.bio!,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black87,
-                        height: 1.5,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-
-                  // About Me section
-                  const Text(
-                    "About Me",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 10,
-                    runSpacing: 10,
-                    children: [
-                      if (user.education != null && user.education!.isNotEmpty)
-                        _buildInfoChip("🎓", user.education!),
-                      if (user.zodiac != null && user.zodiac!.isNotEmpty)
-                        _buildInfoChip("⭐", user.zodiac!),
-                      if (user.drinking?.firstOrNull?.preference != null &&
-                          user.drinking!.first.preference!.isNotEmpty)
-                        _buildInfoChip("🍷", user.drinking!.first.preference!),
-                      if (user.religions?.firstOrNull?.religion != null &&
-                          user.religions!.first.religion!.isNotEmpty)
-                        _buildInfoChip("🕉", user.religions!.first.religion!),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Interests section
-                  if (user.qualities != null && user.qualities!.isNotEmpty) ...[
-                    const Text(
-                      "Interests",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: user.qualities!
-                          .map((quality) =>
-                              _buildInterestChip(quality.name ?? ''))
-                          .toList(),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-
-                  // Looking for section
-                  if (user.age != null && user.age!.isNotEmpty) ...[
-                    const Text(
-                      "I Am Looking For",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: user.age!
-                          .map((goal) => _buildInterestChip(goal.goal ?? ''))
-                          .toList(),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-
-                  // Remaining images section
-                  if (remainingImages.isNotEmpty) ...[
-                    const Text(
-                      "More Photos",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    _buildRemainingImages(remainingImages),
-                    const SizedBox(height: 20),
-                  ],
-
-                  // Location section
-                  const Text(
-                    "📍Location",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[50],
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade300),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(Icons.location_on,
-                                color: Colors.red, size: 20),
-                            const SizedBox(width: 8),
-                            Text(
-                              _getDistanceText(user),
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black87,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        FutureBuilder<String>(
-                          future: _getPlaceName(user.latitude ?? 17.4065,
-                              user.longitude ?? 78.4772),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Text("Loading location...");
-                            } else if (snapshot.hasError || !snapshot.hasData) {
-                              return const Text("Location unavailable");
-                            } else {
-                              return Text(
-                                snapshot.data!,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black54,
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                        Text(
-                          "📌Coordinates: ${user.latitude?.toStringAsFixed(4) ?? 'N/A'}, ${user.longitude?.toStringAsFixed(4) ?? 'N/A'}",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-
-                  // Action buttons section
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: Column(
-                      children: [
-                        // Two action buttons (removed super like from middle)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            _buildActionButton(
-                              "assets/users_wrong.png",
-                              () {
-                                if (!allUsersCompleted) {
-                                  controller.swipe(CardSwiperDirection.left);
-                                  _handleReject(currentCardIndex);
-                                }
-                              },
-                            ),
-                            _buildActionButton(
-                              "assets/users_right.png",
-                              () {
-                                if (!allUsersCompleted) {
-                                  controller.swipe(CardSwiperDirection.right);
-                                  _handleLike(currentCardIndex);
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-
-                        // Super Like button as separate row (optional)
-                        GestureDetector(
-                          onTap: () {
-                            if (!allUsersCompleted) {
-                              // Handle super like without swiping up
-                              _handleSuperLike(currentCardIndex);
-                              // Move to next card manually
-                              setState(() {
-                                currentCardIndex++;
-                              });
-                            }
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              // color: Colors.blue,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Image.asset(
-                              "assets/users_superswipe.png",
-                              width: 70,
-                              height: 70,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 30),
-
-                        // Suggest to friends button
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: DatingColors.everqpidColor,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              elevation: 0,
-                            ),
-                            child: const Text(
-                              "Suggest to Friends",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildActionButton(
-    String assetPath,
-    VoidCallback onTap, {
-    Key? key,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          Container(
-            key: key,
-            width: 70,
-            height: 70,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
+                _buildFloatingSuperLikeButton(),
               ],
             ),
-            child: ClipOval(
-              child: Image.asset(
-                assetPath,
-                fit: BoxFit.cover,
+    );
+  }
+
+  Widget _buildFloatingSuperLikeButton() {
+    return AnimatedBuilder(
+      animation: _floatingStarOpacity,
+      builder: (context, child) {
+        return Positioned(
+          bottom: 100,
+          right: 20,
+          child: Opacity(
+            opacity: _floatingStarOpacity.value,
+            child: GestureDetector(
+              onTap: _superLikeFromFloatingButton,
+              child: Container(
+                width: 70,
+                height: 70,
+                decoration: BoxDecoration(
+                  color: DatingColors.yellow,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: DatingColors.yellow.withOpacity(0.4),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.star,
+                  color: Colors.black,
+                  size: 35,
+                ),
               ),
             ),
           ),
-          const SizedBox(height: 8),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRemainingImages(List<ProfilePics> images) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 1,
-        crossAxisSpacing: 0,
-        mainAxisSpacing: 16,
-        childAspectRatio: 0.5,
-      ),
-      itemCount: images.length,
-      itemBuilder: (context, index) {
-        final imageUrl = images[index].url;
-        final fullUrl = imageUrl != null && imageUrl.isNotEmpty
-            ? 'http://97.74.93.26:6100$imageUrl'
-            : null;
-
-        return Stack(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: fullUrl != null
-                    ? Image.network(
-                        fullUrl,
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Container(
-                            color: Colors.grey[300],
-                            child: const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
-                        },
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            color: Colors.grey[300],
-                            child: const Center(
-                              child: Icon(Icons.broken_image,
-                                  size: 40, color: Colors.grey),
-                            ),
-                          );
-                        },
-                      )
-                    : Container(
-                        color: Colors.grey[300],
-                        child: const Center(
-                          child:
-                              Icon(Icons.image, size: 40, color: Colors.grey),
-                        ),
-                      ),
-              ),
-            ),
-
-            // 👇 Positioned icon (your action icon like "userslike.png")
-            // Positioned(
-            //   bottom: 8,
-            //   right: 230,
-            //   child: GestureDetector(
-            //     onTap: () {
-            //       // TODO: handle tap
-            //       print("Icon tapped on image $index");
-            //     },
-            //     child: Image.asset(
-            //       "assets/userslike.png", // replace with your asset path
-            //       width: 76,
-            //       height: 76,
-            //     ),
-            //   ),
-            // ),
-          ],
         );
       },
     );
   }
 
-  Widget _buildInterestChip(String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.pink.shade50,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.pink.shade200),
-      ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          color: Colors.pink.shade700,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoChip(String emoji, String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+  Widget _buildLoadingWidget() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            emoji,
-            style: const TextStyle(fontSize: 16),
+          AnimatedBuilder(
+            animation: _pulseAnimation,
+            builder: (context, child) {
+              return Transform.scale(
+                scale: _pulseAnimation.value,
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        DatingColors.everqpidColor,
+                        DatingColors.lightpink
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
+                  child:
+                      const Icon(Icons.favorite, color: Colors.white, size: 40),
+                ),
+              );
+            },
           ),
-          const SizedBox(width: 8),
+          const SizedBox(height: 20),
           Text(
-            label,
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-              color: Colors.black87,
+            "Finding Perfect Matches...",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: DatingColors.primaryText,
             ),
           ),
         ],
@@ -1245,36 +547,916 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage> {
     );
   }
 
-  void _loadMoreUsers() async {
-    if (isLoadingMore) return;
-
-    setState(() => isLoadingMore = true);
-
-    try {
-      await ref.read(peoplesProvider.notifier).getPeoplesAll();
-      final peoplesModel = ref.read(peoplesProvider);
-      final newUsers = peoplesModel.users ?? [];
-
-      if (newUsers.isNotEmpty) {
-        setState(() {
-          allUsers.addAll(newUsers);
-        });
-      }
-    } catch (e) {
-      print('Error loading more users: $e');
-    } finally {
-      setState(() => isLoadingMore = false);
-    }
+  Widget _buildEnhancedAppBar() {
+    return SafeArea(
+      child: Container(
+        margin: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(25),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [DatingColors.everqpidColor, DatingColors.lightpink],
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(Icons.favorite, color: Colors.white, size: 20),
+            ),
+            const SizedBox(width: 12),
+            const Expanded(
+              child: Text(
+                'EVER QPID',
+                style: TextStyle(
+                  color: Colors.black87,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: DatingColors.surfaceGrey,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: IconButton(
+                icon: Icon(Icons.tune, color: DatingColors.secondaryText),
+                onPressed: () async {
+                  HapticFeedback.lightImpact();
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const NarrowSearchScreen()),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
+  Widget _buildCompletionBanner() {
+    return SlideTransition(
+      position: _slideAnimation,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [DatingColors.lightGreen, DatingColors.lightGreen],
+          ),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: DatingColors.successGreen.withOpacity(0.3)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: DatingColors.successGreen.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(Icons.check_circle,
+                  color: DatingColors.successGreen, size: 24),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'All profiles viewed! 🎉',
+                    style: TextStyle(
+                      color: DatingColors.successGreen,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    'No more cards to swipe right now',
+                    style: TextStyle(
+                      color: DatingColors.successGreen.withOpacity(0.8),
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCardStack(
+      List<Map<String, dynamic>> users, int cardsCount, int displayed) {
+    return Stack(
+      children: [
+        if (!allUsersCompleted)
+          CardSwiper(
+            controller: controller,
+            cardsCount: cardsCount,
+            numberOfCardsDisplayed: displayed,
+            isLoop: false,
+            allowedSwipeDirection: const AllowedSwipeDirection.all(),
+            backCardOffset: const Offset(0, 20),
+            padding: EdgeInsets.zero,
+            onSwipe: (previousIndex, currentIndex, direction) {
+              HapticFeedback.mediumImpact();
+
+              if (previousIndex != null) {
+                if (direction == CardSwiperDirection.right) {
+                  _handleLike(previousIndex);
+                } else if (direction == CardSwiperDirection.left) {
+                  _handleReject(previousIndex);
+                } else if (direction == CardSwiperDirection.top) {
+                  _handleSuperLike(previousIndex);
+                }
+              }
+
+              setState(() {
+                currentCardIndex = currentIndex ?? 0;
+                _swipeDirection = direction;
+                _showOverlay = true;
+                viewedUsersCount++;
+                allUsersCompleted = viewedUsersCount >= cardsCount;
+              });
+
+              Future.delayed(const Duration(milliseconds: 300), () {
+                if (mounted) {
+                  setState(() => _showOverlay = false);
+                }
+              });
+
+              _updateProgress();
+
+              if (allUsersCompleted) {
+                _slideController.forward();
+              }
+
+              if (currentIndex != null) {
+                ref
+                    .read(socketUserProvider.notifier)
+                    .fetchNextPageIfNeeded(currentIndex);
+              }
+
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                _checkFloatingStarVisibility();
+              });
+
+              return true;
+            },
+            cardBuilder:
+                (BuildContext context, int index, int hOffset, int vOffset) {
+              if (index >= users.length) return Container();
+
+              return Stack(
+                children: [
+                  _buildBumbleStyleUserCard(users[index]),
+                  if (_showOverlay && _swipeDirection != null)
+                    _buildSwipeOverlay(),
+                ],
+              );
+            },
+          ),
+        if (allUsersCompleted) _buildCompletionScreen(),
+      ],
+    );
+  }
+
+  Widget _buildSuperLikeImageOverlay() {
+    return AnimatedBuilder(
+      animation: _superLikeController,
+      builder: (context, child) {
+        return _isSuperLikeAnimating
+            ? Center(
+                child: ScaleTransition(
+                  scale: _superLikeScaleAnimation,
+                  child: FadeTransition(
+                    opacity: _superLikeOpacityAnimation,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: DatingColors.yellow,
+                        boxShadow: [
+                          BoxShadow(
+                            color: DatingColors.yellow.withOpacity(
+                                _superLikeGlowAnimation.value * 0.6),
+                            blurRadius: 40 * _superLikeGlowAnimation.value,
+                            spreadRadius: 10 * _superLikeGlowAnimation.value,
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(32),
+                      child:
+                          const Icon(Icons.star, color: Colors.black, size: 70),
+                    ),
+                  ),
+                ),
+              )
+            : const SizedBox.shrink();
+      },
+    );
+  }
+
+  Widget _buildSwipeOverlay() {
+    IconData overlayIcon = Icons.favorite;
+    Color overlayColor = DatingColors.successGreen;
+
+    if (_swipeDirection == CardSwiperDirection.right) {
+      overlayIcon = Icons.favorite;
+      overlayColor = DatingColors.successGreen;
+    } else if (_swipeDirection == CardSwiperDirection.left) {
+      overlayIcon = Icons.close;
+      overlayColor = DatingColors.errorRed;
+    } else if (_swipeDirection == CardSwiperDirection.top) {
+      overlayIcon = Icons.star;
+      overlayColor = DatingColors.yellow;
+    }
+
+    return Positioned.fill(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.black.withOpacity(0.3),
+        ),
+        child: Center(
+          child: AnimatedScale(
+            scale: _showOverlay ? 1.0 : 0.0,
+            duration: const Duration(milliseconds: 200),
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: overlayColor.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(50),
+              ),
+              child: Icon(
+                overlayIcon,
+                size: 60,
+                color: _swipeDirection == CardSwiperDirection.top
+                    ? Colors.black
+                    : Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCompletionScreen() {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            DatingColors.lightpinks,
+            DatingColors.middlepink,
+          ],
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          AnimatedBuilder(
+            animation: _pulseAnimation,
+            builder: (context, child) {
+              return Transform.scale(
+                scale: _pulseAnimation.value,
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        DatingColors.everqpidColor,
+                        DatingColors.lightpink
+                      ],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: DatingColors.everqpidColor.withOpacity(0.3),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
+                      ),
+                    ],
+                  ),
+                  child:
+                      const Icon(Icons.favorite, size: 60, color: Colors.white),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 30),
+          Text(
+            'All Done! 🎉',
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: DatingColors.primaryText,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'You have viewed all available users.\nCheck back later for more profiles!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 18,
+              color: DatingColors.secondaryText,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 40),
+          ElevatedButton.icon(
+            onPressed: _resetProgress,
+            icon: const Icon(Icons.refresh),
+            label: const Text('Refresh'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: DatingColors.lightpink,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25),
+              ),
+              elevation: 5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // BUMBLE-STYLE USER CARD WITH MULTIPLE IMAGES SUPPORT
+  Widget _buildBumbleStyleUserCard(Map<String, dynamic> user) {
+    final profileImages = _getUserProfileImages(user);
+    final userNameWithAge = _getUserNameWithAge(user);
+    final userDistance = _getUserDistance(user);
+    final userBio = _getUserBio(user);
+    final userInterests = _getUserInterests(user);
+    final userEducation = _getUserEducation(user);
+    final userWork = _getUserWork(user);
+
+    return Container(
+      margin: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.15),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          color: Colors.white,
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              children: [
+                // MULTIPLE IMAGES SECTION - BUMBLE STYLE
+                _buildMultipleImagesSection(
+                    user, profileImages, userNameWithAge, userDistance),
+                // PROFILE INFO SECTION - BUMBLE STYLE
+                _buildBumbleProfileInfo(
+                    user, userBio, userInterests, userEducation, userWork),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // BUMBLE-STYLE MULTIPLE IMAGES SECTION
+  Widget _buildMultipleImagesSection(
+    Map<String, dynamic> user,
+    List<String> profileImages,
+    String userNameWithAge,
+    String userDistance,
+  ) {
+    return Container(
+      width: double.infinity,
+      height: MediaQuery.of(context).size.height * 0.7,
+      child: Stack(
+        children: [
+          // Multiple Images PageView
+          if (profileImages.isNotEmpty)
+            PageView.builder(
+              itemCount: profileImages.length,
+              onPageChanged: (page) {
+                setState(() {
+                  _currentImageIndex = page;
+                });
+              },
+              itemBuilder: (context, index) {
+                return Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: Image.network(
+                    profileImages[index],
+                    fit: BoxFit.cover,
+                    loadingBuilder: (context, child, progress) {
+                      if (progress == null) return child;
+                      return Container(
+                        color: DatingColors.surfaceGrey,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation(
+                                DatingColors.everqpidColor),
+                          ),
+                        ),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: DatingColors.mediumGrey,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.person,
+                                  size: 100, color: DatingColors.lightgrey),
+                              const SizedBox(height: 16),
+                              Text(
+                                userNameWithAge,
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            )
+          else
+            Container(
+              color: DatingColors.mediumGrey,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.person,
+                        size: 100, color: DatingColors.lightgrey),
+                    const SizedBox(height: 16),
+                    Text(
+                      userNameWithAge,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+          // Super Like overlay
+          _buildSuperLikeImageOverlay(),
+
+          // Image indicator dots - BUMBLE STYLE
+          if (profileImages.length > 1)
+            Positioned(
+              top: 50,
+              left: 16,
+              right: 16,
+              child: Row(
+                children: profileImages.asMap().entries.map((entry) {
+                  final isActive = entry.key == _currentImageIndex;
+                  return Expanded(
+                    child: Container(
+                      height: 4,
+                      margin: const EdgeInsets.symmetric(horizontal: 2),
+                      decoration: BoxDecoration(
+                        color: isActive
+                            ? Colors.white
+                            : Colors.white.withOpacity(0.4),
+                        borderRadius: BorderRadius.circular(2),
+                        boxShadow: isActive
+                            ? [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.3),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 1),
+                                ),
+                              ]
+                            : [],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+
+          // Gradient overlay for better text visibility
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 200,
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black87,
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          // User info overlay - BUMBLE STYLE
+          Positioned(
+            bottom: 20,
+            left: 20,
+            right: 20,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        userNameWithAge,
+                        style: const TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              offset: Offset(0, 2),
+                              blurRadius: 4,
+                              color: Colors.black54,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(15),
+                        border:
+                            Border.all(color: Colors.white.withOpacity(0.3)),
+                      ),
+                      child: Text(
+                        userDistance,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                // Quick bio preview
+                if (_getUserBio(user).isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      _getUserBio(user),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // BUMBLE-STYLE PROFILE INFO SECTION
+  Widget _buildBumbleProfileInfo(
+    Map<String, dynamic> user,
+    String userBio,
+    List<String> userInterests,
+    String userEducation,
+    String userWork,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // My Bio section
+          if (userBio.isNotEmpty) ...[
+            _buildBumbleSectionHeader("My Bio", "💬"),
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade50,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.grey.shade200),
+              ),
+              child: Text(
+                userBio,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey.shade800,
+                  height: 1.5,
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+          ],
+
+          // My Basics section
+          _buildBumbleSectionHeader("My Basics", "ℹ"),
+          const SizedBox(height: 12),
+          Column(
+            children: [
+              if (userEducation.isNotEmpty)
+                _buildBumbleBasicRow("🎓", "Education", userEducation),
+              if (userWork.isNotEmpty)
+                _buildBumbleBasicRow("💼", "Work", userWork),
+              if (user['height'] != null)
+                _buildBumbleBasicRow("📏", "Height", "${user['height']} cm"),
+              if (_getUserReligion(user).isNotEmpty)
+                _buildBumbleBasicRow("🙏", "Religion", _getUserReligion(user)),
+              if (_getUserDrinking(user).isNotEmpty)
+                _buildBumbleBasicRow("🍷", "Drinking", _getUserDrinking(user)),
+              if (user['smoking']?.toString().isNotEmpty == true)
+                _buildBumbleBasicRow(
+                    "🚭", "Smoking", user['smoking'].toString()),
+              if (user['exercise']?.toString().isNotEmpty == true)
+                _buildBumbleBasicRow(
+                    "💪", "Exercise", user['exercise'].toString()),
+            ],
+          ),
+          const SizedBox(height: 24),
+
+          // My Interests section
+          if (userInterests.isNotEmpty) ...[
+            _buildBumbleSectionHeader("My Interests", "❤"),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: userInterests
+                  .where((interest) => interest.trim().isNotEmpty)
+                  .map((interest) => _buildBumbleInterestChip(interest.trim()))
+                  .toList(),
+            ),
+            const SizedBox(height: 24),
+          ],
+
+          // Action buttons
+          Container(
+            key: _bottomActionsKey,
+            child: _buildBumbleActionButtons(user),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBumbleSectionHeader(String title, String emoji) {
+    return Row(
+      children: [
+        Text(emoji, style: const TextStyle(fontSize: 24)),
+        const SizedBox(width: 12),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBumbleBasicRow(String emoji, String label, String value) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: Row(
+        children: [
+          Text(emoji, style: const TextStyle(fontSize: 20)),
+          const SizedBox(width: 16),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey.shade600,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBumbleInterestChip(String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: DatingColors.yellow.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(25),
+        border: Border.all(color: DatingColors.yellow.withOpacity(0.4)),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: Colors.black87,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBumbleActionButtons(Map<String, dynamic> user) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Column(
+        children: [
+          // Main action buttons
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // Pass button (Reject)
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.mediumImpact();
+                  if (!allUsersCompleted) {
+                    controller.swipe(CardSwiperDirection.left);
+                  }
+                },
+                child: Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.grey.shade300, width: 2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(Icons.close, color: Colors.grey, size: 30),
+                ),
+              ),
+
+              // Super Like button
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.mediumImpact();
+                  if (!allUsersCompleted) {
+                    controller.swipe(CardSwiperDirection.top);
+                  }
+                },
+                child: Container(
+                  width: 70,
+                  height: 70,
+                  decoration: BoxDecoration(
+                    color: DatingColors.yellow,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: DatingColors.yellow.withOpacity(0.4),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(Icons.star, color: Colors.black, size: 35),
+                ),
+              ),
+
+              // Like button (Heart)
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.mediumImpact();
+                  if (!allUsersCompleted) {
+                    controller.swipe(CardSwiperDirection.right);
+                  }
+                },
+                child: Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: DatingColors.successGreen,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: DatingColors.successGreen.withOpacity(0.4),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child:
+                      const Icon(Icons.favorite, color: Colors.white, size: 28),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 30),
+
+          // Hide and Report
+          GestureDetector(
+            onTap: () {
+              // Show report dialog
+            },
+            child: Text(
+              "Hide and Report",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey.shade600,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Handler methods
   void _handleLike(int index) {
     if (index < allUsers.length) {
       final user = allUsers[index];
-      print('Liked user: ${user.firstName}');
-
-      // Trigger the like API via provider
       ref.read(likedDislikeProvider.notifier).addLikeDislike(
-            user.id.toString(), // or just user.userId if it's already a String
+            user['id'].toString(),
             'right',
           );
     }
@@ -1283,11 +1465,8 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage> {
   void _handleReject(int index) {
     if (index < allUsers.length) {
       final user = allUsers[index];
-      print('Rejected user: ${user.firstName}');
-
-      // Trigger the dislike API via provider
       ref.read(likedDislikeProvider.notifier).addLikeDislike(
-            user.id.toString(), // ensure it's a string if your API expects one
+            user['id'].toString(),
             'left',
           );
     }
@@ -1296,77 +1475,10 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage> {
   void _handleSuperLike(int index) {
     if (index < allUsers.length) {
       final user = allUsers[index];
-      print('Super liked user: ${user.firstName}');
-      // TODO: Add your super like API call here
+      ref.read(likedDislikeProvider.notifier).addLikeDislike(
+            user['id'].toString(),
+            'super',
+          );
     }
   }
-
-  String _getAge(String dob) {
-    try {
-      final birthDate = DateTime.parse(dob);
-      final today = DateTime.now();
-      int age = today.year - birthDate.year;
-      if (today.month < birthDate.month ||
-          (today.month == birthDate.month && today.day < birthDate.day)) {
-        age--;
-      }
-      return '$age';
-    } catch (e) {
-      return '';
-    }
-  }
-}
-
-class CurvedBottomRightClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    path.lineTo(0, size.height);
-    path.lineTo(size.width - 40, size.height);
-    path.quadraticBezierTo(
-        size.width, size.height, size.width, size.height - 40);
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
-}
-
-class CustomCornerClipper extends CustomClipper<Path> {
-  final double topLeft;
-  final double topRight;
-  final double bottomLeft;
-  final double bottomRight;
-
-  CustomCornerClipper({
-    this.topLeft = 0,
-    this.topRight = 0,
-    this.bottomLeft = 0,
-    this.bottomRight = 0,
-  });
-
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-
-    path.moveTo(0, topLeft);
-    path.quadraticBezierTo(0, 0, topLeft, 0);
-    path.lineTo(size.width - topRight, 0);
-    path.quadraticBezierTo(size.width, 0, size.width, topRight);
-
-    path.lineTo(size.width, size.height - bottomRight);
-    path.quadraticBezierTo(
-        size.width, size.height, size.width - bottomRight, size.height);
-
-    path.lineTo(bottomLeft, size.height);
-    path.quadraticBezierTo(0, size.height, 0, size.height - bottomLeft);
-
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => true;
 }
