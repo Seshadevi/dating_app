@@ -15,46 +15,55 @@ class ExperienceScreen extends ConsumerStatefulWidget {
 
 class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
   int? selectedExperienceId;
-  String? selectedExpereinceName;
-  bool isUpdating = false; // Loading state for updates
-  bool hasInitialized = false; // Track if initial data load is complete
+  String? selectedExperienceName;
+  bool isUpdating = false;
+  bool hasInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    _loadInitialData();
+    // Use addPostFrameCallback to ensure providers are ready
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadInitialData();
+    });
   }
 
   Future<void> _loadInitialData() async {
+    if (!mounted) return;
+
     try {
       // Fetch experience options from API
       await ref.read(experienceProvider.notifier).getExperience();
 
+      // Wait for next frame to ensure providers are updated
+      await Future.delayed(const Duration(milliseconds: 50));
+
+      if (!mounted) return;
+
       // Get user saved data from loginProvider
       final userState = ref.read(loginProvider);
-      final user = userState.data != null && userState.data!.isNotEmpty
+      final user = userState.data?.isNotEmpty == true
           ? userState.data![0].user
           : null;
 
-      final experience = user?.experiences;
+      final experiences = user?.experiences;
 
       // If user has at least one experience, preselect it
-      if (experience != null && experience.isNotEmpty) {
-        final first = experience.first;
-        if (first != null) {
-          if (mounted) {
-            setState(() {
-              selectedExperienceId = first.id;
-              selectedExpereinceName = first.experience;
-            });
-          }
+      if (experiences?.isNotEmpty == true) {
+        final firstExperience = experiences!.first;
+        if (firstExperience?.id != null && firstExperience?.experience != null) {
+          setState(() {
+            selectedExperienceId = firstExperience!.id;
+            selectedExperienceName = firstExperience.experience;
+          });
         }
       }
     } catch (e) {
+      debugPrint('Error loading experience data: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to load experience data: $e'),
+            content: Text('Failed to load experience data: ${e.toString()}'),
             backgroundColor: Colors.red,
           ),
         );
@@ -68,53 +77,62 @@ class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
     }
   }
 
-  Future<void> _updateExperince(int id, String name) async {
+  Future<void> _updateExperience(int id, String name) async {
+    if (!mounted || isUpdating) return;
+
+    // Store previous values for rollback
+    final previousId = selectedExperienceId;
+    final previousName = selectedExperienceName;
+
     setState(() {
       isUpdating = true;
-      selectedExperienceId = id; // Update UI immediately for better UX
-      selectedExpereinceName = name;
+      selectedExperienceId = id;
+      selectedExperienceName = name;
     });
 
     try {
       await ref.read(loginProvider.notifier).updateProfile(
-            causeId: null,
-            image: null,
-            modeid: null,
-            bio: null,
-            modename: null,
-            prompt: null,
-            qualityId: null,
-            experienceId: id,
-          );
+        causeId: null,
+        image: null,
+        modeid: null,
+        bio: null,
+        modename: null,
+        prompt: null,
+        qualityId: null,
+        experienceId: id,
+      );
 
       if (mounted) {
-        setState(() {
-          isUpdating = false;
-        });
-
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('$name updated successfully!'),
             backgroundColor: Colors.green,
           ),
         );
-        Navigator.pop(context, selectedExpereinceName);
+        Navigator.pop(context, selectedExperienceName);
       }
     } catch (e) {
+      debugPrint('Error updating experience: $e');
+      
       if (mounted) {
+        // Rollback to previous state
         setState(() {
-          isUpdating = false;
-          // Revert selection if update failed
-          selectedExperienceId = null;
-          selectedExpereinceName = null;
+          selectedExperienceId = previousId;
+          selectedExperienceName = previousName;
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to update experience: $e'),
+            content: Text('Failed to update experience: ${e.toString()}'),
             backgroundColor: Colors.red,
           ),
         );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isUpdating = false;
+        });
       }
     }
   }
@@ -122,6 +140,7 @@ class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
   @override
   Widget build(BuildContext context) {
     final experienceState = ref.watch(experienceProvider);
+    final loginState = ref.watch(loginProvider); // Watch instead of read
     final options = experienceState.data ?? [];
     
     // Check if we're still loading initial data
@@ -134,7 +153,7 @@ class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close, color: DatingColors.black),
-          onPressed: isUpdating ? null : () => Navigator.pop(context), // Disable when updating
+          onPressed: isUpdating ? null : () => Navigator.pop(context),
         ),
       ),
       body: Stack(
@@ -175,24 +194,7 @@ class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
                   child: isLoadingInitial
                       ? _buildLoadingSkeleton()
                       : options.isEmpty
-                          ? const Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.info_outline, 
-                                       size: 48, 
-                                       color: Colors.grey),
-                                  SizedBox(height: 16),
-                                  Text(
-                                    "No experiences available",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
+                          ? _buildEmptyState()
                           : _buildExperiencesList(options),
                 ),
               ],
@@ -213,7 +215,7 @@ class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
                         CircularProgressIndicator(),
                         SizedBox(height: 16),
                         Text(
-                          'Updating...',
+                          'Updating experience...',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -230,10 +232,9 @@ class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
     );
   }
 
-  // Loading skeleton for initial API data load
   Widget _buildLoadingSkeleton() {
     return ListView.builder(
-      itemCount: 8, // Show 8 skeleton items
+      itemCount: 8,
       itemBuilder: (context, index) {
         return Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
@@ -245,7 +246,7 @@ class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
             ),
             child: Center(
               child: Container(
-                width: 150 + (index % 3) * 30.0, // Varying widths for realism
+                width: 150 + (index % 3) * 30.0,
                 height: 20,
                 decoration: BoxDecoration(
                   color: Colors.grey.shade300,
@@ -259,20 +260,49 @@ class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
     );
   }
 
-  // Experiences list when data is loaded
+
+
+  Widget _buildEmptyState() {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.info_outline, 
+               size: 48, 
+               color: Colors.grey),
+          SizedBox(height: 16),
+          Text(
+            "No experiences available",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildExperiencesList(List options) {
     return ListView.builder(
       itemCount: options.length,
       itemBuilder: (context, index) {
         final experienceItem = options[index];
-        final experienceId = experienceItem.id ?? -1;
-        final experienceName = experienceItem.experience ?? '';
+        final experienceId = experienceItem?.id;
+        final experienceName = experienceItem?.experience ?? '';
+        
+        // Skip if invalid data
+        if (experienceId == null || experienceName.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
         final isSelected = selectedExperienceId == experienceId;
+        final isCurrentlyUpdating = isUpdating && isSelected;
 
         return Padding(
           padding: const EdgeInsets.only(bottom: 12.0),
           child: GestureDetector(
-            onTap: isUpdating ? null : () => _updateExperince(experienceId, experienceName),
+            onTap: isUpdating ? null : () => _updateExperience(experienceId, experienceName),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               height: 56,
@@ -284,7 +314,7 @@ class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
                         end: Alignment.centerRight,
                       )
                     : null,
-                color: isSelected ? DatingColors.brown : DatingColors.white,
+                color: isSelected ? null : DatingColors.white,
                 borderRadius: BorderRadius.circular(28),
                 border: Border.all(
                   color: isSelected
@@ -320,9 +350,9 @@ class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    if (isSelected && isUpdating)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
+                    if (isCurrentlyUpdating)
+                      const Padding(
+                        padding: EdgeInsets.only(left: 8.0),
                         child: SizedBox(
                           width: 16,
                           height: 16,

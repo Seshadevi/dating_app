@@ -318,7 +318,7 @@ String _getMotivationalMessage(int percentage) {
                           ),
                         // ],
 
-                                      if ((user?.work == null ) &&
+                                      if ((user?.works == null ) &&
                             (user?.education == null ) &&
                             user?.gender == null &&
                             (user?.location == null ) &&

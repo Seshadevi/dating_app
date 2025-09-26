@@ -38,6 +38,20 @@ class Dgapi {
   static const String verification ="$baseUrl/users/userid/verification";
   static const String purchaseplan="$baseUrl/user/purchase";
   static const String likedusers="$baseUrl/user/like-dislike";
+  static const String reportAdd="$baseUrl/postreports";
+  static const String categoryget="$baseUrl/categorys";
+  static const String reportGet="$baseUrl/getreports";
+  static const String sportsget="$baseUrl/admin/getSport";
+  // static const String ="$baseUrl/";
+  // static const String ="$baseUrl/";
+  // static const String ="$baseUrl/";
+  // static const String ="$baseUrl/";
+  // static const String ="$baseUrl/";
+  // static const String ="$baseUrl/";
+  // static const String ="$baseUrl/";
+  // static const String ="$baseUrl/";
+  // static const String ="$baseUrl/";
+  // static const String ="$baseUrl/";
   // static const String ="$baseUrl/";
   // static const String ="$baseUrl/";
 
