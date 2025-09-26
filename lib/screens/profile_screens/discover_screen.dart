@@ -105,7 +105,7 @@ final myGoals = myUser?.data?.first.user?.lookingFor
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 20,),
             const Text(
               "Discover New Genuine Humans With People\nWho Match Your Vibes, Refreshed Every Day.",
               textAlign: TextAlign.center,

@@ -63,14 +63,6 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
     final genderState = ref.watch(genderProvider);
     final screenWidth = MediaQuery.of(context).size.width;
 
-    /// ✅ Auto-select all genders if toggle is ON and data is now available
-    if (isOpenToEveryone &&
-        genderState.data != null &&
-        selectedGenderIds.length != genderState.data!.length) {
-      selectedGenderIds =
-          genderState.data!.map((e) => e.id.toString()).toList();
-    }
-
     return Scaffold(
       body: Column(
         children: [
@@ -94,7 +86,7 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
                 //   ),
                 // ),
                 const SizedBox(height: 20),
-                _buildToggleOption(),
+               // _buildToggleOption(),
                 const SizedBox(height: 20),
                 if (genderState.data != null)
                   ...genderState.data!.map((gender) => _buildGenderOption(gender)),
@@ -161,53 +153,18 @@ class _IntroMeetselectionState extends ConsumerState<IntroMeetselection> {
     );
   }
 
-  Widget _buildToggleOption() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Switch(
-          value: isOpenToEveryone,
-          onChanged: (value) {
-            setState(() {
-              isOpenToEveryone = value;
-              if (!value) {
-                selectedGenderIds.clear();
-              }
-            });
-          },
-          activeTrackColor: DatingColors.everqpidColor,
-          activeColor: DatingColors.white,
-          inactiveTrackColor: DatingColors.lightgrey,
-          inactiveThumbColor: DatingColors.white,
-        ),
-        const Text(
-          "I'm open to dating everyone",
-          style: TextStyle(
-            fontFamily: 'Inter',
-            fontSize: 15,
-            fontWeight: FontWeight.w400,
-            color: Color.fromARGB(255, 60, 60, 60),
-          ),
-        ),
-      ],
-    );
-  }
+ 
 
   Widget _buildGenderOption(Data gender) {
     final isSelected = selectedGenderIds.contains(gender.id.toString());
 
     return InkWell(
-      onTap: isOpenToEveryone
-          ? null
-          : () {
-              setState(() {
-                if (isSelected) {
-                  selectedGenderIds.remove(gender.id.toString());
-                } else {
-                  selectedGenderIds.add(gender.id.toString());
-                }
-              });
-            },
+      onTap: () {
+        setState(() {
+          selectedGenderIds = [gender.id.toString()]; // only one selection
+        });
+      },
+
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
         padding: const EdgeInsets.symmetric(horizontal: 24),
