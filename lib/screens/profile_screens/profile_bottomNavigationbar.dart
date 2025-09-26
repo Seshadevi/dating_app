@@ -171,36 +171,6 @@
 //   _TabSpec({required this.page, required this.asset, required this.w, required this.h});
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // import 'package:dating/provider/loginProvider.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
@@ -262,7 +232,6 @@
 //     final userModel = ref.watch(loginProvider);
 //     // Resolve modeId with same logic used in _readModeId
 //     final modeId = userModel.data!.isNotEmpty ? userModel.data?.first.user?.modes!.first.id:null;
-            
 
 //     // Build pages: keep 5 tabs. Slot 1 is conditional.
 //     final pages = <Widget>[
@@ -347,32 +316,11 @@
 //   }
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:flutter/material.dart';
 // Import your actual screens here
-import 'package:flutter/services.dart'; 
+import 'package:flutter/services.dart';
 import 'package:dating/screens/profile_screens/message_screen.dart';
 import 'package:dating/screens/profile_screens/discover_screen.dart';
 import 'package:dating/screens/profile_screens/heartsync_screen.dart';
@@ -385,38 +333,39 @@ class CustomBottomNavigationBar extends ConsumerStatefulWidget {
   const CustomBottomNavigationBar({super.key});
 
   @override
-  ConsumerState<CustomBottomNavigationBar> createState() =>_CustomBottomNavigationBarState();
+  ConsumerState<CustomBottomNavigationBar> createState() =>
+      _CustomBottomNavigationBarState();
 }
 
-class _CustomBottomNavigationBarState extends ConsumerState<CustomBottomNavigationBar> {
-
+class _CustomBottomNavigationBarState
+    extends ConsumerState<CustomBottomNavigationBar> {
   int _selectedIndex = 0;
   DateTime? _lastBackPressed;
 
-    @override
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final usermodel =ref.read(loginProvider);
+      final usermodel = ref.read(loginProvider);
       // final modeid =usermodel.data[0]?.user[0]?.modes.first.id;
     });
   }
-  
+
   final List<Widget> _pages = [
-        ProfileScreen(), 
-        // DiscoverScreen(),
-        MyHeartsyncPage(),
-        LikedYouScreen(),
-        MessagesScreen(),
+    ProfileScreen(),
+    DiscoverScreen(),
+    MyHeartsyncPage(),
+    LikedYouScreen(),
+    MessagesScreen(),
   ];
-  
+
   void _onItemTapped(int index) {
     if (index == _selectedIndex) return;
     setState(() {
       _selectedIndex = index;
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -466,7 +415,8 @@ class _CustomBottomNavigationBarState extends ConsumerState<CustomBottomNavigati
     );
   }
 
-  Widget _buildNavItem(int index, String assetPath, double width, double height) {
+  Widget _buildNavItem(
+      int index, String assetPath, double width, double height) {
     final isSelected = index == _selectedIndex;
 
     return GestureDetector(
@@ -480,8 +430,8 @@ class _CustomBottomNavigationBarState extends ConsumerState<CustomBottomNavigati
             width: width,
             height: height,
             fit: BoxFit.contain,
-            color: isSelected 
-                ? DatingColors.qpidColor     // icon color selected
+            color: isSelected
+                ? DatingColors.qpidColor // icon color selected
                 : DatingColors.lightgrey,
           ),
         ),
@@ -501,7 +451,7 @@ class _CustomBottomNavigationBarState extends ConsumerState<CustomBottomNavigati
 //         child: Container(
 //           padding: const EdgeInsets.all(8),
 //           // decoration: BoxDecoration(
-//           //   color: isSelected 
+//           //   color: isSelected
 //           //       ? DatingColors.lightpinks   // background for selected
 //           //       : Colors.transparent,
 //           //   shape: BoxShape.circle,
@@ -511,7 +461,7 @@ class _CustomBottomNavigationBarState extends ConsumerState<CustomBottomNavigati
 //             width: width,
 //             height: height,
 //             fit: BoxFit.contain,
-//             color: isSelected 
+//             color: isSelected
 //                 ? DatingColors.qpidColor     // icon color selected
 //                 : DatingColors.lightgrey,    // icon color unselected
 //           ),
@@ -520,20 +470,7 @@ class _CustomBottomNavigationBarState extends ConsumerState<CustomBottomNavigati
 //     ),
 //   );
 // }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import 'package:dating/screens/profile_screens/chat_pay_Screen.dart';
 // import 'package:dating/screens/profile_screens/discover_screen.dart';
@@ -541,7 +478,6 @@ class _CustomBottomNavigationBarState extends ConsumerState<CustomBottomNavigati
 // import 'package:dating/screens/profile_screens/liked_Screen.dart';
 // import 'package:dating/screens/profile_screens/profile_screen.dart';
 // import 'package:flutter/material.dart';
-
 
 // class CustomBottomNavigationBar extends StatefulWidget {
 //   const CustomBottomNavigationBar({super.key});
@@ -617,16 +553,6 @@ class _CustomBottomNavigationBarState extends ConsumerState<CustomBottomNavigati
 //     );
 //   }
 // }
-
-
-
-
-
-
-
-
-
-
 
 // import 'package:flutter/material.dart';
 
