@@ -1,6 +1,5 @@
 
 import 'package:dating/model/moreabout/industrymodel.dart';
-import 'package:dating/model/moreabout/languagemodel.dart';
 
 import 'package:dating/provider/loader.dart';
 

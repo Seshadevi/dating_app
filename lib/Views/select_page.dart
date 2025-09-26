@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dating/Viewmodels/select_page_view_model.dart';
-import 'package:dating/screens/logins/loginscreen.dart';
 
 
 class SelectPage extends ConsumerWidget {

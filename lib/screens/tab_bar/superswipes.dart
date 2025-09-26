@@ -4,7 +4,6 @@ import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/plans/planspurchaseprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../model/plans/plamsfullmodel.dart';
 import '../../provider/plans/plansfullprovider.dart';
 
 class SuperSwipesScreen extends ConsumerStatefulWidget {

@@ -5,7 +5,6 @@ import 'package:dating/provider/plans/planspurchaseprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../provider/plans/plansfullprovider.dart';
-import '../../model/plans/plamsfullmodel.dart';
 
 class SpotlightTabContent extends ConsumerStatefulWidget {
   final int typeId;

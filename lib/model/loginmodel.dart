@@ -1,4 +1,3 @@
-import 'package:dating/model/signupprocessmodels/lookingModel.dart';
 
 class UserModel {
   int? statusCode;

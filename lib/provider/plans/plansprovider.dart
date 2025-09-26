@@ -1,4 +1,3 @@
-import 'package:dating/model/peoples_all_model.dart';
 import 'package:dating/model/plans/plans.dart';
 import 'package:dating/provider/loader.dart';
 import 'package:dating/provider/loginProvider.dart';

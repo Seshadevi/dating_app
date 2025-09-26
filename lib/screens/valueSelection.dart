@@ -1,10 +1,8 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/signupprocessProviders/qualities.dart';
-import 'package:dating/screens/lifeStryle_habits.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../model/signupprocessmodels/qualitiesModel.dart';
-import 'package:collection/collection.dart';
 
 
 

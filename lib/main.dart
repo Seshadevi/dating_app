@@ -6,7 +6,6 @@ import 'package:dating/screens/About_section/city_screen.dart';
 import 'package:dating/screens/About_section/education_screen.dart';
 import 'package:dating/screens/About_section/gender_screen.dart';
 import 'package:dating/screens/About_section/hometown_screen.dart';
-import 'package:dating/screens/About_section/occupation_screen.dart';
 import 'package:dating/screens/onbordingscreen.dart';
 import 'package:dating/screens/addHeadlineScreen.dart';
 import 'package:dating/screens/beKindScreen.dart';
@@ -38,7 +37,6 @@ import 'package:dating/screens/notification_screen.dart';
 import 'package:dating/screens/openingMoveScreen.dart';
 import 'package:dating/screens/partners_selections.dart';
 import 'package:dating/screens/profile_screens/message_screen.dart';
-import 'package:dating/screens/profile_screens/discover_screen.dart';
 import 'package:dating/screens/profile_screens/heartsync_screen.dart';
 import 'package:dating/screens/profile_screens/liked_Screen.dart';
 import 'package:dating/screens/profile_screens/narrowsearch.dart';
@@ -141,7 +139,7 @@ class MyApp extends StatelessWidget {
          "/termsandconditions":(context)=>BeKindScreen(),
          "/finalStageSingupScreen":(context) => FriendOnboardingScreen(),
          "profilescreen" : (context) => ProfileScreen(),
-         "discoverscreen": (context) =>const DiscoverScreen(),
+         // "discoverscreen": (context) =>const DiscoverScreen(),
          "myheartsyncpage": (context) =>const MyHeartsyncPage(),
          "/narrowsearch":(context) => NarrowSearchScreen() ,
          "likedyouscreen": (context) =>const LikedYouScreen(),

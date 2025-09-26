@@ -1,12 +1,8 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/plans/plansfullprovider.dart';
-import 'package:dating/provider/socket_users_combined_provider.dart';
-import 'package:dating/screens/profile_screens/favourate.dart';
-import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
 import 'package:dating/screens/tab_bar/spotlight.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:socket_io_client/socket_io_client.dart';
 
 class LikedYouScreen extends ConsumerStatefulWidget {
   const LikedYouScreen({super.key});

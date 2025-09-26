@@ -1,10 +1,8 @@
 
 import 'package:dating/model/signupprocessmodels/causesModel.dart';
 import 'package:dating/provider/loader.dart';
-import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/utils/dating_apis.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/retry.dart';
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

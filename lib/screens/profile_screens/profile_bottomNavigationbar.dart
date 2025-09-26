@@ -404,7 +404,7 @@ class _CustomBottomNavigationBarState extends ConsumerState<CustomBottomNavigati
   
   final List<Widget> _pages = [
         ProfileScreen(), 
-        DiscoverScreen(),
+        // DiscoverScreen(),
         MyHeartsyncPage(),
         LikedYouScreen(),
         MessagesScreen(),

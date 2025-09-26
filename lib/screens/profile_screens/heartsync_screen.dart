@@ -1,18 +1,18 @@
-import 'dart:ui';
 import 'package:dating/constants/dating_app_user.dart';
-import 'package:dating/provider/likes/likedislikeprovider.dart';
-import 'package:dating/provider/loginProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
-import 'package:dating/provider/socket_users_combined_provider.dart';
-import 'package:dating/screens/profile_screens/narrowsearch.dart';
-import 'dart:math' as math;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../animations/love_3d_animation.dart';
+import '../../provider/likedislikeprovider.dart';
+import '../../provider/loginProvider.dart';
+import '../../provider/socket_heartsync_provider.dart';
 import 'package:intl/intl.dart';
 
+import 'narrowsearch.dart';
+
 class MyHeartsyncPage extends ConsumerStatefulWidget {
-  const MyHeartsyncPage({super.key});
+  const MyHeartsyncPage({Key? key}) : super(key: key);
 
   @override
   ConsumerState<MyHeartsyncPage> createState() => _MyHeartsyncPageState();
@@ -22,8 +22,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
     with TickerProviderStateMixin {
   bool isLoadingMore = false;
   final CardSwiperController controller = CardSwiperController();
-  List<Map<String, dynamic>> allUsers = [];
-  int currentCardIndex = 0;
+  int currentUserIndex = 0;
   int viewedUsersCount = 0;
   bool allUsersCompleted = false;
 
@@ -33,7 +32,6 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _bottomActionsKey = GlobalKey();
   bool _hideFixedImage = false;
-  CardSwiperDirection? _swipeDirection;
   bool _showOverlay = false;
 
   // Animation controllers for enhanced UI
@@ -41,13 +39,31 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
   late AnimationController _slideController;
   late Animation<double> _pulseAnimation;
   late Animation<Offset> _slideAnimation;
+  bool isCardAnimating = false;
+  CardSwiperDirection? currentSwipeDirection;
 
-  // Super Like animation controllers - Bumble style
+  // Super Like animation controllers
   bool _isSuperLikeAnimating = false;
   late AnimationController _superLikeController;
   late Animation<double> _superLikeScaleAnimation;
   late Animation<double> _superLikeOpacityAnimation;
   late Animation<double> _superLikeGlowAnimation;
+
+  // 3D Like/Dislike animation controllers
+  late AnimationController _like3dController;
+  late Animation<double> _like3dRotationX;
+  late Animation<double> _like3dRotationY;
+  late Animation<double> _like3dScale;
+  late Animation<double> _like3dOpacity;
+
+  late AnimationController _dislike3dController;
+  late Animation<double> _dislike3dRotationX;
+  late Animation<double> _dislike3dRotationY;
+  late Animation<double> _dislike3dScale;
+  late Animation<double> _dislike3dOpacity;
+
+  bool _showLike3DAnimation = false;
+  bool _showDislike3DAnimation = false;
 
   // Floating star button visibility
   bool _showFloatingStar = true;
@@ -68,7 +84,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
     )..repeat(reverse: true);
 
     _slideController = AnimationController(
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 800),
       vsync: this,
     );
 
@@ -82,15 +98,100 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
       vsync: this,
     );
 
+    // 3D Like animation controller
+    _like3dController = AnimationController(
+      duration: const Duration(milliseconds: 3000),
+      vsync: this,
+    );
+
+    _like3dRotationX = Tween<double>(
+      begin: 0.0,
+      end: 6.28, // 2π radians (full rotation)
+    ).animate(_like3dController);
+
+    _like3dRotationY = Tween<double>(
+      begin: 0.0,
+      end: 3.14, // π radians (half rotation)
+    ).animate(_like3dController);
+
+    _like3dScale = TweenSequence([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.0, end: 2.0),
+        weight: 0.4,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 2.0, end: 1.5),
+        weight: 0.3,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.5, end: 0.0),
+        weight: 0.3,
+      ),
+    ]).animate(_like3dController);
+
+    _like3dOpacity = TweenSequence([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.0, end: 1.0),
+        weight: 0.25,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.0, end: 1.0),
+        weight: 0.50,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.0, end: 0.0),
+        weight: 0.25,
+      ),
+    ]).animate(_like3dController);
+
+    // 3D Dislike animation controller
+    _dislike3dController = AnimationController(
+      duration: const Duration(milliseconds: 2000),
+      vsync: this,
+    );
+
+    _dislike3dRotationX = Tween<double>(
+      begin: 0.0,
+      end: -3.14, // -π radians (reverse rotation)
+    ).animate(_dislike3dController);
+
+    _dislike3dRotationY = Tween<double>(
+      begin: 0.0,
+      end: 6.28, // 2π radians
+    ).animate(_dislike3dController);
+
+    _dislike3dScale = TweenSequence([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.0, end: 1.8),
+        weight: 0.60,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.8, end: 0.0),
+        weight: 0.40,
+      ),
+    ]).animate(_dislike3dController);
+
+    _dislike3dOpacity = TweenSequence([
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 0.0, end: 1.0),
+        weight: 0.40,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(begin: 1.0, end: 0.0),
+        weight: 0.60,
+      ),
+    ]).animate(_dislike3dController);
+
     _pulseAnimation = Tween<double>(
       begin: 0.8,
       end: 1.2,
     ).animate(
         CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut));
 
+    // Initialize slide animation with default values
     _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 1),
-      end: const Offset(0, 0),
+      begin: const Offset(0, 0),
+      end: const Offset(1.5, -0.2),
     ).animate(CurvedAnimation(parent: _slideController, curve: Curves.easeOut));
 
     // Super Like animations
@@ -126,6 +227,31 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
       curve: Curves.easeInOut,
     ));
 
+    // Add status listeners for 3D animations
+    _like3dController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() => _showLike3DAnimation = false);
+        _like3dController.reset();
+      }
+    });
+
+    _dislike3dController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() => _showDislike3DAnimation = false);
+        _dislike3dController.reset();
+      }
+    });
+
+    // Add status listener for slide animation
+    _slideController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() {
+          isCardAnimating = false;
+        });
+        _slideController.reset();
+      }
+    });
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(socketUserProvider.notifier).reset();
 
@@ -138,7 +264,6 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
       currentUserLongitude = location?.longitude?.toDouble();
 
       _scrollController.addListener(_checkFloatingStarVisibility);
-
       _floatingStarController.forward();
     });
   }
@@ -150,12 +275,14 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
     _scrollController.dispose();
     _superLikeController.dispose();
     _floatingStarController.dispose();
+    _like3dController.dispose();
+    _dislike3dController.dispose();
     super.dispose();
   }
 
   void _checkFloatingStarVisibility() {
     final RenderBox? bottomActionsBox =
-        _bottomActionsKey.currentContext?.findRenderObject() as RenderBox?;
+    _bottomActionsKey.currentContext?.findRenderObject() as RenderBox?;
 
     if (bottomActionsBox != null) {
       final position = bottomActionsBox.localToGlobal(Offset.zero);
@@ -173,7 +300,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
     }
   }
 
-  // Age calculation method
+  // Helper to calculate age from DOB string in 'dd/MM/yyyy' format
   int _calculateAge(String? dobString) {
     if (dobString == null || dobString.isEmpty) return 0;
     try {
@@ -190,7 +317,40 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
     }
   }
 
-  // Super Like animation
+  String getCompleteImageUrl(String? imagePath) {
+    if (imagePath == null || imagePath.isEmpty) return '';
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    } else {
+      return 'http://97.74.93.26:6100$imagePath';
+    }
+  }
+
+  void _triggerLike3DAnimation() {
+    setState(() {
+      _showLike3DAnimation = true;
+      _showDislike3DAnimation = false;
+    });
+    _like3dController.forward();
+    HapticFeedback.heavyImpact();
+  }
+
+  void _triggerDislike3DAnimation() {
+    setState(() {
+      _showDislike3DAnimation = true;
+      _showLike3DAnimation = false;
+    });
+    _dislike3dController.forward();
+    HapticFeedback.mediumImpact();
+  }
+
+  void _superLikeFromFloatingButton() {
+    if (_isSuperLikeAnimating || allUsersCompleted) return;
+
+    _floatingStarController.reverse();
+    handleSuperLike();
+  }
+
   void _animateSuperLikeOnImage() {
     if (_isSuperLikeAnimating) return;
 
@@ -207,261 +367,241 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
           _isSuperLikeAnimating = false;
         });
       });
-      });
+    });
+  }
+
+  // Handle like action with card movement
+  Future<void> handleLike() async {
+    if (isCardAnimating) return;
+
+    setState(() {
+      isCardAnimating = true;
+      currentSwipeDirection = CardSwiperDirection.right;
+    });
+
+    // Update slide animation for right swipe
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0),
+      end: const Offset(1.5, -0.2),
+    ).animate(CurvedAnimation(parent: _slideController, curve: Curves.easeInOut));
+
+    _slideController.forward(from: 0.0);
+    _triggerLike3DAnimation();
+
+    final socketUsers = ref.read(socketUserProvider);
+    final users = socketUsers?.data ?? [];
+
+    if (users.isNotEmpty && currentUserIndex < users.length) {
+      final currentUser = users[currentUserIndex];
+      try {
+        await ref.read(likedDislikeProvider.notifier).addLikeDislike(
+          currentUser.id?.toString() ?? "",
+          "right",
+        );
+
+        Future.delayed(const Duration(milliseconds: 900), () {
+          _moveToNextUser();
+        });
+      } catch (error) {
+        _showErrorSnackBar("Failed to like user");
+        setState(() {
+          isCardAnimating = false;
+        });
+      }
     }
+  }
 
-  void _superLikeFromFloatingButton() {
-    if (_isSuperLikeAnimating || allUsersCompleted) return;
+  Future<void> handleDislike() async {
+    if (isCardAnimating) return;
 
-    _floatingStarController.reverse();
+    setState(() {
+      isCardAnimating = true;
+      currentSwipeDirection = CardSwiperDirection.left;
+    });
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0),
+      end: const Offset(-1.5, -0.1),
+    ).animate(CurvedAnimation(parent: _slideController, curve: Curves.easeInOut));
+
+    _slideController.forward(from: 0.0);
+    _triggerDislike3DAnimation();
+
+    final socketUsers = ref.read(socketUserProvider);
+    final users = socketUsers?.data ?? [];
+
+    if (users.isNotEmpty && currentUserIndex < users.length) {
+      final currentUser = users[currentUserIndex];
+      try {
+        await ref.read(likedDislikeProvider.notifier).addLikeDislike(
+          currentUser.id?.toString() ?? "",
+          "left",
+        );
+
+        Future.delayed(const Duration(milliseconds: 900), () {
+          _moveToNextUser();
+        });
+      } catch (error) {
+        _showErrorSnackBar("Failed to dislike user");
+        setState(() {
+          isCardAnimating = false;
+        });
+      }
+    }
+  }
+
+  // Handle super like action with card movement
+  Future<void> handleSuperLike() async {
+    if (isCardAnimating) return;
+
+    setState(() {
+      isCardAnimating = true;
+      currentSwipeDirection = CardSwiperDirection.top;
+    });
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0),
+      end: const Offset(0, -1.5),
+    ).animate(CurvedAnimation(parent: _slideController, curve: Curves.easeInOut));
+
+    _slideController.forward(from: 0.0);
     _animateSuperLikeOnImage();
 
-    Future.delayed(const Duration(milliseconds: 200), () {
-      if (!allUsersCompleted) {
-        controller.swipe(CardSwiperDirection.top);
+    HapticFeedback.mediumImpact();
+
+    final socketUsers = ref.read(socketUserProvider);
+    final users = socketUsers?.data ?? [];
+
+    if (users.isNotEmpty && currentUserIndex < users.length) {
+      final currentUser = users[currentUserIndex];
+      try {
+        await ref.read(likedDislikeProvider.notifier).addLikeDislike(
+          currentUser.id?.toString() ?? "",
+          "up",
+        );
+
+        Future.delayed(const Duration(milliseconds: 900), () {
+          _moveToNextUser();
+        });
+      } catch (error) {
+        _showErrorSnackBar("Failed to super like user");
+        setState(() {
+          isCardAnimating = false;
+        });
       }
-    });
-  }
-
-  // Helper methods for extracting user data - UPDATED for new JSON structure
-  String _getUserName(Map<String, dynamic> user) {
-    final firstName = user['firstName'] ?? '';
-    final lastName = user['lastName'] ?? '';
-    if (firstName.isEmpty && lastName.isEmpty) {
-      return 'User ${user['id'] ?? ''}';
-    }
-    return '$firstName $lastName'.trim();
-  }
-
-  String _getUserNameWithAge(Map<String, dynamic> user) {
-    final firstName = user['firstName'] ?? '';
-    final dob = user['dob'];
-    final age = _calculateAge(dob);
-
-    if (age > 0) {
-      return '$firstName, $age';
-    } else {
-      return firstName.isNotEmpty ? firstName : 'User ${user['id'] ?? ''}';
     }
   }
 
-  String _getUserDistance(Map<String, dynamic> user) {
-    final location = user['location'];
-    if (location == null ||
-        currentUserLatitude == null ||
-        currentUserLongitude == null) {
-      return 'Location not available';
-    }
+  // Move to next user logic
+  void _moveToNextUser() {
+    final socketUsers = ref.read(socketUserProvider);
+    final users = socketUsers?.data ?? [];
 
-    final userLat = location['latitude']?.toDouble();
-    final userLon = location['longitude']?.toDouble();
-
-    if (userLat == null || userLon == null) {
-      return 'Location not available';
-    }
-
-    final distance = _calculateDistance(
-      currentUserLatitude!,
-      currentUserLongitude!,
-      userLat,
-      userLon,
-    );
-
-    if (distance < 1) {
-      return "${(distance * 1000).round()} meters away";
-    } else {
-      return "${distance.toStringAsFixed(1)} km away";
-    }
-  }
-
-  // UPDATED: Profile images with new server path format - MULTIPLE IMAGES SUPPORT
-  List<String> _getUserProfileImages(Map<String, dynamic> user) {
-    final profilePics = user['profile_pics'] as List?;
-    final userId = user['id'];
-
-    if (profilePics == null || profilePics.isEmpty || userId == null) return [];
-
-    return profilePics
-        .map((pic) {
-          String? imagePath = pic['imagePath'] ?? '';
-
-          // Extract filename from path like "/Uploadsdating/531/1758611355333_1000110215.jpg"
-          if (imagePath!.startsWith('/')) {
-            imagePath = imagePath.substring(1); // Remove leading slash
-          }
-
-          // Build full URL
-          if (imagePath!.isNotEmpty) {
-            return 'http://97.74.93.26:6100/$imagePath';
-          }
-
-          return '';
-        })
-        .where((url) => url.isNotEmpty)
-        .toList();
-  }
-
-  String _getUserBio(Map<String, dynamic> user) {
-    return user['headLine'] ?? '';
-  }
-
-  List<String> _getUserModes(Map<String, dynamic> user) {
-    final modes = user['modes'] as List?;
-    if (modes == null) return [];
-    return modes
-        .map((mode) => mode['value']?.toString() ?? '')
-        .where((mode) => mode.isNotEmpty)
-        .toList();
-  }
-
-  List<String> _getUserInterests(Map<String, dynamic> user) {
-    final raw = user['interests'];
-    if (raw == null) return [];
-
-    if (raw is List) {
-      final interests = raw
-          .map((interest) {
-            if (interest is Map) {
-              final name = interest['interests'] ??
-                  interest['name'] ??
-                  interest['title'] ??
-                  interest['value'] ??
-                  '';
-              return name.toString().trim();
-            }
-            if (interest is String) {
-              return interest.trim();
-            }
-            return '';
-          })
-          .where((interest) => interest.isNotEmpty)
-          .toList();
-
-      return interests;
-    }
-
-    if (raw is String) {
-      if (raw.isEmpty) return [];
-      final interests = raw
-          .split(',')
-          .map((s) => s.trim())
-          .where((s) => s.isNotEmpty)
-          .toList();
-      return interests;
-    }
-
-    return [];
-  }
-
-  String _getUserEducation(Map<String, dynamic> user) {
-    final educations = user['educations'] as List?;
-    if (educations == null || educations.isEmpty) return '';
-
-    final education = educations.first['institution']?.toString() ??
-        educations.first['name']?.toString() ??
-        '';
-    return education.trim();
-  }
-
-  String _getUserWork(Map<String, dynamic> user) {
-    final work = user['work'];
-    if (work != null && work is Map) {
-      return work['title']?.toString()?.trim() ?? '';
-    }
-
-    final industries = user['industries'] as List?;
-    if (industries == null || industries.isEmpty) return '';
-    final industry = industries.first['industry']?.toString() ?? '';
-    return industry.trim();
-  }
-
-  String _getUserQualities(Map<String, dynamic> user) {
-    final qualities = user['qualities'] as List?;
-    if (qualities == null) return '';
-    return qualities
-        .map((q) => q['name']?.toString() ?? '')
-        .where((q) => q.isNotEmpty)
-        .join(', ');
-  }
-
-  String _getUserReligion(Map<String, dynamic> user) {
-    final religions = user['religions'] as List?;
-    if (religions == null || religions.isEmpty) return '';
-    return religions.first['religion']?.toString()?.trim() ?? '';
-  }
-
-  String _getUserDrinking(Map<String, dynamic> user) {
-    final drinking = user['drinking'] as List?;
-    if (drinking == null || drinking.isEmpty) return '';
-    return drinking.first['preference']?.toString()?.trim() ?? '';
-  }
-
-  double _calculateDistance(
-      double lat1, double lon1, double lat2, double lon2) {
-    const double earthRadius = 6371;
-    double dLat = _toRadians(lat2 - lat1);
-    double dLon = _toRadians(lon2 - lon1);
-
-    double a = math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.cos(_toRadians(lat1)) *
-            math.cos(_toRadians(lat2)) *
-            math.sin(dLon / 2) *
-            math.sin(dLon / 2);
-
-    double c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
-    return earthRadius * c;
-  }
-
-  double _toRadians(double degrees) => degrees * math.pi / 180;
-
-  void _updateProgress() {
     setState(() {
       viewedUsersCount++;
-      if (viewedUsersCount >= allUsers.length) {
+      currentUserIndex++;
+    });
+
+    // Check if we need to fetch more users
+    if (currentUserIndex >= users.length - 3) {
+      final notifier = ref.read(socketUserProvider.notifier);
+      notifier.fetchNextPageIfNeeded(currentUserIndex);
+    }
+
+    // Check if no more users available
+    if (currentUserIndex >= users.length) {
+      setState(() {
         allUsersCompleted = true;
         _showFloatingStar = false;
-        _floatingStarController.reverse();
-      }
-    });
+      });
+      _floatingStarController.reverse();
+    }
   }
 
-  void _resetProgress() {
-    setState(() {
-      viewedUsersCount = 0;
-      allUsersCompleted = false;
-      currentCardIndex = 0;
-      _showFloatingStar = true;
-    });
-    _floatingStarController.forward();
-    ref.read(socketUserProvider.notifier).reset();
+  void _showErrorSnackBar(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Colors.redAccent,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final socketUsers = ref.watch(socketUserProvider);
-
-    allUsers = List<Map<String, dynamic>>.from(socketUsers);
-    final int cardsCount = allUsers.length;
-    final int displayed = cardsCount >= 2 ? 2 : cardsCount;
-
-    return Scaffold(
-      backgroundColor: DatingColors.backgroundWhite,
-      body: socketUsers.isEmpty
-          ? _buildLoadingWidget()
-          : Stack(
-              children: [
-                Column(
-                  children: [
-                    _buildEnhancedAppBar(),
-                    if (allUsersCompleted) _buildCompletionBanner(),
-                    Expanded(
-                        child:
-                            _buildCardStack(allUsers, cardsCount, displayed)),
-                  ],
-                ),
-                _buildFloatingSuperLikeButton(),
-              ],
+  Widget _buildCompletionMessage() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.favorite,
+            size: 80,
+            color: DatingColors.everqpidColor,
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'No more users to show!',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
             ),
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'Check back later for new matches',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 30),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                currentUserIndex = 0;
+                allUsersCompleted = false;
+                _showFloatingStar = true;
+              });
+              ref.read(socketUserProvider.notifier).refresh();
+              _floatingStarController.forward();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: DatingColors.everqpidColor,
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+            ),
+            child: const Text(
+              'Refresh',
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Widget for chips with optional icon
+  Widget labeledChip(String label, {IconData? icon}) {
+    return Chip(
+      avatar: icon != null ? Icon(icon, size: 20) : null,
+      label: Text(label, style: const TextStyle(fontSize: 16)),
+      backgroundColor: Colors.grey.shade200,
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+    );
+  }
+
+  // Section title widget
+  Widget sectionTitle(String title, {double? fontSize}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: fontSize ?? 16,
+        ),
+      ),
     );
   }
 
@@ -469,8 +609,9 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
     return AnimatedBuilder(
       animation: _floatingStarOpacity,
       builder: (context, child) {
+        if (!_showFloatingStar) return const SizedBox.shrink();
         return Positioned(
-          bottom: 100,
+          bottom: 40,
           right: 20,
           child: Opacity(
             opacity: _floatingStarOpacity.value,
@@ -480,11 +621,11 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                 width: 70,
                 height: 70,
                 decoration: BoxDecoration(
-                  color: DatingColors.yellow,
+                  color: DatingColors.everqpidColor,
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: DatingColors.yellow.withOpacity(0.4),
+                      color: DatingColors.everqpidColor.withOpacity(0.4),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                     ),
@@ -492,7 +633,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                 ),
                 child: const Icon(
                   Icons.star,
-                  color: Colors.black,
+                  color: Colors.white,
                   size: 35,
                 ),
               ),
@@ -503,982 +644,675 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
     );
   }
 
-  Widget _buildLoadingWidget() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          AnimatedBuilder(
-            animation: _pulseAnimation,
-            builder: (context, child) {
-              return Transform.scale(
-                scale: _pulseAnimation.value,
-                child: Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [
-                        DatingColors.everqpidColor,
-                        DatingColors.lightpink
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                  ),
-                  child:
-                      const Icon(Icons.favorite, color: Colors.white, size: 40),
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 20),
-          Text(
-            "Finding Perfect Matches...",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: DatingColors.primaryText,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEnhancedAppBar() {
-    return SafeArea(
-      child: Container(
-        margin: const EdgeInsets.all(16),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(25),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [DatingColors.everqpidColor, DatingColors.lightpink],
-                ),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(Icons.favorite, color: Colors.white, size: 20),
-            ),
-            const SizedBox(width: 12),
-            const Expanded(
-              child: Text(
-                'EVER QPID',
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.5,
-                ),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: DatingColors.surfaceGrey,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: IconButton(
-                icon: Icon(Icons.tune, color: DatingColors.secondaryText),
-                onPressed: () async {
-                  HapticFeedback.lightImpact();
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const NarrowSearchScreen()),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCompletionBanner() {
-    return SlideTransition(
-      position: _slideAnimation,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [DatingColors.lightGreen, DatingColors.lightGreen],
-          ),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: DatingColors.successGreen.withOpacity(0.3)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: DatingColors.successGreen.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(Icons.check_circle,
-                  color: DatingColors.successGreen, size: 24),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'All profiles viewed! 🎉',
-                    style: TextStyle(
-                      color: DatingColors.successGreen,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                  Text(
-                    'No more cards to swipe right now',
-                    style: TextStyle(
-                      color: DatingColors.successGreen.withOpacity(0.8),
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCardStack(
-      List<Map<String, dynamic>> users, int cardsCount, int displayed) {
-    return Stack(
-      children: [
-        if (!allUsersCompleted)
-          CardSwiper(
-            controller: controller,
-            cardsCount: cardsCount,
-            numberOfCardsDisplayed: displayed,
-            isLoop: false,
-            allowedSwipeDirection: const AllowedSwipeDirection.all(),
-            backCardOffset: const Offset(0, 20),
-            padding: EdgeInsets.zero,
-            onSwipe: (previousIndex, currentIndex, direction) {
-              HapticFeedback.mediumImpact();
-
-              if (previousIndex != null) {
-                if (direction == CardSwiperDirection.right) {
-                  _handleLike(previousIndex);
-                } else if (direction == CardSwiperDirection.left) {
-                  _handleReject(previousIndex);
-                } else if (direction == CardSwiperDirection.top) {
-                  _handleSuperLike(previousIndex);
-                }
-              }
-
-              setState(() {
-                currentCardIndex = currentIndex ?? 0;
-                _swipeDirection = direction;
-                _showOverlay = true;
-                viewedUsersCount++;
-                allUsersCompleted = viewedUsersCount >= cardsCount;
-              });
-
-              Future.delayed(const Duration(milliseconds: 300), () {
-                if (mounted) {
-                  setState(() => _showOverlay = false);
-                }
-              });
-
-              _updateProgress();
-
-              if (allUsersCompleted) {
-                _slideController.forward();
-              }
-
-              if (currentIndex != null) {
-                ref
-                    .read(socketUserProvider.notifier)
-                    .fetchNextPageIfNeeded(currentIndex);
-              }
-
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                _checkFloatingStarVisibility();
-              });
-
-              return true;
-            },
-            cardBuilder:
-                (BuildContext context, int index, int hOffset, int vOffset) {
-              if (index >= users.length) return Container();
-
-              return Stack(
-                children: [
-                  _buildBumbleStyleUserCard(users[index]),
-                  if (_showOverlay && _swipeDirection != null)
-                    _buildSwipeOverlay(),
-                ],
-              );
-            },
-          ),
-        if (allUsersCompleted) _buildCompletionScreen(),
-      ],
-    );
-  }
-
-  Widget _buildSuperLikeImageOverlay() {
+  // 3D Like Animation Widget
+  Widget _build3dLikeAnimation() {
     return AnimatedBuilder(
-      animation: _superLikeController,
+      animation: _like3dController,
       builder: (context, child) {
-        return _isSuperLikeAnimating
-            ? Center(
-                child: ScaleTransition(
-                  scale: _superLikeScaleAnimation,
-                  child: FadeTransition(
-                    opacity: _superLikeOpacityAnimation,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: DatingColors.yellow,
-                        boxShadow: [
-                          BoxShadow(
-                            color: DatingColors.yellow.withOpacity(
-                                _superLikeGlowAnimation.value * 0.6),
-                            blurRadius: 40 * _superLikeGlowAnimation.value,
-                            spreadRadius: 10 * _superLikeGlowAnimation.value,
-                          ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.all(32),
-                      child:
-                          const Icon(Icons.star, color: Colors.black, size: 70),
-                    ),
-                  ),
-                ),
-              )
-            : const SizedBox.shrink();
+        return Transform(
+          alignment: Alignment.center,
+          transform: Matrix4.identity()
+            ..setEntry(3, 2, 0.001)
+            ..rotateX(_like3dRotationX.value)
+            ..rotateY(_like3dRotationY.value)
+            ..scale(_like3dScale.value),
+          child: Opacity(
+            opacity: _like3dOpacity.value,
+            child: CustomPaint(
+              size: const Size(220, 220),
+              painter: HeartBlastPainter(
+                progress: _like3dOpacity.value, particles: [],
+              ),
+            ),
+          ),
+        );
       },
     );
   }
 
-  Widget _buildSwipeOverlay() {
-    IconData overlayIcon = Icons.favorite;
-    Color overlayColor = DatingColors.successGreen;
-
-    if (_swipeDirection == CardSwiperDirection.right) {
-      overlayIcon = Icons.favorite;
-      overlayColor = DatingColors.successGreen;
-    } else if (_swipeDirection == CardSwiperDirection.left) {
-      overlayIcon = Icons.close;
-      overlayColor = DatingColors.errorRed;
-    } else if (_swipeDirection == CardSwiperDirection.top) {
-      overlayIcon = Icons.star;
-      overlayColor = DatingColors.yellow;
-    }
-
-    return Positioned.fill(
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.black.withOpacity(0.3),
-        ),
-        child: Center(
-          child: AnimatedScale(
-            scale: _showOverlay ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 200),
+  // 3D Dislike Animation Widget
+  Widget _build3dDislikeAnimation() {
+    return AnimatedBuilder(
+      animation: _dislike3dController,
+      builder: (context, child) {
+        return Transform(
+          alignment: Alignment.center,
+          transform: Matrix4.identity()
+            ..setEntry(3, 2, 0.001) // perspective
+            ..rotateX(_dislike3dRotationX.value)
+            ..rotateY(_dislike3dRotationY.value)
+            ..scale(_dislike3dScale.value),
+          child: Opacity(
+            opacity: _dislike3dOpacity.value,
             child: Container(
-              padding: const EdgeInsets.all(20),
+              width: 200,
+              height: 200,
               decoration: BoxDecoration(
-                color: overlayColor.withOpacity(0.9),
-                borderRadius: BorderRadius.circular(50),
-              ),
-              child: Icon(
-                overlayIcon,
-                size: 60,
-                color: _swipeDirection == CardSwiperDirection.top
-                    ? Colors.black
-                    : Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCompletionScreen() {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            DatingColors.lightpinks,
-            DatingColors.middlepink,
-          ],
-        ),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          AnimatedBuilder(
-            animation: _pulseAnimation,
-            builder: (context, child) {
-              return Transform.scale(
-                scale: _pulseAnimation.value,
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [
-                        DatingColors.everqpidColor,
-                        DatingColors.lightpink
-                      ],
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: DatingColors.everqpidColor.withOpacity(0.3),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
-                  ),
-                  child:
-                      const Icon(Icons.favorite, size: 60, color: Colors.white),
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 30),
-          Text(
-            'All Done! 🎉',
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              color: DatingColors.primaryText,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'You have viewed all available users.\nCheck back later for more profiles!',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 18,
-              color: DatingColors.secondaryText,
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 40),
-          ElevatedButton.icon(
-            onPressed: _resetProgress,
-            icon: const Icon(Icons.refresh),
-            label: const Text('Refresh'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: DatingColors.lightpink,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
-              ),
-              elevation: 5,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // BUMBLE-STYLE USER CARD WITH MULTIPLE IMAGES SUPPORT
-  Widget _buildBumbleStyleUserCard(Map<String, dynamic> user) {
-    final profileImages = _getUserProfileImages(user);
-    final userNameWithAge = _getUserNameWithAge(user);
-    final userDistance = _getUserDistance(user);
-    final userBio = _getUserBio(user);
-    final userInterests = _getUserInterests(user);
-    final userEducation = _getUserEducation(user);
-    final userWork = _getUserWork(user);
-
-    return Container(
-      margin: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.15),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          color: Colors.white,
-          child: SingleChildScrollView(
-            controller: _scrollController,
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                // MULTIPLE IMAGES SECTION - BUMBLE STYLE
-                _buildMultipleImagesSection(
-                    user, profileImages, userNameWithAge, userDistance),
-                // PROFILE INFO SECTION - BUMBLE STYLE
-                _buildBumbleProfileInfo(
-                    user, userBio, userInterests, userEducation, userWork),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // BUMBLE-STYLE MULTIPLE IMAGES SECTION
-  Widget _buildMultipleImagesSection(
-    Map<String, dynamic> user,
-    List<String> profileImages,
-    String userNameWithAge,
-    String userDistance,
-  ) {
-    return Container(
-      width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.7,
-      child: Stack(
-        children: [
-          // Multiple Images PageView
-          if (profileImages.isNotEmpty)
-            PageView.builder(
-              itemCount: profileImages.length,
-              onPageChanged: (page) {
-                setState(() {
-                  _currentImageIndex = page;
-                });
-              },
-              itemBuilder: (context, index) {
-                return Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: Image.network(
-                    profileImages[index],
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, progress) {
-                      if (progress == null) return child;
-                      return Container(
-                        color: DatingColors.surfaceGrey,
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation(
-                                DatingColors.everqpidColor),
-                          ),
-                        ),
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: DatingColors.mediumGrey,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.person,
-                                  size: 100, color: DatingColors.lightgrey),
-                              const SizedBox(height: 16),
-                              Text(
-                                userNameWithAge,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
-            )
-          else
-            Container(
-              color: DatingColors.mediumGrey,
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.person,
-                        size: 100, color: DatingColors.lightgrey),
-                    const SizedBox(height: 16),
-                    Text(
-                      userNameWithAge,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    Colors.grey.shade400.withOpacity(0.9),
+                    Colors.grey.shade600.withOpacity(0.7),
+                    Colors.grey.shade800.withOpacity(0.5),
                   ],
+                  stops: const [0.0, 0.5, 1.0],
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.6),
+                    blurRadius: 25,
+                    spreadRadius: 8,
+                  ),
+                ],
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  // Multiple X icons for depth
+                  Transform.scale(
+                    scale: 0.6,
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.white.withOpacity(0.3),
+                      size: 120,
+                    ),
+                  ),
+                  Transform.scale(
+                    scale: 0.8,
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.white.withOpacity(0.6),
+                      size: 100,
+                    ),
+                  ),
+                  Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    size: 70,
+                  ),
+                  // Crack effects
+                  Positioned(
+                    top: 50,
+                    left: 60,
+                    child: Transform.rotate(
+                      angle: _dislike3dRotationY.value * 0.3,
+                      child: Container(
+                        width: 2,
+                        height: 35,
+                        color: Colors.grey.shade300.withOpacity(0.7),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 60,
+                    right: 50,
+                    child: Transform.rotate(
+                      angle: -_dislike3dRotationX.value * 0.2,
+                      child: Container(
+                        width: 30,
+                        height: 2,
+                        color: Colors.grey.shade300.withOpacity(0.7),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 80,
+                    right: 70,
+                    child: Transform.rotate(
+                      angle: _dislike3dRotationY.value * 0.5,
+                      child: Container(
+                        width: 20,
+                        height: 2,
+                        color: Colors.grey.shade200.withOpacity(0.5),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
+          ),
+        );
+      },
+    );
+  }
 
-          // Super Like overlay
-          _buildSuperLikeImageOverlay(),
+  @override
+  Widget build(BuildContext context) {
+    final socketUsers = ref.watch(socketUserProvider);
+    final users = socketUsers?.data ?? [];
+    final screenSize = MediaQuery.of(context).size;
+    final screenWidth = screenSize.width;
+    final screenHeight = screenSize.height;
 
-          // Image indicator dots - BUMBLE STYLE
-          if (profileImages.length > 1)
-            Positioned(
-              top: 50,
-              left: 16,
-              right: 16,
-              child: Row(
-                children: profileImages.asMap().entries.map((entry) {
-                  final isActive = entry.key == _currentImageIndex;
-                  return Expanded(
+    if (users.isEmpty && socketUsers?.pagination != true) {
+      return Scaffold(
+        backgroundColor: DatingColors.backgroundWhite,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AnimatedBuilder(
+                animation: _pulseAnimation,
+                builder: (context, child) {
+                  return Transform.scale(
+                    scale: _pulseAnimation.value,
                     child: Container(
-                      height: 4,
-                      margin: const EdgeInsets.symmetric(horizontal: 2),
+                      width: 80,
+                      height: 80,
                       decoration: BoxDecoration(
-                        color: isActive
-                            ? Colors.white
-                            : Colors.white.withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(2),
-                        boxShadow: isActive
-                            ? [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.3),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 1),
-                                ),
-                              ]
-                            : [],
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            DatingColors.everqpidColor,
+                            DatingColors.lightpink
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
                       ),
+                      child: const Icon(Icons.favorite,
+                          color: Colors.white, size: 40),
                     ),
                   );
-                }).toList(),
+                },
               ),
-            ),
-
-          // Gradient overlay for better text visibility
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 200,
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black87,
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-          // User info overlay - BUMBLE STYLE
-          Positioned(
-            bottom: 20,
-            left: 20,
-            right: 20,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        userNameWithAge,
-                        style: const TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          shadows: [
-                            Shadow(
-                              offset: Offset(0, 2),
-                              blurRadius: 4,
-                              color: Colors.black54,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(15),
-                        border:
-                            Border.all(color: Colors.white.withOpacity(0.3)),
-                      ),
-                      child: Text(
-                        userDistance,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-
-                // Quick bio preview
-                if (_getUserBio(user).isNotEmpty)
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      _getUserBio(user),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // BUMBLE-STYLE PROFILE INFO SECTION
-  Widget _buildBumbleProfileInfo(
-    Map<String, dynamic> user,
-    String userBio,
-    List<String> userInterests,
-    String userEducation,
-    String userWork,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // My Bio section
-          if (userBio.isNotEmpty) ...[
-            _buildBumbleSectionHeader("My Bio", "💬"),
-            const SizedBox(height: 12),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade50,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.grey.shade200),
-              ),
-              child: Text(
-                userBio,
+              const SizedBox(height: 20),
+              const Text(
+                "Finding Perfect Matches...",
                 style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey.shade800,
-                  height: 1.5,
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
-          ],
-
-          // My Basics section
-          _buildBumbleSectionHeader("My Basics", "ℹ"),
-          const SizedBox(height: 12),
-          Column(
-            children: [
-              if (userEducation.isNotEmpty)
-                _buildBumbleBasicRow("🎓", "Education", userEducation),
-              if (userWork.isNotEmpty)
-                _buildBumbleBasicRow("💼", "Work", userWork),
-              if (user['height'] != null)
-                _buildBumbleBasicRow("📏", "Height", "${user['height']} cm"),
-              if (_getUserReligion(user).isNotEmpty)
-                _buildBumbleBasicRow("🙏", "Religion", _getUserReligion(user)),
-              if (_getUserDrinking(user).isNotEmpty)
-                _buildBumbleBasicRow("🍷", "Drinking", _getUserDrinking(user)),
-              if (user['smoking']?.toString().isNotEmpty == true)
-                _buildBumbleBasicRow(
-                    "🚭", "Smoking", user['smoking'].toString()),
-              if (user['exercise']?.toString().isNotEmpty == true)
-                _buildBumbleBasicRow(
-                    "💪", "Exercise", user['exercise'].toString()),
-            ],
-          ),
-          const SizedBox(height: 24),
-
-          // My Interests section
-          if (userInterests.isNotEmpty) ...[
-            _buildBumbleSectionHeader("My Interests", "❤"),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              children: userInterests
-                  .where((interest) => interest.trim().isNotEmpty)
-                  .map((interest) => _buildBumbleInterestChip(interest.trim()))
-                  .toList(),
-            ),
-            const SizedBox(height: 24),
-          ],
-
-          // Action buttons
-          Container(
-            key: _bottomActionsKey,
-            child: _buildBumbleActionButtons(user),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBumbleSectionHeader(String title, String emoji) {
-    return Row(
-      children: [
-        Text(emoji, style: const TextStyle(fontSize: 24)),
-        const SizedBox(width: 12),
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBumbleBasicRow(String emoji, String label, String value) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Row(
-        children: [
-          Text(emoji, style: const TextStyle(fontSize: 20)),
-          const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade600,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
+                  fontSize: 18,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBumbleInterestChip(String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: DatingColors.yellow.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(25),
-        border: Border.all(color: DatingColors.yellow.withOpacity(0.4)),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: Colors.black87,
         ),
-      ),
-    );
-  }
+      );
+    }
 
-  Widget _buildBumbleActionButtons(Map<String, dynamic> user) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      child: Column(
-        children: [
-          // Main action buttons
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              // Pass button (Reject)
-              GestureDetector(
-                onTap: () {
-                  HapticFeedback.mediumImpact();
-                  if (!allUsersCompleted) {
-                    controller.swipe(CardSwiperDirection.left);
-                  }
-                },
+    if (allUsersCompleted || currentUserIndex >= users.length) {
+      return Scaffold(
+        backgroundColor: DatingColors.backgroundWhite,
+        body: _buildCompletionMessage(),
+      );
+    }
+
+    final user = users[currentUserIndex];
+
+    return Scaffold(
+      backgroundColor: DatingColors.backgroundWhite,
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onHorizontalDragEnd: (details) {
+          final velocity = details.velocity.pixelsPerSecond.dx;
+          if (velocity > 300) {
+            // Swipe right - like
+            handleLike();
+          } else if (velocity < -300) {
+            // Swipe left - dislike
+            handleDislike();
+          }
+        },
+
+        child: Stack(
+          children: [
+            // Main scrollable content
+            SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Profile Photo container with slide animation and swipe gestures
+
+                  Container(
+                      height: screenHeight * 0.95,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(25),
+                          bottomRight: Radius.circular(25),
+                        ),
+                        image: user.profilePics != null && user.profilePics!.isNotEmpty
+                            ? DecorationImage(
+                          image: NetworkImage(getCompleteImageUrl(
+                              user.profilePics![_currentImageIndex].imagePath)),
+                          fit: BoxFit.cover,
+                        )
+                            : const DecorationImage(
+                          image: AssetImage('assets/default_profile.png'),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: Stack(
+                        children: [
+                          // Gradient overlay at bottom
+                          Positioned(
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              height: 150,
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(25),
+                                  bottomRight: Radius.circular(25),
+                                ),
+                                gradient: LinearGradient(
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                  colors: [Colors.black87, Colors.transparent],
+                                ),
+                              ),
+                            ),
+                          ),
+                          // Name and age
+                          Positioned(
+                            bottom: 20,
+                            left: 20,
+                            child: Text(
+                              '${user.firstName ?? "User name"}, ${_calculateAge(user.dob)}',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: screenWidth * 0.07,
+                                fontWeight: FontWeight.bold,
+                                shadows: const [
+                                  Shadow(
+                                    blurRadius: 8,
+                                    color: Colors.black54,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          if (_isSuperLikeAnimating)
+                            Center(child: AnimatedBuilder(
+                              animation: _superLikeScaleAnimation,
+                              builder: (context, child) {
+                                return Transform.scale(
+                                  scale: _superLikeScaleAnimation.value,
+                                  child: Opacity(
+                                    opacity: _superLikeOpacityAnimation.value,
+                                    child: Container(
+                                      width: 100,
+                                      height: 100,
+                                      decoration: BoxDecoration(
+                                        color: DatingColors.everqpidColor,
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color:
+                                            DatingColors.everqpidColor.withOpacity(_superLikeGlowAnimation.value),
+                                            blurRadius: 30,
+                                            spreadRadius: 10,
+                                          ),
+                                        ],
+                                      ),
+                                      child: const Icon(
+                                        Icons.star,
+                                        color: Colors.white,
+                                        size: 50,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            )),
+                          if (_showLike3DAnimation) Center(child: _build3dLikeAnimation()),
+                          if (_showDislike3DAnimation) Center(child: _build3dDislikeAnimation()),
+                        ],
+                      ),
+                    ),
+
+
+                  // Content sections below image
+                  Padding(
+                    padding: EdgeInsets.all(screenWidth * 0.02),
+                    child: Container(
+                      color: DatingColors.white,
+                      child: Column(
+                        children: [
+                          SizedBox(height: screenHeight * 0.025),
+
+                          // About Me Section
+                          Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            elevation: 2,
+                            child: Container(
+                              width: screenWidth,
+                              padding: EdgeInsets.all(screenWidth * 0.02),
+                              color: DatingColors.white,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  sectionTitle('About me',
+                                      fontSize: screenWidth * 0.05),
+                                  Wrap(
+                                    spacing: screenWidth * 0.02,
+                                    runSpacing: screenHeight * 0.02,
+                                    children: [
+                                      if (user.height != null)
+                                        labeledChip('${user.height} cm',
+                                            icon: Icons.straighten),
+                                      if (user.exercise != null)
+                                        labeledChip(user.exercise ?? '',
+                                            icon: Icons.fitness_center),
+                                      if (user.gender != null)
+                                        labeledChip(user.gender ?? '',
+                                            icon: Icons.person),
+                                      if (user.haveKids != null)
+                                        labeledChip(user.haveKids ?? '',
+                                            icon: Icons.child_care),
+                                      if (user.religions != null)
+                                        ...user.religions!
+                                            .map((r) => labeledChip(
+                                            r.religion ?? '',
+                                            icon: Icons.temple_hindu))
+                                            .toList(),
+                                      if (user.newToArea != null)
+                                        labeledChip(user.newToArea ?? '',
+                                            icon: Icons.home_work),
+                                      if (user.drinking != null)
+                                        ...user.drinking!
+                                            .map((d) => labeledChip(
+                                            d.preference ?? '',
+                                            icon: Icons.local_bar))
+                                            .toList(),
+                                      if (user.smoking != null)
+                                        labeledChip(user.smoking ?? '',
+                                            icon: Icons.smoking_rooms),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: screenHeight * 0.02),
+
+                          // I'm Looking For Section
+                          Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            elevation: 1,
+                            child: Container(
+                              width: screenWidth,
+                              padding: EdgeInsets.all(screenWidth * 0.04),
+                              color: DatingColors.white,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  sectionTitle('I\'m Looking For',
+                                      fontSize: screenWidth * 0.05),
+                                  Wrap(
+                                    spacing: screenWidth * 0.1,
+                                    runSpacing: screenHeight * 0.01,
+                                    children: user.lookingFor != null
+                                        ? user.lookingFor!
+                                        .map((lf) => labeledChip(
+                                        lf.value ?? '',
+                                        icon: Icons.search))
+                                        .toList()
+                                        : [],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: screenHeight * 0.02),
+
+                          // My Interests Section
+                          Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            elevation: 3,
+                            child: Container(
+                              width: screenWidth,
+                              padding: EdgeInsets.all(screenWidth * 0.02),
+                              color: DatingColors.white,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  sectionTitle('My Interests',
+                                      fontSize: screenWidth * 0.05),
+                                  Wrap(
+                                    spacing: screenWidth * 0.02,
+                                    runSpacing: screenHeight * 0.01,
+                                    children: user.interests != null
+                                        ? user.interests!
+                                        .map((interest) => labeledChip(
+                                        interest.interests ?? '',
+                                        icon: Icons.local_activity))
+                                        .toList()
+                                        : [],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: screenHeight * 0.02),
+
+                          // Favorite qualities Section
+                          Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            elevation: 3,
+                            child: Container(
+                              width: screenWidth,
+                              padding: EdgeInsets.all(screenWidth * 0.02),
+                              color: DatingColors.white,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  sectionTitle('Favorite qualities',
+                                      fontSize: screenWidth * 0.05),
+                                  Wrap(
+                                    spacing: screenWidth * 0.02,
+                                    runSpacing: screenHeight * 0.01,
+                                    children: user.qualities != null
+                                        ? user.qualities!
+                                        .map((quality) => labeledChip(
+                                        quality.name ?? '',
+                                        icon: Icons.star))
+                                        .toList()
+                                        : [],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: screenHeight * 0.02),
+
+                          // Languages Section
+                          Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            elevation: 3,
+                            child: Container(
+                              width: screenWidth,
+                              padding: EdgeInsets.all(screenWidth * 0.02),
+                              color: DatingColors.white,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  sectionTitle('Languages',
+                                      fontSize: screenWidth * 0.05),
+                                  Wrap(
+                                    spacing: screenWidth * 0.02,
+                                    runSpacing: screenHeight * 0.01,
+                                    children: user.spokenLanguages != null
+                                        ? user.spokenLanguages!
+                                        .map((lang) => labeledChip(
+                                        lang.name ?? '',
+                                        icon: Icons.language))
+                                        .toList()
+                                        : [],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: screenHeight * 0.02),
+
+                          // My Location Section
+                          Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            elevation: 3,
+                            child: Container(
+                              width: screenWidth,
+                              padding: EdgeInsets.all(screenWidth * 0.02),
+                              color: DatingColors.white,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  sectionTitle('My Location',
+                                      fontSize: screenWidth * 0.05),
+                                  if (user.location != null &&
+                                      user.location!.name != null)
+                                    labeledChip(user.location!.name ?? '',
+                                        icon: Icons.location_on),
+                                  if (user.hometown != null)
+                                    labeledChip(user.hometown ?? '',
+                                        icon: Icons.home),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(height: screenHeight * 0.03),
+
+                          // Action Buttons Row with functionality
+                          Row(
+                            key: _bottomActionsKey,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              CircleAvatar(
+                                radius: screenWidth * 0.08,
+                                backgroundColor: Colors.redAccent.shade100,
+                                child: IconButton(
+                                  icon: Icon(Icons.close,
+                                      color: Colors.white,
+                                      size: screenWidth * 0.08),
+                                  onPressed: handleDislike,
+                                ),
+                              ),
+                              CircleAvatar(
+                                radius: screenWidth * 0.08,
+                                backgroundColor: DatingColors.everqpidColor,
+                                child: IconButton(
+                                  icon: Icon(Icons.star,
+                                      color: Colors.white,
+                                      size: screenWidth * 0.08),
+                                  onPressed: handleSuperLike,
+                                ),
+                              ),
+                              CircleAvatar(
+                                radius: screenWidth * 0.08,
+                                backgroundColor: Colors.green.shade400,
+                                child: IconButton(
+                                  icon: Icon(Icons.favorite,
+                                      color: Colors.white,
+                                      size: screenWidth * 0.08),
+                                  onPressed: handleLike,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          SizedBox(height: screenHeight * 0.05),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Floating overlay app bar
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: SafeArea(
                 child: Container(
-                  width: 60,
-                  height: 60,
+                  margin: const EdgeInsets.all(16),
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.grey.shade300, width: 2),
+                    color: Colors.white.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(25),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
-                  child: const Icon(Icons.close, color: Colors.grey, size: 30),
-                ),
-              ),
-
-              // Super Like button
-              GestureDetector(
-                onTap: () {
-                  HapticFeedback.mediumImpact();
-                  if (!allUsersCompleted) {
-                    controller.swipe(CardSwiperDirection.top);
-                  }
-                },
-                child: Container(
-                  width: 70,
-                  height: 70,
-                  decoration: BoxDecoration(
-                    color: DatingColors.yellow,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: DatingColors.yellow.withOpacity(0.4),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              DatingColors.everqpidColor,
+                              DatingColors.lightpink
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(Icons.favorite,
+                            color: Colors.white, size: 20),
+                      ),
+                      const SizedBox(width: 12),
+                      const Expanded(
+                        child: Text(
+                          'EVER QPID',
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: DatingColors.surfaceGrey,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: IconButton(
+                          icon:
+                          Icon(Icons.tune, color: DatingColors.secondaryText),
+                          onPressed: () async {
+                            HapticFeedback.lightImpact();
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                  const NarrowSearchScreen()),
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
-                  child: const Icon(Icons.star, color: Colors.black, size: 35),
                 ),
-              ),
-
-              // Like button (Heart)
-              GestureDetector(
-                onTap: () {
-                  HapticFeedback.mediumImpact();
-                  if (!allUsersCompleted) {
-                    controller.swipe(CardSwiperDirection.right);
-                  }
-                },
-                child: Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: DatingColors.successGreen,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: DatingColors.successGreen.withOpacity(0.4),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child:
-                      const Icon(Icons.favorite, color: Colors.white, size: 28),
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 30),
-
-          // Hide and Report
-          GestureDetector(
-            onTap: () {
-              // Show report dialog
-            },
-            child: Text(
-              "Hide and Report",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey.shade600,
-                fontWeight: FontWeight.w500,
               ),
             ),
-          ),
-        ],
+
+            // Floating star button
+            _buildFloatingSuperLikeButton(),
+          ],
+        ),
       ),
     );
-  }
-
-  // Handler methods
-  void _handleLike(int index) {
-    if (index < allUsers.length) {
-      final user = allUsers[index];
-      ref.read(likedDislikeProvider.notifier).addLikeDislike(
-            user['id'].toString(),
-            'right',
-          );
-    }
-  }
-
-  void _handleReject(int index) {
-    if (index < allUsers.length) {
-      final user = allUsers[index];
-      ref.read(likedDislikeProvider.notifier).addLikeDislike(
-            user['id'].toString(),
-            'left',
-          );
-    }
-  }
-
-  void _handleSuperLike(int index) {
-    if (index < allUsers.length) {
-      final user = allUsers[index];
-      ref.read(likedDislikeProvider.notifier).addLikeDislike(
-            user['id'].toString(),
-            'super',
-          );
-    }
   }
 }
