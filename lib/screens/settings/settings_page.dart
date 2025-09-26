@@ -10,6 +10,7 @@ import 'package:dating/screens/notifications/notifications.dart';
 import 'package:dating/screens/profile_screens/profile_screen.dart';
 import 'package:dating/screens/settings/contactand_faq.dart';
 import 'package:dating/screens/settings/privacusetting_screen.dart';
+import 'package:dating/screens/settings/reportsscreen.dart';
 import 'package:dating/screens/settings/typesOfconnections.dart';
 import 'package:dating/screens/settings/videoAutoPlayScreen.dart';
 import 'package:flutter/material.dart';
@@ -432,6 +433,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => Feedbackpage()),
+                );
+              }),
+               _simpleArrowTile("Reports", () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => Reportsscreen()),
                 );
               }),
       

@@ -123,8 +123,9 @@ class User {
   List<DefaultMessages>? defaultMessages;
   List<ProfilePics>? profilePics;
   StarSign? starSign;
+
   Education? education;
-  Work? work;
+  // Work? work;
   List<Language>? spokenLanguages;
   Location? location;
   String? educationLevel;
@@ -141,6 +142,8 @@ class User {
   List<Industries>? industries;
   String? newToArea;
   List<Relationships>? relationships;
+  List<Sports>? sports;
+  List<Work>? works;
 
   User(
       {this.id,
@@ -167,7 +170,7 @@ class User {
       this.profilePics,
       this.starSign,
       this.education,
-      this.work,
+      // this.work,
       this.spokenLanguages,
       this.location,
       this.educationLevel,
@@ -184,6 +187,8 @@ class User {
       this.experiences,
       this.industries,
       this.relationships,
+      this.sports,
+      this.works,
       this.mode});
 
   User.fromJson(Map<String, dynamic> json) {
@@ -247,6 +252,18 @@ class User {
         relationships!.add(Relationships.fromJson(v));
       });
     }
+    if (json['sports'] != null) {
+      sports = <Sports>[];
+      json['sports'].forEach((v) {
+        sports!.add(Sports.fromJson(v));
+      });
+    }
+    if (json['works'] != null) {
+      works = <Work>[];
+      json['works'].forEach((v) {
+        works!.add(Work.fromJson(v));
+      });
+    }
     if (json['interests'] != null) {
       interests = <Interests>[];
       json['interests'].forEach((v) {
@@ -288,7 +305,7 @@ class User {
     education = json['education'] != null
         ? Education.fromJson(json['education'])
         : null;
-    work = json['work'] != null ? Work.fromJson(json['work']) : null;
+    // work = json['works'] != null ? Work.fromJson(json['works']) : null;
     // spokenLanguages =
     //     json['spokenLanguages'] != null ? Language.fromJson(json['spokenLanguages']) : null;
     if (json['spokenLanguages'] != null) {
@@ -352,8 +369,11 @@ class User {
     if (experiences != null) {
       data['experiences'] = experiences!.map((v) => v.toJson()).toList();
     }
-    if (relationships != null) {
-      data['relationships'] = relationships!.map((v) => v.toJson()).toList();
+    if (sports != null) {
+      data['sports'] = sports!.map((v) => v.toJson()).toList();
+    }
+    if (works != null) {
+      data['works'] = works!.map((v) => v.toJson()).toList();
     }
     if (interests != null) {
       data['interests'] = interests!.map((v) => v.toJson()).toList();
@@ -381,9 +401,9 @@ class User {
     if (education != null) {
       data['education'] = education!.toJson();
     }
-    if (work != null) {
-      data['work'] = work!.toJson();
-    }
+    // if (work != null) {
+    //   data['works'] = work!.toJson();
+    // }
     if (spokenLanguages != null) {
       data['language'] = spokenLanguages!.map((v) => v.toJson()).toList();
     }
@@ -449,6 +469,8 @@ class User {
     List<Experiences>? experiences,
     List<Industries>? industries,
     List<Relationships>? relationships,
+    List<Sports>? sports,
+    List<Work>? works,  
   }) {
     return User(
       id: id ?? this.id,
@@ -470,6 +492,8 @@ class User {
       industries: industries ?? this.industries,
       experiences: experiences ?? this.experiences,
       relationships: relationships ?? this.relationships,
+      sports: sports ?? this.sports,
+      works: works ?? this.works  ,
       interests: interests ?? this.interests,
       lookingFor: lookingFor ?? this.lookingFor,
       causesAndCommunities: causesAndCommunities ?? this.causesAndCommunities,
@@ -478,7 +502,7 @@ class User {
       profilePics: profilePics ?? this.profilePics,
       starSign: starSign ?? this.starSign,
       education: education ?? this.education,
-      work: work ?? this.work,
+      // work: work ?? this.work,
       spokenLanguages: spokenLanguages ?? this.spokenLanguages,
       location: location ?? this.location,
       educationLevel: educationLevel ?? this.educationLevel,
@@ -759,6 +783,44 @@ class UserRelation {
     );
   }
 }
+class Sports {
+  final int? id;
+  final String? title;
+
+  Sports({this.id, this.title});
+
+  factory Sports.fromJson(Map<String, dynamic> json) {
+    return Sports(
+      id: json['id'],
+      title: json['title'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+    };
+  }
+
+  Sports copyWith({
+    int? id,
+    String? title,
+  }) {
+    return Sports(
+      id: id ?? this.id,
+      title: title ?? this.title,
+    );
+  }
+
+  factory Sports.initial() {
+    return Sports(
+      id: 0,
+      title: '',
+    );
+  }
+}
+
 
 class Qualities {
   int? id;
@@ -1731,64 +1793,57 @@ class Education {
 }
 
 class Work {
-  int? id;
-  String? title;
-  String? company;
-  int? userId;
-  String? createdAt;
-  String? updatedAt;
+  final int? id;
+  final String? title;
+  final String? company;
 
   Work({
     this.id,
     this.title,
     this.company,
-    this.userId,
-    this.createdAt,
-    this.updatedAt,
   });
 
-  Work.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    title = json['title'];
-    company = json['company'];
-    userId = json['user_id'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
+  /// Factory constructor for initial empty state
+  factory Work.initial() {
+    return Work(
+      id: 0,
+      title: '',
+      company: '',
+    );
   }
 
+  /// Parse from JSON
+  factory Work.fromJson(Map<String, dynamic> json) {
+    return Work(
+      id: json['id'],
+      title: json['title'],
+      company: json['company'],
+    );
+  }
+
+  /// Convert to JSON
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['title'] = title;
-    data['company'] = company;
-    data['user_id'] = userId;
-    data['createdAt'] = createdAt;
-    data['updatedAt'] = updatedAt;
-    return data;
+    return {
+      'id': id,
+      'title': title,
+      'company': company,
+    };
   }
 
+  /// CopyWith for immutability
   Work copyWith({
     int? id,
     String? title,
     String? company,
-    int? userId,
-    String? createdAt,
-    String? updatedAt,
   }) {
     return Work(
       id: id ?? this.id,
       title: title ?? this.title,
       company: company ?? this.company,
-      userId: userId ?? this.userId,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
-
-  static Work initial() {
-    return Work();
-  }
 }
+
 
 class Location {
   double? latitude;

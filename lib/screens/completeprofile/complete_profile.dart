@@ -16,6 +16,7 @@ import 'package:dating/screens/completeprofile/moreaboutyou_screens/relationship
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/religion_screen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/sleepinghabitsscreen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/smoking_screen.dart';
+import 'package:dating/screens/completeprofile/moreaboutyou_screens/spartsscreen.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/star_sign_screen.dart';
 import 'package:dating/screens/completeprofile/profile_strength_detailScreen.dart';
 import 'package:dating/screens/completeprofile/pronoun_screen.dart';
@@ -1719,11 +1720,17 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
     final user =
         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
 
-    final workTitle = user?.work?.title ?? '';
-    final workCompany = user?.work?.company ?? '';
-    final workDisplayText = (workTitle.isNotEmpty || workCompany.isNotEmpty)
-        ? '$workTitle${workCompany.isNotEmpty ? ' at $workCompany' : ''}'
+    // final workTitle = (user?.work!.title?.isNotEmpty || workCompany.isNotEmpty)
+    //     ? user?.work?.title ?? ''
+    //     : 'Add';
+        final worktitle = (user?.works?.first.title?.isNotEmpty ?? false)
+        ? (user?.works?.first.title ?? 'Add')
         : 'Add';
+    // user?.work?.title ?? '';
+    // final workCompany = user?.work?.company ?? '';
+    // final workDisplayText = (workTitle.isNotEmpty || workCompany.isNotEmpty)
+    //     ? '$workTitle${workCompany.isNotEmpty ? ' at $workCompany' : ''}'
+    //     : 'Add';
     Education? education = user?.education;
     final educationText = education != null
         ? education.institution! + (' in ${education.gradYear}')
@@ -1750,7 +1757,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
               color: DatingColors.brown),
         ),
         const SizedBox(height: 16),
-        _buildProfileItem(Icons.work_outline, 'Work', workDisplayText,
+        _buildProfileItem(Icons.work_outline, 'Work', worktitle,
             onTap: () {
           Navigator.pushNamed(context, '/addoccupation');
         }),
@@ -1820,6 +1827,10 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
     final experiences = (user?.experiences?.isNotEmpty ?? false)
         ? (user?.experiences?.first.experience ?? 'Add')
         : 'Add';
+        final sports = (user?.sports?.isNotEmpty ?? false)
+        ? (user?.sports?.first.title ?? 'Add')
+        : 'Add';
+        print('sports..................$sports');
 
     // final industry = (user?.industries != null && user!.industries!.isNotEmpty)
     //   ? (user.industries!.first.industries as List).join(', ')   // convert list to string
@@ -1836,7 +1847,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
     final height = (user?.height != null)
         ? user?.height.toString() // convert int to string for display
         : 'Add';
-    print('adding############');
+    print('adding.................#');
     final modeId = user?.mode?.isNotEmpty == true ? user!.mode!.first.id : null;
 
     return Column(
@@ -1898,26 +1909,31 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
         ],
         if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
             modeId == 5) ...[
-          _buildProfileItem(Icons.fitness_center_outlined, 'Exercise', exercise,
+          _buildProfileItem(Icons.fitness_center, 'Exercise', exercise,
               onTap: () {
             Navigator.push(
                 context, MaterialPageRoute(builder: (_) => ExerciseScreen()));
           }),
         ],
-         if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
-            modeId == 5) ...[
-          _buildProfileItem(Icons.fitness_center_outlined, 'SleepingHabits', sleepinghabits,
+         if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ) ...[
+          _buildProfileItem(Icons.bedtime, 'SleepingHabits', sleepinghabits,
               onTap: () {
             Navigator.push(
                 context, MaterialPageRoute(builder: (_) => Sleepinghabitsscreen()));
           }),
         ],
-         if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
-            modeId == 5) ...[
-          _buildProfileItem(Icons.fitness_center_outlined, 'Diet', dietcontrol,
+         if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ) ...[
+          _buildProfileItem(Icons.restaurant, 'Diet', dietcontrol,
               onTap: () {
             Navigator.push(
                 context, MaterialPageRoute(builder: (_) => Dietarypreference()));
+          }),
+        ],
+         if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ) ...[
+          _buildProfileItem(Icons.sports_soccer, 'Sports',sports,
+              onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => SportsScreen()));
           }),
         ],
         if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
@@ -1941,7 +1957,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
 
         if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
             modeId == 5) ...[
-          _buildProfileItem(Icons.place_outlined, 'Religion', religion,
+          _buildProfileItem(Icons.temple_hindu, 'Religion', religion,
               onTap: () {
             Navigator.push(
                 context, MaterialPageRoute(builder: (_) => ReligionScreen()));

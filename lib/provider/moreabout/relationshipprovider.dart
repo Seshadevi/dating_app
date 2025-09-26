@@ -5,21 +5,18 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 class RelationshipProvider extends StateNotifier<RelationshipModel> {
   final Ref ref;
   RelationshipProvider(this.ref) : super(RelationshipModel.initial());
-  
+
   Future<void> getRelationship() async {
-    
     final loadingState = ref.read(loadingProvider.notifier);
     try {
       loadingState.state = true;
-     
+
       print('get Relationship');
 
-      final response = await http.get(
-        Uri.parse(Dgapi.relationshipget));
+      final response = await http.get(Uri.parse(Dgapi.relationshipget));
       final responseBody = response.body;
       print('Get Relationship Status Code: ${response.statusCode}');
       print('Get Relationship Response Body: $responseBody');
@@ -42,11 +39,9 @@ class RelationshipProvider extends StateNotifier<RelationshipModel> {
       print("Failed to fetch Relationship $e");
     }
   }
-  
-
-
 }
 
-final relationshipProvider = StateNotifierProvider<RelationshipProvider, RelationshipModel>((ref) {
+final relationshipProvider =
+    StateNotifierProvider<RelationshipProvider, RelationshipModel>((ref) {
   return RelationshipProvider(ref);
 });

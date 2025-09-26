@@ -476,12 +476,13 @@ Future<int> updateProfile({
   String? sleeping,
   String? diet,
   String? work,
+  int? sportsId,
   
 }) async {
   final loadingState = ref.read(loadingProvider.notifier);
   loadingState.state = true;
    print(
-        'updated data..city:$citylocation,.lookingfor:$lookingfor,mode:$modeid,smoking:$smoking, modename:$modename, causedId:$causeId, intrestId:$interestId, qualityId:$qualityId, bio:$bio, prompt:$prompt, image:${image?.length},languages:$languagesId,work:$jobId,education:$educationId,starsign:$starsignId');
+        'updated data..work:$work,sports:$sportsId,city:$citylocation,.lookingfor:$lookingfor,mode:$modeid,smoking:$smoking, modename:$modename, causedId:$causeId, intrestId:$interestId, qualityId:$qualityId, bio:$bio, prompt:$prompt, image:${image?.length},languages:$languagesId,work:$jobId,education:$educationId,starsign:$starsignId');
 
   try {
     final String apiUrl = Dgapi.updateprofile;
@@ -540,7 +541,20 @@ Future<int> updateProfile({
      if (homelocation!= null) request.fields['hometown'] =homelocation.toString();
       if (sleeping!= null) request.fields['sleepingHabits'] =sleeping.toString();
        if (diet!= null) request.fields['dietaryPreference'] =diet.toString();
-        if (work!= null) request.fields['work'] =work.toString();
+//        Work workToUpdate = work != null ? Work(title: work) : Work();
+
+// if (workToUpdate.title != null && workToUpdate.title!.isNotEmpty) {
+//   request.fields['title'] = workToUpdate.title!;
+// }
+       if (work!= null && work.isNotEmpty) {
+  request.fields['works'] = work;
+}
+// if (prompt!= null && prompt.isNotEmpty) {
+//   request.fields['prompts'] = prompt.toString();
+// }
+
+      if (sportsId != null) request.fields['sportsId'] =sportsId.toString();
+
     // Suppose you used geocoding and got a Placemark
       // Placemark place = placemarks.first;
       // String? citylocation = place.locality; // ✅ Only city name
@@ -574,11 +588,12 @@ Future<int> updateProfile({
     // if (prompt != null && prompt.isNotEmpty) {
     //   request.fields['prompts'] = jsonEncode(prompt);
     // }
-    if (prompt != null && prompt.isNotEmpty) {
-        for (int i = 0; i < prompt.length; i++) {
-          request.fields['prompts[$i]'] = prompt[i].toString();
-        }
-      }
+  if (prompt != null && prompt.isNotEmpty) {
+  for (int i = 0; i < prompt.length; i++) {
+    request.fields['prompts[$i]'] = prompt[i]; 
+  }
+}
+
 
     // Upload images if any
     if (image != null && image.isNotEmpty) {
