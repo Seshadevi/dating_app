@@ -1,10 +1,11 @@
 import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/likes/likedislikeprovider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../animations/love_3d_animation.dart';
-import '../../provider/likedislikeprovider.dart';
+// import '../../provider/likedislikeprovider.dart';
 import '../../provider/loginProvider.dart';
 import '../../provider/socket_heartsync_provider.dart';
 import 'package:intl/intl.dart';

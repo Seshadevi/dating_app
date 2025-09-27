@@ -130,86 +130,69 @@ class _BumbleDateProfileScreenState
       );
     }
   }
+@override
+void initState() {
+  super.initState();
+  _loadUserProfileImages();
 
-  @override
-  void initState() {
-    super.initState();
-    _loadUserProfileImages();
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    final userData = ref.read(loginProvider);
+    final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final userData = ref.read(loginProvider);
-      final user =
-          userData.data?.isNotEmpty == true ? userData.data![0].user : null;
-
-      if (user != null) {
-        setState(() {
-          // Safe access to lookingFor
-          final lookingForList = user.lookingFor;
-          if (lookingForList != null && lookingForList.isNotEmpty) {
-            try {
-              // Check if the first element exists and has a value property
-              final firstLookingFor = lookingForList[0];
-              if (firstLookingFor != null && firstLookingFor.value != null) {
-                userLooking = firstLookingFor.value.toString();
-              }
-            } catch (e) {
-              print('Error accessing lookingFor: $e');
-              userLooking = null;
-            }
+    if (user != null) {
+      setState(() {
+        // Safe access to lookingFor
+        if (user.lookingFor?.isNotEmpty == true) {
+          try {
+            final firstLookingFor = user.lookingFor!.first;
+            userLooking = firstLookingFor.value?.toString();
+          } catch (e) {
+            print('Error accessing lookingFor: $e');
+            userLooking = null;
           }
+        }
 
-          // Safe access to kids
-          final userkidList = user.kids;
-          if (userkidList != null && userkidList.isNotEmpty) {
-            try {
-              final firstKid = userkidList[0];
-              if (firstKid != null && firstKid.kids != null) {
-                userkid = firstKid.kids.toString();
-              }
-            } catch (e) {
-              print('Error accessing kids: $e');
-              userkid = null;
-            }
+        // Safe access to kids
+        if (user.kids?.isNotEmpty == true) {
+          try {
+            final firstKid = user.kids!.first;
+            userkid = firstKid.kids?.toString();
+          } catch (e) {
+            print('Error accessing kids: $e');
+            userkid = null;
           }
+        }
 
-          // Safe access to drinking
-          final userDrinkList = user.drinking;
-          if (userDrinkList != null && userDrinkList.isNotEmpty) {
-            try {
-              final firstDrink = userDrinkList[0];
-              if (firstDrink != null && firstDrink.preference != null) {
-                userDrink = firstDrink.preference.toString();
-              }
-            } catch (e) {
-              print('Error accessing drinking: $e');
-              userDrink = null;
-            }
+        // Safe access to drinking
+        if (user.drinking?.isNotEmpty == true) {
+          try {
+            final firstDrink = user.drinking!.first;
+            userDrink = firstDrink.preference?.toString();
+          } catch (e) {
+            print('Error accessing drinking: $e');
+            userDrink = null;
           }
+        }
 
-          // Safe access to religions
-          final userReligionList = user.religions;
-          if (userReligionList != null && userReligionList.isNotEmpty) {
-            try {
-              final firstReligion = userReligionList[0];
-              if (firstReligion != null && firstReligion.religion != null) {
-                userReligion = firstReligion.religion.toString();
-              }
-            } catch (e) {
-              print('Error accessing religion: $e');
-              userReligion = null;
-            }
+        // Safe access to religions
+        if (user.religions?.isNotEmpty == true) {
+          try {
+            final firstReligion = user.religions!.first;
+            userReligion = firstReligion.religion?.toString();
+          } catch (e) {
+            print('Error accessing religion: $e');
+            userReligion = null;
           }
+        }
 
-          print('lookingfor:::$userLooking');
-          print('kids:::$userkid');
-          print('drink:::$userDrink');
-          print('religion:::$userReligion');
-        });
-      } else {
-        print('User data is null');
-      }
-    });
-  }
+        print('lookingfor:::$userLooking');
+        print('kids:::$userkid');
+        print('drink:::$userDrink');
+        print('religion:::$userReligion');
+      });
+    }
+  });
+}
 
   @override
   Widget build(BuildContext context) {
@@ -1716,284 +1699,213 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
   }
 
   Widget _buildAboutYouSection() {
-    final userData = ref.watch(loginProvider);
-    final user =
-        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+  final userData = ref.watch(loginProvider);
+  final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
 
-    // final workTitle = (user?.work!.title?.isNotEmpty || workCompany.isNotEmpty)
-    //     ? user?.work?.title ?? ''
-    //     : 'Add';
-        final worktitle = (user?.works?.first.title?.isNotEmpty ?? false)
-        ? (user?.works?.first.title ?? 'Add')
-        : 'Add';
-    // user?.work?.title ?? '';
-    // final workCompany = user?.work?.company ?? '';
-    // final workDisplayText = (workTitle.isNotEmpty || workCompany.isNotEmpty)
-    //     ? '$workTitle${workCompany.isNotEmpty ? ' at $workCompany' : ''}'
-    //     : 'Add';
-    Education? education = user?.education;
-    final educationText = education != null
-        ? education.institution! + (' in ${education.gradYear}')
-        : 'Add';
-    // final hometown = user?.hometown;
-    final hometown = (user?.hometown?.isNotEmpty ?? false)
-        ? (user?.hometown ?? 'Add')
-        : 'Add';
-    final locationname = (user?.location?.name?.isNotEmpty ?? false)
-        ? (user?.location?.name ?? 'Add')
-        : 'Add';
+  // Safe work title access
+  final worktitle = (user?.works?.isNotEmpty == true)
+      ? (user!.works!.first.title?.isNotEmpty == true 
+          ? user.works!.first.title! 
+          : 'Add')
+      : 'Add';
 
-    final selectGender = user?.gender ?? 'Add';
+  // Safe education access
+  final education = user?.education;
+  final educationText = education?.institution?.isNotEmpty == true
+      ? '${education!.institution!}${education.gradYear != null ? ' in ${education.gradYear}' : ''}'
+      : 'Add';
 
-    return Column(
-      key: _aboutSectionKey,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'About You',
-          style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: DatingColors.brown),
-        ),
-        const SizedBox(height: 16),
-        _buildProfileItem(Icons.work_outline, 'Work', worktitle,
-            onTap: () {
-          Navigator.pushNamed(context, '/addoccupation');
-        }),
-        _buildProfileItem(Icons.school_outlined, 'Education', educationText,
-            onTap: () {
-          Navigator.pushNamed(context, '/educationscreen');
-        }),
-        _buildProfileItem(Icons.person_outline, 'Gender', selectGender,
-            onTap: () {
-          Navigator.pushNamed(context, '/updategenderscreen');
-        }),
-        _buildProfileItem(Icons.location_on_outlined, 'Location', locationname,
-            onTap: () {
-          Navigator.pushNamed(context, '/citysearchpage');
-        }),
-        _buildProfileItem(Icons.home_outlined, 'Hometown', hometown, onTap: () {
-          Navigator.pushNamed(context, '/hometownscreen');
+  // Safe hometown access
+  final hometown = user?.hometown?.isNotEmpty == true ? user!.hometown! : 'Add';
+  
+  // Safe location access
+  final locationname = user?.location?.name?.isNotEmpty == true 
+      ? user!.location!.name! 
+      : 'Add';
+
+  // Safe gender access
+  final selectGender = user?.gender?.isNotEmpty == true ? user!.gender! : 'Add';
+
+  return Column(
+    key: _aboutSectionKey,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'About You',
+        style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: DatingColors.brown),
+      ),
+      const SizedBox(height: 16),
+      _buildProfileItem(Icons.work_outline, 'Work', worktitle, onTap: () {
+        Navigator.pushNamed(context, '/addoccupation');
+      }),
+      _buildProfileItem(Icons.school_outlined, 'Education', educationText, onTap: () {
+        Navigator.pushNamed(context, '/educationscreen');
+      }),
+      _buildProfileItem(Icons.person_outline, 'Gender', selectGender, onTap: () {
+        Navigator.pushNamed(context, '/updategenderscreen');
+      }),
+      _buildProfileItem(Icons.location_on_outlined, 'Location', locationname, onTap: () {
+        Navigator.pushNamed(context, '/citysearchpage');
+      }),
+      _buildProfileItem(Icons.home_outlined, 'Hometown', hometown, onTap: () {
+        Navigator.pushNamed(context, '/hometownscreen');
+      }),
+    ],
+  );
+}
+
+Widget _buildMoreAboutYouSection() {
+  final userData = ref.watch(loginProvider);
+  final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+
+  // Safe access to all user properties
+  final lookingfor = (user?.lookingFor?.isNotEmpty == true)
+      ? (user!.lookingFor!.first.value ?? 'Add')
+      : 'Add';
+
+  final religion = (user?.religions?.isNotEmpty == true)
+      ? (user!.religions!.first.religion ?? 'Add')
+      : 'Add';
+
+  final kids = (user?.kids?.isNotEmpty == true)
+      ? (user!.kids!.first.kids ?? 'Add')
+      : 'Add';
+
+  final drinking = (user?.drinking?.isNotEmpty == true)
+      ? (user!.drinking!.first.preference ?? 'Add')
+      : 'Add';
+
+  final smoking = user?.smoking?.isNotEmpty == true ? user!.smoking! : 'Add';
+  final newtoarea = user?.newToArea?.isNotEmpty == true ? user!.newToArea! : 'Add';
+  
+  final relationship = (user?.relationships?.isNotEmpty == true)
+      ? (user!.relationships!.first.relation ?? 'Add')
+      : 'Add';
+
+  final educationLevel = user?.educationLevel?.isNotEmpty == true ? user!.educationLevel! : 'Add';
+  final havekids = user?.haveKids?.isNotEmpty == true ? user!.haveKids! : 'Add';
+  
+  final industry = (user?.industries?.isNotEmpty == true)
+      ? (user!.industries!.first.industrie ?? 'Add')
+      : 'Add';
+
+  final experiences = (user?.experiences?.isNotEmpty == true)
+      ? (user!.experiences!.first.experience ?? 'Add')
+      : 'Add';
+      
+  final sports = (user?.sports?.isNotEmpty == true)
+      ? (user!.sports!.first.title ?? 'Add')
+      : 'Add';
+
+  final starsign = user?.starSign?.name ?? 'Add';
+  final exercise = user?.exercise?.isNotEmpty == true ? user!.exercise! : 'Add';
+  final sleepinghabits = user?.sleepingHabits?.isNotEmpty == true ? user!.sleepingHabits! : 'Add';
+  final dietcontrol = user?.dietaryPreference?.isNotEmpty == true ? user!.dietaryPreference! : 'Add';
+  
+  final height = user?.height != null ? user!.height.toString() : 'Add';
+
+  // Safe mode access
+  final modeId = (user?.mode?.isNotEmpty == true) ? user!.mode!.first.id : null;
+
+  return Column(
+    key: _moreaboutSectionKey,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Text(
+        'More About You',
+        style: TextStyle(
+            fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        'Share More Details About Yourself Are Curious About',
+        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+      ),
+      const SizedBox(height: 16),
+
+      // Mode-based conditional rendering with safe checks
+      if (modeId == 4) ...[
+        _buildProfileItem(Icons.place_outlined, 'Height', height, onTap: () {
+          Navigator.pushNamed(context, '/heightscreenprofile');
         }),
       ],
-    );
-  }
 
-  Widget _buildMoreAboutYouSection() {
-    final userData = ref.watch(loginProvider);
-    final user =
-        userData.data?.isNotEmpty == true ? userData.data![0].user : null;
+      _buildProfileItem(Icons.search, 'Looking For', lookingfor, onTap: () {
+        Navigator.pushNamed(context, '/lookingforscreen');
+      }),
 
-    final lookingfor = (user?.lookingFor?.isNotEmpty ?? false)
-        ? (user?.lookingFor?.first.value ?? 'Add')
-        : 'Add';
-
-    final religion = (user?.religions?.isNotEmpty ?? false)
-        ? (user?.religions?.first.religion ?? 'Add')
-        : 'Add';
-
-    final kids = (user?.kids?.isNotEmpty ?? false)
-        ? (user?.kids?.first.kids ?? 'Add')
-        : 'Add';
-
-    final drinking = (user?.drinking?.isNotEmpty ?? false)
-        ? (user?.drinking?.first.preference ?? 'Add')
-        : 'Add';
-
-    final smoking =
-        (user?.smoking?.isNotEmpty ?? false) ? user?.smoking : 'Add';
-
-    final newtoarea =
-        (user?.newToArea?.isNotEmpty ?? false) ? user?.newToArea : 'Add';
-    final relationship = (user?.relationships?.isNotEmpty ?? false)
-        ? (user?.relationships?.first.relation ??
-            'Add') // convert list to string
-        : 'Add';
-
-    final educationLevel = (user?.educationLevel?.isNotEmpty ?? false)
-        ? user?.educationLevel
-        : 'Add';
-    final havekids =
-        (user?.haveKids?.isNotEmpty ?? false) ? user?.haveKids : 'Add';
-    final industry = (user?.industries?.isNotEmpty ?? false)
-        ? (user?.industries?.first.industrie ?? 'Add')
-        : 'add';
-    print('industry........$industry');
-    print('................${user?.experiences}');
-    print('religin...........$religion');
-    print('relationship...........$relationship');
-
-    final experiences = (user?.experiences?.isNotEmpty ?? false)
-        ? (user?.experiences?.first.experience ?? 'Add')
-        : 'Add';
-        final sports = (user?.sports?.isNotEmpty ?? false)
-        ? (user?.sports?.first.title ?? 'Add')
-        : 'Add';
-        print('sports..................$sports');
-
-    // final industry = (user?.industries != null && user!.industries!.isNotEmpty)
-    //   ? (user.industries!.first.industries as List).join(', ')   // convert list to string
-    //   : 'Add';
-    // final experiences =
-    //     (user?.experiences != null && user!.experiences!.isNotEmpty)
-    //         ? (user.experiences?.first.userExperiences as List).join(', ')
-    //         : 'Add';
-
-    final starsign = user?.starSign?.name ?? 'Add';
-    final exercise = user?.exercise ?? 'Add';
-    final sleepinghabits = user?.sleepingHabits ?? 'Add';
-    final dietcontrol = user?.dietaryPreference ?? 'Add';
-    final height = (user?.height != null)
-        ? user?.height.toString() // convert int to string for display
-        : 'Add';
-    print('adding.................#');
-    final modeId = user?.mode?.isNotEmpty == true ? user!.mode!.first.id : null;
-
-    return Column(
-      key: _moreaboutSectionKey,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'More About You',
-          style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Share More Details About Yourself Are Curious About',
-          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-        ),
-        const SizedBox(height: 16),
-
-        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4) ...[
-          _buildProfileItem(Icons.place_outlined, 'Height', height!, onTap: () {
-            Navigator.pushNamed(context, '/heightscreenprofile');
-          }),
-        ],
-
-        _buildProfileItem(Icons.search, 'Looking For', lookingfor, onTap: () {
-          Navigator.pushNamed(context, '/lookingforscreen');
+      if (modeId == 4 || modeId == 5) ...[
+        _buildProfileItem(Icons.favorite_border, 'Relationship', relationship, onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => RelationshipScreen()));
         }),
-
-        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
-            modeId == 5) ...[
-          _buildProfileItem(Icons.favorite_border, 'Relationship', relationship,
-              onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (_) => RelationshipScreen()));
-          }),
-        ],
-
-        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4) ...[
-          _buildProfileItem(Icons.child_care, 'Kids', kids, onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (_) => HaveKidsScreen()));
-          }),
-        ],
-        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
-            modeId == 5) ...[
-          _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', smoking!,
-              onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (_) => SmokingScreen()));
-          }),
-        ],
-        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
-            modeId == 5) ...[
-          _buildProfileItem(Icons.local_drink_outlined, 'Drinking', drinking,
-              onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (_) => DrinkingScreen()));
-          }),
-        ],
-        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
-            modeId == 5) ...[
-          _buildProfileItem(Icons.fitness_center, 'Exercise', exercise,
-              onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (_) => ExerciseScreen()));
-          }),
-        ],
-         if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ) ...[
-          _buildProfileItem(Icons.bedtime, 'SleepingHabits', sleepinghabits,
-              onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (_) => Sleepinghabitsscreen()));
-          }),
-        ],
-         if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ) ...[
-          _buildProfileItem(Icons.restaurant, 'Diet', dietcontrol,
-              onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (_) => Dietarypreference()));
-          }),
-        ],
-         if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ) ...[
-          _buildProfileItem(Icons.sports_soccer, 'Sports',sports,
-              onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (_) => SportsScreen()));
-          }),
-        ],
-        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
-            modeId == 5) ...[
-          _buildProfileItem(
-              Icons.location_city_outlined, 'New To Area', newtoarea!,
-              onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (_) => NewToAreaScreen()));
-          }),
-        ],
-
-        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
-            modeId == 5) ...[
-          _buildProfileItem(Icons.star_border, 'Star Sign', starsign,
-              onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (_) => StarSignScreen()));
-          }),
-        ],
-
-        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
-            modeId == 5) ...[
-          _buildProfileItem(Icons.temple_hindu, 'Religion', religion,
-              onTap: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (_) => ReligionScreen()));
-          }),
-        ],
-        // ====================================
-        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 6) ...[
-          _buildProfileItem(Icons.business_sharp, 'Experience', experiences,
-              onTap: () {
-            Navigator.pushNamed(context, '/experiencescreen');
-          }),
-        ],
-
-        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 6) ...[
-          _buildProfileItem(Icons.factory, 'Industries', industry, onTap: () {
-            Navigator.pushNamed(context, '/industryscreen');
-          }),
-        ],
-
-        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 6) ...[
-          _buildProfileItem(Icons.school, 'EducationLevel', educationLevel!,
-              onTap: () {
-            Navigator.pushNamed(context, '/educaationlevelscreen');
-          }),
-        ],
-        if (user?.mode != null && user!.mode!.isNotEmpty && modeId == 4 ||
-            modeId == 5) ...[
-          _buildProfileItem(Icons.baby_changing_station, 'Have Kids', havekids!,
-              onTap: () {
-            Navigator.pushNamed(context, '/havekidscreen');
-            print('adding..............');
-          }),
-        ],
       ],
-    );
-  }
+
+      if (modeId == 4) ...[
+        _buildProfileItem(Icons.child_care, 'Kids', kids, onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => HaveKidsScreen()));
+        }),
+      ],
+
+      if (modeId == 4 || modeId == 5) ...[
+        _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', smoking, onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => SmokingScreen()));
+        }),
+        _buildProfileItem(Icons.local_drink_outlined, 'Drinking', drinking, onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => DrinkingScreen()));
+        }),
+        _buildProfileItem(Icons.fitness_center, 'Exercise', exercise, onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => ExerciseScreen()));
+        }),
+      ],
+
+      if (modeId == 4) ...[
+        _buildProfileItem(Icons.bedtime, 'SleepingHabits', sleepinghabits, onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => Sleepinghabitsscreen()));
+        }),
+        _buildProfileItem(Icons.restaurant, 'Diet', dietcontrol, onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => Dietarypreference()));
+        }),
+        _buildProfileItem(Icons.sports_soccer, 'Sports', sports, onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => SportsScreen()));
+        }),
+      ],
+
+      if (modeId == 4 || modeId == 5) ...[
+        _buildProfileItem(Icons.location_city_outlined, 'New To Area', newtoarea, onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => NewToAreaScreen()));
+        }),
+        _buildProfileItem(Icons.star_border, 'Star Sign', starsign, onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => StarSignScreen()));
+        }),
+        _buildProfileItem(Icons.temple_hindu, 'Religion', religion, onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => ReligionScreen()));
+        }),
+      ],
+
+      if (modeId == 6) ...[
+        _buildProfileItem(Icons.business_sharp, 'Experience', experiences, onTap: () {
+          Navigator.pushNamed(context, '/experiencescreen');
+        }),
+        _buildProfileItem(Icons.factory, 'Industries', industry, onTap: () {
+          Navigator.pushNamed(context, '/industryscreen');
+        }),
+        _buildProfileItem(Icons.school, 'EducationLevel', educationLevel, onTap: () {
+          Navigator.pushNamed(context, '/educaationlevelscreen');
+        }),
+      ],
+
+      if (modeId == 4 || modeId == 5) ...[
+        _buildProfileItem(Icons.baby_changing_station, 'Have Kids', havekids, onTap: () {
+          Navigator.pushNamed(context, '/havekidscreen');
+        }),
+      ],
+    ],
+  );
+}
+
 
   Widget _buildPronounsSection() {
     final userData = ref.watch(loginProvider);

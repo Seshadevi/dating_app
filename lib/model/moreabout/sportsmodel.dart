@@ -13,6 +13,7 @@ class Sportsmodel {
   }
 
   /// Create from JSON
+  /// 
   factory Sportsmodel.fromJson(Map<String, dynamic> json) {
     return Sportsmodel(
       success: json['success'],
