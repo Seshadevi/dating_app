@@ -283,7 +283,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
 
   void _checkFloatingStarVisibility() {
     final RenderBox? bottomActionsBox =
-    _bottomActionsKey.currentContext?.findRenderObject() as RenderBox?;
+        _bottomActionsKey.currentContext?.findRenderObject() as RenderBox?;
 
     if (bottomActionsBox != null) {
       final position = bottomActionsBox.localToGlobal(Offset.zero);
@@ -384,7 +384,8 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0),
       end: const Offset(1.5, -0.2),
-    ).animate(CurvedAnimation(parent: _slideController, curve: Curves.easeInOut));
+    ).animate(
+        CurvedAnimation(parent: _slideController, curve: Curves.easeInOut));
 
     _slideController.forward(from: 0.0);
     _triggerLike3DAnimation();
@@ -396,9 +397,9 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
       final currentUser = users[currentUserIndex];
       try {
         await ref.read(likedDislikeProvider.notifier).addLikeDislike(
-          currentUser.id?.toString() ?? "",
-          "right",
-        );
+              currentUser.id?.toString() ?? "",
+              "right",
+            );
 
         Future.delayed(const Duration(milliseconds: 900), () {
           _moveToNextUser();
@@ -423,7 +424,8 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0),
       end: const Offset(-1.5, -0.1),
-    ).animate(CurvedAnimation(parent: _slideController, curve: Curves.easeInOut));
+    ).animate(
+        CurvedAnimation(parent: _slideController, curve: Curves.easeInOut));
 
     _slideController.forward(from: 0.0);
     _triggerDislike3DAnimation();
@@ -435,9 +437,9 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
       final currentUser = users[currentUserIndex];
       try {
         await ref.read(likedDislikeProvider.notifier).addLikeDislike(
-          currentUser.id?.toString() ?? "",
-          "left",
-        );
+              currentUser.id?.toString() ?? "",
+              "left",
+            );
 
         Future.delayed(const Duration(milliseconds: 900), () {
           _moveToNextUser();
@@ -463,7 +465,8 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0, 0),
       end: const Offset(0, -1.5),
-    ).animate(CurvedAnimation(parent: _slideController, curve: Curves.easeInOut));
+    ).animate(
+        CurvedAnimation(parent: _slideController, curve: Curves.easeInOut));
 
     _slideController.forward(from: 0.0);
     _animateSuperLikeOnImage();
@@ -477,9 +480,9 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
       final currentUser = users[currentUserIndex];
       try {
         await ref.read(likedDislikeProvider.notifier).addLikeDislike(
-          currentUser.id?.toString() ?? "",
-          "up",
-        );
+              currentUser.id?.toString() ?? "",
+              "up",
+            );
 
         Future.delayed(const Duration(milliseconds: 900), () {
           _moveToNextUser();
@@ -662,7 +665,8 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
             child: CustomPaint(
               size: const Size(220, 220),
               painter: HeartBlastPainter(
-                progress: _like3dOpacity.value, particles: [],
+                progress: _like3dOpacity.value,
+                particles: [],
               ),
             ),
           ),
@@ -854,7 +858,6 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
             handleDislike();
           }
         },
-
         child: Stack(
           children: [
             // Main scrollable content
@@ -865,7 +868,18 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                 children: [
                   // Profile Photo container with slide animation and swipe gestures
 
-                  Container(
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        // Next image logic (cycle back to zero when at end)
+                        var images = user.profilePics ?? [];
+                        if (images.isNotEmpty) {
+                          _currentImageIndex =
+                              (_currentImageIndex + 1) % images.length;
+                        }
+                      });
+                    },
+                    child: Container(
                       height: screenHeight * 0.95,
                       width: double.infinity,
                       decoration: BoxDecoration(
@@ -873,16 +887,18 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                           bottomLeft: Radius.circular(25),
                           bottomRight: Radius.circular(25),
                         ),
-                        image: user.profilePics != null && user.profilePics!.isNotEmpty
+                        image: user.profilePics != null &&
+                                user.profilePics!.isNotEmpty
                             ? DecorationImage(
-                          image: NetworkImage(getCompleteImageUrl(
-                              user.profilePics![_currentImageIndex].imagePath)),
-                          fit: BoxFit.cover,
-                        )
+                                image: NetworkImage(getCompleteImageUrl(user
+                                    .profilePics![_currentImageIndex]
+                                    .imagePath)),
+                                fit: BoxFit.cover,
+                              )
                             : const DecorationImage(
-                          image: AssetImage('assets/default_profile.png'),
-                          fit: BoxFit.cover,
-                        ),
+                                image: AssetImage('assets/default_profile.png'),
+                                fit: BoxFit.cover,
+                              ),
                       ),
                       child: Stack(
                         children: [
@@ -927,7 +943,8 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                             ),
                           ),
                           if (_isSuperLikeAnimating)
-                            Center(child: AnimatedBuilder(
+                            Center(
+                                child: AnimatedBuilder(
                               animation: _superLikeScaleAnimation,
                               builder: (context, child) {
                                 return Transform.scale(
@@ -942,8 +959,10 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                                         shape: BoxShape.circle,
                                         boxShadow: [
                                           BoxShadow(
-                                            color:
-                                            DatingColors.everqpidColor.withOpacity(_superLikeGlowAnimation.value),
+                                            color: DatingColors.everqpidColor
+                                                .withOpacity(
+                                                    _superLikeGlowAnimation
+                                                        .value),
                                             blurRadius: 30,
                                             spreadRadius: 10,
                                           ),
@@ -959,12 +978,14 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                                 );
                               },
                             )),
-                          if (_showLike3DAnimation) Center(child: _build3dLikeAnimation()),
-                          if (_showDislike3DAnimation) Center(child: _build3dDislikeAnimation()),
+                          if (_showLike3DAnimation)
+                            Center(child: _build3dLikeAnimation()),
+                          if (_showDislike3DAnimation)
+                            Center(child: _build3dDislikeAnimation()),
                         ],
                       ),
                     ),
-
+                  ),
 
                   // Content sections below image
                   Padding(
@@ -1008,8 +1029,8 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                                       if (user.religions != null)
                                         ...user.religions!
                                             .map((r) => labeledChip(
-                                            r.religion ?? '',
-                                            icon: Icons.temple_hindu))
+                                                r.religion ?? '',
+                                                icon: Icons.temple_hindu))
                                             .toList(),
                                       if (user.newToArea != null)
                                         labeledChip(user.newToArea ?? '',
@@ -1017,8 +1038,8 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                                       if (user.drinking != null)
                                         ...user.drinking!
                                             .map((d) => labeledChip(
-                                            d.preference ?? '',
-                                            icon: Icons.local_bar))
+                                                d.preference ?? '',
+                                                icon: Icons.local_bar))
                                             .toList(),
                                       if (user.smoking != null)
                                         labeledChip(user.smoking ?? '',
@@ -1051,10 +1072,10 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                                     runSpacing: screenHeight * 0.01,
                                     children: user.lookingFor != null
                                         ? user.lookingFor!
-                                        .map((lf) => labeledChip(
-                                        lf.value ?? '',
-                                        icon: Icons.search))
-                                        .toList()
+                                            .map((lf) => labeledChip(
+                                                lf.value ?? '',
+                                                icon: Icons.search))
+                                            .toList()
                                         : [],
                                   )
                                 ],
@@ -1083,10 +1104,10 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                                     runSpacing: screenHeight * 0.01,
                                     children: user.interests != null
                                         ? user.interests!
-                                        .map((interest) => labeledChip(
-                                        interest.interests ?? '',
-                                        icon: Icons.local_activity))
-                                        .toList()
+                                            .map((interest) => labeledChip(
+                                                interest.interests ?? '',
+                                                icon: Icons.local_activity))
+                                            .toList()
                                         : [],
                                   )
                                 ],
@@ -1115,10 +1136,10 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                                     runSpacing: screenHeight * 0.01,
                                     children: user.qualities != null
                                         ? user.qualities!
-                                        .map((quality) => labeledChip(
-                                        quality.name ?? '',
-                                        icon: Icons.star))
-                                        .toList()
+                                            .map((quality) => labeledChip(
+                                                quality.name ?? '',
+                                                icon: Icons.star))
+                                            .toList()
                                         : [],
                                   )
                                 ],
@@ -1147,10 +1168,10 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                                     runSpacing: screenHeight * 0.01,
                                     children: user.spokenLanguages != null
                                         ? user.spokenLanguages!
-                                        .map((lang) => labeledChip(
-                                        lang.name ?? '',
-                                        icon: Icons.language))
-                                        .toList()
+                                            .map((lang) => labeledChip(
+                                                lang.name ?? '',
+                                                icon: Icons.language))
+                                            .toList()
                                         : [],
                                   )
                                 ],
@@ -1244,7 +1265,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                 child: Container(
                   margin: const EdgeInsets.all(16),
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.9),
                     borderRadius: BorderRadius.circular(25),
@@ -1290,15 +1311,15 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: IconButton(
-                          icon:
-                          Icon(Icons.tune, color: DatingColors.secondaryText),
+                          icon: Icon(Icons.tune,
+                              color: DatingColors.secondaryText),
                           onPressed: () async {
                             HapticFeedback.lightImpact();
                             await Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                  const NarrowSearchScreen()),
+                                      const NarrowSearchScreen()),
                             );
                           },
                         ),
