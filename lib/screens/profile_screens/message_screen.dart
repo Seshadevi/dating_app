@@ -1,555 +1,82 @@
-// // ✅ CHAT UI (chat_screen.dart)
-// import 'package:dating/provider/chat_socket_provider.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
-// // import 'package:dating/provider/chat_provider.dart';
-
-// class MessagesScreen extends ConsumerStatefulWidget {
-//   final int matchedUserId;
-//   final String matchedUserName;
-
-//   const MessagesScreen({super.key, required this.matchedUserId, required this.matchedUserName});
-
-//   @override
-//   ConsumerState<MessagesScreen> createState() => _ChatScreenState();
-// }
-
-// class _ChatScreenState extends ConsumerState<MessagesScreen> {
-//   final TextEditingController _controller = TextEditingController();
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       ref.read(chatProvider.notifier).openChat(widget.matchedUserId);
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final messages = ref.watch(chatProvider);
-
-//     return Scaffold(
-//       appBar: AppBar(title: Text(widget.matchedUserName)),
-//       body: Column(
-//         children: [
-//           Expanded(
-//             child: ListView.builder(
-//               itemCount: messages.length,
-//               itemBuilder: (context, index) {
-//                 final msg = messages[index];
-//                 final isMe = msg.senderId != widget.matchedUserId;
-//                 return Align(
-//                   alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-//                   child: Container(
-//                     margin: EdgeInsets.all(8),
-//                     padding: EdgeInsets.all(12),
-//                     decoration: BoxDecoration(
-//                       color: isMe ? Colors.green[100] : Colors.grey[200],
-//                       borderRadius: BorderRadius.circular(12),
-//                     ),
-//                     child: Text(msg.message),
-//                   ),
-//                 );
-//               },
-//             ),
-//           ),
-//           Row(
-//             children: [
-//               Expanded(
-//                 child: TextField(
-//                   controller: _controller,
-//                   decoration: InputDecoration(
-//                     hintText: "Type a message...",
-//                     contentPadding: EdgeInsets.all(12),
-//                   ),
-//                 ),
-//               ),
-//               IconButton(
-//                 icon: Icon(Icons.send),
-//                 onPressed: () {
-//                   if (_controller.text.trim().isNotEmpty) {
-//                     ref.read(chatProvider.notifier).sendMessage(
-//                       widget.matchedUserId,
-//                       _controller.text.trim(),
-//                     );
-//                     _controller.clear();
-//                   }
-//                 },
-//               )
-//             ],
-//           )
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-
-
-
-
-
-
-
-
-
-// // ✅ Modify MessagesScreen to use provider:
-// import 'package:dating/provider/chat_socket_provider.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-// class MessagesScreen extends ConsumerWidget {
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     final messages = ref.watch(chatListProvider);
-
-//     return Scaffold(
-//       backgroundColor: Colors.grey[50],
-//       appBar: AppBar(
-//         title: Text('Messages'),
-//         backgroundColor: Colors.white,
-//         foregroundColor: Colors.black,
-//         elevation: 1,
-//       ),
-//       body: messages.isEmpty
-//           ? Center(child: Text("No messages yet."))
-//           : ListView.builder(
-//               itemCount: messages.length,
-//               itemBuilder: (context, index) {
-//                 return MessageTile(message: messages[index]);
-//               },
-//             ),
-//     );
-//   }
-// }
-
-// class MessageTile extends StatelessWidget {
-//   final MessageData message;
-
-//   const MessageTile({Key? key, required this.message}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return InkWell(
-//       onTap: () => print("Tapped on \${message.name}"),
-//       child: Container(
-//         padding: EdgeInsets.all(16),
-//         decoration: BoxDecoration(
-//           border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
-//         ),
-//         child: Row(
-//           children: [
-//             CircleAvatar(
-//               radius: 25,
-//               backgroundImage: NetworkImage(message.avatar),
-//             ),
-//             SizedBox(width: 16),
-//             Expanded(
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Text(message.name, style: TextStyle(fontWeight: FontWeight.bold)),
-//                   SizedBox(height: 4),
-//                   Text(message.message, maxLines: 1, overflow: TextOverflow.ellipsis),
-//                 ],
-//               ),
-//             ),
-//             Column(
-//               children: [
-//                 Text(message.timestamp, style: TextStyle(fontSize: 12)),
-//                 if (message.unreadCount > 0)
-//                   Container(
-//                     margin: EdgeInsets.only(top: 8),
-//                     padding: EdgeInsets.all(6),
-//                     decoration: BoxDecoration(
-//                       color: Colors.red,
-//                       shape: BoxShape.circle,
-//                     ),
-//                     child: Text(
-//                       message.unreadCount.toString(),
-//                       style: TextStyle(color: Colors.white, fontSize: 12),
-//                     ),
-//                   )
-//               ],
-//             )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class MessageData {
-//   final String name;
-//   final String message;
-//   final String timestamp;
-//   final String avatar;
-//   final int unreadCount;
-
-//   MessageData({
-//     required this.name,
-//     required this.message,
-//     required this.timestamp,
-//     required this.avatar,
-//     required this.unreadCount,
-//   });
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-
-
-// class MessagesScreen extends StatelessWidget {
-//   final List<MessageData> messages = [
-//     MessageData(
-//       name: 'Cameron Williamson',
-//       message: 'we have visit your site today',
-//       timestamp: '2 min ago',
-//       avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
-//       unreadCount: 2,
-//     ),
-//     MessageData(
-//       name: 'Dianne Russell',
-//       message: 'see you buddy',
-//       timestamp: '15 min ago',
-//       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-//       unreadCount: 1,
-//     ),
-//     MessageData(
-//       name: 'Clara Due',
-//       message: 'should i have wanted warrier',
-//       timestamp: '1 hours ago',
-//       avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-//       unreadCount: 0,
-//     ),
-//     MessageData(
-//       name: 'Robert Fox',
-//       message: 'ok got it',
-//       timestamp: '4 days ago',
-//       avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-//       unreadCount: 0,
-//     ),
-//     MessageData(
-//       name: 'Daniel Rao',
-//       message: 'wanna go outside somebody?',
-//       timestamp: '6 days ago',
-//       avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
-//       unreadCount: 0,
-//     ),
-//     MessageData(
-//       name: 'Clara Due',
-//       message: 'should i have wanted warrier',
-//       timestamp: '1 hours ago',
-//       avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-//       unreadCount: 0,
-//     ),
-//      MessageData(
-//       name: 'Robert Fox',
-//       message: 'ok got it',
-//       timestamp: '4 days ago',
-//       avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-//       unreadCount: 0,
-//     ),
-//     MessageData(
-//       name: 'Daniel Rao',
-//       message: 'wanna go outside somebody?',
-//       timestamp: '6 days ago',
-//       avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
-//       unreadCount: 0,
-//     ),
-//     MessageData(
-//       name: 'Clara Due',
-//       message: 'should i have wanted warrier',
-//       timestamp: '1 hours ago',
-//       avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-//       unreadCount: 0,
-//     ),
-//   ];
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.grey[50],
-//       appBar: PreferredSize(
-//         preferredSize: Size.fromHeight(kToolbarHeight + 20),
-//         child: Container(
-//           decoration: BoxDecoration(
-//             color: Colors.white,
-//             boxShadow: [
-//               BoxShadow(
-//                 color: Colors.black.withOpacity(0.05),
-//                 blurRadius: 1,
-//                 offset: Offset(0, 1),
-//               ),
-//             ],
-//           ),
-//           child: SafeArea(
-//             child: Column(
-//               children: [
-//                 // // Custom Status Bar
-//                 // Container(
-//                 //   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-//                 //   child: Row(
-//                 //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 //     children: [
-//                 //       Row(
-//                 //         children: [
-//                 //           // Signal bars
-//                 //           Row(
-//                 //             children: List.generate(4, (index) {
-//                 //               return Container(
-//                 //                 margin: EdgeInsets.only(right: 2),
-//                 //                 width: 3,
-//                 //                 height: 4.0 + (index * 2),
-//                 //                 decoration: BoxDecoration(
-//                 //                   color: Colors.black87,
-//                 //                   borderRadius: BorderRadius.circular(1),
-//                 //                 ),
-//                 //               );
-//                 //             }),
-//                 //           ),
-//                 //           SizedBox(width: 8),
-//                 //           Icon(Icons.wifi, size: 16),
-//                 //         ],
-//                 //       ),
-//                 //       Text(
-//                 //         '12:30',
-//                 //         style: TextStyle(
-//                 //           fontSize: 14,
-//                 //           fontWeight: FontWeight.w500,
-//                 //         ),
-//                 //       ),
-//                 //       Icon(Icons.battery_full, size: 20),
-//                 //     ],
-//                 //   ),
-//                 // ),
-//                 // Header with back button and title
-//                 Container(
-//                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-//                   child: Row(
-//                     children: [
-//                       // GestureDetector(
-//                       //   onTap: () => Navigator.pop(context),
-//                         // child: Icon(
-//                         //   Icons.arrow_back_ios,
-//                         //   size: 20,
-//                         //   color: Colors.black87,
-//                         // ),
-//                       // ),
-//                       SizedBox(width: 16),
-//                       Text(
-//                         'Messages',
-//                         style: TextStyle(
-//                           fontSize: 20,
-//                           fontWeight: FontWeight.w600,
-//                           color: Colors.black87,
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ),
-//       ),
-//       body: Column(
-//         children: [
-//           // Search Bar
-//           Container(
-//             color: Colors.white,
-//             padding: EdgeInsets.all(16),
-//             child: Container(
-//               decoration: BoxDecoration(
-//                  color: Color(0xFFE9F1C4), // Background color
-//                   borderRadius: BorderRadius.circular(25),
-//                   border: Border.all(
-//                     color: Colors.green, // 🔶 Change this to any color you want
-//                     width: 1,             // Optional: adjust border width
-//                   ),
-//               ),
-//               child: TextField(
-//                 decoration: InputDecoration(
-//                   prefixIcon: Icon(Icons.search, color: Colors.grey[700]),
-//                   hintText: 'search',
-//                   hintStyle: TextStyle(
-//                     color: Colors.grey[600],
-//                     fontSize: 16,
-//                   ),
-//                   border: InputBorder.none,
-//                   contentPadding: EdgeInsets.symmetric(
-//                     horizontal: 20,
-//                     vertical: 12,
-//                   ),
-//                 ),
-//               ),
-//             ),
-//           ),
-//           // Messages List
-//           Expanded(
-//             child: Container(
-//               color: Colors.white,
-//               child: ListView.builder(
-//                 itemCount: messages.length,
-//                 itemBuilder: (context, index) {
-//                   return MessageTile(message: messages[index]);
-//                 },
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//       // bottomNavigationBar: const CustomBottomNavigationBar(currentIndex: 4,),
-//     );
-//   }
-// }
-
-// class MessageTile extends StatelessWidget {
-//   final MessageData message;
-
-//   const MessageTile({Key? key, required this.message}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return InkWell(
-//       onTap: () {
-//         // Handle message tap
-//         print('Tapped on ${message.name}');
-//       },
-//       child: Container(
-//         padding: EdgeInsets.all(16),
-//         decoration: BoxDecoration(
-//           border: Border(
-//             bottom: BorderSide(
-//               color: Colors.grey[100]!,
-//               width: 1,
-//             ),
-//           ),
-//         ),
-//         child: Row(
-//           children: [
-//             // Avatar
-//             CircleAvatar(
-//               radius: 25,
-//               backgroundColor: Colors.grey[300],
-//               backgroundImage: NetworkImage(message.avatar),
-//             ),
-//             SizedBox(width: 16),
-//             // Message Content
-//             Expanded(
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Text(
-//                     message.name,
-//                     style: TextStyle(
-//                       fontSize: 16,
-//                       fontWeight: FontWeight.w600,
-//                       color: Colors.black87,
-//                     ),
-//                   ),
-//                   SizedBox(height: 4),
-//                   Text(
-//                     message.message,
-//                     style: TextStyle(
-//                       fontSize: 14,
-//                       color: Colors.grey[600],
-//                     ),
-//                     maxLines: 1,
-//                     overflow: TextOverflow.ellipsis,
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             // Timestamp and Badge
-//             Column(
-//               crossAxisAlignment: CrossAxisAlignment.end,
-//               children: [
-//                 Text(
-//                   message.timestamp,
-//                   style: TextStyle(
-//                     fontSize: 12,
-//                     color: Colors.grey[500],
-//                   ),
-//                 ),
-//                 if (message.unreadCount > 0) ...[
-//                   SizedBox(height: 8),
-//                   Container(
-//                     width: 20,
-//                     height: 20,
-//                     decoration: BoxDecoration(
-//                       color: Color(0xFFFF4757),
-//                       borderRadius: BorderRadius.circular(10),
-//                     ),
-//                     child: Center(
-//                       child: Text(
-//                         message.unreadCount.toString(),
-//                         style: TextStyle(
-//                           color: Colors.white,
-//                           fontSize: 12,
-//                           fontWeight: FontWeight.w600,
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class MessageData {
-//   final String name;
-//   final String message;
-//   final String timestamp;
-//   final String avatar;
-//   final int unreadCount;
-
-//   MessageData({
-//     required this.name,
-//     required this.message,
-//     required this.timestamp,
-//     required this.avatar,
-//     required this.unreadCount,
-//   });
-// }
-
-
-import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../provider/match_provider.dart';
-import '../../screens/profile_screens/chat_screen.dart';
+import 'package:dating/provider/match_provider.dart';
+import 'package:dating/provider/chat_socket_provider.dart';
+import 'package:dating/screens/profile_screens/chat_screen.dart';
 
+import '../../model/MatchUserModel.dart';
+import '../../model/chat_message.dart';
+
+// Enhanced match model to include chat data
+class MatchWithChatData {
+  final MatchUserModel match;
+  final String? lastMessage;
+  final String? lastTimestamp;
+  final int unreadCount;
+
+  MatchWithChatData({
+    required this.match,
+    this.lastMessage,
+    this.lastTimestamp,
+    this.unreadCount = 0,
+  });
+}
+
+// Provider to combine match data with chat info
+final matchesWithChatProvider = Provider<List<MatchWithChatData>>((ref) {
+  final matches = ref.watch(matchProvider);
+  final chatMessages = ref.watch(chatProvider);
+
+  // For now, return matches with placeholder chat data
+  // You can enhance this to get real last messages from a chat history provider
+  return matches.map((match) {
+    // Find last message for this user (you'd implement this based on your chat storage)
+    final lastMsg = _getLastMessageForUser(match.userId, chatMessages);
+
+    return MatchWithChatData(
+      match: match,
+      lastMessage: lastMsg?.message ?? "Tap to start chatting",
+      lastTimestamp: lastMsg != null ? _formatTimestamp(lastMsg.timestamp) : "",
+      unreadCount: _getUnreadCountForUser(match.userId), // Implement based on your logic
+    );
+  }).toList();
+});
+
+// Helper functions (you'll need to implement these based on your chat message storage)
+ChatMessage? _getLastMessageForUser(int userId, List<ChatMessage> messages) {
+  // Find the most recent message with this user
+  final userMessages = messages.where((msg) =>
+  msg!.senderId == userId || msg.receiverId == userId
+  ).toList();
+
+  if (userMessages.isEmpty) return null;
+
+  // Sort by timestamp and get the latest
+  userMessages.sort((a, b) => b!.timestamp.compareTo(a!.timestamp));
+  return userMessages.first;
+}
+
+int _getUnreadCountForUser(int userId) {
+  // Implement your unread count logic here
+  // This could be based on message read status, stored preferences, etc.
+  return 0; // Placeholder
+}
+
+String _formatTimestamp(DateTime timestamp) {
+  final now = DateTime.now();
+  final difference = now.difference(timestamp);
+
+  if (difference.inDays == 0) {
+    // Same day - show time
+    return "${timestamp.hour.toString().padLeft(2, '0')}:${timestamp.minute.toString().padLeft(2, '0')}";
+  } else if (difference.inDays == 1) {
+    return "Yesterday";
+  } else if (difference.inDays < 7) {
+    return "${difference.inDays} days ago";
+  } else {
+    return "${timestamp.day}/${timestamp.month}/${timestamp.year}";
+  }
+}
 
 class MessagesScreen extends ConsumerStatefulWidget {
   const MessagesScreen({Key? key}) : super(key: key);
@@ -563,76 +90,189 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final matches = ref.watch(matchProvider);
-    final filtered = matches.where((m) => m.name.toLowerCase().contains(searchQuery.toLowerCase())).toList();
+    final matchesWithChat = ref.watch(matchesWithChatProvider);
+
+    // Filter matches based on search query
+    final filteredMatches = matchesWithChat.where((matchData) =>
+        matchData.match.name.toLowerCase().contains(searchQuery.toLowerCase())
+    ).toList();
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: const Text('Messages',style: TextStyle( fontSize: 22, fontWeight: FontWeight.bold,color: Colors.black)),
+        title: const Text(
+          'Messages',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
         backgroundColor: Colors.white,
         elevation: 1,
-        automaticallyImplyLeading: false, 
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
-          Padding(
+          // Search bar
+          Container(
+            color: Colors.white,
             padding: const EdgeInsets.all(12),
             child: TextField(
               onChanged: (val) => setState(() => searchQuery = val),
               decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search, color: Colors.grey),
                 hintText: 'Search matches...',
-                prefixIcon: Icon(Icons.search),
+                hintStyle: TextStyle(color: Colors.grey[600]),
                 filled: true,
-                fillColor: Colors.grey[200],
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(25), borderSide: BorderSide.none),
-                 // When not focused
+                fillColor: Colors.grey[100],
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
-                  borderSide: BorderSide(color: DatingColors.middlepink, width: 1),
+                  borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
                 ),
-
-                // When focused
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
-                  borderSide: BorderSide(
-                    color: DatingColors.everqpidColor, // your accent color
-                    width: 2,
-                  ),
+                  borderSide: const BorderSide(color: Colors.green, width: 2),
                 ),
               ),
             ),
           ),
+
+          // Messages list
           Expanded(
-            child: filtered.isEmpty
-                ? const Center(child: Text("No matched users"))
-                : ListView.builder(
-                    itemCount: filtered.length,
-                    itemBuilder: (context, index) {
-                      final match = filtered[index];
-                      return ListTile(
-                        leading: CircleAvatar(backgroundImage: NetworkImage(match.avatar)),
-                        title: Text(match.name),
-                        subtitle: Text("Tap to chat"),
-                        
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ChatScreen(
-                              matchId: match.matchId,
-                              userId: match.userId,
-                              userName: match.name,
-                              avatar: match.avatar,
+            child: Container(
+              color: Colors.white,
+              child: filteredMatches.isEmpty
+                  ? const Center(
+                child: Text(
+                  "No matched users",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey,
+                  ),
+                ),
+              )
+                  : ListView.separated(
+                itemCount: filteredMatches.length,
+                separatorBuilder: (context, index) => Divider(
+                  height: 1,
+                  color: Colors.grey[200],
+                  indent: 72, // Start after avatar
+                ),
+                itemBuilder: (context, index) {
+                  final matchData = filteredMatches[index];
+                  final match = matchData.match;
+
+                  return InkWell(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ChatScreen(
+                          matchId: match.matchId,
+                          userId: match.userId,
+                          userName: match.name,
+                          avatar: match.avatar,
+                        ),
+                      ),
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      child: Row(
+                        children: [
+                          // User avatar
+                          CircleAvatar(
+                            radius: 28,
+                            backgroundColor: Colors.grey[300],
+                            backgroundImage: NetworkImage(match.avatar),
+                            onBackgroundImageError: (_, __) {},
+                            child: match.avatar.isEmpty
+                                ? Icon(Icons.person, color: Colors.grey[600])
+                                : null,
+                          ),
+
+                          const SizedBox(width: 16),
+
+                          // Message content
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // User name
+                                Text(
+                                  match.name,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 4),
+
+                                // Last message
+                                Text(
+                                  matchData.lastMessage ?? "Tap to start chatting",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[600],
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-          )
+
+                          // Timestamp and unread count
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              // Timestamp
+                              Text(
+                                matchData.lastTimestamp ?? "",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[500],
+                                ),
+                              ),
+
+                              // Unread count badge
+                              if (matchData.unreadCount > 0) ...[
+                                const SizedBox(height: 8),
+                                Container(
+                                  width: 20,
+                                  height: 20,
+                                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green[600],
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    matchData.unreadCount > 99
+                                        ? "99+"
+                                        : matchData.unreadCount.toString(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 }
-
