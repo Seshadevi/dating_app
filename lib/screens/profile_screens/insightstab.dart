@@ -1,23 +1,30 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/plans/plansfullprovider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProfileInsightsTab extends StatelessWidget {
+class ProfileInsightsTab extends ConsumerStatefulWidget {
   const ProfileInsightsTab({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  ConsumerState<ProfileInsightsTab> createState() => _ProfileInsightsTabState();
+}
+
+class _ProfileInsightsTabState extends ConsumerState<ProfileInsightsTab> {
+  @override
+  Widget build(BuildContext context,) {
+    final isDarkMode = ref.watch(darkModeProvider);
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F5F2),
+      backgroundColor: isDarkMode ? DatingColors.darkGrey : DatingColors.backgroundWhite,
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+             Text(
               "How Are Your Photos Doing?",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: isDarkMode ? DatingColors.white: DatingColors.white),
             ),
             const SizedBox(height: 4),
             const Text(
@@ -93,7 +100,8 @@ class ProfileInsightsTab extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: DatingColors.lightpinks,
+                color: isDarkMode ? DatingColors.darkGrey : DatingColors.lightpinks,
+
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Row(
@@ -126,7 +134,7 @@ class ProfileInsightsTab extends StatelessWidget {
               imagePath: 'assets/profile_insights_tab1.png',
               text: "Avoid Mirror Selfies, And Photos\nWith Filters.",
               icon: Icons.info_outline,
-              iconColor: Colors.black,
+              iconColor: Colors.red,
             ),
             const SizedBox(height: 12),
             _tipCard(
@@ -134,14 +142,14 @@ class ProfileInsightsTab extends StatelessWidget {
               text:
                   "Include A Bright And Clear Photo Of Just You. Even Better If You're Smiling!",
               icon: Icons.check,
-              iconColor: Colors.black,
+              iconColor: DatingColors.darkGreen,
             ),
             const SizedBox(height: 12),
             _tipCard(
               imagePath: 'assets/profile_insights_tab5.png',
               text: "Add Photos That Show Your Lifestyle And What You're Into.",
               icon: Icons.check,
-              iconColor: DatingColors.brown,
+              iconColor: DatingColors.darkGreen,
             ),
           ],
         ),
@@ -155,13 +163,16 @@ class ProfileInsightsTab extends StatelessWidget {
   required IconData icon,
   required Color iconColor,
 }) {
+  final isDarkMode = ref.watch(darkModeProvider);
   return Container(
     padding: const EdgeInsets.all(12),
     margin: const EdgeInsets.only(bottom: 12),
     decoration: BoxDecoration(
-      color: DatingColors.lightpinks,
+      color: isDarkMode ? DatingColors.darkGrey : DatingColors.lightpinks,
       borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: DatingColors.lightpinks )
     ),
+  
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -204,8 +215,6 @@ class ProfileInsightsTab extends StatelessWidget {
     ),
   );
 }
-
-
 }
 
 class SafetyTab extends StatelessWidget {
@@ -213,8 +222,10 @@ class SafetyTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F5F2),
+      backgroundColor: isDarkMode ? DatingColors.darkGrey : DatingColors.backgroundWhite,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

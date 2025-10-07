@@ -1,4 +1,5 @@
 import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/provider/userdetails_socket_provider.dart';
 import 'package:dating/screens/completeprofile/complete_profile.dart';
 import 'package:dating/screens/profile_screens/insightstab.dart';
@@ -24,6 +25,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref. watch(darkModeProvider);
     final userModel = ref.watch(loginProvider);
     final user =
         userModel.data?.isNotEmpty == true ? userModel.data![0].user : null;
@@ -39,7 +41,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        backgroundColor: DatingColors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -58,10 +60,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 padding: const EdgeInsets.only(top: 50, bottom: 20),
                 child: Column(
                   children: [
-                    const Text(
+                     Text(
                       'Profile',
                       style: TextStyle(
-                        color: DatingColors.brown,
+                         color: isDarkMode ? DatingColors.black : DatingColors.brown,
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
@@ -79,8 +81,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     // const SizedBox(height: 16),
                     Text(
                       name,
-                      style: const TextStyle(
-                        color: DatingColors.brown,
+                      style:  TextStyle(
+                        color: isDarkMode ? DatingColors.black : DatingColors.brown,
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
@@ -146,14 +148,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 Column(
                   children: [
                     const SizedBox(height: 20),
-                    const Text(
+                     Text(
                       'HeartSync Premium',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,color: isDarkMode ? DatingColors.white : DatingColors.brown,),
                     ),
-                    const Text(
+                     Text(
                       'Premium features designed to maximize your journey.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 13),
+                      style: TextStyle(fontSize: 13,color: isDarkMode ? DatingColors.lightgrey : DatingColors.brown,),
                     ),
                     const SizedBox(height: 38),
                     ElevatedButton(
@@ -163,22 +165,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         });
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: DatingColors.surfaceGrey,
-                        foregroundColor: DatingColors.everqpidColor,
+                        backgroundColor:   isDarkMode ? DatingColors.darkGrey : DatingColors.surfaceGrey,
+                        foregroundColor: isDarkMode ? DatingColors.everqpidColor : DatingColors.brown,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                           side: BorderSide(
-                            color: DatingColors.lightpinks,
+                            color: isDarkMode ? DatingColors.white : DatingColors.brown,
                             width: 2,
                           ),
                         ),
                       ),
-                      child: const Padding(
+                      child:  Padding(
                         padding:
                             EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                         child: Text(
                           'Premium Plans',
-                          style: TextStyle(color: DatingColors.brown),
+                          style: TextStyle(color: isDarkMode ?DatingColors.white : DatingColors.brown),
                         ),
                       ),
                     ),
@@ -191,7 +193,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       margin:
                           const EdgeInsets.symmetric(vertical: 5, horizontal: 1),
                       decoration: BoxDecoration(
-                        color: DatingColors.surfaceGrey,
+                        color: isDarkMode ? DatingColors.darkGrey : DatingColors.surfaceGrey,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TabBar(
@@ -199,8 +201,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           color: DatingColors.everqpidColor,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        labelColor: DatingColors.brown,
-                        unselectedLabelColor: DatingColors.black,
+                         labelColor: isDarkMode ? DatingColors.white : DatingColors.brown,
+                         unselectedLabelColor: isDarkMode ? DatingColors.lightgrey : DatingColors.black,
                         indicatorPadding: EdgeInsets.zero,
                         tabs: const [
                           Tab(child: Padding(padding: EdgeInsets.all(12), child: Text('Pay Plan'))),
@@ -230,6 +232,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   /// ✅ Reuse helper widget from above
   Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
+    final isDarkMode = ref.watch(darkModeProvider);
     final userData = ref.watch(loginProvider);
     final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
     final modeId = user?.mode?.isNotEmpty == true ? user?.mode?.first.id : null;
@@ -267,11 +270,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     Color progressColor = hasValidData && profileCompletion > 0
         ? (profileCompletion >= 80
-            ? Colors.green
+            ? (isDarkMode ? Colors.green.shade300 : Colors.green)
             : profileCompletion >= 50
                 ? DatingColors.accentTeal
                 : DatingColors.lightpink)
-        : Colors.grey;
+        : (isDarkMode ? DatingColors.middlegrey : Colors.grey);
 
     // ✅ Use your imageUrl
     String? imageUrl;
@@ -292,6 +295,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               height: 140,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
+                color: isDarkMode ? DatingColors.darkGrey : DatingColors.surfaceGrey,
                 boxShadow: [
                   BoxShadow(
                     color: progressColor.withOpacity(0.3),
@@ -307,7 +311,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               child: CircularProgressIndicator(
                 value: profileCompletion / 100.0,
                 strokeWidth: 6,
-                backgroundColor: Colors.grey.shade200,
+               backgroundColor: isDarkMode ? DatingColors.lightgrey : Colors.grey.shade200,
                 valueColor: AlwaysStoppedAnimation<Color>(progressColor),
                 strokeCap: StrokeCap.round,
               ),
@@ -317,10 +321,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               height: 110,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 3),
+                border: Border.all(
+                color: isDarkMode ? DatingColors.darkGrey : Colors.white,
+                width: 3
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color:  isDarkMode
+                      ? DatingColors.middlegrey.withOpacity(0.18)
+                      : Colors.black.withOpacity(0.1),
                     blurRadius: 10,
                     offset: Offset(0, 3),
                   ),
@@ -333,10 +342,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         imageUrl,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
-                          return const Icon(Icons.person, size: 50, color: Colors.white);
+                          return  Icon(Icons.person, size: 50, color: isDarkMode ? DatingColors.white : Colors.white);
                         },
                       )
-                    : const Icon(Icons.person, size: 50, color: Colors.white),
+                    :  Icon(Icons.person, size: 50, color: isDarkMode ? DatingColors.white : Colors.white),
               ),
             ),
             Positioned(
@@ -356,8 +365,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ),
                 child: Text(
                   '$profileCompletion%',
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style:  TextStyle(
+                    color: isDarkMode ? DatingColors.black : Colors.white,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -419,6 +428,7 @@ class _CircleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return Column(
       children: [
         Stack(
@@ -427,8 +437,11 @@ class _CircleButton extends StatelessWidget {
               onTap: onTap,
               child: CircleAvatar(
                 radius: 28,
-                backgroundColor: DatingColors.white,
-                child: Icon(icon, color: DatingColors.brown),
+                backgroundColor: isDarkMode ? DatingColors.darkGrey : DatingColors.white,
+                child: Icon(
+                  icon,
+                  color: isDarkMode ? DatingColors.white : DatingColors.brown,
+                ),
               ),
             ),
             if (hasDot)
@@ -438,7 +451,7 @@ class _CircleButton extends StatelessWidget {
                 child: Container(
                   width: 8,
                   height: 8,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     color: DatingColors.errorRed,
                     shape: BoxShape.circle,
                   ),
@@ -447,7 +460,13 @@ class _CircleButton extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 4),
-        Text(label, style: const TextStyle(color: Colors.black, fontSize: 11)),
+        Text(
+          label,
+          style: TextStyle(
+            color: isDarkMode ? DatingColors.brown : Colors.black,
+            fontSize: 11,
+          ),
+        ),
       ],
     );
   }

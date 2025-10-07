@@ -2,6 +2,7 @@ import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loader.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/logout_notitifier.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/provider/settings/travelprovider.dart';
 import 'package:dating/provider/signupprocessProviders/modeProvider.dart';
 import 'package:dating/provider/snooze/post_snooze_provider.dart';
@@ -232,6 +233,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
     final userdata = ref.watch(loginProvider);
     final user =
         userdata.data?.isNotEmpty == true ? userdata.data![0].user : null;
@@ -252,12 +254,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       return false; // Prevent default back behavior
     },
       child: Scaffold(
-        backgroundColor: DatingColors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
           title:
-              const Text("Settings", style: TextStyle(color: DatingColors.brown)),
+               Text("Settings", style: TextStyle(color: isDarkMode? Colors.white : DatingColors.brown)),
           centerTitle: true,
-          backgroundColor: DatingColors.white,
+          backgroundColor: isDarkMode? Colors.black : DatingColors.white,
           elevation: 0,
           leading: IconButton(
               icon:
@@ -411,7 +413,48 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       //   'Change Your Location To Connect With People In Other Locations',
       //   style: TextStyle(fontSize: 12, color: Colors.grey),
       // ),
-      
+
+          _darkmode(
+              context,
+              "Dark Mode",
+              isDarkMode,
+              (value) {
+                ref.read(darkModeProvider.notifier).toggleTheme(value);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      value ? "🌙 Dark Mode Enabled" : "☀️ Light Mode Enabled",
+                    ),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),       
+           
+
+            // Dark Mode Switch
+                    // Container(
+                    //   margin: const EdgeInsets.symmetric(vertical: 4),
+                    //   child: SwitchListTile(
+                    //     value: isDarkMode,
+                    //     onChanged: (val) {
+                    //       ref.read(darkModeProvider.notifier).toggleTheme(val);
+                    //     },
+                    //     activeColor: Theme.of(context).colorScheme.primary,
+                    //     title: Text(
+                    //       "Dark mode",
+                    //       style: TextStyle(
+                    //         color: Theme.of(context).colorScheme.onSurface,
+                    //         fontSize: 16,
+                    //       ),
+                    //     ),
+                    //     secondary: Icon(
+                    //       isDarkMode ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
+                    //       color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                    //     ),
+                    //     contentPadding: EdgeInsets.zero,
+                    //   ),
+                    // ),
               const SizedBox(height: 16),
       
               // Settings Options
@@ -490,12 +533,52 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
+  Widget _darkmode(
+  BuildContext context,
+  String title,
+  bool value,
+  ValueChanged<bool> onChanged,
+) {
+  final theme = Theme.of(context);
+
+  return Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: theme.cardColor,
+      borderRadius: BorderRadius.circular(20),
+      border: Border.all(
+        color: theme.brightness == Brightness.dark
+            ? Colors.grey.shade800
+            : DatingColors.lightpink,
+      ),
+    ),
+    child: Row(
+      children: [
+        Expanded(
+          child: Text(
+            title,
+            style: theme.textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: theme.textTheme.bodyLarge?.color,
+            ),
+          ),
+        ),
+        Switch(
+          value: value,
+          onChanged: onChanged,
+          activeColor: DatingColors.primaryGreen,
+        ),
+      ],
+    ),
+  );
+}
+
   // Enhanced location tile with button
   Widget _tileWithLocationButton(String title, String value) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: DatingColors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: DatingColors.lightpink),
       ),
@@ -507,7 +590,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: Theme.of(context). textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
                   ),
@@ -515,8 +598,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const SizedBox(height: 4),
                 Text(
                   value,
-                  style: const TextStyle(
-                    color: DatingColors.mediumGrey,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.85),
                     fontSize: 13,
                   ),
                   maxLines: 2,
@@ -566,56 +649,59 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   // Email tile with dynamic content
-  Widget _emailTile(String? userEmail) {
-    bool hasEmail = userEmail != null && userEmail.isNotEmpty;
+Widget _emailTile( String? userEmail) {
+  bool hasEmail = userEmail != null && userEmail.isNotEmpty;
+  final theme = Theme.of(context);
 
-    return GestureDetector(
-      onTap: () {
-        _showEmailDialog(context, userEmail);
-      },
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: DatingColors.white,
-          borderRadius: BorderRadius.circular(20),
-          border:
-              Border.all(color: DatingColors.lightpink),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    hasEmail ? "Email Address" : "Add Your Email",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    hasEmail
-                        ? userEmail
-                        : "Sign Up to Be Notified With Important Event Type Updates",
-                    style: TextStyle(
-                      fontSize: hasEmail ? 14 : 12,
-                      color: hasEmail
-                          ? DatingColors.brown
-                          : DatingColors.mediumGrey,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              hasEmail ? Icons.edit : Icons.add,
-              color: DatingColors.primaryGreen,
-              size: 20,
-            ),
-          ],
-        ),
+  return GestureDetector(
+    onTap: () {
+      _showEmailDialog(context, userEmail);
+    },
+    child: Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.cardColor, // Adapt to dark/light
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: DatingColors.lightpink),
       ),
-    );
-  }
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  hasEmail ? "Email Address" : "Add Your Email",
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  hasEmail
+                      ? userEmail!
+                      : "Sign Up to Be Notified With Important Event Type Updates",
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontSize: hasEmail ? 14 : 12,
+                    color: hasEmail
+                        ? theme.textTheme.bodyLarge?.color // Main text color
+                        : theme.textTheme.bodyMedium?.color?.withOpacity(0.7), // Subdued for no email
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Icon(
+            hasEmail ? Icons.edit : Icons.add,
+            color: DatingColors.primaryGreen,
+            size: 20,
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 
   // Method to show email add/edit dialog
   void _showEmailDialog(BuildContext context, String? currentEmail) {
@@ -911,9 +997,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Widget _tileWithTextArrow(String title, String value) {
+    final isDarkMode = ref.watch(darkModeProvider);
     return ListTile(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      tileColor: DatingColors.lightpinks,
+      tileColor: isDarkMode ? Colors.black : DatingColors.lightpinks,
       title: Text(title),
       trailing: Text(value),
     );
@@ -921,10 +1008,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Widget _tileWithSwitch(
       String title, bool value, ValueChanged<bool> onChanged) {
+        final isDarkMode = ref.watch(darkModeProvider);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: DatingColors.white,
+        color: isDarkMode? Colors.black : DatingColors.white,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: DatingColors.lightpink),
       ),
@@ -969,6 +1057,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   // Add this method to your _SettingsScreenState class:
   Widget travelToggleTile(BuildContext context, WidgetRef ref, String title) {
+     final isDarkMode = ref.watch(darkModeProvider);
   final travelState = ref.watch(travelProvider);
   final isLoading = ref.watch(loadingProvider);
   final userdata = ref.watch(loginProvider);
@@ -987,7 +1076,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   return Container(
     padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
-      color: Colors.white,
+    //  color: isDarkMode? Colors.black : DatingColors.white,
+      color: Theme.of(context).cardColor,
       borderRadius: BorderRadius.circular(20),
       border: Border.all(
         color: isTravelOn ?DatingColors.lightpink : Colors.grey,
@@ -998,7 +1088,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       children: [
         CircleAvatar(
           radius: 18,
-          backgroundColor: isTravelOn ? Colors.white: Colors.grey,
+          backgroundColor: isTravelOn ? Theme.of(context).colorScheme.secondary
+              : Colors.grey,
           child: const Icon(Icons.travel_explore, color: Colors.white, size: 20),
         ),
         const SizedBox(width: 12),
@@ -1007,7 +1098,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: isTravelOn ?DatingColors.lightpinks : Colors.black,
+              color: isTravelOn
+                  ? DatingColors.lightpinks
+                  : Theme.of(context).textTheme.bodyLarge?.color,
             ),
           ),
         ),
@@ -1048,7 +1141,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 );
               }
             },
-            activeColor: const Color.fromARGB(255, 227, 114, 186),
+            activeColor: DatingColors.lightpink,
           ),
       ],
     ),
@@ -1062,14 +1155,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         margin: const EdgeInsets.only(top: 8),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
         decoration: BoxDecoration(
-          color: DatingColors.white,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: DatingColors.middlepink),
         ),
         child: Row(
           children: [
-            Expanded(child: Text(title)),
-            const Icon(Icons.arrow_forward_ios, size: 20),
+            Expanded(child: Text(title,
+            style: Theme.of(context).textTheme.bodyLarge,
+            )),
+             Icon(Icons.arrow_forward_ios, size: 20,
+            color: Theme.of(context).iconTheme.color),
           ],
         ),
       ),

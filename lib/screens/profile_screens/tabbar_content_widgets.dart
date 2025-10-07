@@ -38,6 +38,8 @@ class _PayPlanTabState extends ConsumerState<PayPlanTab> {
   }
 // Enhanced method to build filtered features list - showing only available features
 List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPlanIndex) {
+  final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
   if (featurePlans.isEmpty || selectedPlanIndex >= featurePlans.length) {
     return [];
   }
@@ -99,7 +101,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-            color: DatingColors.surfaceGrey,
+            color: isDarkMode ? DatingColors.middlegrey : DatingColors.surfaceGrey,
             width: 1,
           ),
         ),
@@ -114,7 +116,8 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                   featureName,
                   style: TextStyle(
                     fontSize: 15,
-                    color: DatingColors.brown,
+                    color: isDarkMode ? DatingColors.white : DatingColors.brown,
+
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -135,7 +138,8 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                       'i',
                       style: TextStyle(
                         fontSize: 10,
-                        color: DatingColors.brown,
+                        color: isDarkMode ? DatingColors.white : DatingColors.brown,
+
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -263,6 +267,8 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
 
   // Features section 
   Widget _buildFeaturesSection() {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     final model = ref.watch(plansFullProvider);
     final plans = model.data ?? [];
     
@@ -298,11 +304,11 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: DatingColors.white,
+        color: isDarkMode ? DatingColors.darkGrey : DatingColors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color:DatingColors. lightgrey.withOpacity(0.1),
+            color: DatingColors. lightgrey.withOpacity(0.1),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -317,7 +323,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
             decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: DatingColors.surfaceGrey,
+                  color: isDarkMode ? DatingColors.middlegrey : DatingColors.surfaceGrey,
                   width: 1,
                 ),
               ),
@@ -325,12 +331,13 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                 Text(
                   "what you get:",
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 16,
-                    color: DatingColors.brown,
+                   color: isDarkMode ? DatingColors.white : DatingColors.brown,
+
                   ),
                 ),
                 Text(
@@ -349,7 +356,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
           Container(
             height: 50,
             decoration: BoxDecoration(
-              color: DatingColors.surfaceGrey,
+              color: isDarkMode ? DatingColors.middlegrey : DatingColors.surfaceGrey,
               border: Border(
                 bottom: BorderSide(
                   color: DatingColors.lightBlue,
@@ -416,6 +423,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final model = ref.watch(plansFullProvider);
     final plans = model.data ?? [];
 
@@ -462,7 +470,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
     if (boostPlan != null) featurePlans.add(boostPlan);
 
     return Scaffold(
-      backgroundColor: DatingColors.white,
+      backgroundColor: isDarkMode ? DatingColors.darkGrey : DatingColors.white,
       body: model.isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -588,7 +596,9 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                               margin: const EdgeInsets.only(right: 16),
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
-                                color: isSelected ? planColor : DatingColors.lightpinks,
+                                color: isSelected 
+                                      ? planColor 
+                                      : isDarkMode ? DatingColors.darkGrey : DatingColors.lightpinks,
                                 borderRadius: BorderRadius.circular(12),
                                 border: isSelected 
                                     ? Border.all(color: planColor, width: 2)
@@ -644,15 +654,20 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: isSelected ? DatingColors.white : planColor,
-                                        foregroundColor: isSelected ? planColor : DatingColors.white,
+                                        backgroundColor: isSelected 
+                                                ? (isDarkMode ? DatingColors.darkGrey : DatingColors.white)
+                                                : planColor,
+                                            foregroundColor: isSelected 
+                                                ? planColor 
+                                                : (isDarkMode ? DatingColors.darkGrey : DatingColors.white),
+
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(8),
                                         ),
                                       ),
-                                      child: const Text("Explore More",style: TextStyle(
+                                      child:  Text("Explore More",style: TextStyle(
                                         fontSize: 12,
-                                        color:  DatingColors.lightgrey,
+                                        color: isDarkMode ? DatingColors.white : DatingColors.lightgrey,
                                       ),),
                                     ),
                                   ),
