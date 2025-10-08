@@ -1,18 +1,23 @@
+import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NewMessagesSettingsScreen extends StatefulWidget {
+class NewMessagesSettingsScreen extends ConsumerStatefulWidget {
   const NewMessagesSettingsScreen({super.key});
 
   @override
-  State<NewMessagesSettingsScreen> createState() => _NewMessagesSettingsScreenState();
+  ConsumerState<NewMessagesSettingsScreen> createState() => _NewMessagesSettingsScreenState();
 }
 
-class _NewMessagesSettingsScreenState extends State<NewMessagesSettingsScreen> {
+class _NewMessagesSettingsScreenState extends ConsumerState<NewMessagesSettingsScreen> {
   bool pushNotification = true;
   bool emailNotification = true;
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
@@ -20,13 +25,13 @@ class _NewMessagesSettingsScreenState extends State<NewMessagesSettingsScreen> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon:  Icon(Icons.arrow_back, color: isDarkMode ? DatingColors.white : Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: const Text(
+        title:  Text(
           'New Messages',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color: isDarkMode ? DatingColors.white : DatingColors.black, fontWeight: FontWeight.bold),
         ),
       ),
 

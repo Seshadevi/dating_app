@@ -520,7 +520,7 @@ class DiscoverScreen extends ConsumerWidget {
                           ),
                           child: Text(
                             tag,
-                            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
+                            style:  TextStyle(fontSize: 10, fontWeight: FontWeight.w500,color: isDarkMode ? DatingColors.brown : DatingColors.black),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),

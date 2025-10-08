@@ -20,24 +20,25 @@ class FeedbackpageSate extends ConsumerState<Feedbackpage> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: isDarkMode ? DatingColors.black :  DatingColors.backgroundWhite,
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(
+          icon:  Icon(
             Icons.arrow_back,
-            color: Colors.black,
+            color: isDarkMode ? DatingColors.white :  Colors.black,
           ),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        title: const Text(
+        title: Text(
           'Feedback',
           style: TextStyle(
-            color: Colors.black,
+            color: isDarkMode ? DatingColors.white : Colors.black,
             fontSize: 18,
             fontWeight: FontWeight.w500,
           ),

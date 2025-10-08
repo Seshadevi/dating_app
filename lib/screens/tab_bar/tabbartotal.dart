@@ -1,4 +1,5 @@
 import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/screens/tab_bar/subscriptioncontent.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +13,8 @@ class SubscriptionTabScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     final plans = ref.watch(plansFullProvider).data ?? [];
 
     // 🔍 Get the clicked plan's planName by typeId
@@ -55,18 +58,18 @@ class SubscriptionTabScreen extends ConsumerWidget {
     return DefaultTabController(
       length: tabsToShow.length,
       child: Scaffold(
-        backgroundColor: DatingColors.white,
+        backgroundColor: isDarkMode ? DatingColors.black : DatingColors.white,
         appBar: AppBar(
           title: const Text('Subscription'),
           centerTitle: true,
-          backgroundColor: DatingColors.white,
+          backgroundColor: isDarkMode ? DatingColors.black : DatingColors.white,
           elevation: 0,
-          foregroundColor: DatingColors.black,
+          foregroundColor: isDarkMode ? DatingColors.white : DatingColors.black,
           bottom: TabBar(
             isScrollable: true,
-            labelColor: DatingColors.black,
+            labelColor: isDarkMode ? DatingColors.white : DatingColors.black,
             unselectedLabelColor: Colors.grey,
-            indicatorColor: DatingColors.black,
+            indicatorColor: isDarkMode ? DatingColors.everqpidColor : DatingColors.black,
             tabs: tabsToShow
                 .map((entry) => Tab(text: entry.key))
                 .toList(),

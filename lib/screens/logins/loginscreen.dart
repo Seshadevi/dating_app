@@ -22,7 +22,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(darkModeProvider);
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: DatingColors.backgroundWhite,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(), // Hide keyboard on outside tap
         child: Stack(
@@ -34,7 +34,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.arrow_back_ios, size: 25),
+                      icon: const Icon(Icons.arrow_back_ios,color: DatingColors.black, size: 25),
                       onPressed: () => Navigator.pop(context),
                     ),
                     const SizedBox(height: 10),

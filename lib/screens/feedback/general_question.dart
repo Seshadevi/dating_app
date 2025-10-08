@@ -1,13 +1,16 @@
+import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Generalquestionpage extends StatefulWidget {
+class Generalquestionpage extends ConsumerStatefulWidget {
   const Generalquestionpage({super.key});
 
   @override
-  State<Generalquestionpage> createState() => GeneralquestionpageSate();
+  ConsumerState<Generalquestionpage> createState() => GeneralquestionpageSate();
 }
 
-class GeneralquestionpageSate extends State<Generalquestionpage> {
+class GeneralquestionpageSate extends ConsumerState<Generalquestionpage> {
   final TextEditingController _messageController = TextEditingController();
 
   @override
@@ -18,142 +21,146 @@ class GeneralquestionpageSate extends State<Generalquestionpage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor:isDarkMode ? DatingColors.black : DatingColors.backgroundWhite,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF5F5F5),
+        backgroundColor:isDarkMode ? DatingColors.black : DatingColors.backgroundWhite,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(
+          icon:  Icon(
             Icons.arrow_back_ios,
-            color: Colors.black,
+            color: isDarkMode ? DatingColors.white : DatingColors.black,
             size: 20,
           ),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        title: const Text(
+        title: Text(
           'Ask A General Question',
           style: TextStyle(
-            color: Colors.black,
+            color: isDarkMode ? DatingColors.white : DatingColors.black,
             fontSize: 18,
             fontWeight: FontWeight.w500,
           ),
         ),
         centerTitle: false,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 20),
-            // Message Input Container
-            Container(
-              height: 250,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: const Color.fromARGB(255, 33, 41, 1),
-                  width: 1,
-                ),
-              ),
-              child: TextField(
-                controller: _messageController,
-                maxLines: null,
-                expands: true,
-                textAlignVertical: TextAlignVertical.top,
-                decoration: const InputDecoration(
-                  hintText: 'Type Your Message',
-                  hintStyle: TextStyle(
-                    color: Color(0xFF9E9E9E),
-                    fontSize: 16,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 20),
+              // Message Input Container
+              Container(
+                height: 250,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: const Color.fromARGB(255, 33, 41, 1),
+                    width: 1,
                   ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.all(16),
                 ),
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
+                child: TextField(
+                  controller: _messageController,
+                  maxLines: null,
+                  expands: true,
+                  textAlignVertical: TextAlignVertical.top,
+                  decoration: const InputDecoration(
+                    hintText: 'Type Your Message',
+                    hintStyle: TextStyle(
+                      color: Color(0xFF9E9E9E),
+                      fontSize: 16,
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.all(16),
+                  ),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 24),
-            // Add Screenshot Button
-           
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                 
-                  Text(
-                    'Add A Screenshot ( Optional )',
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline,
-                      decorationColor: const Color.fromARGB(255, 37, 30, 4)
-                      
+              const SizedBox(height: 24),
+              // Add Screenshot Button
+             
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                   
+                    Text(
+                      'Add A Screenshot ( Optional )',
+                      style: TextStyle(
+                        color: isDarkMode ? DatingColors.white : DatingColors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                        decorationColor: const Color.fromARGB(255, 37, 30, 4)
+                        
+                      ),
+                    ),
+                  ],
+                ),
+              
+              
+              // Send Button
+              SizedBox(height: 50,),
+              Container(
+                height: 50,
+                margin: const EdgeInsets.only(bottom: 12),
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Handle send action
+                    String message = _messageController.text.trim();
+                    if (message.isNotEmpty) {
+                      // Add your send logic here
+                      print('Sending message: $message');
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                  
+                    backgroundColor: const Color.fromARGB(255, 225, 230, 184), // Light green color
+                    foregroundColor: Colors.black,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                     side: const BorderSide(
+                      color: Color.fromARGB(57, 24, 27, 1), // Green border color
+                      width: 2, // Border width
                     ),
                   ),
-                ],
+                  child: const Text(
+                    'Send',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
               ),
-            
-            
-            // Send Button
-            SizedBox(height: 50,),
-            Container(
-              height: 50,
-              margin: const EdgeInsets.only(bottom: 12),
-              child: ElevatedButton(
+              // Cancel Button
+              TextButton(
                 onPressed: () {
-                  // Handle send action
-                  String message = _messageController.text.trim();
-                  if (message.isNotEmpty) {
-                    // Add your send logic here
-                    print('Sending message: $message');
-                  }
+                  Navigator.pop(context);
                 },
-                style: ElevatedButton.styleFrom(
-                
-                  backgroundColor: const Color.fromARGB(255, 225, 230, 184), // Light green color
-                  foregroundColor: Colors.black,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                   side: const BorderSide(
-                    color: Color.fromARGB(57, 24, 27, 1), // Green border color
-                    width: 2, // Border width
-                  ),
-                ),
                 child: const Text(
-                  'Send',
+                  'Cancel',
                   style: TextStyle(
+                    color: Colors.black54,
                     fontSize: 16,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ),
-            ),
-            // Cancel Button
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'Cancel',
-                style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-          ],
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

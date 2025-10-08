@@ -119,7 +119,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
         children: [
           // Search bar
           Container(
-             color: isDarkMode ? DatingColors.black :  DatingColors.white,
+            color: isDarkMode ? DatingColors.black :  DatingColors.white,
             padding: const EdgeInsets.all(12),
             child: TextField(
               onChanged: (val) => setState(() => searchQuery = val),
@@ -127,8 +127,8 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                 prefixIcon: const Icon(Icons.search, color: DatingColors.middlegrey),
                 hintText: 'Search matches...',
                 hintStyle: TextStyle(color: DatingColors.middlegrey),
-                filled: true,
-                fillColor: DatingColors.surfaceGrey,
+              filled: true,
+                fillColor: isDarkMode ? DatingColors.black : DatingColors.lightgrey,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),

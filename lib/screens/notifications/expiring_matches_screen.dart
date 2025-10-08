@@ -17,6 +17,7 @@ class _NewExpiringMatchesScreenState extends ConsumerState<NewExpiringMatchesScr
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
@@ -24,13 +25,13 @@ class _NewExpiringMatchesScreenState extends ConsumerState<NewExpiringMatchesScr
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon:  Icon(Icons.arrow_back, color: isDarkMode ? DatingColors.white : DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: const Text(
+        title:  Text(
           'Expiring Matches',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color: isDarkMode ? DatingColors.white : DatingColors.black, fontWeight: FontWeight.bold),
         ),
       ),
 

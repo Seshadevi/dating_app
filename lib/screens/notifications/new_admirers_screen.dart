@@ -1,34 +1,40 @@
 import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NewAdmirersScreen extends StatefulWidget {
+class NewAdmirersScreen extends ConsumerStatefulWidget {
   const NewAdmirersScreen({super.key});
 
   @override
-  State<NewAdmirersScreen> createState() => _NewAdmirersScreenState();
+  ConsumerState<NewAdmirersScreen> createState() => _NewAdmirersScreenState();
 }
 
-class _NewAdmirersScreenState extends State<NewAdmirersScreen> {
+class _NewAdmirersScreenState extends ConsumerState<NewAdmirersScreen> {
   bool pushNotification = true;
   bool emailNotification = true;
 
   @override
   Widget build(BuildContext context) {
+
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
      // Theme,
-backgroundColor: DatingColors.backgroundWhite,
+     backgroundColor: isDarkMode ? DatingColors.black : DatingColors.backgroundWhite,
       appBar: AppBar(
        // Theme,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon:  Icon(Icons.arrow_back, color: isDarkMode ? DatingColors.white : DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: const Text(
+        title: Text(
           'New Admirers',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color:  isDarkMode ? DatingColors.white : DatingColors.black, fontWeight: FontWeight.bold),
         ),
+        backgroundColor: isDarkMode ? DatingColors.black : DatingColors.backgroundWhite,
       ),
 
       body: Padding(
@@ -36,9 +42,9 @@ backgroundColor: DatingColors.backgroundWhite,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+           Text(
               "Turning these off might mean you miss alerts from your connections",
-              style: TextStyle(fontSize: 14),
+              style: TextStyle(fontSize: 14,color: isDarkMode ? DatingColors.white : DatingColors.black, ),
             ),
             const SizedBox(height: 24),
 

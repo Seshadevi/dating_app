@@ -1,14 +1,17 @@
+import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/screens/settings/marketing_permissions_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Privacysetting extends StatefulWidget {
+class Privacysetting extends ConsumerStatefulWidget {
   const Privacysetting({super.key});
 
   @override
-  State<Privacysetting> createState() => _PrivacysettingState();
+  ConsumerState<Privacysetting> createState() => _PrivacysettingState();
 }
 
-class _PrivacysettingState extends State<Privacysetting> {
+class _PrivacysettingState extends ConsumerState<Privacysetting> {
   bool marketingPermission = true;
   bool strictlyNecessaryPermission = true;
   bool isAccepted = false;
@@ -16,19 +19,20 @@ class _PrivacysettingState extends State<Privacysetting> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: isDarkMode ? DatingColors.black : DatingColors.white,
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon:  Icon(Icons.arrow_back, color: isDarkMode ? DatingColors.white : Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title:  Text(
           'Privacy Setting',
           style: TextStyle(
-            color: Colors.black,
+            color: isDarkMode ? DatingColors.white : DatingColors.black,
             fontSize: 18,
             fontWeight: FontWeight.w500,
           ),
@@ -43,11 +47,11 @@ class _PrivacysettingState extends State<Privacysetting> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Main description
-                  const Text(
+                  Text(
                     'We And Our Partners Collect Information From Your Device Using Trackers, And From Your Profile And App Usage, For The Following Reasons. You Can Update These Settings At A Any Time And Learn More In Our',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.black87,
+                      color: isDarkMode ? DatingColors.white : DatingColors.black,
                       height: 1.5,
                     ),
                   ),

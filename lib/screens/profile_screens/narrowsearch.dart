@@ -1,4 +1,5 @@
 // 🔌 Socket getMe provider (from file above)
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/provider/userdetails_socket_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -291,6 +292,8 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     // socket me payload (for modes)
     final me = ref.watch(meRawProvider);
     final meData = me.asData?.value;
@@ -339,12 +342,12 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.black),
+          icon:  Icon(Icons.close, color: isDarkMode ? DatingColors.lightpinks : DatingColors.black),
           onPressed: () => Navigator.maybePop(context),
         ),
-        title: const Text(
+        title:  Text(
           'Narrow Your Search',
-          style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
+          style: TextStyle(color: isDarkMode ? DatingColors.white : DatingColors.black, fontSize: 18, fontWeight: FontWeight.w500,),
         ),
         centerTitle: true,
       ),
@@ -368,7 +371,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
                       await _fetchSourcesForMode(id);
                     },
                     selectedColor: DatingColors.everqpidColor,
-                    labelStyle: TextStyle(color: sel ? Colors.white : Colors.black87),
+                    labelStyle: TextStyle(color: sel ? DatingColors.white : DatingColors.black),
                     side: const BorderSide(color: DatingColors.everqpidColor),
                   );
                 }).toList(),
@@ -434,6 +437,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
                       interestsLoading,
                       filteredInterests,
                       languageNamesFromModel,
+                      isDarkMode
                     )
                   : _buildAdvancedFilter(),
             ),
@@ -449,30 +453,31 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
     bool interestsLoading,
     List<dynamic> filteredInterests,
     List<dynamic> languageNamesFromModel,
+    bool isDarkMode
   ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (_onBasic(FilterField.gender)) ...[
-          _buildSectionTitle('Who Would You Like To Date?'),
-          _buildGenderDropdown(genders),
+          _buildSectionTitle('Who Would You Like To Date?',isDarkMode),
+          _buildGenderDropdown(genders,isDarkMode),
           const SizedBox(height: 20),
         ],
 
         if (_onBasic(FilterField.age)) ...[
-          _buildSectionTitle('Keep Choose Your Age Preference'),
+          _buildSectionTitle('Keep Choose Your Age Preference',isDarkMode),
           _buildAgeRangeSelector(),
           const SizedBox(height: 20),
         ],
 
         if (_onBasic(FilterField.distance)) ...[
-          _buildSectionTitle('How Far Away Are They?'),
+          _buildSectionTitle('How Far Away Are They?',isDarkMode),
           _buildDistanceSelector(),
           const SizedBox(height: 20),
         ],
 
         if (_onBasic(FilterField.interests)) ...[
-          _buildSectionTitle('Do They Share Any Of Your Interests?'),
+          _buildSectionTitle('Do They Share Any Of Your Interests?',isDarkMode),
           _buildDynamicInterestsSection(interestsLoading, filteredInterests),
           const SizedBox(height: 20),
         ],
@@ -487,7 +492,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
         ],
 
         if (_onBasic(FilterField.languages)) ...[
-          _buildSectionTitle('Which Languages Do They Know?'),
+          _buildSectionTitle('Which Languages Do They Know?',isDarkMode ),
           GestureDetector(
             onTap: () async {
               final selected = await Navigator.push(
@@ -746,30 +751,30 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title,bool isDarkMode) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Text(
         title,
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.grey[800]),
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: isDarkMode ? DatingColors.white : Colors.grey[800]),
       ),
     );
   }
 
-  Widget _buildGenderDropdown(List<dynamic> genders) {
+  Widget _buildGenderDropdown(List<dynamic> genders, bool isDarkMode) {
     final items = <DropdownMenuItem<int?>>[
       const DropdownMenuItem<int?>(value: null, child: Text('Everyone')),
       ...genders.map((g) {
         final id = g.id as int?;
         final label = g.value as String? ?? '—';
-        return DropdownMenuItem<int?>(value: id, child: Text(label));
+        return DropdownMenuItem<int?>(value: id, child: Text(label,style: TextStyle(color: isDarkMode? DatingColors.qpidColor: DatingColors.white),));
       }),
     ];
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color:  DatingColors.white,
         borderRadius: BorderRadius.circular(30),
         border: Border.all(color: DatingColors.everqpidColor, width: 1),
       ),
@@ -797,7 +802,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
         children: [
           Text(
             'Between ${ageRangeValues.start.round()} And ${ageRangeValues.end.round()}',
-            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: DatingColors.black),
           ),
           const SizedBox(height: 8),
           RangeSlider(
@@ -898,16 +903,16 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Filter By Your Interest', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+          const Text('Filter By Your Interest', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: DatingColors.black)),
           const SizedBox(height: 12),
 
           TextField(
             onChanged: (t) => setState(() => interestsQuery = t),
             decoration: InputDecoration(
-              hintText: 'Search interests',
+              hintText: 'Search interests',hintStyle: TextStyle(color: DatingColors.black),
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12),),
             ),
           ),
           const SizedBox(height: 12),
@@ -979,7 +984,7 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
       side: const BorderSide(color: DatingColors.everqpidColor),
       labelStyle: const TextStyle(
         fontWeight: FontWeight.w600,
-        color: Color.fromARGB(255, 44, 42, 42),
+        color: DatingColors.brown,
       ),
     );
   }
