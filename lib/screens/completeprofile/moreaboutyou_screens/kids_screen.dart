@@ -1,5 +1,6 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/provider/signupprocessProviders/kidsProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,15 +58,16 @@ class _HaveKidsScreenState extends ConsumerState<HaveKidsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
     final kidsState = ref.watch(kidsProvider);
 
     return Scaffold(
-      backgroundColor: DatingColors.white,
+      backgroundColor: isDarkMode ? DatingColors.black : DatingColors.white,
       appBar: AppBar(
-        backgroundColor: DatingColors.white,
+        backgroundColor: isDarkMode ? DatingColors.black : DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: DatingColors.everqpidColor),
+          icon:  Icon(Icons.close, color: isDarkMode ? DatingColors.white : DatingColors.everqpidColor),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -87,12 +89,12 @@ class _HaveKidsScreenState extends ConsumerState<HaveKidsScreen> {
                   child: const Icon(Icons.child_friendly, color: DatingColors.brown),
                 ),
                 const SizedBox(width: 12),
-                const Text(
+                Text(
                   'Do You Have Kids?',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: Colors.black,
+                    color: isDarkMode ? DatingColors.white : Colors.black,
                   ),
                 ),
               ],

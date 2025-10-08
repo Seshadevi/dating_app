@@ -1,6 +1,7 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/model/loginmodel.dart';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/provider/userdetails_socket_provider.dart';
 import 'package:dating/screens/completeprofile/causeScreen.dart';
 import 'package:dating/screens/completeprofile/id_verification_screen.dart';
@@ -196,6 +197,9 @@ void initState() {
 
   @override
   Widget build(BuildContext context) {
+    
+    final isDarkMode = ref.watch(darkModeProvider);
+
     final userData = ref.watch(loginProvider);
     final user =
         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
@@ -208,18 +212,18 @@ void initState() {
   print('socket users,.....$meSocket');
 
     return Scaffold(
-      backgroundColor: DatingColors.backgroundWhite,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor ,
       appBar: AppBar(
-        backgroundColor: DatingColors.backgroundWhite,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor ,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: DatingColors.brown),
+          icon: Icon(Icons.arrow_back, color: DatingColors.everqpidColor),
           onPressed: () => Navigator.pushNamed(context, '/custombottomnav'),
         ),
         title: Text(
           'EverQpid ${modeName ?? ''}',
           style: TextStyle(
-            color: DatingColors.brown,
+            color: isDarkMode ? DatingColors.white : DatingColors.brown,
             fontSize: 18,
             fontWeight: FontWeight.w600,
           ),
@@ -234,65 +238,65 @@ void initState() {
             // Profile Strength Section
             // Profile Strength Section with socket data
           meSocket.when(
-            loading: () => _buildProfileStrengthSection(socketData: null),
-            error: (error, stack) => _buildProfileStrengthSection(socketData: null),
-            data: (socketData) => _buildProfileStrengthSection(socketData: socketData),
+            loading: () => _buildProfileStrengthSection(socketData: null,isDarkMode: isDarkMode),
+            error: (error, stack) => _buildProfileStrengthSection(socketData: null,isDarkMode: isDarkMode),
+            data: (socketData) => _buildProfileStrengthSection(socketData: socketData,isDarkMode: isDarkMode),
           ),
 
             // _buildProfileStrengthSection(), //=======================
             // SizedBox(height: 15),
 
             // Photos and Videos Section
-            _buildPhotosVideosSection(), //=======================
+            _buildPhotosVideosSection(isDarkMode), //=======================
             SizedBox(height: 15),
 
             // Get Verified Section
-            _buildGetVerifiedSection(), //=======================
+            _buildGetVerifiedSection(isDarkMode), //=======================
             SizedBox(height: 15),
 
             // My Life Section
             if (modeId == 4) ...[
-              _buildQualitiesSection(context),
+              _buildQualitiesSection(context,isDarkMode),
               SizedBox(height: 15),
             ],
 
             // Interests Section
             if (modeId == 4 || modeId == 5) ...[
-              _buildInterestsSection(context),
+              _buildInterestsSection(context,isDarkMode),
               SizedBox(height: 15),
             ],
             // Interests Section
             if (modeId == 4) ...[
-              _buildCausesSection(context),
+              _buildCausesSection(context,isDarkMode),
               SizedBox(height: 15),
             ],
 
             // Prompts Section
-            _buildPromptsSection(context), //=======================
+            _buildPromptsSection(context,isDarkMode), //=======================
             SizedBox(height: 15),
 
             // Bio Section
-            _buildBioSection(),
+            _buildBioSection(isDarkMode),
             SizedBox(height: 15), //=======================
 
             // About You Section
-            _buildAboutYouSection(),
+            _buildAboutYouSection(isDarkMode,),
             SizedBox(height: 15), //=======================
 
             // More About You Section
-            _buildMoreAboutYouSection(),
+            _buildMoreAboutYouSection(isDarkMode,),
             SizedBox(height: 15),
 
             // Pronouns Section
-            _buildPronounsSection(), //=======================
+            _buildPronounsSection(isDarkMode), //=======================
             SizedBox(height: 15),
 
             // Languages Section
-            _buildLanguagesSection(), //=======================
+            _buildLanguagesSection(isDarkMode), //=======================
             SizedBox(height: 15),
 
             // Connected Accounts Section
-            _buildConnectedAccountsSection(), //=======================
+            _buildConnectedAccountsSection(isDarkMode), //=======================
             SizedBox(height: 15),
           ],
         ),
@@ -367,7 +371,7 @@ void initState() {
   //     ],
   //   );
   // }
-Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
+Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData,required bool isDarkMode}) {
   final userData = ref.watch(loginProvider);
   final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
   final modeId = user?.mode?.isNotEmpty == true ? user?.mode?.first.id : null;
@@ -411,11 +415,11 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
   // Determine progress color based on completion percentage
   Color progressColor = hasValidData && profileCompletion != null
       ? (profileCompletion >= 80 
-          ? Colors.green 
+          ? DatingColors.darkGreen
           : profileCompletion >= 50 
-              ? Colors.orange 
-              : Colors.red)
-      : Colors.grey;
+              ? DatingColors.everqpidColor
+              : DatingColors.errorRed)
+      : DatingColors.mediumGrey;
 
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -425,7 +429,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w600,
-          color: DatingColors.brown,
+          color: isDarkMode ? DatingColors.backgroundWhite : DatingColors.brown,
         ),
       ),
       SizedBox(height: 12),
@@ -458,7 +462,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
           child: Container(
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: DatingColors.white,
+              color: isDarkMode ? DatingColors.black : DatingColors.white,
               borderRadius: BorderRadius.circular(14),
             ),
             child: Column(
@@ -471,12 +475,12 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: hasValidData ? DatingColors.brown : Colors.grey,
+                        color: hasValidData ?  DatingColors.brown : DatingColors.middlegrey
                       ),
                     ),
                     Spacer(),
                     Icon(Icons.arrow_forward_ios,
-                        color: DatingColors.darkGrey, size: 16),
+                        color: isDarkMode ? DatingColors.white : DatingColors.darkGrey, size: 16),
                   ],
                 ),
                 SizedBox(height: 12),
@@ -484,7 +488,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                 Container(
                   height: 6,
                   decoration: BoxDecoration(
-                    color: Colors.grey[200],
+                    color: DatingColors.mediumGrey,
                     borderRadius: BorderRadius.circular(3),
                   ),
                   child: hasValidData && profileCompletion != null
@@ -522,7 +526,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
     }
   }
 
-  Widget _buildPhotosVideosSection() {
+  Widget _buildPhotosVideosSection(bool isDarkMode) {
     return Column(
       key: _photosSectionKey,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -532,7 +536,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: Colors.brown,
+            color: isDarkMode ? DatingColors.white : DatingColors.brown,
           ),
         ),
         SizedBox(height: 8),
@@ -540,7 +544,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
           'Choose A Few That Truly Represent You',
           style: TextStyle(
             fontSize: 14,
-            color: DatingColors.lightgrey,
+            color: isDarkMode ? DatingColors.white : DatingColors.lightgrey,
           ),
         ),
         SizedBox(height: 16),
@@ -552,7 +556,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
           mainAxisSpacing: 0,
           childAspectRatio: 1,
           children: List.generate(6, (index) {
-            return _buildPhotoSlot(index: index);
+            return _buildPhotoSlot(index: index, isDarkMode: isDarkMode);
           }),
         ),
         SizedBox(height: 8),
@@ -560,14 +564,14 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
           'Drag And Release The Media In The Sequence',
           style: TextStyle(
             fontSize: 12,
-            color: DatingColors.lightgrey,
+            color: isDarkMode ? DatingColors.white :  DatingColors.lightgrey,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildPhotoSlot({required int index}) {
+  Widget _buildPhotoSlot({required int index ,required bool isDarkMode}) {
     final image = selectedImages[index];
 
     return GestureDetector(
@@ -587,7 +591,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
           child: Container(
             decoration: BoxDecoration(
               color:
-                  image != null ? DatingColors.surfaceGrey : DatingColors.white,
+                  image != null ? isDarkMode ? DatingColors.brown : DatingColors.surfaceGrey : DatingColors.white,
               borderRadius: BorderRadius.circular(10),
             ),
             child: image != null
@@ -606,8 +610,8 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                         top: 8,
                         right: 8,
                         child: Container(
-                          width: 14,
-                          height: 14,
+                          width: 16,
+                          height: 16,
                           decoration: BoxDecoration(
                             color: DatingColors.accentTeal,
                             shape: BoxShape.circle,
@@ -615,7 +619,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                           child: Icon(
                             Icons.check,
                             color: DatingColors.white,
-                            size: 10,
+                            size: 12,
                           ),
                         ),
                       ),
@@ -764,7 +768,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
     }
   }
 
-  Widget _buildGetVerifiedSection() {
+  Widget _buildGetVerifiedSection(bool isDarkMode) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -780,21 +784,21 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
         child: Row(
           children: [
             Icon(Icons.verified_user_outlined,
-                color: DatingColors.middlegrey, size: 20),
+                color:  DatingColors.middlegrey, size: 24),
             SizedBox(width: 12),
             Expanded(
               child: Text(
                 'Get Verified',
                 style: TextStyle(
                   fontSize: 16,
-                  color: DatingColors.brown,
+                  color: isDarkMode ? DatingColors.white : DatingColors.brown,
                 ),
               ),
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: DatingColors.surfaceGrey,
+                color: isDarkMode ? DatingColors.black : DatingColors.surfaceGrey,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: DatingColors.everqpidColor, // 👈 border color
@@ -805,7 +809,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                 'Not ID Verified',
                 style: TextStyle(
                   fontSize: 12,
-                  color: DatingColors.middlegrey,
+                  color: isDarkMode ? DatingColors.white : DatingColors.middlegrey,
                 ),
               ),
             ),
@@ -818,7 +822,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
     );
   }
 
-  Widget _buildQualitiesSection(BuildContext context) {
+  Widget _buildQualitiesSection(BuildContext context, bool isDarkMode) {
     final userData = ref.watch(loginProvider);
     final user =
         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
@@ -829,20 +833,20 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+         Text(
           'Qualities',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: DatingColors.brown,
+            color: isDarkMode ? DatingColors.white: DatingColors.brown,
           ),
         ),
         const SizedBox(height: 8),
-        const Text(
+        Text(
           'Get specific about the things you love.',
           style: TextStyle(
             fontSize: 14,
-            color: DatingColors.lightgrey,
+            color: isDarkMode ? DatingColors.white: DatingColors.lightgrey,
           ),
         ),
         const SizedBox(height: 16),
@@ -851,7 +855,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            color: DatingColors.white,
+            color: isDarkMode ? DatingColors.brown: DatingColors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: DatingColors.everqpidColor),
           ),
@@ -871,7 +875,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                 child: Container(
                   padding: const EdgeInsets.all(12),
                   child: Row(
-                    children: const [
+                    children:  [
                       Icon(Icons.bookmark_border,
                           size: 20, color: DatingColors.lightpink),
                       SizedBox(width: 8),
@@ -880,6 +884,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
+                          color: isDarkMode ? DatingColors.white: DatingColors.brown,
                         ),
                       ),
                       Spacer(),
@@ -905,8 +910,10 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
-                          color: DatingColors.lightpinks,
+                          color: isDarkMode?DatingColors.brown:DatingColors.lightpinks,
                           borderRadius: BorderRadius.circular(20),
+                          
+                          border: Border.all(color: DatingColors.lightpinks )
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -915,9 +922,10 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                             const SizedBox(width: 6),
                             Text(
                               name,
-                              style: const TextStyle(
+                              style:  TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
+                                color:  DatingColors.white,
                               ),
                             ),
                           ],
@@ -956,13 +964,14 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                     ),
                   ),
                   child: Row(
-                    children: const [
+                    children: [
                       Expanded(
                         child: Text(
                           'Add more qualities',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
+                            color: isDarkMode ? DatingColors.white : DatingColors.black,
                           ),
                         ),
                       ),
@@ -978,7 +987,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
     );
   }
 
-  Widget _buildInterestsSection(BuildContext context) {
+  Widget _buildInterestsSection(BuildContext context,bool isDarkMode) {
     final userData = ref.watch(loginProvider);
     final user =
         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
@@ -990,20 +999,20 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
       key: _interestsSectionKey,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+         Text(
           'Interests',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: Colors.brown,
+            color: isDarkMode ? DatingColors.white : DatingColors.black,
           ),
         ),
         const SizedBox(height: 8),
-        const Text(
+         Text(
           'Get specific about the things you love',
           style: TextStyle(
             fontSize: 14,
-            color: DatingColors.lightgrey,
+            color: isDarkMode ? DatingColors.white : DatingColors.lightgrey,
           ),
         ),
         const SizedBox(height: 16),
@@ -1012,7 +1021,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            color: DatingColors.white,
+            color: isDarkMode ? DatingColors.brown : DatingColors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: DatingColors.everqpidColor),
           ),
@@ -1037,7 +1046,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                       // ),
                       ),
                   child: Row(
-                    children: const [
+                    children: [
                       Icon(Icons.bookmark_border,
                           size: 20, color: DatingColors.lightpink),
                       SizedBox(width: 8),
@@ -1046,6 +1055,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
+                          color: isDarkMode ? DatingColors.white : DatingColors.black,
                         ),
                       ),
                       Spacer(),
@@ -1071,8 +1081,9 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
-                          color: DatingColors.lightpinks,
+                          color: isDarkMode ? DatingColors.brown : DatingColors.lightpinks,
                           borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: DatingColors.lightpinks )
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -1081,9 +1092,10 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                             const SizedBox(width: 6),
                             Text(
                               name as String,
-                              style: const TextStyle(
+                              style:  TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
+                                color:  DatingColors.white,
                               ),
                             ),
                           ],
@@ -1124,13 +1136,14 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                     ),
                   ),
                   child: Row(
-                    children: const [
+                    children: [
                       Expanded(
                         child: Text(
                           'Add more interests',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
+                            color: isDarkMode ? DatingColors.white : DatingColors.black,
                           ),
                         ),
                       ),
@@ -1146,7 +1159,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
     );
   }
 
-  Widget _buildCausesSection(BuildContext context) {
+  Widget _buildCausesSection(BuildContext context,bool isDarkMode){
     final userData = ref.watch(loginProvider);
     final user =
         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
@@ -1159,27 +1172,27 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+         Text(
           'Causes',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: DatingColors.brown,
+            color: isDarkMode ? DatingColors.white : DatingColors.brown,
           ),
         ),
         const SizedBox(height: 8),
-        const Text(
+        Text(
           'Get specific about the things you love.',
           style: TextStyle(
             fontSize: 14,
-            color: DatingColors.lightgrey,
+            color: isDarkMode ? DatingColors.white : DatingColors.lightgrey,
           ),
         ),
         const SizedBox(height: 16),
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            color: DatingColors.white,
+            color: isDarkMode ? DatingColors.brown : DatingColors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: DatingColors.everqpidColor),
           ),
@@ -1198,7 +1211,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                 child: Container(
                   padding: const EdgeInsets.all(12),
                   child: Row(
-                    children: const [
+                    children: [
                       Icon(Icons.bookmark_border,
                           size: 20, color: DatingColors.lightpink),
                       SizedBox(width: 8),
@@ -1207,6 +1220,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
+                          color: isDarkMode ? DatingColors.white : DatingColors.black,
                         ),
                       ),
                       Spacer(),
@@ -1232,8 +1246,9 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
-                          color: DatingColors.lightpinks,
-                          borderRadius: BorderRadius.circular(20),
+                          color: isDarkMode?DatingColors.brown:DatingColors.lightpinks,
+                          borderRadius: BorderRadius.circular(20),                         
+                          border: Border.all(color: DatingColors.lightpinks )
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -1242,9 +1257,10 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                             const SizedBox(width: 6),
                             Text(
                               name,
-                              style: const TextStyle(
+                              style:  TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
+                                color:  DatingColors.white,
                               ),
                             ),
                           ],
@@ -1281,13 +1297,14 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                     ),
                   ),
                   child: Row(
-                    children: const [
+                    children: [
                       Expanded(
                         child: Text(
                           'Add more causes',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
+                            color: isDarkMode ? DatingColors.white : DatingColors.black,
                           ),
                         ),
                       ),
@@ -1303,7 +1320,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
     );
   }
 
-  Widget _buildPromptsSection(BuildContext context) {
+  Widget _buildPromptsSection(BuildContext context, bool isDarkMode){
     final userData = ref.watch(loginProvider);
     final user =
         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
@@ -1326,23 +1343,26 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
       key: _promptsSectionKey,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+      Text(
           'Prompts',
           style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: DatingColors.brown),
+              color: isDarkMode ? DatingColors.white : DatingColors.brown,
+              ),
         ),
+
         const SizedBox(height: 8),
-        const Text(
+        Text(
           'Add personality to your profile with prompts.',
-          style: TextStyle(fontSize: 14, color: DatingColors.lightgrey),
+          style: TextStyle(fontSize: 14, color: isDarkMode ? DatingColors.white : DatingColors.lightgrey,
+          ),
         ),
         const SizedBox(height: 10),
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            color: DatingColors.white,
+            color: isDarkMode ? DatingColors.brown : DatingColors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: DatingColors.everqpidColor),
           ),
@@ -1366,10 +1386,10 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                         Expanded(
                           child: Text(
                             promptText,
-                            style: const TextStyle(
+                            style:  TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
-                              color: DatingColors.black,
+                              color: isDarkMode ? DatingColors.white : DatingColors.black,
                             ),
                           ),
                         ),
@@ -1399,7 +1419,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        color: DatingColors.lightGreen,
+                        color: isDarkMode ? DatingColors.brown : DatingColors.lightGreen,
                         border: Border(
                           bottom: BorderSide(color: DatingColors.surfaceGrey),
                         ),
@@ -1411,6 +1431,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                         decoration: InputDecoration(
                           hintText: 'Prompt ${i + 1}',
                           border: InputBorder.none,
+                          
                         ),
                       ),
                     );
@@ -1495,7 +1516,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: DatingColors.lightGreen,
+                    color: isDarkMode? DatingColors.brown: DatingColors.lightGreen,
                     border: Border(
                         top: BorderSide(color: DatingColors.surfaceGrey)),
                   ),
@@ -1508,8 +1529,8 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                       hintText: 'Write your prompt...',
                       border: InputBorder.none,
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.check,
-                            color: DatingColors.primaryGreen),
+                        icon: Icon(Icons.check,
+                            color:  DatingColors.primaryGreen),
                         onPressed: () {
                           final promptText = _promptController.text.trim();
                           if (promptText.isNotEmpty) {
@@ -1534,7 +1555,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
     );
   }
 
-  Widget _buildBioSection() {
+  Widget _buildBioSection(bool isDarkMode) {
     final userData = ref.watch(loginProvider);
     final user =
         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
@@ -1549,19 +1570,19 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
       curve: Curves.easeInOut,
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: _highlightBio ? DatingColors.lightgrey : Colors.transparent,
+        color: _highlightBio ? isDarkMode ? DatingColors.brown : DatingColors.lightgrey : Colors.transparent,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         //  key: _bioSectionKey,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+           Text(
             'Bio',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: DatingColors.brown,
+              color: isDarkMode ? DatingColors.white : DatingColors.brown,
             ),
           ),
           const SizedBox(height: 8),
@@ -1569,7 +1590,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
             'Write a few short words about you',
             style: TextStyle(
               fontSize: 14,
-              color: DatingColors.middlegrey,
+              color: isDarkMode ? DatingColors.white : DatingColors.middlegrey,
             ),
           ),
           const SizedBox(height: 10),
@@ -1577,7 +1598,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
               decoration: BoxDecoration(
-                color: DatingColors.white,
+                color: isDarkMode ? DatingColors.brown : DatingColors.white,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: DatingColors.everqpidColor),
               ),
@@ -1586,12 +1607,12 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                 maxLines: 5,
                 textInputAction: TextInputAction.done,
                 keyboardType: TextInputType.multiline,
-                style: const TextStyle(fontSize: 12, color: DatingColors.black),
+                style:  TextStyle(fontSize: 12, color: isDarkMode ? DatingColors.white : DatingColors.black,),
                 decoration: InputDecoration(
                   hintText: 'Write about you',
                   border: InputBorder.none,
                   suffixIcon: IconButton(
-                    icon: const Icon(Icons.check, color: DatingColors.black),
+                    icon:  Icon(Icons.check, color: isDarkMode ? DatingColors.lightGreen: DatingColors.black),
                     onPressed: () async {
                       final updatedHeadline = _bioController.text.trim();
 
@@ -1630,7 +1651,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
               margin: const EdgeInsets.only(bottom: 16),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               decoration: BoxDecoration(
-                color: DatingColors.surfaceGrey,
+                color: isDarkMode ? DatingColors.brown : DatingColors.surfaceGrey,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: DatingColors.everqpidColor),
               ),
@@ -1642,8 +1663,8 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                       headline.isNotEmpty ? headline : 'Write about you',
                       style: TextStyle(
                         fontSize: 16,
-                        color: headline.isNotEmpty
-                            ? DatingColors.black
+                        color: headline.isNotEmpty 
+                            ? isDarkMode ? DatingColors.white : DatingColors.black
                             : DatingColors.black,
                         fontStyle: headline.isNotEmpty
                             ? FontStyle.normal
@@ -1698,7 +1719,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
     );
   }
 
-  Widget _buildAboutYouSection() {
+  Widget _buildAboutYouSection(bool isDarkMode) {
   final userData = ref.watch(loginProvider);
   final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
 
@@ -1730,34 +1751,35 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
     key: _aboutSectionKey,
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      const Text(
+       Text(
         'About You',
         style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: DatingColors.brown),
+            color: isDarkMode ? DatingColors.white : DatingColors.brown,
+            ),
       ),
       const SizedBox(height: 16),
-      _buildProfileItem(Icons.work_outline, 'Work', worktitle, onTap: () {
+      _buildProfileItem(Icons.work_outline, 'Work', worktitle, isDarkMode, onTap: () {
         Navigator.pushNamed(context, '/addoccupation');
       }),
-      _buildProfileItem(Icons.school_outlined, 'Education', educationText, onTap: () {
+      _buildProfileItem(Icons.school_outlined, 'Education', educationText,isDarkMode, onTap: () {
         Navigator.pushNamed(context, '/educationscreen');
       }),
-      _buildProfileItem(Icons.person_outline, 'Gender', selectGender, onTap: () {
+      _buildProfileItem(Icons.person_outline, 'Gender', selectGender, isDarkMode, onTap: () {
         Navigator.pushNamed(context, '/updategenderscreen');
       }),
-      _buildProfileItem(Icons.location_on_outlined, 'Location', locationname, onTap: () {
+      _buildProfileItem(Icons.location_on_outlined, 'Location', locationname, isDarkMode, onTap: () {
         Navigator.pushNamed(context, '/citysearchpage');
       }),
-      _buildProfileItem(Icons.home_outlined, 'Hometown', hometown, onTap: () {
+      _buildProfileItem(Icons.home_outlined, 'Hometown', hometown,isDarkMode, onTap: () {
         Navigator.pushNamed(context, '/hometownscreen');
       }),
     ],
   );
 }
 
-Widget _buildMoreAboutYouSection() {
+Widget _buildMoreAboutYouSection(bool isDarkMode) {
   final userData = ref.watch(loginProvider);
   final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
 
@@ -1814,91 +1836,91 @@ Widget _buildMoreAboutYouSection() {
     key: _moreaboutSectionKey,
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      const Text(
+       Text(
         'More About You',
         style: TextStyle(
-            fontSize: 18, fontWeight: FontWeight.w600, color: Colors.black),
-      ),
+            fontSize: 18, fontWeight: FontWeight.w600,color:  isDarkMode ? DatingColors.white : DatingColors.black,
+      ),),
       const SizedBox(height: 8),
       Text(
         'Share More Details About Yourself Are Curious About',
-        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+        style: TextStyle(fontSize: 14, color: isDarkMode ? DatingColors.white : DatingColors.lightgrey,),
       ),
       const SizedBox(height: 16),
 
       // Mode-based conditional rendering with safe checks
       if (modeId == 4) ...[
-        _buildProfileItem(Icons.place_outlined, 'Height', height, onTap: () {
+        _buildProfileItem(Icons.place_outlined, 'Height', height,isDarkMode, onTap: () {
           Navigator.pushNamed(context, '/heightscreenprofile');
         }),
       ],
 
-      _buildProfileItem(Icons.search, 'Looking For', lookingfor, onTap: () {
+      _buildProfileItem(Icons.search, 'Looking For', lookingfor,isDarkMode, onTap: () {
         Navigator.pushNamed(context, '/lookingforscreen');
       }),
 
       if (modeId == 4 || modeId == 5) ...[
-        _buildProfileItem(Icons.favorite_border, 'Relationship', relationship, onTap: () {
+        _buildProfileItem(Icons.favorite_border, 'Relationship', relationship,isDarkMode, onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (_) => RelationshipScreen()));
         }),
       ],
 
       if (modeId == 4) ...[
-        _buildProfileItem(Icons.child_care, 'Kids', kids, onTap: () {
+        _buildProfileItem(Icons.child_care, 'Kids', kids,isDarkMode, onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (_) => HaveKidsScreen()));
         }),
       ],
 
       if (modeId == 4 || modeId == 5) ...[
-        _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', smoking, onTap: () {
+        _buildProfileItem(Icons.smoking_rooms_outlined, 'Smoking', smoking,isDarkMode, onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (_) => SmokingScreen()));
         }),
-        _buildProfileItem(Icons.local_drink_outlined, 'Drinking', drinking, onTap: () {
+        _buildProfileItem(Icons.local_drink_outlined, 'Drinking', drinking,isDarkMode, onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (_) => DrinkingScreen()));
         }),
-        _buildProfileItem(Icons.fitness_center, 'Exercise', exercise, onTap: () {
+        _buildProfileItem(Icons.fitness_center, 'Exercise', exercise,isDarkMode, onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (_) => ExerciseScreen()));
         }),
       ],
 
       if (modeId == 4) ...[
-        _buildProfileItem(Icons.bedtime, 'SleepingHabits', sleepinghabits, onTap: () {
+        _buildProfileItem(Icons.bedtime, 'SleepingHabits', sleepinghabits,isDarkMode, onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (_) => Sleepinghabitsscreen()));
         }),
-        _buildProfileItem(Icons.restaurant, 'Diet', dietcontrol, onTap: () {
+        _buildProfileItem(Icons.restaurant, 'Diet', dietcontrol,isDarkMode, onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (_) => Dietarypreference()));
         }),
-        _buildProfileItem(Icons.sports_soccer, 'Sports', sports, onTap: () {
+        _buildProfileItem(Icons.sports_soccer, 'Sports', sports,isDarkMode, onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (_) => SportsScreen()));
         }),
       ],
 
       if (modeId == 4 || modeId == 5) ...[
-        _buildProfileItem(Icons.location_city_outlined, 'New To Area', newtoarea, onTap: () {
+        _buildProfileItem(Icons.location_city_outlined, 'New To Area', newtoarea,isDarkMode, onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (_) => NewToAreaScreen()));
         }),
-        _buildProfileItem(Icons.star_border, 'Star Sign', starsign, onTap: () {
+        _buildProfileItem(Icons.star_border, 'Star Sign', starsign,isDarkMode, onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (_) => StarSignScreen()));
         }),
-        _buildProfileItem(Icons.temple_hindu, 'Religion', religion, onTap: () {
+        _buildProfileItem(Icons.temple_hindu, 'Religion', religion,isDarkMode, onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (_) => ReligionScreen()));
         }),
       ],
 
       if (modeId == 6) ...[
-        _buildProfileItem(Icons.business_sharp, 'Experience', experiences, onTap: () {
+        _buildProfileItem(Icons.business_sharp, 'Experience', experiences,isDarkMode, onTap: () {
           Navigator.pushNamed(context, '/experiencescreen');
         }),
-        _buildProfileItem(Icons.factory, 'Industries', industry, onTap: () {
+        _buildProfileItem(Icons.factory, 'Industries', industry,isDarkMode, onTap: () {
           Navigator.pushNamed(context, '/industryscreen');
         }),
-        _buildProfileItem(Icons.school, 'EducationLevel', educationLevel, onTap: () {
+        _buildProfileItem(Icons.school, 'EducationLevel', educationLevel,isDarkMode, onTap: () {
           Navigator.pushNamed(context, '/educaationlevelscreen');
         }),
       ],
 
       if (modeId == 4 || modeId == 5) ...[
-        _buildProfileItem(Icons.baby_changing_station, 'Have Kids', havekids, onTap: () {
+        _buildProfileItem(Icons.baby_changing_station, 'Have Kids', havekids,isDarkMode, onTap: () {
           Navigator.pushNamed(context, '/havekidscreen');
         }),
       ],
@@ -1907,7 +1929,7 @@ Widget _buildMoreAboutYouSection() {
 }
 
 
-  Widget _buildPronounsSection() {
+  Widget _buildPronounsSection(bool isDarkMode) {
     final userData = ref.watch(loginProvider);
     final user =
         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
@@ -1921,7 +1943,7 @@ Widget _buildMoreAboutYouSection() {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: DatingColors.brown,
+              color: isDarkMode ? DatingColors.white : DatingColors.brown,
             ),
           ),
           SizedBox(height: 8),
@@ -1929,13 +1951,13 @@ Widget _buildMoreAboutYouSection() {
             'Let People See Your Pronouns',
             style: TextStyle(
               fontSize: 14,
-              color: DatingColors.lightgrey,
+              color: isDarkMode ? DatingColors.white : DatingColors.lightgrey,
             ),
           ),
           if (pronoun != null)
             Chip(
               label: Text(pronoun),
-              backgroundColor: DatingColors.lightpinks,
+              backgroundColor:isDarkMode ? DatingColors.brown : DatingColors.lightpinks,
             )
           else
             Text(
@@ -1949,7 +1971,7 @@ Widget _buildMoreAboutYouSection() {
             width: double.infinity,
             padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
             decoration: BoxDecoration(
-              color: DatingColors.white,
+              color: isDarkMode ? DatingColors.brown : DatingColors.white,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: DatingColors.everqpidColor, width: 1),
             ),
@@ -1970,7 +1992,7 @@ Widget _buildMoreAboutYouSection() {
                       'Select Your Pronouns',
                       style: TextStyle(
                         fontSize: 16,
-                        color: DatingColors.brown,
+                        color: isDarkMode ? DatingColors.white : DatingColors.brown,
                       ),
                     ),
                   ),
@@ -1985,7 +2007,7 @@ Widget _buildMoreAboutYouSection() {
     );
   }
 
-  Widget _buildLanguagesSection() {
+  Widget _buildLanguagesSection(bool isDarkMode) {
     final userData = ref.watch(loginProvider);
     final user =
         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
@@ -2005,7 +2027,7 @@ Widget _buildMoreAboutYouSection() {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: DatingColors.brown,
+            color: isDarkMode ? DatingColors.white : DatingColors.brown,
           ),
         ),
         SizedBox(height: 8),
@@ -2013,7 +2035,7 @@ Widget _buildMoreAboutYouSection() {
           'Choose The Languages You Know',
           style: TextStyle(
             fontSize: 14,
-            color: DatingColors.middlegrey,
+            color: isDarkMode ? DatingColors.white : DatingColors.middlegrey,
           ),
         ),
         SizedBox(height: 6),
@@ -2026,14 +2048,14 @@ Widget _buildMoreAboutYouSection() {
             children: languages
                 .map((lang) => Chip(
                       label: Text(lang.name ?? ''),
-                      backgroundColor: DatingColors.lightpinks,
+                      backgroundColor: isDarkMode ? DatingColors.brown : DatingColors.lightpinks,
                     ))
                 .toList(),
           )
         else
           Text(
             'No languages added yet.',
-            style: TextStyle(color: DatingColors.everqpidColor),
+            style: TextStyle(color:  DatingColors.everqpidColor),
           ),
 
         SizedBox(height: 6),
@@ -2043,7 +2065,7 @@ Widget _buildMoreAboutYouSection() {
           width: double.infinity,
           padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           decoration: BoxDecoration(
-            color: DatingColors.white,
+            color: isDarkMode ? DatingColors.brown : DatingColors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: DatingColors.everqpidColor, width: 1),
           ),
@@ -2054,7 +2076,7 @@ Widget _buildMoreAboutYouSection() {
                   'Add Your Languages',
                   style: TextStyle(
                     fontSize: 16,
-                    color: Colors.black,
+                    color: isDarkMode ? DatingColors.white : Colors.black,
                   ),
                 ),
               ),
@@ -2080,7 +2102,7 @@ Widget _buildMoreAboutYouSection() {
     );
   }
 
-  Widget _buildConnectedAccountsSection() {
+  Widget _buildConnectedAccountsSection(bool isDarkMode) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -2089,7 +2111,7 @@ Widget _buildMoreAboutYouSection() {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: DatingColors.brown,
+            color:isDarkMode ? DatingColors.white : DatingColors.brown,
           ),
         ),
         SizedBox(height: 8),
@@ -2097,14 +2119,14 @@ Widget _buildMoreAboutYouSection() {
           'Show Off Your Favourite Music',
           style: TextStyle(
             fontSize: 14,
-            color: DatingColors.middlegrey,
+            color: isDarkMode ? DatingColors.white : DatingColors.middlegrey,
           ),
         ),
         SizedBox(height: 16),
         Container(
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: DatingColors.white,
+            color: isDarkMode ? DatingColors.brown : DatingColors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: DatingColors.mediumGrey, width: 1),
           ),
@@ -2132,7 +2154,7 @@ Widget _buildMoreAboutYouSection() {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: DatingColors.brown,
+                        color: isDarkMode ? DatingColors.white : DatingColors.brown,
                       ),
                     ),
                   ),
@@ -2145,7 +2167,7 @@ Widget _buildMoreAboutYouSection() {
                 'Show Your Recently Played Songs On Your Profile And Allow The Songs You Listen To Recommendation Conversation Starters Based On Shared Music Tastes',
                 style: TextStyle(
                   fontSize: 14,
-                  color: DatingColors.lightgrey,
+                  color: isDarkMode ? DatingColors.white : DatingColors.lightgrey,
                   height: 1.4,
                 ),
               ),
@@ -2176,7 +2198,7 @@ Widget _buildMoreAboutYouSection() {
     );
   }
 
-  Widget _buildProfileItem(IconData icon, String title, String value,
+  Widget _buildProfileItem(IconData icon, String title, String value, bool isDarkMode,
       {required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
@@ -2194,15 +2216,16 @@ Widget _buildMoreAboutYouSection() {
               Expanded(
                   child: Text(
                 title,
-                style: const TextStyle(fontSize: 16),
+                style:  TextStyle(fontSize: 16,color:isDarkMode ? DatingColors.white : DatingColors.black, ),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
+                
               )),
               Text(value,
-                  style: const TextStyle(
-                      fontSize: 16, color: DatingColors.middlegrey)),
+                  style:  TextStyle(
+                      fontSize: 16, color: isDarkMode ? DatingColors.white : DatingColors.middlegrey)),
               const Icon(Icons.arrow_forward_ios,
-                  size: 16, color: DatingColors.middlegrey),
+                  size: 16, color: DatingColors.everqpidColor),
             ],
           ),
         ),

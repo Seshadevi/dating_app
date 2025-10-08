@@ -1,6 +1,7 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/moreabout/educationprovider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -113,11 +114,15 @@ class _AddEducationScreenState extends ConsumerState<AddEducationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     final isEditing = _editingId != null;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(isEditing ? "Edit Education" : "Add Education"),
+        backgroundColor: isDarkMode ? DatingColors.black : DatingColors.darkGreen,
+        title: Text(isEditing ? "Edit Education" : "Add Education",style: TextStyle(color: isDarkMode ? DatingColors.white : DatingColors.black, ),),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -141,9 +146,11 @@ class _AddEducationScreenState extends ConsumerState<AddEducationScreen> {
               width: double.infinity,
               height: 48,
               child: ElevatedButton(
-                
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: isDarkMode ?  DatingColors.white : DatingColors.everqpidColor,
+                ),
                 onPressed: _handleSubmit,
-                child: Text(isEditing ? "Update" : "Add",style: TextStyle(color: DatingColors.brown,),),
+                child: Text(isEditing ? "Update" : "Add",style: TextStyle(color:   DatingColors.brown,),),
               ),
             )
           ],

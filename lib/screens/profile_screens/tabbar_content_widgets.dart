@@ -117,7 +117,6 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
                   style: TextStyle(
                     fontSize: 15,
                     color: isDarkMode ? DatingColors.white : DatingColors.brown,
-
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -470,7 +469,7 @@ List<Widget> _buildFilteredFeaturesList(List<Data> featurePlans, int selectedPla
     if (boostPlan != null) featurePlans.add(boostPlan);
 
     return Scaffold(
-      backgroundColor: isDarkMode ? DatingColors.darkGrey : DatingColors.white,
+     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: model.isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(

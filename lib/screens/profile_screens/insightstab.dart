@@ -225,7 +225,7 @@ class SafetyTab extends StatelessWidget {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDarkMode ? DatingColors.darkGrey : DatingColors.backgroundWhite,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -241,14 +241,14 @@ class SafetyTab extends StatelessWidget {
                     subtitle:
                         "Help With Dating Anxiety,\nUncertainty Or Burnout",
                     imagePath: "assets/safty_bar1.png", // Replace with actual image
-                    bgColor:  DatingColors.lightpinks,
+                    bgColor: isDarkMode? DatingColors.brown : DatingColors.lightpinks,
                   ),
                   const SizedBox(width: 10),
                   _infoCard(
                     title: "Feelings Of...",
                     subtitle: "Incomplete data",
                     imagePath: "assets/safty_bar2.png", // Replace accordingly
-                     bgColor:  DatingColors.lightpinks,
+                     bgColor: isDarkMode? DatingColors.brown : DatingColors.lightpinks,
                   ),
                 ],
               ),
@@ -258,7 +258,7 @@ class SafetyTab extends StatelessWidget {
             // Get Help Button
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: DatingColors.lightpinks,
+                backgroundColor: isDarkMode? DatingColors.brown : DatingColors.lightpinks,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),
                 ),
@@ -266,9 +266,9 @@ class SafetyTab extends StatelessWidget {
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               ),
               onPressed: () {},
-              child: const Text(
+              child: Text(
                 "Get Help From Ever Qupid",
-                style: TextStyle(color: Colors.brown),
+                style: TextStyle(color: isDarkMode? DatingColors.white : DatingColors.brown,),
               ),
             ),
 
@@ -279,6 +279,7 @@ class SafetyTab extends StatelessWidget {
               icon: Icons.verified_user,
               title: "Your Safety",
               subtitle: "Trusted Organisations To Help Keep You Safe And Well",
+              isDarkMode: isDarkMode
             ),
             const SizedBox(height: 12),
             _helpTile(
@@ -286,6 +287,7 @@ class SafetyTab extends StatelessWidget {
               title: "Your Emotional Wellbeing",
               subtitle:
                   "Resources For A Healthy State Of Mind In Dating And In Life.",
+                  isDarkMode: isDarkMode
             ),
             const SizedBox(height: 12),
             _helpTile(
@@ -293,6 +295,7 @@ class SafetyTab extends StatelessWidget {
               title: "Values And Guidelines",
               subtitle:
                   "Ever Qupid See What Ever Qupid Stands For And What We Ask Of Our Community",
+                  isDarkMode: isDarkMode
             ),
           ],
         ),
@@ -338,11 +341,12 @@ class SafetyTab extends StatelessWidget {
     required IconData icon,
     required String title,
     required String subtitle,
+    required bool isDarkMode
   }) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: DatingColors.white,
+        color: isDarkMode? DatingColors.brown : DatingColors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color:DatingColors.everqpidColor )
       ),
@@ -359,9 +363,11 @@ class SafetyTab extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title,
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                    style: TextStyle(fontWeight: FontWeight.bold,
+                    color: isDarkMode? DatingColors.white : DatingColors.brown,
+                    )),
                 const SizedBox(height: 4),
-                Text(subtitle, style: const TextStyle(fontSize: 13)),
+                Text(subtitle, style: TextStyle(fontSize: 13, color: isDarkMode? DatingColors.mediumGrey : DatingColors.brown)),
               ],
             ),
           )

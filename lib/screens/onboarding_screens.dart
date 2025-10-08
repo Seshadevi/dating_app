@@ -154,7 +154,7 @@
 //   Widget build(BuildContext context) {
 //     // print('logitude..........$longitude');
 //     return Scaffold(
-//       backgroundColor: Colors.white,
+//       Theme,
 //       body: Column(
 //         children: [
 //           const SizedBox(height: 40),

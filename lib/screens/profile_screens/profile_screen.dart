@@ -437,7 +437,7 @@ class _CircleButton extends StatelessWidget {
               onTap: onTap,
               child: CircleAvatar(
                 radius: 28,
-                backgroundColor: isDarkMode ? DatingColors.darkGrey : DatingColors.white,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 child: Icon(
                   icon,
                   color: isDarkMode ? DatingColors.white : DatingColors.brown,

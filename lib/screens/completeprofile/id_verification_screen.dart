@@ -1,25 +1,28 @@
 
 
 import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/screens/completeprofile/uploadPhotoscreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // First Screen - Verification
-class IdVerificationScreen extends StatefulWidget {
+class IdVerificationScreen extends ConsumerStatefulWidget {
   const IdVerificationScreen({super.key});
 
   @override
-  State<IdVerificationScreen> createState() => _IdVerificationScreenState();
+  ConsumerState<IdVerificationScreen> createState() => _IdVerificationScreenState();
 }
 
-class _IdVerificationScreenState extends State<IdVerificationScreen> {
+class _IdVerificationScreenState extends ConsumerState<IdVerificationScreen> {
    
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
     return Scaffold(
       backgroundColor: DatingColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: DatingColors.black),

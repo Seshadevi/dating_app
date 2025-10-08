@@ -1,6 +1,7 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/moreabout/workprovider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -61,14 +62,16 @@ class _UpdateWorkScreenState extends ConsumerState<UpdateWorkScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
-      backgroundColor: DatingColors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor ,
       appBar: AppBar(
-        title: const Text('Update Work', style: TextStyle(color: Colors.black)),
-        backgroundColor: DatingColors.white,
+        title:  Text('Update Work', style: TextStyle(color: isDarkMode ? DatingColors.white : DatingColors.black)),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: DatingColors.black),
+          icon:  Icon(Icons.arrow_back_ios_new, color: isDarkMode ? DatingColors.lightGreen : DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -82,9 +85,11 @@ class _UpdateWorkScreenState extends ConsumerState<UpdateWorkScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4),
                   child: TextField(
                     controller: workController,
-                    decoration: const InputDecoration(
-                      labelText: 'Work',
+                    decoration: InputDecoration(
+                      
+                      labelText: 'Work', labelStyle: TextStyle(color: isDarkMode ? DatingColors.white : DatingColors.everqpidColor),
                       border: InputBorder.none,
+                      
                     ),
                   ),
                 ),
@@ -108,9 +113,9 @@ class _UpdateWorkScreenState extends ConsumerState<UpdateWorkScreen> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: const Text(
+                  child:  Text(
                     'UPDATE',
-                    style: TextStyle(fontSize: 16, color: DatingColors.brown),
+                    style: TextStyle(fontSize: 16, color: isDarkMode ? DatingColors.white : DatingColors.brown),
                   ),
                 ),
               ),

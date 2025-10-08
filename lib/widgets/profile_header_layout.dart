@@ -19,9 +19,9 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
-//       backgroundColor: Colors.white,
+//       Theme,
 //       appBar: AppBar(
-//         backgroundColor: Colors.white,
+//         Theme,
 //         elevation: 0,
 //         leading: IconButton(
 //           icon: Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),

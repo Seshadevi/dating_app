@@ -1,5 +1,6 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -40,13 +41,15 @@ class _HeightScreenState extends ConsumerState<HeightScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
-      backgroundColor: DatingColors.white,
+      backgroundColor: isDarkMode ? DatingColors.black : DatingColors.white,
       appBar: AppBar(
-        backgroundColor: DatingColors.white,
+        backgroundColor: isDarkMode ? DatingColors.black : DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: DatingColors.black),
+          icon:  Icon(Icons.close, color: isDarkMode ? DatingColors.white : DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -68,12 +71,12 @@ class _HeightScreenState extends ConsumerState<HeightScreen> {
                   child: const Icon(Icons.height, color: DatingColors.white),
                 ),
                 const SizedBox(width: 12),
-                const Text(
+                Text(
                   'Select Your Height',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
-                    color: Colors.black,
+                    color: isDarkMode ? DatingColors.white : Colors.black,
                   ),
                 ),
               ],

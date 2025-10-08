@@ -1,9 +1,17 @@
+import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../main_Screens/chatScreen.dart';
 
-class BottomNavBar extends StatelessWidget {
+class BottomNavBar extends ConsumerStatefulWidget {
   const BottomNavBar({Key? key}) : super(key: key);
 
+  @override
+  ConsumerState<BottomNavBar> createState() => _BottomNavBarState();
+}
+
+class _BottomNavBarState extends ConsumerState<BottomNavBar> {
   void _onItemTapped(BuildContext context, int index) {
     // Define your screen routes or direct widget navigation here
     Widget destinationScreen;
@@ -34,13 +42,14 @@ class BottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
     // Optionally detect current route and set current index accordingly
     int currentIndex = 0; // Or determine from current route
 
     return BottomNavigationBar(
       currentIndex: currentIndex,
-      selectedItemColor: Colors.green,
-      unselectedItemColor: Colors.black,
+      selectedItemColor: DatingColors.darkGreen,
+      unselectedItemColor: isDarkMode ? DatingColors.white : DatingColors.black,
       showSelectedLabels: false,
       showUnselectedLabels: false,
       onTap: (index) => _onItemTapped(context, index),

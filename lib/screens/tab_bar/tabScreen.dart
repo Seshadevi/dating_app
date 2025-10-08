@@ -14,9 +14,9 @@
 //     return DefaultTabController(
 //       length: 4,
 //       child: Scaffold(
-//         backgroundColor: Colors.white,
+//         Theme,
 //         appBar: AppBar(
-//           backgroundColor: Colors.white,
+//           Theme,
 //           elevation: 0,
 //           title: const Text(
 //             'Subscription',

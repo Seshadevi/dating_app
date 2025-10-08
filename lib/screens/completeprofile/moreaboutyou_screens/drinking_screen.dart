@@ -1,5 +1,6 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/provider/signupprocessProviders/drinkingProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -98,23 +99,25 @@ class _DrinkingScreenState extends ConsumerState<DrinkingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     final drinkingState = ref.watch(drinkingProvider);
     final isInitialLoading = ref.watch(drinkingScreenLoadingProvider);
     final options = drinkingState.data ?? [];
 
     return Scaffold(
-      backgroundColor: DatingColors.white,
+      backgroundColor: isDarkMode ? DatingColors.black : DatingColors.white,
       appBar: AppBar(
-        backgroundColor: DatingColors.white,
+        backgroundColor: isDarkMode ? DatingColors.black : DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: DatingColors.black),
+          icon:  Icon(Icons.close, color: isDarkMode ? DatingColors.lightpinks : DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: isInitialLoading 
         ? _buildLoadingState()
-        : _buildMainContent(options),
+        : _buildMainContent(options,isDarkMode),
     );
   }
 
@@ -132,7 +135,7 @@ class _DrinkingScreenState extends ConsumerState<DrinkingScreen> {
             'Loading drinking preferences...',
             style: TextStyle(
               fontSize: 16,
-              color: DatingColors.lightgrey,
+              color:  DatingColors.lightgrey,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -141,7 +144,7 @@ class _DrinkingScreenState extends ConsumerState<DrinkingScreen> {
     );
   }
 
-  Widget _buildMainContent(List<dynamic> options) {
+  Widget _buildMainContent(List<dynamic> options, bool isDarkMode) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
@@ -156,15 +159,15 @@ class _DrinkingScreenState extends ConsumerState<DrinkingScreen> {
                   color: DatingColors.everqpidColor,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Icon(Icons.local_drink, color: DatingColors.brown),
+                child:  Icon(Icons.local_drink, color: isDarkMode ? DatingColors.white : DatingColors.brown),
               ),
               const SizedBox(width: 12),
-              const Text(
+               Text(
                 'Do You Drink',
                 style: TextStyle(
-                  fontSize: 20, 
+                  fontSize: 20,  
                   fontWeight: FontWeight.w600,
-                  color: DatingColors.brown,
+                  color: isDarkMode ? DatingColors.white : DatingColors.brown,
                 ),
               ),
             ],

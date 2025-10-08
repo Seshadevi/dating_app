@@ -334,9 +334,9 @@ class _NarrowSearchScreenState extends ConsumerState<NarrowSearchScreen> {
         .toList();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close, color: Colors.black),
@@ -1526,9 +1526,9 @@ extension _Str on String {
 //           .toList();        
 
 //     return Scaffold(
-//       backgroundColor: Colors.white,
+//       Theme,
 //       appBar: AppBar(
-//         backgroundColor: Colors.white,
+//         Theme,
 //         elevation: 0,
 //         leading: IconButton(
 //           icon: const Icon(Icons.close, color: Colors.black),
@@ -2467,9 +2467,9 @@ extension _Str on String {
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
-//       backgroundColor: Colors.white,
+//       Theme,
 //       appBar: AppBar(
-//         backgroundColor: Colors.white,
+//         Theme,
 //         elevation: 0,
 //         leading: IconButton(
 //           icon: Icon(Icons.close, color: Colors.black),

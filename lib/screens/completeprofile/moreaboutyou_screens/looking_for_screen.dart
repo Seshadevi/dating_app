@@ -1,5 +1,6 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/provider/signupprocessProviders/lookingProvider.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/relationship_screen.dart';
 import 'package:flutter/material.dart';
@@ -38,13 +39,15 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     final lookingState = ref.watch(lookingProvider);
     final options = lookingState.data ?? [];
 
     return Scaffold(
-      backgroundColor: DatingColors.white,
+      backgroundColor: isDarkMode ? DatingColors.black : DatingColors.white,
       appBar: AppBar(
-        backgroundColor: DatingColors.white,
+        backgroundColor:isDarkMode ? DatingColors.black : DatingColors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close, color: DatingColors.everqpidColor),
@@ -68,13 +71,13 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
                   child: const Icon(Icons.search, color: DatingColors.brown),
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                 Expanded(
                   child: Text(
                     'What Are You Looking For',
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: DatingColors.brown,
+                      color: isDarkMode ? DatingColors.white : DatingColors.brown,
                     ),
                   ),
                 ),
@@ -87,7 +90,7 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
               child: lookingState.data == null
                   ? const Center(child: CircularProgressIndicator())
                   : options.isEmpty
-                      ? const Center(child: Text("No options available"))
+                      ? Center(child: Text("No options available",style: TextStyle(color: isDarkMode ? DatingColors.white : DatingColors.brown),))
                       : ListView.builder(
                           itemCount: options.length,
                           itemBuilder: (context, index) {

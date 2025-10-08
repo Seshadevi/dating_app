@@ -212,7 +212,7 @@ final List<String> selectedcauses = [];
     final causesData = causesState.data ?? [];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [

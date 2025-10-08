@@ -1,6 +1,7 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/moreabout/educationprovider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/screens/About_section/add_eduction_screen.dart';
 import 'package:dating/model/moreabout/Educationmodel.dart';
 import 'package:flutter/material.dart';
@@ -27,17 +28,18 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
   @override
   Widget build(BuildContext context) {
     final educationState = ref.watch(educationProvider);
+    final isDarkMode = ref.watch(darkModeProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title:  Text(
           'Education',
-          style: TextStyle(color: DatingColors.black),
+          style: TextStyle(color: isDarkMode ? DatingColors.white : DatingColors.black),
         ),
-        backgroundColor: DatingColors.white,
+        backgroundColor:Theme.of(context).scaffoldBackgroundColor ,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: DatingColors.black),
+          icon:  Icon(Icons.arrow_back_ios_new, color: isDarkMode ? DatingColors.white : DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -61,7 +63,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
           Container(
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
-              color: DatingColors.white,
+              color: isDarkMode ? DatingColors.black : DatingColors.white,
               boxShadow: [
                 BoxShadow(
                   color: DatingColors.lightgrey,
@@ -114,7 +116,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
           ),
         ],
       ),
-      backgroundColor: DatingColors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor ,
     );
   }
 

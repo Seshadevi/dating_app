@@ -1,5 +1,6 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dating/provider/loader.dart';
@@ -72,22 +73,24 @@ class _StarSignScreenState extends ConsumerState<StarSignScreen> {
 
   @override
   Widget build(BuildContext context) {
+     final isDarkMode = ref.watch(darkModeProvider);
+
     final starSignState = ref.watch(starSignProvider);
     final isLoading = ref.watch(loadingProvider);
 
     return Scaffold(
-      backgroundColor: DatingColors.white,
+      backgroundColor: isDarkMode? DatingColors.black : DatingColors.white,
       appBar: AppBar(
-        backgroundColor: DatingColors.white,
+        backgroundColor: isDarkMode? DatingColors.black : DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: DatingColors.black),
+          icon:  Icon(Icons.arrow_back, color: isDarkMode? DatingColors.white : DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title:  Text(
           'Select StarSign',
           style: TextStyle(
-            color: Colors.black,
+            color: isDarkMode? DatingColors.white : Colors.black,
             fontSize: 18,
             fontWeight: FontWeight.w500,
           ),

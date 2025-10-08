@@ -9,7 +9,7 @@ class BumbleToIrlScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        backgroundColor: Colors.white,
+       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         title: const Text("Bumble To IRL", style: TextStyle(color: Colors.black)),
         leading: IconButton(

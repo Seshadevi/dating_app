@@ -1,5 +1,6 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/plans/plansfullprovider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/screens/tab_bar/spotlight.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -58,6 +59,7 @@ class _LikedYouState extends ConsumerState<LikedYouScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.read(darkModeProvider);
     final model = ref.watch(plansFullProvider);
      final plans = model.data ?? [];
      // Separate plans with and without features
@@ -69,17 +71,17 @@ class _LikedYouState extends ConsumerState<LikedYouScreen> {
         p.title?.toLowerCase().contains('spotlight') == true).firstOrNull;
     
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Liked You',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 22,
-            color: Colors.black,
+            color: isDarkMode ? DatingColors.white :  DatingColors.black,
           ),
         ),
-        backgroundColor: Colors.white,
+       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         automaticallyImplyLeading: false, 
         centerTitle: false,
@@ -96,12 +98,12 @@ class _LikedYouState extends ConsumerState<LikedYouScreen> {
           // mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 20),
-            const Text(
+             Text(
               "When People Are Into You, They’ll \nAppear Here.\nEnjoy.",
               textAlign: TextAlign.start,
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.black54,
+                color: isDarkMode ? DatingColors.white :  DatingColors.black,
               ),
             ),
             const SizedBox(height: 32),

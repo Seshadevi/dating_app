@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:flutter/material.dart';
 
 class NewAdmirersScreen extends StatefulWidget {
@@ -14,10 +15,10 @@ class _NewAdmirersScreenState extends State<NewAdmirersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-
+     // Theme,
+backgroundColor: DatingColors.backgroundWhite,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+       // Theme,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
