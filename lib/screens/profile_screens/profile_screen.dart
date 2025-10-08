@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/screens/settings/settings_page.dart';
 import 'package:dating/screens/profile_screens/tabbar_content_widgets.dart';
-import 'package:dating/screens/profile_screens/profile_bottomNavigationbar.dart';
+
 
 // ✅ also import your socket provider
 // import 'package:dating/provider/socket_provider.dart'; // adjust path if needed

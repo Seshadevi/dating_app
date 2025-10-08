@@ -5,18 +5,18 @@ import 'package:dating/provider/logout_notitifier.dart';
 import 'package:dating/provider/settings/travelprovider.dart';
 import 'package:dating/provider/signupprocessProviders/modeProvider.dart';
 import 'package:dating/provider/snooze/post_snooze_provider.dart';
-import 'package:dating/screens/feedback/feedback_screen.dart';
+
 import 'package:dating/screens/notifications/notifications.dart';
-import 'package:dating/screens/profile_screens/profile_screen.dart';
+
 import 'package:dating/screens/settings/contactand_faq.dart';
 import 'package:dating/screens/settings/privacusetting_screen.dart';
 import 'package:dating/screens/settings/reportsscreen.dart';
 import 'package:dating/screens/settings/typesOfconnections.dart';
-import 'package:dating/screens/settings/videoAutoPlayScreen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:permission_handler/permission_handler.dart';
+
 import 'package:location/location.dart' as loc;
 import 'dart:async';
 
@@ -415,12 +415,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(height: 16),
       
               // Settings Options
-              _simpleArrowTile("Video Autoplay Settings", () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const VideoAutoplayScreen()),
-                );
-              }),
+
+              // _simpleArrowTile("Video Autoplay Settings", () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (_) => const VideoAutoplayScreen()),
+              //   );
+              // }),
       
               _simpleArrowTile("Notification Setting", () {
                 Navigator.push(
@@ -430,10 +431,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               }),
       
               _simpleArrowTile("Payment Setting", () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => Feedbackpage()),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (_) => Feedbackpage()),
+                // );
               }),
                _simpleArrowTile("Reports", () {
                 Navigator.push(
@@ -442,7 +443,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 );
               }),
       
-              _simpleArrowTile("Content And FAQ", () {
+              _simpleArrowTile("Contact to Email", () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => Contactandfaq()),
@@ -713,8 +714,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   // Method to update user email
   void _updateUserEmail(String email) async {
-    final loginNotifier = ref.read(loginProvider.notifier);
-    await loginNotifier.updateProfile(
+  final loginNotifier = ref.read(loginProvider.notifier);
+
+  try {
+    final response = await loginNotifier.updateProfile(
       causeId: null,
       image: null,
       modeid: null,
@@ -724,8 +727,38 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       qualityId: null,
       email: email,
     );
+
     print('Updating email to: $email');
+
+    // ✅ Access map keys with brackets
+    final statusCode = response['statusCode'] as int?;
+    final message = response['message'] as String?;
+
+    if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message ?? 'Email updated successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message ?? 'Failed to update email.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Error updating email: ${e.toString()}'),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
+}
+
 
   void _showLogoutDialog(BuildContext context) {
   showDialog(
@@ -1022,25 +1055,31 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             value: isTravelOn,
             onChanged: (val) async {
               if (currentLat != null && currentLng != null) {
-                try {
-                  await ref.read(travelProvider.notifier).addTravel(
-                        val,
-                        currentLat,
-                        currentLng,
-                      );
+                final response = await ref.read(travelProvider.notifier).addTravel(
+                  val,
+                  currentLat,
+                  currentLng,
+                );
 
-                  // ✅ Success message
+                final statusCode = response['statusCode'] as int?;
+                final message = response['message'] as String?;
+
+                if (statusCode != null && statusCode >= 200 && statusCode < 300) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(
-                          val ? "Travel mode enabled" : "Travel mode disabled"),
+                      content: Text(message ?? (val ? "Travel mode enabled" : "Travel mode disabled")),
+                      backgroundColor: Colors.green,
                     ),
                   );
-                } catch (e) {
+                } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Error: $e")),
+                    SnackBar(
+                      content: Text(message ?? "Failed to update travel mode"),
+                      backgroundColor: Colors.red,
+                    ),
                   );
                 }
+
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(

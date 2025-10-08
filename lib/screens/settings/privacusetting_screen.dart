@@ -1,3 +1,4 @@
+import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/screens/settings/marketing_permissions_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -44,7 +45,7 @@ class _PrivacysettingState extends State<Privacysetting> {
                 children: [
                   // Main description
                   const Text(
-                    'We And Our Partners Collect Information From Your Device Using Trackers, And From Your Profile And App Usage, For The Following Reasons. You Can Update These Settings At A Any Time And Learn More In Our',
+                    'We And Our Partners Collect',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.black87,
@@ -94,7 +95,7 @@ class _PrivacysettingState extends State<Privacysetting> {
 
                   // Description text
                   Text(
-                    'These Trackers Let Us And Our Marketing Partners Improve Marketing Campaigns On Other Apps And Websites.',
+                    ' Trackers Let Us',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey[700],
@@ -164,8 +165,8 @@ class _PrivacysettingState extends State<Privacysetting> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: isAccepted
-                          ? const Color(0xFF2E7D32) // Darker green when pressed
-                          : const Color(0xFF4CAF50), // Normal green
+                          ? DatingColors.everqpidColor // Darker green when pressed
+                          : DatingColors.everqpidColor, // Normal green
                       foregroundColor: Colors.white,
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -263,8 +264,8 @@ class _PrivacysettingState extends State<Privacysetting> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: const Color(0xFF4CAF50),
-            activeTrackColor: const Color(0xFF4CAF50).withOpacity(0.3),
+            activeColor: DatingColors.everqpidColor,
+            activeTrackColor:DatingColors.everqpidColor.withOpacity(0.3),
             inactiveThumbColor: Colors.grey[400],
             inactiveTrackColor: Colors.grey[300],
           ),
@@ -286,7 +287,7 @@ class _PrivacysettingState extends State<Privacysetting> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(25),
           border: Border.all(
-            color: const Color.fromARGB(255, 163, 181, 6),
+            color: DatingColors.everqpidColor,
             width: 1,
           ),
         ),

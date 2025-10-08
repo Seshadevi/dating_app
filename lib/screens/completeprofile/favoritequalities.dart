@@ -133,7 +133,7 @@ class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
     print("🎯 Sending Quality IDs: $qualityIds");
 
     try {
-      await ref.read(loginProvider.notifier).updateProfile(
+      final response=await ref.read(loginProvider.notifier).updateProfile(
         qualityId: qualityIds,
         image: null,
         modeid: null,
@@ -143,11 +143,27 @@ class _FavoriteQualitiesState extends ConsumerState<FavoriteQualities> {
       );
 
       print('✅ updateProfile completed');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Qualities updated successfully!')),
-      );
+      final statusCode = response['statusCode'] as int?;
+    final message = response['message'] as String?;
 
+    if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message ?? 'qualities updated successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
       Navigator.pop(context, visibleQualities);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message ?? 'Failed to update qualities.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+
+      
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to upload qualities: $e')),

@@ -1,5 +1,6 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/plans/plansfullprovider.dart';
+import 'package:dating/screens/profile_screens/favourate.dart';
 import 'package:dating/screens/tab_bar/spotlight.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -122,14 +123,15 @@ class _LikedYouState extends ConsumerState<LikedYouScreen> {
               child: TextButton(
                 onPressed: () {
                   // Add your action here
-                 if (spotlightPlan!.typeId!= null) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SpotlightScreen(typeId: spotlightPlan.typeId!),
-                                  ),
-                                );
-                              }
+                //  if (spotlightPlan!.typeId!= null) {
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => SpotlightScreen(typeId: spotlightPlan.typeId!),
+                                //   ),
+                                // );
+                                 Navigator.push(context, MaterialPageRoute(builder: (_) => FavoritesScreen()));
+                              // }
                 },
                 child: const Text(
                   "Try A Spotlight",

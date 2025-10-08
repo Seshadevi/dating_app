@@ -297,7 +297,6 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/model/likes/likeduser/likedusers.dart';
 import 'package:dating/provider/likes/liked/likedprovider.dart';
-// import 'package:dating/provider/likes/likedusers.dart';
 import 'package:dating/provider/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -313,7 +312,6 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch liked users when screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(likedUsersprovider.notifier).getLikedUsers();
     });
@@ -349,9 +347,9 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
                 color: DatingColors.primaryGreen,
               ),
             )
-          : likedUsers.data == null || likedUsers.data!.isEmpty
+          : (likedUsers.data == null || likedUsers.data?.isEmpty == true)
               ? _buildEmptyState()
-              : _buildUsersList(likedUsers.data!),
+              : _buildUsersList(likedUsers.data ?? []),
     );
   }
 
@@ -374,15 +372,6 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
               color: DatingColors.middlegrey,
             ),
           ),
-          // const SizedBox(height: 8),
-          // Text(
-          //   'Start liking profiles to see them here!',
-          //   style: TextStyle(
-          //     fontSize: 14,
-          //     color: DatingColors.middlegrey,
-          //   ),
-          //   textAlign: TextAlign.center,
-          // ),
         ],
       ),
     );
@@ -391,26 +380,22 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
   Widget _buildUsersList(List<Data> users) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Determine cross axis count based on screen width
         int crossAxisCount;
         double crossAxisSpacing;
         double mainAxisSpacing;
         double padding;
 
         if (constraints.maxWidth < 600) {
-          // Mobile - keep original settings
           crossAxisCount = 2;
           crossAxisSpacing = 16;
           mainAxisSpacing = 16;
           padding = 16;
         } else if (constraints.maxWidth < 900) {
-          // Tablet
           crossAxisCount = 3;
           crossAxisSpacing = 20;
           mainAxisSpacing = 20;
           padding = 24;
         } else {
-          // Desktop
           crossAxisCount = 4;
           crossAxisSpacing = 24;
           mainAxisSpacing = 24;
@@ -424,7 +409,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
               crossAxisCount: crossAxisCount,
               crossAxisSpacing: crossAxisSpacing,
               mainAxisSpacing: mainAxisSpacing,
-              childAspectRatio: 0.5,
+              childAspectRatio: 0.65, // Adjusted for better proportions
             ),
             itemCount: users.length,
             itemBuilder: (context, index) {
@@ -444,78 +429,100 @@ class DynamicProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final imageUrl = user.image?.isNotEmpty == true 
+        ? user.image! 
+        : 'https://via.placeholder.com/300x400';
+
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        // Profile Image with Gradient Border
-        SizedBox(
-          height: 200,
+        // Image Section with Dynamic Height
+        Flexible(
+          flex: 3,
           child: Stack(
             children: [
-              SizedBox(
-                height: 225,
+              Container(
                 width: double.infinity,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    gradient: const LinearGradient(
-                      colors: [DatingColors.primaryGreen, DatingColors.black],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  gradient: const LinearGradient(
+                    colors: [DatingColors.primaryGreen, DatingColors.black],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
-                  padding: const EdgeInsets.all(9),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(21),
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          user.image ?? 'https://via.placeholder.com/300x400',
-                        ),
-                        fit: BoxFit.cover,
-                        onError: (exception, stackTrace) {
-                          // Handle image loading error
-                          print('Error loading image: $exception');
-                        },
-                      ),
-                    ),
-                    child: user.image == null || user.image!.isEmpty
-                        ? const Icon(
+                ),
+                padding: const EdgeInsets.all(9),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(21),
+                  child: Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[300],
+                        child: const Center(
+                          child: Icon(
                             Icons.person,
                             size: 50,
                             color: DatingColors.middlegrey,
-                          )
-                        : null,
+                          ),
+                        ),
+                      );
+                    },
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                              : null,
+                          color: DatingColors.primaryGreen,
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Image.asset(
-                  'assets/Red_Heart.png',
-                  height: 50,
-                  width: 50,
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Image.asset(
+                    'assets/Red_Heart.png',
+                    height: 50,
+                    width: 50,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(
+                        Icons.favorite,
+                        size: 50,
+                        color: Colors.red,
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
           ),
         ),
         const SizedBox(height: 4),
-        // Profile Info Card
+        // Info Section with Dynamic Height
         Container(
-          height: 84,
           width: double.infinity,
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(25),
             color: DatingColors.lightGreen,
             border: Border.all(width: 2, color: DatingColors.primaryGreen),
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Flexible(
                     child: Text(
@@ -526,11 +533,10 @@ class DynamicProfileCard extends StatelessWidget {
                         color: DatingColors.black,
                       ),
                       overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
                   ),
-                  // You can add verification logic here if needed
-                  // For now, showing all users as verified since we don't have this field
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 6),
                   Container(
                     padding: const EdgeInsets.all(2),
                     decoration: const BoxDecoration(
@@ -545,9 +551,9 @@ class DynamicProfileCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: 6),
               Container(
-                padding: const EdgeInsets.all(3),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
@@ -557,23 +563,14 @@ class DynamicProfileCard extends StatelessWidget {
                 ),
                 child: Text(
                   _getFormattedDate(),
-                  style: TextStyle(
-                    fontSize: 12,
+                  style: const TextStyle(
+                    fontSize: 11,
                     color: DatingColors.middlegrey,
                   ),
                   overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                 ),
               ),
-              // const SizedBox(height: 1),
-              // Text(
-              //   user.email ?? 'No email',
-              //   style: TextStyle(
-              //     fontSize: 10,
-              //     color: DatingColors.middlegrey,
-              //     fontWeight: FontWeight.w500,
-              //   ),
-              //   overflow: TextOverflow.ellipsis,
-              // ),
             ],
           ),
         ),
@@ -582,8 +579,8 @@ class DynamicProfileCard extends StatelessWidget {
   }
 
   String _getFullName() {
-    String firstName = user.firstName ?? '';
-    String lastName = user.lastName ?? '';
+    final firstName = user.firstName ?? '';
+    final lastName = user.lastName ?? '';
     
     if (firstName.isEmpty && lastName.isEmpty) {
       return 'Unknown User';
@@ -593,14 +590,14 @@ class DynamicProfileCard extends StatelessWidget {
   }
 
   String _getFormattedDate() {
-    if (user.likedAt == null || user.likedAt!.isEmpty) {
+    if (user.likedAt == null || user.likedAt?.isEmpty == true) {
       return 'Recently liked';
     }
     
     try {
-      DateTime likedDate = DateTime.parse(user.likedAt!);
-      DateTime now = DateTime.now();
-      Duration difference = now.difference(likedDate);
+      final likedDate = DateTime.parse(user.likedAt!);
+      final now = DateTime.now();
+      final difference = now.difference(likedDate);
       
       if (difference.inDays > 0) {
         return '${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago';
@@ -612,6 +609,7 @@ class DynamicProfileCard extends StatelessWidget {
         return 'Just now';
       }
     } catch (e) {
+      debugPrint('Error parsing date: $e');
       return 'Recently liked';
     }
   }

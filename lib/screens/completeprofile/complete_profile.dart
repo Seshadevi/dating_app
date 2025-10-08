@@ -1433,7 +1433,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async{
                           final updatedPrompts = _editPromptControllers
                               .map((c) => c.text.trim())
                               .where((text) => text.isNotEmpty)
@@ -1445,7 +1445,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                             editingPromptIndex = null;
                           });
 
-                          ref.read(loginProvider.notifier).updateProfile(
+                          final response=await ref.read(loginProvider.notifier).updateProfile(
                                 image: null,
                                 modeid: null,
                                 bio: null,
@@ -1454,6 +1454,28 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                                 qualityId: null,
                                 languagesId: null,
                               );
+                              print('✅ updateProfile completed');
+                              final statusCode = response['statusCode'] as int?;
+                            final message = response['message'] as String?;
+
+                            if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(message ?? 'prompts updated successfully!'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                              
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(message ?? 'Failed to update prompts.'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+
+                              
                         },
                         child: const Text('Save All'),
                       ),
@@ -1596,7 +1618,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                       final updatedHeadline = _bioController.text.trim();
 
                       try {
-                        await ref.read(loginProvider.notifier).updateProfile(
+                        final response=await ref.read(loginProvider.notifier).updateProfile(
                               image: null,
                               modeid: null,
                               bio: updatedHeadline,
@@ -1605,10 +1627,24 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData}) {
                               qualityId: null,
                             );
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Headline updated successfully!')),
-                        );
+                         final statusCode = response['statusCode'] as int?;
+                          final message = response['message'] as String?;
+
+                          if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(message ?? 'bio updated successfully!'),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(message ?? 'Failed to update bio.'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
