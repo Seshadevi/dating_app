@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/plans/planspurchaseprovider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../provider/plans/plansfullprovider.dart';
@@ -47,6 +48,7 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
     final plans = ref.watch(plansFullProvider).data ?? [];
     final filteredPlans =
         plans.where((plan) => plan.typeId == widget.typeId).toList();
@@ -68,7 +70,7 @@ class _SpotlightTabContentState extends ConsumerState<SpotlightTabContent> {
         // 🔁 Auto-changing text
         Text(
           swipeTexts[currentBubbleIndex],
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color:DatingColors.brown,),
+          style:  TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: isDarkMode ? DatingColors.white : DatingColors.brown,),
         ),
 
         const SizedBox(height: 10),

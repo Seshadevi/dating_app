@@ -1,5 +1,6 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -98,22 +99,24 @@ class _DietarypreferenceState extends ConsumerState<Dietarypreference> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     final selectedOption = ref.watch(selectedOptionProvider);
     final isLoading = ref.watch(isLoadingProvider);
 
     return Scaffold(
-      backgroundColor: DatingColors.white,
+      backgroundColor: isDarkMode ? DatingColors.black : DatingColors.white,
       appBar: AppBar(
-        backgroundColor: DatingColors.white,
+        backgroundColor: isDarkMode ? DatingColors.black : DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: DatingColors.black, size: 24),
+          icon:  Icon(Icons.close, color: isDarkMode ? DatingColors.white : DatingColors.black, size: 24),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: isLoading 
         ? _buildLoadingState()
-        : _buildMainContent(selectedOption),
+        : _buildMainContent(selectedOption,isDarkMode),
     );
   }
 
@@ -140,7 +143,7 @@ class _DietarypreferenceState extends ConsumerState<Dietarypreference> {
     );
   }
 
-  Widget _buildMainContent(String? selectedOption) {
+  Widget _buildMainContent(String? selectedOption,bool isDarkMode) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
@@ -158,17 +161,17 @@ class _DietarypreferenceState extends ConsumerState<Dietarypreference> {
                 ),
                 child: const Icon(
                   Icons.restaurant_outlined,
-                  color: DatingColors.brown,
+                  color:  DatingColors.brown,
                   size: 24,
                 ),
               ),
               const SizedBox(width: 12),
-              const Text(
+               Text(
                 'Dietary Preference',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: DatingColors.brown,
+                  color: isDarkMode? DatingColors.white : DatingColors.brown,
                 ),
               ),
             ],

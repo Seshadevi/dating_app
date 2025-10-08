@@ -1,5 +1,6 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:dating/screens/About_section/learn_more_screen.dart';
@@ -104,18 +105,20 @@ class _UpdateGenderScreenState extends ConsumerState<UpdateGenderScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Update Your Gender', style: TextStyle(color: DatingColors.black)),
-        backgroundColor: DatingColors.white,
+        title:  Text('Update Your Gender', style: TextStyle(color: isDarkMode ? DatingColors.lightGreen : DatingColors.black)),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor ,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: DatingColors.black),
+          icon:  Icon(Icons.arrow_back, color: isDarkMode ? DatingColors.lightGreen : DatingColors.black),
           onPressed: () => Navigator.pop(context),
           // onPressed: () => Navigator.pushNamed(context, '/completeprofile'),
         ),
       ),
-      backgroundColor: DatingColors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor ,
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -123,8 +126,8 @@ class _UpdateGenderScreenState extends ConsumerState<UpdateGenderScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Pick Which Best Describes You',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                   Text('Pick Which Best Describes You',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20,color: isDarkMode? DatingColors.white : DatingColors.lightgrey)),
                   // const Text('Then add more about your gender if you like',
                   //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                   // TextButton(

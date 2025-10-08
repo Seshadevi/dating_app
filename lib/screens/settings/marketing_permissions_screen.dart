@@ -1,30 +1,35 @@
+import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/screens/settings/privacusetting_screen.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Marketingpartners extends StatefulWidget {
+class Marketingpartners extends ConsumerStatefulWidget {
   const Marketingpartners({super.key});
 
   @override
-  State<Marketingpartners> createState() => MarketingpartnersState();
+  ConsumerState<Marketingpartners> createState() => MarketingpartnersState();
 }
 
-class MarketingpartnersState extends State<Marketingpartners> {
+class MarketingpartnersState extends ConsumerState<Marketingpartners> {
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: isDarkMode ? DatingColors.black : DatingColors.backgroundWhite,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon:  Icon(Icons.arrow_back, color: isDarkMode ? DatingColors.white : DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title:  Text(
           'Marketing Partners',
           style: TextStyle(
-            color: Colors.black,
+            color: isDarkMode ? DatingColors.white : DatingColors.black,
             fontSize: 18,
             fontWeight: FontWeight.w500,
           ),

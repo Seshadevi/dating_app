@@ -1,32 +1,37 @@
+import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Researchandsurveys extends StatefulWidget {
+class Researchandsurveys extends ConsumerStatefulWidget {
   const Researchandsurveys({super.key});
 
   @override
-  State<Researchandsurveys> createState() => _ResearchandsurveysState();
+  ConsumerState<Researchandsurveys> createState() => _ResearchandsurveysState();
 }
 
-class _ResearchandsurveysState extends State<Researchandsurveys> {
+class _ResearchandsurveysState extends ConsumerState<Researchandsurveys> {
   bool pushNotification = true;
   bool emailNotification = true;
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: isDarkMode ? DatingColors.white :  DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: const Text(
+        title:  Text(
           'Research And Serveys',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+           style: TextStyle(color: isDarkMode ? DatingColors.white : Colors.black, fontWeight: FontWeight.bold),
         ),
       ),
 

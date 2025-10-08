@@ -11,7 +11,7 @@ class LocationScreen extends ConsumerWidget {
     final viewModel = ref.read(locationViewModelProvider);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Stack(
           children: [

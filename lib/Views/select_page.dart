@@ -11,7 +11,7 @@ class SelectPage extends ConsumerWidget {
     final viewModel = ref.watch(selectPageViewModelProvider);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           _buildImageSection(),
@@ -58,18 +58,21 @@ class SelectPage extends ConsumerWidget {
     return Column(
       children: [
         _longButton(
+          context,
           "Continue With Google",
           Icons.account_circle,
           viewModel.onGoogleLogin,
         ),
         const SizedBox(height: 10),
         _longButton(
+          context,
           "Continue With Facebook",
           Icons.facebook,
           viewModel.onFacebookLogin,
         ),
         const SizedBox(height: 10),
         _longButton(
+          context,
           "Use Mobile Number",
           Icons.mobile_friendly,
           () => viewModel.onMobileLogin(context),
@@ -78,13 +81,13 @@ class SelectPage extends ConsumerWidget {
     );
   }
 
-  Widget _longButton(String text, IconData icon, VoidCallback onPressed) {
+  Widget _longButton(BuildContext context, String text, IconData icon, VoidCallback onPressed) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: ElevatedButton.icon(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
+         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           foregroundColor: Colors.black,
           minimumSize: const Size(double.infinity, 50),
           shape: RoundedRectangleBorder(

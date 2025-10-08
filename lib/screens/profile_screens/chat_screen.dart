@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/model/chat_message.dart';
 import 'package:dating/provider/chat_socket_provider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -58,7 +59,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     setState(() {
       _isTyping = _controller.text.trim().isNotEmpty;
     });
-    
+
     _typingDebounce?.cancel();
     ref.read(chatProvider.notifier).sendTyping(widget.userId);
     _typingDebounce = Timer(const Duration(milliseconds: 1200), () {});
@@ -77,7 +78,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     try {
       final bytes = await imageFile.readAsBytes();
       final base64String = base64Encode(bytes);
-      
+
       // Determine mime type from file extension
       final extension = imageFile.path.split('.').last.toLowerCase();
       String mimeType;
@@ -98,7 +99,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         default:
           mimeType = 'image/jpeg'; // Default fallback
       }
-      
+
       return 'data:$mimeType;base64,$base64String';
     } catch (e) {
       throw Exception('Failed to convert image: $e');
@@ -106,7 +107,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 
   // Send image message via socket
-  Future<void> _sendImageMessage(String base64DataUrl, {String? caption}) async {
+  Future<void> _sendImageMessage(String base64DataUrl,
+      {String? caption}) async {
     try {
       setState(() {
         _isSendingImage = true;
@@ -114,10 +116,10 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
       // Send via socket using your backend's expected format
       ref.read(chatProvider.notifier).sendImageMessage(
-        receiverId: widget.userId,
-        media: [base64DataUrl], // Send as array as your backend expects
-        message: caption, // Optional caption
-      );
+            receiverId: widget.userId,
+            media: [base64DataUrl], // Send as array as your backend expects
+            message: caption, // Optional caption
+          );
 
       // Clear caption if it was entered
       if (caption != null && caption.isNotEmpty) {
@@ -144,6 +146,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     final messages = ref.watch(chatProvider);
     final isTyping = ref.watch(typingProvider);
     final presence = ref.watch(presenceProvider);
@@ -154,14 +158,16 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: DatingColors.everqpidColor,
+        backgroundColor:
+            isDarkMode ? DatingColors.black : DatingColors.everqpidColor,
         leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black, size: 28),
-            onPressed: () => Navigator.pop(context),
-            padding: const EdgeInsets.only(left: 8),
-            constraints: const BoxConstraints(minWidth: 30),
-          ),
-          titleSpacing: 0,
+          icon: const Icon(Icons.arrow_back,
+              color: DatingColors.lightGreen, size: 28),
+          onPressed: () => Navigator.pop(context),
+          padding: const EdgeInsets.only(left: 8),
+          constraints: const BoxConstraints(minWidth: 30),
+        ),
+        titleSpacing: 0,
         title: Row(
           children: [
             CircleAvatar(backgroundImage: NetworkImage(widget.avatar)),
@@ -170,7 +176,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(widget.userName, style: const TextStyle(fontSize: 20)),
+                  Text(widget.userName,
+                      style: const TextStyle(
+                          fontSize: 20, color: DatingColors.white)),
                   Text(
                     presence == null
                         ? ''
@@ -181,7 +189,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 : 'Offline'),
                     style: TextStyle(
                       fontSize: 12,
-                      color: presence?.online == true ? Colors.green : Colors.grey,
+                      color:
+                          presence?.online == true ? Colors.green : Colors.grey,
                     ),
                   )
                 ],
@@ -194,13 +203,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             onPressed: () {
               print('Video call tapped');
             },
-            icon: const Icon(Icons.videocam, color: Colors.white,size: 30,),
+            icon: const Icon(
+              Icons.videocam,
+              color: Colors.white,
+              size: 30,
+            ),
           ),
           IconButton(
             onPressed: () {
               print('Voice call tapped');
             },
-            icon: const Icon(Icons.call, color: Colors.white,size:30),
+            icon: const Icon(Icons.call, color: Colors.white, size: 30),
           ),
           const SizedBox(width: 8),
         ],
@@ -234,7 +247,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     }
                     final msg = it.message!;
                     final isMe = msg.senderId != widget.userId;
-                    
+
                     return Padding(
                       padding: EdgeInsets.only(
                         left: isMe ? 80.0 : 10.0,
@@ -243,9 +256,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         bottom: 4.0,
                       ),
                       child: Align(
-                        alignment: isMe
-                            ? Alignment.centerRight
-                            : Alignment.centerLeft,
+                        alignment:
+                            isMe ? Alignment.centerRight : Alignment.centerLeft,
                         child: Container(
                           constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width * 0.7,
@@ -258,7 +270,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                           decoration: BoxDecoration(
                             color: isMe
                                 ? DatingColors.primaryGreen.withOpacity(0.85)
-                                : DatingColors.backgroundWhite.withOpacity(0.95),
+                                : DatingColors.backgroundWhite
+                                    .withOpacity(0.95),
                             borderRadius: BorderRadius.only(
                               topLeft: const Radius.circular(16),
                               topRight: const Radius.circular(16),
@@ -274,120 +287,143 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             ],
                           ),
                           child: Column(
-                            crossAxisAlignment: isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                            crossAxisAlignment: isMe
+                                ? CrossAxisAlignment.end
+                                : CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               // Display image if message has media
-                             // Fixed image display section for your ChatScreen build method
+                              // Fixed image display section for your ChatScreen build method
 // Replace the existing media display section with this:
 
 // Display image if message has media
-if (msg.hasImages)
-  ...msg.mediaItems.map((mediaItem) {
-    if (mediaItem.isBase64) {
-      // Handle base64 data URLs
-      try {
-        final base64Str = mediaItem.url.split(',').last;
-        final bytes = base64Decode(base64Str);
+                              if (msg.hasImages)
+                                ...msg.mediaItems.map((mediaItem) {
+                                  if (mediaItem.isBase64) {
+                                    // Handle base64 data URLs
+                                    try {
+                                      final base64Str =
+                                          mediaItem.url.split(',').last;
+                                      final bytes = base64Decode(base64Str);
 
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.memory(
-              bytes,
-              fit: BoxFit.cover,
-              height: 200,
-              width: double.infinity,
-              errorBuilder: (context, error, stackTrace) => 
-                Container(
-                  height: 200,
-                  color: Colors.grey[300],
-                  child: const Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.broken_image, size: 50),
-                      Text('Failed to load image'),
-                    ],
-                  ),
-                ),
-            ),
-          ),
-        );
-      } catch (e) {
-        return Container(
-          height: 200,
-          color: Colors.grey[300],
-          child: const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.error, size: 50),
-              Text('Invalid image format'),
-            ],
-          ),
-        );
-      }
-    } else if (mediaItem.isNetworkUrl) {
-      // Handle network URLs from your backend
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 8.0),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            mediaItem.url,
-            fit: BoxFit.cover,
-            height: 200,
-            width: double.infinity,
-            errorBuilder: (context, error, stackTrace) => 
-              Container(
-                height: 200,
-                color: Colors.grey[300],
-                child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.broken_image, size: 50),
-                    Text('Failed to load image'),
-                  ],
-                ),
-              ),
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return Container(
-                height: 200,
-                color: Colors.grey[200],
-                child: Center(
-                  child: CircularProgressIndicator(
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                            (loadingProgress.expectedTotalBytes ?? 1)
-                        : null,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      );
-    } else {
-      // Fallback for unknown format
-      return Container(
-        height: 100,
-        color: Colors.grey[300],
-        child: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.attachment, size: 30),
-              Text('Unsupported media'),
-            ],
-          ),
-        ),
-      );
-    }
-  }).toList(),
-                              
+                                      return Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 8.0),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: Image.memory(
+                                            bytes,
+                                            fit: BoxFit.cover,
+                                            height: 200,
+                                            width: double.infinity,
+                                            errorBuilder:
+                                                (context, error, stackTrace) =>
+                                                    Container(
+                                              height: 200,
+                                              color: Colors.grey[300],
+                                              child: const Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(Icons.broken_image,
+                                                      size: 50),
+                                                  Text('Failed to load image'),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    } catch (e) {
+                                      return Container(
+                                        height: 200,
+                                        color: Colors.grey[300],
+                                        child: const Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.error, size: 50),
+                                            Text('Invalid image format'),
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                  } else if (mediaItem.isNetworkUrl) {
+                                    // Handle network URLs from your backend
+                                    return Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 8.0),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.network(
+                                          mediaItem.url,
+                                          fit: BoxFit.cover,
+                                          height: 200,
+                                          width: double.infinity,
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  Container(
+                                            height: 200,
+                                            color: Colors.grey[300],
+                                            child: const Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.broken_image,
+                                                    size: 50),
+                                                Text('Failed to load image'),
+                                              ],
+                                            ),
+                                          ),
+                                          loadingBuilder: (context, child,
+                                              loadingProgress) {
+                                            if (loadingProgress == null)
+                                              return child;
+                                            return Container(
+                                              height: 200,
+                                              color: Colors.grey[200],
+                                              child: Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  value: loadingProgress
+                                                              .expectedTotalBytes !=
+                                                          null
+                                                      ? loadingProgress
+                                                              .cumulativeBytesLoaded /
+                                                          (loadingProgress
+                                                                  .expectedTotalBytes ??
+                                                              1)
+                                                      : null,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    // Fallback for unknown format
+                                    return Container(
+                                      height: 100,
+                                      color: Colors.grey[300],
+                                      child: const Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.attachment, size: 30),
+                                            Text('Unsupported media'),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }).toList(),
+
                               // Display text message if exists
-                              if (msg.message != null && msg.message!.isNotEmpty)
+                              if (msg.message != null &&
+                                  msg.message!.isNotEmpty)
                                 RichText(
                                   text: TextSpan(
                                     children: [
@@ -395,17 +431,24 @@ if (msg.hasImages)
                                         text: msg.message,
                                         style: TextStyle(
                                           fontSize: 18,
-                                          color: isMe ? const Color.fromARGB(255, 62, 57, 57).withOpacity(0.8) : Colors.black87,
+                                          color: isMe
+                                              ? const Color.fromARGB(
+                                                      255, 62, 57, 57)
+                                                  .withOpacity(0.8)
+                                              : Colors.black87,
                                           height: 1.3,
                                         ),
                                       ),
                                       TextSpan(text: '  '),
                                       TextSpan(
-                                        text: DateFormat('hh:mm a').format(msg.timestamp.toLocal()),
+                                        text: DateFormat('hh:mm a')
+                                            .format(msg.timestamp.toLocal()),
                                         style: TextStyle(
                                           fontSize: 10,
-                                          color: isMe 
-                                              ? const Color.fromARGB(255, 90, 89, 89).withOpacity(0.6)
+                                          color: isMe
+                                              ? const Color.fromARGB(
+                                                      255, 90, 89, 89)
+                                                  .withOpacity(0.6)
                                               : Colors.black45,
                                           height: 1.3,
                                         ),
@@ -413,16 +456,20 @@ if (msg.hasImages)
                                     ],
                                   ),
                                 ),
-                                
+
                               // Show only timestamp if no text message (image only)
-                              if ((msg.message == null || msg.message!.isEmpty) && 
-                                  msg.media != null && msg.media!.isNotEmpty)
+                              if ((msg.message == null ||
+                                      msg.message!.isEmpty) &&
+                                  msg.media != null &&
+                                  msg.media!.isNotEmpty)
                                 Text(
-                                  DateFormat('hh:mm a').format(msg.timestamp.toLocal()),
+                                  DateFormat('hh:mm a')
+                                      .format(msg.timestamp.toLocal()),
                                   style: TextStyle(
                                     fontSize: 10,
-                                    color: isMe 
-                                        ? const Color.fromARGB(255, 90, 89, 89).withOpacity(0.6)
+                                    color: isMe
+                                        ? const Color.fromARGB(255, 90, 89, 89)
+                                            .withOpacity(0.6)
                                         : Colors.black45,
                                   ),
                                 ),
@@ -433,7 +480,7 @@ if (msg.hasImages)
                     );
                   },
                 ),
-                
+
                 // Image sending loading overlay
                 if (_isSendingImage)
                   Container(
@@ -457,7 +504,7 @@ if (msg.hasImages)
               ],
             ),
           ),
-          
+
           // Typing indicator
           if (isTyping)
             Padding(
@@ -468,7 +515,8 @@ if (msg.hasImages)
                   constraints: BoxConstraints(
                     maxWidth: MediaQuery.of(context).size.width * 0.4,
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
@@ -489,14 +537,15 @@ if (msg.hasImages)
                         height: 12,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.grey.shade400),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.grey.shade400),
                         ),
                       ),
                       const SizedBox(width: 6),
                       Text(
                         'typing…',
                         style: TextStyle(
-                          color: Colors.black54, 
+                          color: Colors.black54,
                           fontSize: 11,
                           fontStyle: FontStyle.italic,
                         ),
@@ -506,10 +555,10 @@ if (msg.hasImages)
                 ),
               ),
             ),
-          
+
           // Input Area
           Container(
-            color: Colors.white,
+            color: isDarkMode ? DatingColors.black : DatingColors.white,
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: SafeArea(
               child: Row(
@@ -518,18 +567,22 @@ if (msg.hasImages)
                   IconButton(
                     onPressed: _toggleEmojiPicker,
                     icon: Icon(
-                      _showEmojiPicker ? Icons.keyboard : Icons.emoji_emotions_outlined,
-                      color: Colors.grey.shade600,
+                      _showEmojiPicker
+                          ? Icons.keyboard
+                          : Icons.emoji_emotions_outlined,
+                      color: DatingColors.mediumGrey,
                     ),
                   ),
-                  
+
                   // Text input
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: isDarkMode
+                            ? DatingColors.black
+                            : DatingColors.white,
                         borderRadius: BorderRadius.circular(25),
-                        border: Border.all(color: Colors.grey.shade300),
+                        border: Border.all(color: DatingColors.mediumGrey),
                       ),
                       child: Row(
                         children: [
@@ -537,19 +590,21 @@ if (msg.hasImages)
                             child: TextField(
                               controller: _controller,
                               focusNode: _focusNode,
-                              style: const TextStyle(
-                                color: Colors.black,
+                              style: TextStyle(
+                                color: isDarkMode
+                                    ? DatingColors.white
+                                    : DatingColors.black,
                                 fontSize: 16,
                               ),
                               decoration: InputDecoration(
                                 hintText: "Message",
                                 hintStyle: TextStyle(
-                                  color: Colors.grey.shade500,
+                                  color: DatingColors.lightgrey,
                                   fontSize: 16,
                                 ),
                                 border: InputBorder.none,
                                 contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16, 
+                                  horizontal: 16,
                                   vertical: 12,
                                 ),
                               ),
@@ -564,33 +619,33 @@ if (msg.hasImages)
                               },
                             ),
                           ),
-                          
+
                           // Attachment button (only show when not typing)
                           if (!_isTyping)
                             IconButton(
                               onPressed: _showAttachmentOptions,
                               icon: Icon(
                                 Icons.attach_file,
-                                color: Colors.grey.shade600,
+                                color: DatingColors.mediumGrey,
                               ),
                             ),
-                          
+
                           // Camera button (only show when not typing)
                           if (!_isTyping)
                             IconButton(
                               onPressed: () => _pickImage(ImageSource.camera),
                               icon: Icon(
                                 Icons.camera_alt,
-                                color: Colors.grey.shade600,
+                                color: DatingColors.mediumGrey,
                               ),
                             ),
                         ],
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(width: 8),
-                  
+
                   // Send/Mic button
                   Container(
                     decoration: BoxDecoration(
@@ -610,7 +665,7 @@ if (msg.hasImages)
               ),
             ),
           ),
-          
+
           // Emoji Picker
           if (_showEmojiPicker)
             SizedBox(
@@ -633,7 +688,7 @@ if (msg.hasImages)
     setState(() {
       _showEmojiPicker = !_showEmojiPicker;
     });
-    
+
     if (_showEmojiPicker) {
       _focusNode.unfocus();
     } else {
@@ -644,7 +699,7 @@ if (msg.hasImages)
   void _sendMessage() {
     final msg = _controller.text.trim();
     if (msg.isEmpty) return;
-    
+
     ref.read(chatProvider.notifier).sendMessage(widget.userId, msg);
     _controller.clear();
     setState(() {
@@ -665,7 +720,7 @@ if (msg.hasImages)
   void _showAttachmentOptions() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -684,7 +739,7 @@ if (msg.hasImages)
               ),
             ),
             const SizedBox(height: 20),
-            
+
             // Options grid
             GridView.count(
               crossAxisCount: 3,
@@ -749,7 +804,7 @@ if (msg.hasImages)
                 ),
               ],
             ),
-            
+
             const SizedBox(height: 20),
           ],
         ),
@@ -766,18 +821,19 @@ if (msg.hasImages)
         maxHeight: 1920,
         imageQuality: 85, // Compress image to reduce size
       );
-      
+
       if (image != null) {
         // Show dialog to optionally add caption
         // String? caption = _controller.text.trim();
         // if (caption.isEmpty) {
         //   caption = await _showCaptionDialog();
         // }
-        
+
         // Convert image to base64 and send
         final base64DataUrl = await _convertImageToBase64(File(image.path));
-        await _sendImageMessage(base64DataUrl, 
-        // caption: caption
+        await _sendImageMessage(
+          base64DataUrl,
+          // caption: caption
         );
       }
     } catch (e) {
@@ -792,7 +848,7 @@ if (msg.hasImages)
 
   Future<String?> _showCaptionDialog() async {
     final captionController = TextEditingController();
-    
+
     return showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
@@ -811,7 +867,8 @@ if (msg.hasImages)
             child: const Text('Skip'),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(captionController.text.trim()),
+            onPressed: () =>
+                Navigator.of(context).pop(captionController.text.trim()),
             child: const Text('Send'),
           ),
         ],
@@ -854,7 +911,7 @@ if (msg.hasImages)
   List<_Item> _withDateHeaders(List<ChatMessage> msgs) {
     final out = <_Item>[];
     DateTime? lastDay;
-    for (final m in msgs..sort((a,b)=>a.timestamp.compareTo(b.timestamp))) {
+    for (final m in msgs..sort((a, b) => a.timestamp.compareTo(b.timestamp))) {
       final d = DateTime(m.timestamp.year, m.timestamp.month, m.timestamp.day);
       if (lastDay == null || d.difference(lastDay).inDays != 0) {
         out.add(_Item.header(_labelFor(d)));
@@ -879,7 +936,7 @@ if (msg.hasImages)
 class _DateHeader extends StatelessWidget {
   final String label;
   const _DateHeader({required this.label, super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -892,9 +949,9 @@ class _DateHeader extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
-            label, 
+            label,
             style: const TextStyle(
-              color: Colors.black54, 
+              color: Colors.black54,
               fontSize: 12,
               fontWeight: FontWeight.w500,
             ),
@@ -954,6 +1011,10 @@ class _Item {
   final bool isHeader;
   final String? header;
   final ChatMessage? message;
-  _Item.header(this.header) : isHeader = true, message = null;
-  _Item.message(this.message) : isHeader = false, header = null;
+  _Item.header(this.header)
+      : isHeader = true,
+        message = null;
+  _Item.message(this.message)
+      : isHeader = false,
+        header = null;
 }

@@ -1,5 +1,6 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/screens/completeprofile/moreaboutyou_screens/new_to_area_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -112,10 +113,12 @@ class _HavekidsscreenState extends ConsumerState<Havekidsscreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
-      backgroundColor: DatingColors.white,
+      backgroundColor: isDarkMode? DatingColors.black : DatingColors.white,
       appBar: AppBar(
-        backgroundColor: DatingColors.white,
+        backgroundColor: isDarkMode? DatingColors.black : DatingColors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close, color: DatingColors.everqpidColor, size: 24),
@@ -146,12 +149,12 @@ class _HavekidsscreenState extends ConsumerState<Havekidsscreen> {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    const Text(
+                     Text(
                       'Do You Have Kids?', // Fixed title to match purpose
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
-                        color: DatingColors.brown,
+                        color: isDarkMode? DatingColors.white : DatingColors.brown,
                       ),
                     ),
                   ],

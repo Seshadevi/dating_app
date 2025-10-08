@@ -1,22 +1,26 @@
 import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/screens/profile_after_click/feeling_of_rejection.dart';
 import 'package:dating/screens/profile_after_click/harmful_behaviour_screen.dart';
 import 'package:dating/screens/profile_after_click/irl_screen.dart';
 import 'package:dating/screens/profile_after_click/mentalEhausement_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SafetyAndWellbeingcontent extends StatefulWidget {
+class SafetyAndWellbeingcontent extends ConsumerStatefulWidget {
   const SafetyAndWellbeingcontent({super.key});
 
   @override
-  State<SafetyAndWellbeingcontent> createState() => _SafetyAndWellbeingcontentState();
+  ConsumerState<SafetyAndWellbeingcontent> createState() => _SafetyAndWellbeingcontentState();
 }
 
-class _SafetyAndWellbeingcontentState extends State<SafetyAndWellbeingcontent> {
+class _SafetyAndWellbeingcontentState extends ConsumerState<SafetyAndWellbeingcontent> {
  
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+    
     return SingleChildScrollView(     
       child: SafeArea(
         child: Padding(

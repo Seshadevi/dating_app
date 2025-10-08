@@ -10,7 +10,7 @@ class HarmfulBehaviorScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        backgroundColor: Colors.white,
+       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         title: const Text("Harmful Behavior", style: TextStyle(color: Colors.black)),
         leading: IconButton(

@@ -12,7 +12,7 @@ class FeelingOfRejectionScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         title: const Text('Feeling Of Rejection',
             style: TextStyle(color: Colors.black)),

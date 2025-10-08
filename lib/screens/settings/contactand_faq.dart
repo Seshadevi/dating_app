@@ -1,31 +1,36 @@
 import 'dart:ui';
 
+import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/screens/settings/privacusetting_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Contactandfaq extends StatefulWidget {
+class Contactandfaq extends ConsumerStatefulWidget {
   const Contactandfaq({super.key});
 
   @override
-  State<Contactandfaq> createState() => ContactandfaqState();
+  ConsumerState<Contactandfaq> createState() => ContactandfaqState();
 }
 
-class ContactandfaqState extends State<Contactandfaq> {
+class ContactandfaqState extends ConsumerState<Contactandfaq> {
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: isDarkMode ? DatingColors.black : DatingColors.white ,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF5F5F5),
+        backgroundColor: isDarkMode ? DatingColors.black : DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          icon: Icon(Icons.arrow_back_ios, color: isDarkMode ? DatingColors.white : DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title:  Text(
           'Contact email ',
           style: TextStyle(
-            color: Colors.black,
+            color: isDarkMode ? DatingColors.white : DatingColors.black,
             fontSize: 18,
             fontWeight: FontWeight.w600,
           ),

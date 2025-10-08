@@ -3,6 +3,7 @@ import 'package:dating/provider/loginProvider.dart';
 
 import 'package:dating/provider/moreabout/relationshipprovider.dart';
 import 'package:dating/provider/moreabout/sportsprovider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -82,16 +83,18 @@ class _SportsScreenState extends ConsumerState<SportsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     final sportstate = ref.watch(sportsprovider);
     final options = sportstate.data ?? [];
 
     return Scaffold(
-      backgroundColor: DatingColors.white,
+      backgroundColor: isDarkMode? DatingColors.black : DatingColors.white,
       appBar: AppBar(
-        backgroundColor: DatingColors.white,
+        backgroundColor: isDarkMode? DatingColors.black : DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: DatingColors.black),
+          icon:  Icon(Icons.close, color: isDarkMode? DatingColors.white : DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -112,13 +115,13 @@ class _SportsScreenState extends ConsumerState<SportsScreen> {
                   child: const Icon(Icons.star_border, color: DatingColors.white),
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                 Expanded(
                   child: Text(
                     'Sports',
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: DatingColors.black,
+                      color: isDarkMode? DatingColors.white : DatingColors.black,
                     ),
                   ),
                 ),
@@ -131,7 +134,7 @@ class _SportsScreenState extends ConsumerState<SportsScreen> {
               child: sportstate.data == null
                   ? const Center(child: CircularProgressIndicator())
                   : options.isEmpty
-                      ? const Center(child: Text("No Sports available"))
+                      ?  Center(child: Text("No Sports available",style: TextStyle(color: isDarkMode? DatingColors.white : DatingColors.black),))
                       : ListView.builder(
                           itemCount: options.length,
                           itemBuilder: (context, index) {

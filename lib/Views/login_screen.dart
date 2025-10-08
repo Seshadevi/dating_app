@@ -13,7 +13,7 @@ class LoginScreen extends ConsumerWidget {
     final notifier = ref.read(loginViewModelProvider);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Stack(
         children: [
           SafeArea(

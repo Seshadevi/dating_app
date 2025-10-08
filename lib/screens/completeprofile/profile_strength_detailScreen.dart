@@ -1,5 +1,6 @@
 import "package:dating/constants/dating_app_user.dart";
 import "package:dating/provider/loginProvider.dart";
+import "package:dating/provider/settings/dark_mode_provider.dart";
 import "package:dating/provider/userdetails_socket_provider.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
@@ -210,6 +211,8 @@ String _getMotivationalMessage(int percentage) {
 }
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     final userData = ref.read(loginProvider);
     final user = userData.data?.isNotEmpty == true ? userData.data![0].user : null;
     final modeId = user?.mode?.isNotEmpty == true ? user?.mode?.first.id : null;
@@ -219,9 +222,9 @@ String _getMotivationalMessage(int percentage) {
 
 
     return Scaffold(
-      backgroundColor: DatingColors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor:DatingColors.white,
+        backgroundColor:Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: DatingColors.everqpidColor),
@@ -230,7 +233,7 @@ String _getMotivationalMessage(int percentage) {
         title: Text(
           'Profile Strength',
           style: TextStyle(
-            color: DatingColors.brown,
+            color: isDarkMode ? DatingColors.white : DatingColors.brown,
             fontSize: 24,
             fontWeight: FontWeight.w600,
           ),

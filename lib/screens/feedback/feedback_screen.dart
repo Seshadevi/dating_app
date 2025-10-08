@@ -1,3 +1,5 @@
+import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/screens/feedback/general_question.dart';
 import 'package:dating/screens/feedback/helpwith_payment.dart';
 import 'package:dating/screens/feedback/report_safty_concern.dart';
@@ -5,35 +7,38 @@ import 'package:dating/screens/feedback/request_mydate.dart';
 import 'package:dating/screens/feedback/technical_issues.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Feedbackpage extends StatefulWidget {
+class Feedbackpage extends ConsumerStatefulWidget {
   const Feedbackpage({super.key});
 
   @override
-  State<Feedbackpage> createState() => FeedbackpageSate();
+  ConsumerState<Feedbackpage> createState() => FeedbackpageSate();
 }
 
-class FeedbackpageSate extends State<Feedbackpage> {
+class FeedbackpageSate extends ConsumerState<Feedbackpage> {
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: isDarkMode ? DatingColors.black :  DatingColors.backgroundWhite,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(
+          icon:  Icon(
             Icons.arrow_back,
-            color: Colors.black,
+            color: isDarkMode ? DatingColors.white :  Colors.black,
           ),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        title: const Text(
+        title: Text(
           'Feedback',
           style: TextStyle(
-            color: Colors.black,
+            color: isDarkMode ? DatingColors.white : Colors.black,
             fontSize: 18,
             fontWeight: FontWeight.w500,
           ),

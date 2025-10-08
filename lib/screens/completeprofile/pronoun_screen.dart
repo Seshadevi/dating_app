@@ -1,5 +1,6 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -73,18 +74,21 @@ class _GenderPronounsScreenState
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
-      backgroundColor: DatingColors.white,
+      backgroundColor: isDarkMode? DatingColors.black : DatingColors.white,
       appBar: AppBar(
+        
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: DatingColors.black),
+          icon:  Icon(Icons.arrow_back_ios_new, color: isDarkMode? DatingColors.white : DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
           "Select Your Pronoun",
           style: TextStyle(color: DatingColors.everqpidColor),
         ),
-        backgroundColor: DatingColors.white,
+        backgroundColor: isDarkMode? DatingColors.black : DatingColors.white,
         elevation: 0,
         centerTitle: true,
       ),
@@ -94,14 +98,14 @@ class _GenderPronounsScreenState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+               Text(
                 "What Are Your Pronouns?",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,color: isDarkMode? DatingColors.white : DatingColors.black),
               ),
               const SizedBox(height: 6),
-              const Text(
+             Text(
                 "Pick a pronoun and we'll add it to your profile.",
-                style: TextStyle(fontSize: 14),
+                style: TextStyle(fontSize: 14,color: isDarkMode? DatingColors.white : DatingColors.black ),
               ),
               const SizedBox(height: 4),
               // TextButton(
@@ -110,9 +114,9 @@ class _GenderPronounsScreenState
               // ),
               const Divider(thickness: 1),
               const SizedBox(height: 8),
-              const Text(
+               Text(
                 "Pick Pronoun",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,color:  isDarkMode? DatingColors.white : DatingColors.black),
               ),
               const SizedBox(height: 4),
               Wrap(
@@ -143,8 +147,8 @@ class _GenderPronounsScreenState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Show On Your Profile As:",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                   Text("Show On Your Profile As:",
+                        style: TextStyle(fontWeight: FontWeight.bold,color: isDarkMode? DatingColors.white : DatingColors.black)),
                     const SizedBox(height: 6),
                     Text(
                       selectedPronoun ?? "Pick Your Pronoun To Preview",

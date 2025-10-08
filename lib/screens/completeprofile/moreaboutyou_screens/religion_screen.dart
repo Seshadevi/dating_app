@@ -1,5 +1,6 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/provider/signupprocessProviders/religionProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -79,16 +80,18 @@ class _ReligionScreenState extends ConsumerState<ReligionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     final religionState = ref.watch(religionProvider);
     final options = religionState.data ?? [];
 
     return Scaffold(
-      backgroundColor: DatingColors.white,
+      backgroundColor: isDarkMode? DatingColors.black : DatingColors.white,
       appBar: AppBar(
-        backgroundColor: DatingColors.white,
+        backgroundColor: isDarkMode? DatingColors.black : DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: DatingColors.black),
+          icon:  Icon(Icons.close, color: isDarkMode? DatingColors.white : DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -109,13 +112,13 @@ class _ReligionScreenState extends ConsumerState<ReligionScreen> {
                   child: const Icon(Icons.star_border, color: DatingColors.brown),
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                 Expanded(
                   child: Text(
                     'Do you identify with a religion',
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: DatingColors.black,
+                      color: isDarkMode? DatingColors.white : DatingColors.black,
                     ),
                   ),
                 ),
@@ -128,7 +131,7 @@ class _ReligionScreenState extends ConsumerState<ReligionScreen> {
               child: religionState.data == null
                   ? const Center(child: CircularProgressIndicator())
                   : options.isEmpty
-                      ? const Center(child: Text("No religions available"))
+                      ?  Center(child: Text("No religions available", style: TextStyle(color: isDarkMode? DatingColors.white : DatingColors.black),))
                       : ListView.builder(
                           itemCount: options.length,
                           itemBuilder: (context, index) {

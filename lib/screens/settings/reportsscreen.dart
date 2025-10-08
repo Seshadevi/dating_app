@@ -1,5 +1,6 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/settings/categoryprovider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/provider/settings/reports.provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -81,28 +82,30 @@ class _ReportsscreenState extends ConsumerState<Reportsscreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     final categoryState = ref.watch(categoryprovider);
     final categories = categoryState.data ?? [];
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: isDarkMode ? DatingColors.black : DatingColors.backgroundWhite ,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF5F5F5),
+        backgroundColor: isDarkMode ? DatingColors.black : DatingColors.backgroundWhite ,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(
+          icon:  Icon(
             Icons.arrow_back_ios,
-            color: Colors.black,
+            color: isDarkMode ? DatingColors.white : DatingColors.black,
             size: 20,
           ),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        title: const Text(
+        title:  Text(
           'Submit a Report',
           style: TextStyle(
-            color: Colors.black,
+            color: isDarkMode ? DatingColors.white : DatingColors.black,
             fontSize: 18,
             fontWeight: FontWeight.w500,
           ),
@@ -118,18 +121,18 @@ class _ReportsscreenState extends ConsumerState<Reportsscreen> {
               const SizedBox(height: 20),
               
               // Category Dropdown
-              const Text(
+              Text(
                 'Select Category',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: Colors.black87,
+                  color: isDarkMode ? DatingColors.white : DatingColors.black,
                 ),
               ),
               const SizedBox(height: 8),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDarkMode ? DatingColors.black : DatingColors.white,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: DatingColors.everqpidColor,
@@ -139,12 +142,12 @@ class _ReportsscreenState extends ConsumerState<Reportsscreen> {
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<Data>(
                     value: selectedCategory,
-                    hint: const Padding(
+                    hint:  Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
                       child: Text(
                         'Choose a category',
                         style: TextStyle(
-                          color: Color(0xFF9E9E9E),
+                          color:  DatingColors.mediumGrey,
                           fontSize: 16,
                         ),
                       ),
@@ -177,19 +180,19 @@ class _ReportsscreenState extends ConsumerState<Reportsscreen> {
               const SizedBox(height: 24),
               
               // Description Input Container
-              const Text(
+               Text(
                 'Description',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: Colors.black87,
+                  color: isDarkMode ? DatingColors.white : DatingColors.black,
                 ),
               ),
               const SizedBox(height: 8),
               Container(
                 height: 200,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDarkMode ? DatingColors.black : DatingColors.white,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: DatingColors.everqpidColor,

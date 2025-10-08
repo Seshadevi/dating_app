@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -31,6 +32,7 @@ class DiscoverScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final socketState = ref.watch(socketUserProvider);
     final loginState = ref.watch(loginProvider);
+    final isDarkMode = ref.watch(darkModeProvider);
 
     // Get all users from socket
     final users = socketState?.data ?? [];
@@ -71,15 +73,15 @@ class DiscoverScreen extends ConsumerWidget {
     }).toList();
 
     return Scaffold(
-      backgroundColor: DatingColors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: DatingColors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         automaticallyImplyLeading: false,
-        title: const Text(
+        title:  Text(
           "Discover",
-          style: TextStyle(
-            color: Colors.black,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            //color: DatingColors.black,
             fontWeight: FontWeight.bold,
             fontSize: 22,
           ),
@@ -108,15 +110,15 @@ class DiscoverScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
+             Text(
               "Discover New Genuine Humans With People\nWho Match Your Vibes, Refreshed Every Day.",
               textAlign: TextAlign.center,
-              style: TextStyle(color: DatingColors.everqpidColor, fontSize: 12),
+              style: TextStyle(color:   isDarkMode ? DatingColors.white : DatingColors.everqpidColor, fontSize: 12),
             ),
             const SizedBox(height: 30),
-            const Text(
+             Text(
               "Recommended For You",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
 
@@ -124,7 +126,7 @@ class DiscoverScreen extends ConsumerWidget {
             if (users.isNotEmpty)
               _buildRecommendedCarousel(users.take(5).toList())
             else
-              _noDataCard(),
+              _noDataCard(isDarkMode),
 
             const SizedBox(height: 40),
 
@@ -145,27 +147,28 @@ class DiscoverScreen extends ConsumerWidget {
                   color: DatingColors.everqpidColor,
                   borderRadius: BorderRadius.circular(1),
                 ),
-                child: const Text(
+                child:  Text(
                   "Based On Your Profile And Past Matches",
-                  style: TextStyle(fontSize: 13),
+                  style: TextStyle(fontSize: 13,
+                  color: isDarkMode ? DatingColors.black : DatingColors.white,),
                 ),
               ),
             ),
             const SizedBox(height: 30),
 
             // Similar Interests Section
-            const Text("similar interests",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+             Text("similar interests",
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
             const SizedBox(height: 20),
-            _horizontalCardList(similarInterestUsers, "interest"),
+            _horizontalCardList(similarInterestUsers, "interest",isDarkMode),
 
             const SizedBox(height: 24),
 
             // Same Goals Section
-            const Text("same dating goals",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+            Text("same dating goals",
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, fontSize: 20)),
             const SizedBox(height: 20),
-            _horizontalCardList(sameGoalUsers, "goal"),
+            _horizontalCardList(sameGoalUsers, "goal",isDarkMode),
 
             const SizedBox(height: 30),
           ],
@@ -379,15 +382,20 @@ class DiscoverScreen extends ConsumerWidget {
     );
   }
 
-  Widget _noDataCard() {
+  Widget _noDataCard(bool isDarkMode) {
     return Container(
       height: 420,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: DatingColors.lightgrey.withOpacity(0.2),
+         color: isDarkMode
+            ? DatingColors.white.withOpacity(0.1)
+            : DatingColors.lightgrey.withOpacity(0.2),
       ),
-      child: const Text("No users available yet"),
+      child:  Text("No users available yet",
+      style: TextStyle(
+          color: isDarkMode ? Colors.white70 : Colors.black,
+        ),),
     );
   }
 
@@ -410,14 +418,14 @@ class DiscoverScreen extends ConsumerWidget {
     );
   }
 
-  Widget _horizontalCardList(List<Data> profiles, String type) {
+  Widget _horizontalCardList(List<Data> profiles, String type,bool isDarkMode) {
     if (profiles.isEmpty) {
       return Container(
         height: 270,
         alignment: Alignment.center,
         child: Text(
           "No users found with ${type == 'interest' ? 'similar interests' : 'same dating goals'}",
-          style: const TextStyle(color: Colors.grey, fontSize: 16),
+          style: TextStyle(color: isDarkMode ? DatingColors.white: Colors.grey, fontSize: 16),
         ),
       );
     }
@@ -459,7 +467,7 @@ class DiscoverScreen extends ConsumerWidget {
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: DatingColors.primaryGreen, width: 1.2),
+              border: Border.all(color: isDarkMode ? DatingColors.white : DatingColors.primaryGreen, width: 1.2),
               boxShadow: [
                 BoxShadow(
                   color: DatingColors.everqpidColor.withOpacity(0.1),
@@ -512,7 +520,7 @@ class DiscoverScreen extends ConsumerWidget {
                           ),
                           child: Text(
                             tag,
-                            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
+                            style:  TextStyle(fontSize: 10, fontWeight: FontWeight.w500,color: isDarkMode ? DatingColors.brown : DatingColors.black),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -522,10 +530,10 @@ class DiscoverScreen extends ConsumerWidget {
                   const Spacer(),
                   Text(
                     "${user.firstName ?? 'Unknown'}${age > 0 ? ', $age' : ''}",
-                    style: const TextStyle(
+                    style:  TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
-                      color: Colors.black,
+                      color: isDarkMode ? DatingColors.white : DatingColors.black,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

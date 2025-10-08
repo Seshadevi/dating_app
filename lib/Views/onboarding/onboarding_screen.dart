@@ -11,7 +11,7 @@ class OnboardingScreen extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => OnboardingViewModel(),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: Consumer<OnboardingViewModel>(
           builder: (context, viewModel, child) {
             return Column(

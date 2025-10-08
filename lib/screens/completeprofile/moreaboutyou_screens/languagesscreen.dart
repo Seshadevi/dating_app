@@ -2,6 +2,7 @@ import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/model/moreabout/languagemodel.dart';
 import 'package:dating/provider/loginProvider.dart';
 import 'package:dating/provider/moreabout/languageprovider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -57,6 +58,8 @@ class _LanguageSelectionScreenState
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     final languageState = ref.watch(languagesProvider);
     final List<Data> languages = languageState.data ?? [];
 
@@ -66,18 +69,18 @@ class _LanguageSelectionScreenState
     }
 
     return Scaffold(
-      backgroundColor: DatingColors.white,
+      backgroundColor: isDarkMode? DatingColors.black : DatingColors.white ,
       appBar: AppBar(
-        backgroundColor: DatingColors.white,
+        backgroundColor: isDarkMode? DatingColors.black : DatingColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: DatingColors.black),
+          icon:  Icon(Icons.arrow_back, color: isDarkMode? DatingColors.white : DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title:  Text(
           "Select Languages",
           style: TextStyle(
-            color: DatingColors.brown,
+            color: isDarkMode? DatingColors.white : DatingColors.brown,
             fontSize: 18,
             fontWeight: FontWeight.w600,
           ),

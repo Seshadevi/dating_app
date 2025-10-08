@@ -1,32 +1,37 @@
+import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NewMatchesScreen extends StatefulWidget {
+class NewMatchesScreen extends ConsumerStatefulWidget {
   const NewMatchesScreen({super.key});
 
   @override
-  State<NewMatchesScreen> createState() => _NewMatchesScreenState();
+  ConsumerState<NewMatchesScreen> createState() => _NewMatchesScreenState();
 }
 
-class _NewMatchesScreenState extends State<NewMatchesScreen> {
+class _NewMatchesScreenState extends ConsumerState<NewMatchesScreen> {
   bool pushNotification = true;
   bool emailNotification = true;
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon:  Icon(Icons.arrow_back, color: isDarkMode ? DatingColors.white : Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: const Text(
+        title:  Text(
           'New Matches',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color: isDarkMode ? DatingColors.white : Colors.black, fontWeight: FontWeight.bold, ),
         ),
       ),
 
@@ -35,9 +40,9 @@ class _NewMatchesScreenState extends State<NewMatchesScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+             Text(
               "Turning these off might mean you miss alerts from your connections",
-              style: TextStyle(fontSize: 14),
+              style: TextStyle(fontSize: 14, color: isDarkMode ? DatingColors.white : Colors.black,),
             ),
             const SizedBox(height: 24),
 

@@ -1,5 +1,6 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/likes/likedislikeprovider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
@@ -586,17 +587,17 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
   }
 
   // Widget for chips with optional icon
-  Widget labeledChip(String label, {IconData? icon}) {
+  Widget labeledChip(String label,bool isDarkMode,{IconData? icon}) {
     return Chip(
       avatar: icon != null ? Icon(icon, size: 20) : null,
-      label: Text(label, style: const TextStyle(fontSize: 16)),
-      backgroundColor: Colors.grey.shade200,
+      label: Text(label, style: TextStyle(fontSize: 16,color: isDarkMode? DatingColors.white : DatingColors.black, )),
+      backgroundColor:  DatingColors.lightgrey,
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
     );
   }
 
   // Section title widget
-  Widget sectionTitle(String title, {double? fontSize}) {
+  Widget sectionTitle(String title,bool isDarkMode, {double? fontSize}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Text(
@@ -604,6 +605,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: fontSize ?? 16,
+          color: isDarkMode ? DatingColors.white : DatingColors.black
         ),
       ),
     );
@@ -783,6 +785,9 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
 
   @override
   Widget build(BuildContext context) {
+
+    final isDarkMode = ref.watch(darkModeProvider);
+
     final socketUsers = ref.watch(socketUserProvider);
     final users = socketUsers?.data ?? [];
     final screenSize = MediaQuery.of(context).size;
@@ -791,7 +796,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
 
     if (users.isEmpty && socketUsers?.pagination != true) {
       return Scaffold(
-        backgroundColor: DatingColors.backgroundWhite,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor ,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -837,7 +842,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
 
     if (allUsersCompleted || currentUserIndex >= users.length) {
       return Scaffold(
-        backgroundColor: DatingColors.backgroundWhite,
+         backgroundColor: Theme.of(context).scaffoldBackgroundColor ,
         body: _buildCompletionMessage(),
       );
     }
@@ -845,7 +850,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
     final user = users[currentUserIndex];
 
     return Scaffold(
-      backgroundColor: DatingColors.backgroundWhite,
+       backgroundColor: Theme.of(context).scaffoldBackgroundColor ,
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onHorizontalDragEnd: (details) {
@@ -929,13 +934,13 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                             child: Text(
                               '${user.firstName ?? "User name"}, ${_calculateAge(user.dob)}',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: DatingColors.white,
                                 fontSize: screenWidth * 0.07,
                                 fontWeight: FontWeight.bold,
                                 shadows: const [
                                   Shadow(
                                     blurRadius: 8,
-                                    color: Colors.black54,
+                                    color: DatingColors.black,
                                     offset: Offset(0, 2),
                                   ),
                                 ],
@@ -991,7 +996,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                   Padding(
                     padding: EdgeInsets.all(screenWidth * 0.02),
                     child: Container(
-                      color: DatingColors.white,
+                      color: isDarkMode? DatingColors.black : DatingColors.white,
                       child: Column(
                         children: [
                           SizedBox(height: screenHeight * 0.025),
@@ -1004,45 +1009,49 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                             child: Container(
                               width: screenWidth,
                               padding: EdgeInsets.all(screenWidth * 0.02),
-                              color: DatingColors.white,
+                              
+                              decoration: BoxDecoration(
+                                color: isDarkMode? DatingColors.black : DatingColors.white,
+                                border: Border.all(color: DatingColors.everqpidColor)
+                              ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  sectionTitle('About me',
+                                  sectionTitle('About me', isDarkMode,
                                       fontSize: screenWidth * 0.05),
                                   Wrap(
                                     spacing: screenWidth * 0.02,
                                     runSpacing: screenHeight * 0.02,
                                     children: [
                                       if (user.height != null)
-                                        labeledChip('${user.height} cm',
+                                        labeledChip('${user.height} cm',isDarkMode,
                                             icon: Icons.straighten),
                                       if (user.exercise != null)
-                                        labeledChip(user.exercise ?? '',
+                                        labeledChip(user.exercise ?? '',isDarkMode,
                                             icon: Icons.fitness_center),
                                       if (user.gender != null)
-                                        labeledChip(user.gender ?? '',
+                                        labeledChip(user.gender ?? '',isDarkMode,
                                             icon: Icons.person),
                                       if (user.haveKids != null)
-                                        labeledChip(user.haveKids ?? '',
+                                        labeledChip(user.haveKids ?? '',isDarkMode,
                                             icon: Icons.child_care),
                                       if (user.religions != null)
                                         ...user.religions!
                                             .map((r) => labeledChip(
-                                                r.religion ?? '',
+                                                r.religion ?? '',isDarkMode,
                                                 icon: Icons.temple_hindu))
                                             .toList(),
                                       if (user.newToArea != null)
-                                        labeledChip(user.newToArea ?? '',
+                                        labeledChip(user.newToArea ?? '',isDarkMode,
                                             icon: Icons.home_work),
                                       if (user.drinking != null)
                                         ...user.drinking!
                                             .map((d) => labeledChip(
-                                                d.preference ?? '',
+                                                d.preference ?? '',isDarkMode,
                                                 icon: Icons.local_bar))
                                             .toList(),
                                       if (user.smoking != null)
-                                        labeledChip(user.smoking ?? '',
+                                        labeledChip(user.smoking ?? '',isDarkMode,
                                             icon: Icons.smoking_rooms),
                                     ],
                                   )
@@ -1061,11 +1070,15 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                             child: Container(
                               width: screenWidth,
                               padding: EdgeInsets.all(screenWidth * 0.04),
-                              color: DatingColors.white,
+                             
+                              decoration: BoxDecoration(
+                                color: isDarkMode? DatingColors.black : DatingColors.white,
+                                border: Border.all(color: DatingColors.everqpidColor)
+                              ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  sectionTitle('I\'m Looking For',
+                                  sectionTitle('I\'m Looking For',isDarkMode,
                                       fontSize: screenWidth * 0.05),
                                   Wrap(
                                     spacing: screenWidth * 0.1,
@@ -1073,7 +1086,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                                     children: user.lookingFor != null
                                         ? user.lookingFor!
                                             .map((lf) => labeledChip(
-                                                lf.value ?? '',
+                                                lf.value ?? '',isDarkMode,
                                                 icon: Icons.search))
                                             .toList()
                                         : [],
@@ -1093,11 +1106,14 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                             child: Container(
                               width: screenWidth,
                               padding: EdgeInsets.all(screenWidth * 0.02),
-                              color: DatingColors.white,
+                               decoration: BoxDecoration(
+                                color: isDarkMode? DatingColors.black : DatingColors.white,
+                                border: Border.all(color: DatingColors.everqpidColor)
+                              ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  sectionTitle('My Interests',
+                                  sectionTitle('My Interests',isDarkMode,
                                       fontSize: screenWidth * 0.05),
                                   Wrap(
                                     spacing: screenWidth * 0.02,
@@ -1105,7 +1121,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                                     children: user.interests != null
                                         ? user.interests!
                                             .map((interest) => labeledChip(
-                                                interest.interests ?? '',
+                                                interest.interests ?? '',isDarkMode,
                                                 icon: Icons.local_activity))
                                             .toList()
                                         : [],
@@ -1125,11 +1141,14 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                             child: Container(
                               width: screenWidth,
                               padding: EdgeInsets.all(screenWidth * 0.02),
-                              color: DatingColors.white,
+                               decoration: BoxDecoration(
+                                color: isDarkMode? DatingColors.black : DatingColors.white,
+                                border: Border.all(color: DatingColors.everqpidColor)
+                              ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  sectionTitle('Favorite qualities',
+                                  sectionTitle('Favorite qualities',isDarkMode,
                                       fontSize: screenWidth * 0.05),
                                   Wrap(
                                     spacing: screenWidth * 0.02,
@@ -1137,7 +1156,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                                     children: user.qualities != null
                                         ? user.qualities!
                                             .map((quality) => labeledChip(
-                                                quality.name ?? '',
+                                                quality.name ?? '',isDarkMode,
                                                 icon: Icons.star))
                                             .toList()
                                         : [],
@@ -1157,11 +1176,14 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                             child: Container(
                               width: screenWidth,
                               padding: EdgeInsets.all(screenWidth * 0.02),
-                              color: DatingColors.white,
+                               decoration: BoxDecoration(
+                                color: isDarkMode? DatingColors.black : DatingColors.white,
+                                border: Border.all(color: DatingColors.everqpidColor)
+                              ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  sectionTitle('Languages',
+                                  sectionTitle('Languages',isDarkMode,
                                       fontSize: screenWidth * 0.05),
                                   Wrap(
                                     spacing: screenWidth * 0.02,
@@ -1169,7 +1191,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                                     children: user.spokenLanguages != null
                                         ? user.spokenLanguages!
                                             .map((lang) => labeledChip(
-                                                lang.name ?? '',
+                                                lang.name ?? '',isDarkMode,
                                                 icon: Icons.language))
                                             .toList()
                                         : [],
@@ -1189,18 +1211,21 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                             child: Container(
                               width: screenWidth,
                               padding: EdgeInsets.all(screenWidth * 0.02),
-                              color: DatingColors.white,
+                               decoration: BoxDecoration(
+                                color: isDarkMode? DatingColors.black : DatingColors.white,
+                                border: Border.all(color: DatingColors.everqpidColor)
+                              ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  sectionTitle('My Location',
+                                  sectionTitle('My Location',isDarkMode,
                                       fontSize: screenWidth * 0.05),
                                   if (user.location != null &&
                                       user.location!.name != null)
-                                    labeledChip(user.location!.name ?? '',
+                                    labeledChip(user.location!.name ?? '',isDarkMode,
                                         icon: Icons.location_on),
                                   if (user.hometown != null)
-                                    labeledChip(user.hometown ?? '',
+                                    labeledChip(user.hometown ?? '',isDarkMode,
                                         icon: Icons.home),
                                 ],
                               ),
@@ -1236,7 +1261,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                               ),
                               CircleAvatar(
                                 radius: screenWidth * 0.08,
-                                backgroundColor: Colors.green.shade400,
+                                backgroundColor: DatingColors.darkGreen,
                                 child: IconButton(
                                   icon: Icon(Icons.favorite,
                                       color: Colors.white,
@@ -1267,7 +1292,8 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                   padding:
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.9),
+                    color: isDarkMode ? DatingColors.black : Colors.white.withOpacity(0.9),
+                    border: Border.all(color: DatingColors. everqpidColor),
                     borderRadius: BorderRadius.circular(25),
                     boxShadow: [
                       BoxShadow(
@@ -1294,11 +1320,11 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                             color: Colors.white, size: 20),
                       ),
                       const SizedBox(width: 12),
-                      const Expanded(
+                       Expanded(
                         child: Text(
                           'EVER QPID',
                           style: TextStyle(
-                            color: Colors.black87,
+                            color: isDarkMode ? DatingColors.white : DatingColors.black,
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 0.5,

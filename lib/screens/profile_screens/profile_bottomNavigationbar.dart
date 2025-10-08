@@ -318,6 +318,7 @@
 
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
 // Import your actual screens here
 import 'package:flutter/services.dart';
@@ -368,6 +369,7 @@ class _CustomBottomNavigationBarState
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
@@ -396,18 +398,18 @@ class _CustomBottomNavigationBarState
         bottomNavigationBar: Container(
           height: 60,
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          decoration: const BoxDecoration(
-            color: Colors.white,
+          decoration:  BoxDecoration(
+            color: isDarkMode ? DatingColors.black : Colors.white,
             boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(0, 'assets/Profile-.png', 50, 55),
-              _buildNavItem(1, 'assets/good_logo.png', 40, 50),
-              _buildNavItem(2, 'assets/peoples-.png', 50, 55),
-              _buildNavItem(3, 'assets/Heart@3x.png', 40, 50),
-              _buildNavItem(4, 'assets/chatnav.png', 40, 50),
+              _buildNavItem(0, 'assets/Profile-.png', 50, 55,isDarkMode),
+              _buildNavItem(1, 'assets/good_logo.png', 40, 50,isDarkMode),
+              _buildNavItem(2, 'assets/peoples-.png', 50, 55,isDarkMode),
+              _buildNavItem(3, 'assets/Heart@3x.png', 40, 50,isDarkMode),
+              _buildNavItem(4, 'assets/chatnav.png', 40, 50,isDarkMode),
             ],
           ),
         ),
@@ -415,8 +417,8 @@ class _CustomBottomNavigationBarState
     );
   }
 
-  Widget _buildNavItem(
-      int index, String assetPath, double width, double height) {
+  Widget _buildNavItem( 
+      int index, String assetPath, double width, double height,bool isDarkMode,) {
     final isSelected = index == _selectedIndex;
 
     return GestureDetector(
@@ -430,9 +432,9 @@ class _CustomBottomNavigationBarState
             width: width,
             height: height,
             fit: BoxFit.contain,
-            color: isSelected
+            color: isDarkMode ? isSelected 
                 ? DatingColors.qpidColor // icon color selected
-                : DatingColors.lightgrey,
+                : DatingColors.lightgrey  : DatingColors.lightgrey,
           ),
         ),
       ),

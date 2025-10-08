@@ -1,5 +1,6 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/firebase_auth.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:dating/screens/logins/otpscreen.dart';
@@ -19,8 +20,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: DatingColors.backgroundWhite,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(), // Hide keyboard on outside tap
         child: Stack(
@@ -32,7 +34,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.arrow_back_ios, size: 25),
+                      icon: const Icon(Icons.arrow_back_ios,color: DatingColors.black, size: 25),
                       onPressed: () => Navigator.pop(context),
                     ),
                     const SizedBox(height: 10),

@@ -1,3 +1,5 @@
+import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dating/provider/match_provider.dart';
@@ -90,6 +92,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
     final matchesWithChat = ref.watch(matchesWithChatProvider);
 
     // Filter matches based on search query
@@ -98,17 +101,17 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
     ).toList();
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Messages',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: Colors.black87,
+            color: isDarkMode ? DatingColors.white :  DatingColors.black,
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 1,
         automaticallyImplyLeading: false,
       ),
@@ -116,24 +119,24 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
         children: [
           // Search bar
           Container(
-            color: Colors.white,
+            color: isDarkMode ? DatingColors.black :  DatingColors.white,
             padding: const EdgeInsets.all(12),
             child: TextField(
               onChanged: (val) => setState(() => searchQuery = val),
               decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                prefixIcon: const Icon(Icons.search, color: DatingColors.middlegrey),
                 hintText: 'Search matches...',
-                hintStyle: TextStyle(color: Colors.grey[600]),
-                filled: true,
-                fillColor: Colors.grey[100],
+                hintStyle: TextStyle(color: DatingColors.middlegrey),
+              filled: true,
+                fillColor: isDarkMode ? DatingColors.black : DatingColors.lightgrey,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
-                  borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+                  borderSide: BorderSide(color: DatingColors.middlegrey, width: 1),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(25),
-                  borderSide: const BorderSide(color: Colors.green, width: 2),
+                  borderSide:  BorderSide(color: DatingColors.darkGreen, width: 2),
                 ),
               ),
             ),
@@ -142,14 +145,14 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
           // Messages list
           Expanded(
             child: Container(
-              color: Colors.white,
+              color: isDarkMode ? DatingColors.black : DatingColors.white,
               child: filteredMatches.isEmpty
-                  ? const Center(
+                  ?  Center(
                 child: Text(
                   "No matched users",
                   style: TextStyle(
                     fontSize: 16,
-                    color: Colors.grey,
+                    color: isDarkMode ? DatingColors.white : DatingColors.middlegrey,
                   ),
                 ),
               )
@@ -157,7 +160,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                 itemCount: filteredMatches.length,
                 separatorBuilder: (context, index) => Divider(
                   height: 1,
-                  color: Colors.grey[200],
+                  color: isDarkMode? DatingColors.white : DatingColors.lightgrey,
                   indent: 72, // Start after avatar
                 ),
                 itemBuilder: (context, index) {
@@ -183,11 +186,11 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                           // User avatar
                           CircleAvatar(
                             radius: 28,
-                            backgroundColor: Colors.grey[300],
+                            backgroundColor: DatingColors.surfaceGrey,
                             backgroundImage: NetworkImage(match.avatar),
                             onBackgroundImageError: (_, __) {},
                             child: match.avatar.isEmpty
-                                ? Icon(Icons.person, color: Colors.grey[600])
+                                ? Icon(Icons.person, color: DatingColors.middlegrey)
                                 : null,
                           ),
 
@@ -201,10 +204,10 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                                 // User name
                                 Text(
                                   match.name,
-                                  style: const TextStyle(
+                                  style:  TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.black87,
+                                    color: isDarkMode ? DatingColors.white : DatingColors.black,
                                   ),
                                 ),
 
@@ -215,7 +218,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                                   matchData.lastMessage ?? "Tap to start chatting",
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: Colors.grey[600],
+                                    color: isDarkMode? DatingColors.white : DatingColors.middlegrey,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -233,7 +236,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                                 matchData.lastTimestamp ?? "",
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Colors.grey[500],
+                                  color: isDarkMode? DatingColors.white : DatingColors.middlegrey,
                                 ),
                               ),
 
@@ -245,7 +248,7 @@ class _MessagesScreenState extends ConsumerState<MessagesScreen> {
                                   height: 20,
                                   padding: const EdgeInsets.symmetric(horizontal: 6),
                                   decoration: BoxDecoration(
-                                    color: Colors.green[600],
+                                    color:  DatingColors.darkGreen,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   alignment: Alignment.center,

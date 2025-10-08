@@ -19,7 +19,7 @@ class JoinNowButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed, // 👈 use passed function
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           ),

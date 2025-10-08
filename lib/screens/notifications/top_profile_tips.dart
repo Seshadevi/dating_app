@@ -1,32 +1,37 @@
+import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class TopProfileTips extends StatefulWidget {
+class TopProfileTips extends ConsumerStatefulWidget {
   const TopProfileTips({super.key});
 
   @override
-  State<TopProfileTips> createState() => _TopProfileTipsState();
+  ConsumerState<TopProfileTips> createState() => _TopProfileTipsState();
 }
 
-class _TopProfileTipsState extends State<TopProfileTips> {
+class _TopProfileTipsState extends ConsumerState<TopProfileTips> {
   bool pushNotification = true;
   bool emailNotification = true;
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon:  Icon(Icons.arrow_back, color: isDarkMode ? DatingColors.white : DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: const Text(
+        title:  Text(
           'Top Profile Tips',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color: isDarkMode ? DatingColors.white : DatingColors.black, fontWeight: FontWeight.bold),
         ),
       ),
 

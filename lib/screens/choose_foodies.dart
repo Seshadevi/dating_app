@@ -216,7 +216,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
     final interestData = interestState.data ?? [];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -571,7 +571,7 @@ class _InterestsScreenState extends ConsumerState<InterestsScreen> {
 //     final positions = generateDynamicPositions(interestsList.length);
 
 //     return Scaffold(
-//       backgroundColor: Colors.white,
+//       Theme,
 //       body: SafeArea(
 //         child: Stack(
 //           children: [

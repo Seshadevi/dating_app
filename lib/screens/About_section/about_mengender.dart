@@ -1,7 +1,9 @@
 import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AboutMengender extends StatefulWidget {
+class AboutMengender extends ConsumerStatefulWidget {
   final List<String> genderOptions;
 
   const AboutMengender({
@@ -10,28 +12,30 @@ class AboutMengender extends StatefulWidget {
   });
 
   @override
-  State<AboutMengender> createState() => _AboutMengenderState();
+  ConsumerState<AboutMengender> createState() => _AboutMengenderState();
 }
 
-class _AboutMengenderState extends State<AboutMengender> {
+class _AboutMengenderState extends ConsumerState<AboutMengender> {
   String? selectedGender;
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
-      backgroundColor:DatingColors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor ,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.close, color: DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: DatingColors.white,
+       backgroundColor: Theme.of(context).scaffoldBackgroundColor ,
         elevation: 0,
         centerTitle: true,
-        title: const Text(
+        title:  Text(
           'Add More About Your Gender',
           style: TextStyle(
-            color: DatingColors.black,
+            color: isDarkMode ? DatingColors.white : DatingColors.black,
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
@@ -64,7 +68,7 @@ class _AboutMengenderState extends State<AboutMengender> {
                       children: [
                         Text(
                           gender,
-                          style: const TextStyle(fontSize: 16, color: DatingColors.black),
+                          style:  TextStyle(fontSize: 16, color: isDarkMode ? DatingColors.white : DatingColors.black),
                         ),
                         Container(
                           width: 22,
@@ -98,9 +102,9 @@ class _AboutMengenderState extends State<AboutMengender> {
           ),
           const Divider(height: 1),
           ListTile(
-            title: const Text(
+            title:  Text(
               "Tell Us If We're Missing Something",
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 16, color: isDarkMode ? DatingColors.white : DatingColors.lightgrey ),
             ),
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {

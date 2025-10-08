@@ -1,32 +1,37 @@
+import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class VideoAutoplayScreen extends StatefulWidget {
+class VideoAutoplayScreen extends ConsumerStatefulWidget {
   const VideoAutoplayScreen({super.key});
 
   @override
-  State<VideoAutoplayScreen> createState() => _VideoAutoplayScreenState();
+  ConsumerState<VideoAutoplayScreen> createState() => _VideoAutoplayScreenState();
 }
 
-class _VideoAutoplayScreenState extends State<VideoAutoplayScreen> {
+class _VideoAutoplayScreenState extends ConsumerState<VideoAutoplayScreen> {
   String selectedOption = "wifi_mobile";
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon:  Icon(Icons.arrow_back, color: isDarkMode ? DatingColors.white : DatingColors.black),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        title: const Text(
+        title:  Text(
           "Video Autoplay",
           style: TextStyle(
-            color: Colors.black,
+            color: isDarkMode ? DatingColors.white : DatingColors.black,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -61,16 +66,19 @@ class _VideoAutoplayScreenState extends State<VideoAutoplayScreen> {
             autoplayOption(
               label: "On WIFI And Mobile Data",
               value: "wifi_mobile",
+              isDarkMode: isDarkMode
             ),
             const SizedBox(height: 12),
             autoplayOption(
               label: "On WIFI Only",
               value: "wifi_only",
+              isDarkMode: isDarkMode
             ),
             const SizedBox(height: 12),
             autoplayOption(
               label: "Never Autoplay Videos",
               value: "never",
+              isDarkMode: isDarkMode
             ),
           ],
         ),
@@ -78,7 +86,7 @@ class _VideoAutoplayScreenState extends State<VideoAutoplayScreen> {
     );
   }
 
-  Widget autoplayOption({required String label, required String value}) {
+  Widget autoplayOption({required String label, required String value, required bool isDarkMode}) {
     final isSelected = selectedOption == value;
 
     return GestureDetector(
@@ -109,7 +117,7 @@ class _VideoAutoplayScreenState extends State<VideoAutoplayScreen> {
               isSelected
                   ? Icons.radio_button_checked
                   : Icons.radio_button_off,
-              color: Colors.black,
+              color: isDarkMode ? DatingColors.everqpidColor : Colors.black,
             )
           ],
         ),

@@ -1,32 +1,37 @@
+import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NewExpiringMatchesScreen extends StatefulWidget {
+class NewExpiringMatchesScreen extends ConsumerStatefulWidget {
   const NewExpiringMatchesScreen({super.key});
 
   @override
-  State<NewExpiringMatchesScreen> createState() => _NewExpiringMatchesScreenState();
+  ConsumerState<NewExpiringMatchesScreen> createState() => _NewExpiringMatchesScreenState();
 }
 
-class _NewExpiringMatchesScreenState extends State<NewExpiringMatchesScreen> {
+class _NewExpiringMatchesScreenState extends ConsumerState<NewExpiringMatchesScreen> {
   bool pushNotification = true;
   bool emailNotification = true;
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon:  Icon(Icons.arrow_back, color: isDarkMode ? DatingColors.white : DatingColors.black),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
-        title: const Text(
+        title:  Text(
           'Expiring Matches',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          style: TextStyle(color: isDarkMode ? DatingColors.white : DatingColors.black, fontWeight: FontWeight.bold),
         ),
       ),
 

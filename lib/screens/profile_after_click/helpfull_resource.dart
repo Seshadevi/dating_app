@@ -31,7 +31,7 @@ class _HelpfulResourcesScreenState extends State<HelpfulResourcesScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         title: const Text("Helpful Resources", style: TextStyle(color: Colors.black)),
         leading: const Icon(Icons.arrow_back, color: Colors.black),

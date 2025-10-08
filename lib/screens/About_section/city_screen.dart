@@ -1,5 +1,6 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -213,9 +214,13 @@ class _CitySearchPageState extends ConsumerState<CitySearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('Find Your Current City'),
+        backgroundColor: isDarkMode ? DatingColors.black : DatingColors.darkGreen,
+        title: Text('Find Your Current City', style: TextStyle(color: isDarkMode? DatingColors.white : DatingColors.brown) ,),
         leading: IconButton(
           icon: Icon(Icons.close),
           onPressed: () => Navigator.of(context).pop(),
@@ -226,7 +231,7 @@ class _CitySearchPageState extends ConsumerState<CitySearchPage> {
           // Search Bar
           Container(
             padding: EdgeInsets.all(16.0),
-            color: DatingColors.lightpinks,
+            color: isDarkMode ? DatingColors.black : DatingColors.lightpinks,
             child: TextField(
               controller: _searchController,
               onChanged: _onSearchChanged,

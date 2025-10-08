@@ -1,13 +1,16 @@
+import 'package:dating/constants/dating_app_user.dart';
+import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ReportSaftyConcern extends StatefulWidget {
+class ReportSaftyConcern extends ConsumerStatefulWidget {
   const ReportSaftyConcern({super.key});
 
   @override
-  State<ReportSaftyConcern> createState() => ReportSaftyConcernSate();
+  ConsumerState<ReportSaftyConcern> createState() => ReportSaftyConcernSate();
 }
 
-class ReportSaftyConcernSate extends State<ReportSaftyConcern> {
+class ReportSaftyConcernSate extends ConsumerState<ReportSaftyConcern> {
   final TextEditingController _messageController = TextEditingController();
 
   @override
@@ -18,25 +21,27 @@ class ReportSaftyConcernSate extends State<ReportSaftyConcern> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(darkModeProvider);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
+      backgroundColor: isDarkMode ? DatingColors.black : DatingColors.backgroundWhite ,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF5F5F5),
+        backgroundColor: isDarkMode ? DatingColors.black : DatingColors.backgroundWhite ,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(
+          icon:  Icon(
             Icons.arrow_back_ios,
-            color: Colors.black,
+            color: isDarkMode ? DatingColors.white : DatingColors.black ,
             size: 20,
           ),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        title: const Text(
+        title:  Text(
           'Report A Safety Concern',
           style: TextStyle(
-            color: Colors.black,
+            color: isDarkMode ? DatingColors.white : DatingColors.black,
             fontSize: 18,
             fontWeight: FontWeight.w500,
           ),
