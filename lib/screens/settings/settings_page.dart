@@ -6,18 +6,18 @@ import 'package:dating/provider/settings/dark_mode_provider.dart';
 import 'package:dating/provider/settings/travelprovider.dart';
 import 'package:dating/provider/signupprocessProviders/modeProvider.dart';
 import 'package:dating/provider/snooze/post_snooze_provider.dart';
-import 'package:dating/screens/feedback/feedback_screen.dart';
+
 import 'package:dating/screens/notifications/notifications.dart';
-import 'package:dating/screens/profile_screens/profile_screen.dart';
+
 import 'package:dating/screens/settings/contactand_faq.dart';
 import 'package:dating/screens/settings/privacusetting_screen.dart';
 import 'package:dating/screens/settings/reportsscreen.dart';
 import 'package:dating/screens/settings/typesOfconnections.dart';
-import 'package:dating/screens/settings/videoAutoPlayScreen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:permission_handler/permission_handler.dart';
+
 import 'package:location/location.dart' as loc;
 import 'dart:async';
 
@@ -37,73 +37,77 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   double? _currentLng;
   bool _autoSpotlight = false;
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadUserLocationData();
-    });
-  }
+ @override
+void initState() {
+  super.initState();
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    // Automatically get and update current location on page entry
+    _updateCurrentLocation();
+  });
+}
+  
 
   void _loadUserLocationData() {
-    final userdata = ref.read(loginProvider);
-    final user =
-        userdata.data?.isNotEmpty == true ? userdata.data![0].user : null;
+  final userdata = ref.read(loginProvider);
+  final user =
+      userdata.data?.isNotEmpty == true ? userdata.data![0].user : null;
 
-    print('User location data: ${user?.location}');
+  print('User location data: ${user?.location}');
 
-    if (user?.location?.latitude != null && user?.location?.longitude != null) {
-      _currentLat = double.tryParse(user?.location?.latitude.toString() ?? '');
-      _currentLng = double.tryParse(user?.location?.longitude.toString() ?? '');
+  if (user?.location?.latitude != null && user?.location?.longitude != null) {
+    _currentLat = double.tryParse(user?.location?.latitude.toString() ?? '');
+    _currentLng = double.tryParse(user?.location?.longitude.toString() ?? '');
 
-      print('Parsed coordinates: lat: $_currentLat, lng: $_currentLng');
+    print('Parsed coordinates: lat: $_currentLat, lng: $_currentLng');
 
-      if (_currentLat != null && _currentLng != null) {
-        _getAddressFromCoordinates(_currentLat!, _currentLng!);
-      } else {
-        setState(() {
-          _currentLocationName = "Location not set";
-        });
-      }
+    if (_currentLat != null && _currentLng != null) {
+      _getAddressFromCoordinates(_currentLat!, _currentLng!);
     } else {
       setState(() {
         _currentLocationName = "Location not set";
       });
     }
+  } else {
+    setState(() {
+      _currentLocationName = "Location not set";
+    });
   }
+}
+
 
   Future<void> _getAddressFromCoordinates(double lat, double lng) async {
-    if (!mounted) return;
+  if (!mounted) return;
 
-    try {
+  try {
+    setState(() {
+      _isLoadingLocation = true;
+    });
+
+    List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng)
+        .timeout(const Duration(seconds: 10));
+
+    if (placemarks.isNotEmpty && mounted) {
+      String address = _formatAddress(placemarks.first);
       setState(() {
-        _isLoadingLocation = true;
+        _currentLocationName = address;
       });
-
-      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng)
-          .timeout(const Duration(seconds: 10));
-
-      if (placemarks.isNotEmpty && mounted) {
-        String address = _formatAddress(placemarks.first);
-        setState(() {
-          _currentLocationName = address;
-        });
-      }
-    } catch (e) {
-      debugPrint('Error getting address: $e');
-      if (mounted) {
-        setState(() {
-          _currentLocationName = "Unable to get location name";
-        });
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoadingLocation = false;
-        });
-      }
+    }
+  } catch (e) {
+    debugPrint('Error getting address: $e');
+    if (mounted) {
+      setState(() {
+        _currentLocationName = "Unable to get location name";
+      });
+    }
+  } finally {
+    if (mounted) {
+      setState(() {
+        _isLoadingLocation = false;
+      });
     }
   }
+}
+
 
   String _formatAddress(Placemark placemark) {
     List<String?> addressComponents = [
@@ -117,96 +121,108 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         : "Selected location";
   }
 
-  Future<void> _updateCurrentLocation() async {
-    if (!mounted) return;
+  Future<void> _autoUpdateLocationOnEntry() async {
+  print('=== AUTO-UPDATING LOCATION ON PAGE ENTRY ===');
+  
+  // Small delay to let the saved location display first
+  await Future.delayed(const Duration(milliseconds: 500));
+  
+  if (!mounted) return;
 
-    setState(() {
-      _isLoadingLocation = true;
-      _currentLocationName = "Getting current location...";
-    });
+  // Silently update location in background
+  await _updateCurrentLocation();
+}
 
-    final loc.Location location = loc.Location();
+// Original update method - can be called manually or automatically
+Future<void> _updateCurrentLocation() async {
+  if (!mounted) return;
 
-    try {
-      // Check location service
-      bool serviceEnabled = await location.serviceEnabled();
+  setState(() {
+    _isLoadingLocation = true;
+    _currentLocationName = "Getting current location...";
+  });
+
+  final loc.Location location = loc.Location();
+
+  try {
+    // Check location service
+    bool serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
       if (!serviceEnabled) {
-        serviceEnabled = await location.requestService();
-        if (!serviceEnabled) {
-          if (mounted) {
-            _showErrorSnackBar("Location service is disabled");
-            setState(() {
-              _isLoadingLocation = false;
-              _currentLocationName = "Location service disabled";
-            });
-          }
-          return;
-        }
-      }
-
-      // Check permissions
-      loc.PermissionStatus permissionGranted = await location.hasPermission();
-      if (permissionGranted == loc.PermissionStatus.denied) {
-        permissionGranted = await location.requestPermission();
-        if (permissionGranted != loc.PermissionStatus.granted) {
-          if (mounted) {
-            _showErrorSnackBar("Location permission denied");
-            setState(() {
-              _isLoadingLocation = false;
-              _currentLocationName = "Location permission denied";
-            });
-          }
-          return;
-        }
-      }
-
-      // Get location
-      loc.LocationData locationData =
-          await location.getLocation().timeout(const Duration(seconds: 15));
-
-      if (locationData.latitude == null || locationData.longitude == null) {
         if (mounted) {
-          _showErrorSnackBar("Unable to get current location");
+          _showErrorSnackBar("Location service is disabled");
           setState(() {
             _isLoadingLocation = false;
-            _currentLocationName = "Unable to get location";
+            _currentLocationName = "Location service disabled";
           });
         }
         return;
       }
+    }
 
-      _currentLat = locationData.latitude?.toDouble();
-      _currentLng = locationData.longitude?.toDouble();
-
-      // Get address
-      await _getAddressFromCoordinates(_currentLat!, _currentLng!);
-
-      // Update user's location in backend/provider
-      // You can implement this method in your loginProvider
-      await ref
-          .read(loginProvider.notifier)
-          .updateProfile(currentLat: _currentLat, currentLng: _currentLng);
-
-      if (mounted) {
-        _showSuccessSnackBar("Location updated successfully");
-      }
-    } catch (e) {
-      debugPrint('Error getting current location: $e');
-      if (mounted) {
-        _showErrorSnackBar("Error getting location. Please try again.");
-        setState(() {
-          _currentLocationName = "Error getting location";
-        });
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoadingLocation = false;
-        });
+    // Check permissions
+    loc.PermissionStatus permissionGranted = await location.hasPermission();
+    if (permissionGranted == loc.PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != loc.PermissionStatus.granted) {
+        if (mounted) {
+          _showErrorSnackBar("Location permission denied");
+          setState(() {
+            _isLoadingLocation = false;
+            _currentLocationName = "Location permission denied";
+          });
+        }
+        return;
       }
     }
-  }
 
+    // Get location
+    loc.LocationData locationData =
+        await location.getLocation().timeout(const Duration(seconds: 15));
+
+    if (locationData.latitude == null || locationData.longitude == null) {
+      if (mounted) {
+        _showErrorSnackBar("Unable to get current location");
+        setState(() {
+          _isLoadingLocation = false;
+          _currentLocationName = "Unable to get location";
+        });
+      }
+      return;
+    }
+
+    _currentLat = locationData.latitude?.toDouble();
+    _currentLng = locationData.longitude?.toDouble();
+
+    // Get address
+    await _getAddressFromCoordinates(_currentLat!, _currentLng!);
+
+    // Update user's location in backend
+    print('Updating backend with current location...');
+    await ref
+        .read(loginProvider.notifier)
+        .updateProfile(currentLat: _currentLat, currentLng: _currentLng);
+
+    if (mounted) {
+      _showSuccessSnackBar("Location updated successfully");
+    }
+  } catch (e) {
+    debugPrint('Error getting current location: $e');
+    if (mounted) {
+      _showErrorSnackBar("Error getting location. Please try again.");
+      setState(() {
+        _currentLocationName = "Error getting location";
+      });
+    }
+  } finally {
+    if (mounted) {
+      setState(() {
+        _isLoadingLocation = false;
+      });
+    }
+  }
+}
   void _showErrorSnackBar(String message) {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -308,57 +324,58 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               const SizedBox(height: 16),
       
+              
               // Snooze Mode
-              // Snooze Mode
-              _tileWithSwitch("Snooze Mode", ref.watch(postSnoozeProvider),
-                  (val) async {
-                try {
-                  await ref.read(postSnoozeProvider.notifier).toggleSnooze(val);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text(
-                            val ? "Snooze Activated" : "Snooze Deactivated")),
-                  );
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Failed to update snooze")),
-                  );
-                }
-              }),
-      
-              const SizedBox(height: 8),
-              const Text(
-                'Hide Your Profile Temporarily, in All Modes You Wont Loss Any Connections And Chats',
-                style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
-              ),
-              const SizedBox(height: 16),
-      
-              _tileWithSwitch(
-                  "Incognito Mode For Date", ref.watch(postIncogintoeProvider),
-                  (val) async {
-                try {
-                  await ref
-                      .read(postIncogintoeProvider.notifier)
-                      .toggleIncognito(val);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text(val
-                            ? "Incognito Mode For Date Activated"
-                            : "Incognito Mode For Date Deactivated")),
-                  );
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content:
-                            Text("Failed to update Incognito Mode For Date")),
-                  );
-                }
-              }),
-      
-              // _tileWithSwitch("Incognito Mode For Date", _incognitoMode, (val) {
-              //   setState(() => _incognitoMode = val);
+              // _tileWithSwitch("Snooze Mode", ref.watch(postSnoozeProvider),
+              //     (val) async {
+              //   try {
+              //     await ref.read(postSnoozeProvider.notifier).toggleSnooze(val);
+              //     ScaffoldMessenger.of(context).showSnackBar(
+              //       SnackBar(
+              //           content: Text(
+              //               val ? "Snooze Activated" : "Snooze Deactivated")),
+              //     );
+              //   } catch (e) {
+              //     ScaffoldMessenger.of(context).showSnackBar(
+              //       const SnackBar(content: Text("Failed to update snooze")),
+              //     );
+              //   }
               // }),
-              const SizedBox(height: 8),
+      
+              // const SizedBox(height: 8),
+              
+              // const Text(
+              //   'Hide Your Profile Temporarily, in All Modes You Wont Loss Any Connections And Chats',
+              //   style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
+              // ),
+              // const SizedBox(height: 16),
+      
+              // _tileWithSwitch(
+              //     "Incognito Mode For Date", ref.watch(postIncogintoeProvider),
+              //     (val) async {
+              //   try {
+              //     await ref
+              //         .read(postIncogintoeProvider.notifier)
+              //         .toggleIncognito(val);
+              //     ScaffoldMessenger.of(context).showSnackBar(
+              //       SnackBar(
+              //           content: Text(val
+              //               ? "Incognito Mode For Date Activated"
+              //               : "Incognito Mode For Date Deactivated")),
+              //     );
+              //   } catch (e) {
+              //     ScaffoldMessenger.of(context).showSnackBar(
+              //       const SnackBar(
+              //           content:
+              //               Text("Failed to update Incognito Mode For Date")),
+              //     );
+              //   }
+              // }),
+      
+              // // _tileWithSwitch("Incognito Mode For Date", _incognitoMode, (val) {
+              // //   setState(() => _incognitoMode = val);
+              // // }),
+              // const SizedBox(height: 8),
               const Text(
                 'Only People Youve Swiped Right on Already Or Swipe Right On Later Will See You Profile. If You Turn On Incognito Mode For Date This Wont Apply Bizz or BFF',
                 style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
@@ -458,12 +475,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               const SizedBox(height: 16),
       
               // Settings Options
-              _simpleArrowTile("Video Autoplay Settings", () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const VideoAutoplayScreen()),
-                );
-              }),
+
+              // _simpleArrowTile("Video Autoplay Settings", () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (_) => const VideoAutoplayScreen()),
+              //   );
+              // }),
       
               _simpleArrowTile("Notification Setting", () {
                 Navigator.push(
@@ -473,10 +491,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               }),
       
               _simpleArrowTile("Payment Setting", () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => Feedbackpage()),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (_) => Feedbackpage()),
+                // );
               }),
                _simpleArrowTile("Reports", () {
                 Navigator.push(
@@ -485,19 +503,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 );
               }),
       
-              _simpleArrowTile("Content And FAQ", () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => Contactandfaq()),
-                );
-              }),
+              // _simpleArrowTile("Contact to Email", () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (_) => Contactandfaq()),
+              //   );
+              // }),
       
-              _simpleArrowTile("Security And Privacy", () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => Privacysetting()),
-                );
-              }),
+              // _simpleArrowTile("Security And Privacy", () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (_) => Privacysetting()),
+              //   );
+              // }),
       
               const SizedBox(height: 16),
       
@@ -799,8 +817,10 @@ Widget _emailTile( String? userEmail) {
 
   // Method to update user email
   void _updateUserEmail(String email) async {
-    final loginNotifier = ref.read(loginProvider.notifier);
-    await loginNotifier.updateProfile(
+  final loginNotifier = ref.read(loginProvider.notifier);
+
+  try {
+    final response = await loginNotifier.updateProfile(
       causeId: null,
       image: null,
       modeid: null,
@@ -810,8 +830,38 @@ Widget _emailTile( String? userEmail) {
       qualityId: null,
       email: email,
     );
+
     print('Updating email to: $email');
+
+    // ✅ Access map keys with brackets
+    final statusCode = response['statusCode'] as int?;
+    final message = response['message'] as String?;
+
+    if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message ?? 'Email updated successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message ?? 'Failed to update email.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Error updating email: ${e.toString()}'),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
+}
+
 
   void _showLogoutDialog(BuildContext context) {
   showDialog(
@@ -1115,25 +1165,31 @@ Widget _emailTile( String? userEmail) {
             value: isTravelOn,
             onChanged: (val) async {
               if (currentLat != null && currentLng != null) {
-                try {
-                  await ref.read(travelProvider.notifier).addTravel(
-                        val,
-                        currentLat,
-                        currentLng,
-                      );
+                final response = await ref.read(travelProvider.notifier).addTravel(
+                  val,
+                  currentLat,
+                  currentLng,
+                );
 
-                  // ✅ Success message
+                final statusCode = response['statusCode'] as int?;
+                final message = response['message'] as String?;
+
+                if (statusCode != null && statusCode >= 200 && statusCode < 300) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(
-                          val ? "Travel mode enabled" : "Travel mode disabled"),
+                      content: Text(message ?? (val ? "Travel mode enabled" : "Travel mode disabled")),
+                      backgroundColor: Colors.green,
                     ),
                   );
-                } catch (e) {
+                } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Error: $e")),
+                    SnackBar(
+                      content: Text(message ?? "Failed to update travel mode"),
+                      backgroundColor: Colors.red,
+                    ),
                   );
                 }
+
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(

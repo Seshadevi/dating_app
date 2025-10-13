@@ -55,7 +55,7 @@ class _SportsScreenState extends ConsumerState<SportsScreen> {
     });
 
     try {
-      await ref.read(loginProvider.notifier).updateProfile(
+      final response=await ref.read(loginProvider.notifier).updateProfile(
             causeId: null,
             image: null,
             modeid: null,
@@ -67,9 +67,25 @@ class _SportsScreenState extends ConsumerState<SportsScreen> {
           );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$name updated successfully!')),
-        );
+         final statusCode = response['statusCode'] as int?;
+            final message = response['message'] as String?;
+
+            if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'sports updated successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'Failed to update sports.'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
         Navigator.pop(context, selectedSportsName);
       }
     } catch (e) {

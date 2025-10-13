@@ -69,7 +69,7 @@ class _EducationlevelscreenState extends ConsumerState<Educationlevelscreen> {
     });
 
     try {
-      await ref.read(loginProvider.notifier).updateProfile(
+      final response=await ref.read(loginProvider.notifier).updateProfile(
             image: null,
             modeid: null,
             bio: null,
@@ -86,12 +86,25 @@ class _EducationlevelscreenState extends ConsumerState<Educationlevelscreen> {
         isUpdating = false; // 👈 Stop updating state
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Education level updated successfully!'),
-          backgroundColor: Colors.green,
-        ),
-      );
+       final statusCode = response['statusCode'] as int?;
+            final message = response['message'] as String?;
+
+            if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'educationlevel updated successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'Failed to update educationlevel.'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
 
       Navigator.pop(context, selectedOption);
     } catch (e) {

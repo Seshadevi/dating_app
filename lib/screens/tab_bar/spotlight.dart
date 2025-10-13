@@ -5,7 +5,7 @@ import 'package:dating/provider/plans/planspurchaseprovider.dart';
 import 'package:dating/screens/profile_screens/favourate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../model/plans/plamsfullmodel.dart';
+
 import '../../provider/plans/plansfullprovider.dart';
 
 class SpotlightScreen extends ConsumerStatefulWidget {
@@ -191,13 +191,31 @@ class _SpotlightScreenState extends ConsumerState<SpotlightScreen> {
                         userData.data?.isNotEmpty == true ? userData.data![0].user : null;
                   // TODO: Payment action
                    try{
-                    await ref.read(purchaseProvider.notifier).addPurchase(userId:user?.id, purchaseId:selectedPlan.id);
-                     print('✅ add the purchase');
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('purchase successfully Added !')),
-                        );
+                  //  final response = 
+                   await ref
+                        .read(purchaseProvider.notifier)
+                        .addPurchase(userId: user?.id, purchaseId: selectedPlan.id);
+
+                    // 👇 If your API returns a success flag or message
+                    // if (response.success == true) {
+                    //   print('✅ Purchase added successfully');
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     SnackBar(
+                    //       content: Text(response.message ?? 'Purchase successfully added!'),
+                    //       backgroundColor: Colors.green,
+                    //     ),
+                    //   );
 
                         Navigator.push(context, MaterialPageRoute(builder: (_) => FavoritesScreen()));
+                    //     } else {
+                    //   // API returned failure response
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     SnackBar(
+                    //       content: Text(response.message ?? 'Failed to add purchase.'),
+                    //       backgroundColor: Colors.red,
+                    //     ),
+                    //   );
+                    // }
 
                   }catch(e){
                     ScaffoldMessenger.of(context).showSnackBar(

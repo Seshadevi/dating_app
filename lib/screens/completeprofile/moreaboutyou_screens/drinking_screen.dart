@@ -68,7 +68,7 @@ class _DrinkingScreenState extends ConsumerState<DrinkingScreen> {
 
     try {
       // Send update to API
-      await ref.read(loginProvider.notifier).updateProfile(
+      final response=await ref.read(loginProvider.notifier).updateProfile(
         interestId: null,
         image: null,
         modeid: null,
@@ -81,9 +81,25 @@ class _DrinkingScreenState extends ConsumerState<DrinkingScreen> {
       );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Drinking preference updated successfully!')),
-        );
+         final statusCode = response['statusCode'] as int?;
+            final message = response['message'] as String?;
+
+            if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'drinking updated successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'Failed to update drinking.'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
         await Future.delayed(const Duration(milliseconds: 300));
         // Close and return selected options
         Navigator.pop(context, selectedOptions);

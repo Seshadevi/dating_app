@@ -176,7 +176,7 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
                     minimumSize: const Size(double.infinity, 50),
                   ),
                   onPressed: () async {
-                    await ref.read(loginProvider.notifier).updateProfile(
+                   final response=await ref.read(loginProvider.notifier).updateProfile(
                           lookingfor: selectedOptionIds,
                           interestId: null,
                           image: null,
@@ -187,6 +187,25 @@ class _LookingForScreenState extends ConsumerState<LookingForScreen> {
                           qualityId: null,
                           causeId: null,
                         );
+                         final statusCode = response['statusCode'] as int?;
+                        final message = response['message'] as String?;
+
+                        if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(message ?? 'Lookingfor updated successfully!'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                          
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(message ?? 'Failed to update lookingfor.'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
 
                     // if (context.mounted) {
                     //   ref.invalidate(loginProvider); // refresh profile data

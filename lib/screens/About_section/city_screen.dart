@@ -184,17 +184,29 @@ class _CitySearchPageState extends ConsumerState<CitySearchPage> {
           _recentCities.insert(0, city);
         });
       }
-      await ref.read(loginProvider.notifier).updateProfile(
+      final response=await ref.read(loginProvider.notifier).updateProfile(
           citylocation: cityName,
           );
     
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Selected: $cityName"),
-        backgroundColor: DatingColors.lightpink,
-        duration: Duration(seconds: 2),
-      ),
-    );
+     final statusCode = response['statusCode'] as int?;
+            final message = response['message'] as String?;
+
+            if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'city updated successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'Failed to update city.'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
   }
 
   void _clearSearch() {

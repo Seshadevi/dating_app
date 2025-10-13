@@ -41,11 +41,27 @@ class _UpdateWorkScreenState extends ConsumerState<UpdateWorkScreen> {
 
     try {
       // ✅ Call API with just the work text
-      await ref.read(loginProvider.notifier).updateProfile(work:workText);
+      final response=await ref.read(loginProvider.notifier).updateProfile(work:workText);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Work updated successfully!')),
-      );
+       final statusCode = response['statusCode'] as int?;
+      final message = response['message'] as String?;
+
+      if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message ?? 'work  updated successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message ?? 'Failed to update work.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
       Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

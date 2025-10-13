@@ -28,7 +28,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
         margin: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(color: Color(0xFF9CAD00)), // Green border
+          border: Border.all(color: Color.fromARGB(255, 220, 113, 145)), // Green border
           borderRadius: BorderRadius.circular(30), // Capsule shape
         ),
         child: Row(

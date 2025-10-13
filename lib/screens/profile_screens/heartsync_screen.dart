@@ -1012,7 +1012,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                               
                               decoration: BoxDecoration(
                                 color: isDarkMode? DatingColors.black : DatingColors.white,
-                                border: Border.all(color: DatingColors.everqpidColor)
+                                // border: Border.all(color: DatingColors.everqpidColor)
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1063,6 +1063,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                           SizedBox(height: screenHeight * 0.02),
 
                           // I'm Looking For Section
+                          if (user.lookingFor != null && user.lookingFor!.isNotEmpty) ...[
                           Card(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12)),
@@ -1073,11 +1074,12 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                              
                               decoration: BoxDecoration(
                                 color: isDarkMode? DatingColors.black : DatingColors.white,
-                                border: Border.all(color: DatingColors.everqpidColor)
+                                // border: Border.all(color: DatingColors.everqpidColor)
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  
                                   sectionTitle('I\'m Looking For',isDarkMode,
                                       fontSize: screenWidth * 0.05),
                                   Wrap(
@@ -1091,14 +1093,17 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                                             .toList()
                                         : [],
                                   )
+                                  
                                 ],
                               ),
                             ),
                           ),
+                        ],
 
                           SizedBox(height: screenHeight * 0.02),
 
                           // My Interests Section
+                           if (user.interests != null && user.interests!.isNotEmpty) ...[
                           Card(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12)),
@@ -1108,7 +1113,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                               padding: EdgeInsets.all(screenWidth * 0.02),
                                decoration: BoxDecoration(
                                 color: isDarkMode? DatingColors.black : DatingColors.white,
-                                border: Border.all(color: DatingColors.everqpidColor)
+                                // border: Border.all(color: DatingColors.everqpidColor)
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1130,10 +1135,12 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                               ),
                             ),
                           ),
+                           ],
 
                           SizedBox(height: screenHeight * 0.02),
 
                           // Favorite qualities Section
+                           if (user.qualities != null && user.qualities!.isNotEmpty) ...[
                           Card(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12)),
@@ -1143,7 +1150,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                               padding: EdgeInsets.all(screenWidth * 0.02),
                                decoration: BoxDecoration(
                                 color: isDarkMode? DatingColors.black : DatingColors.white,
-                                border: Border.all(color: DatingColors.everqpidColor)
+                                // border: Border.all(color: DatingColors.everqpidColor)
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1165,10 +1172,12 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                               ),
                             ),
                           ),
+                           ],
 
                           SizedBox(height: screenHeight * 0.02),
 
                           // Languages Section
+                           if (user.spokenLanguages != null && user.spokenLanguages!.isNotEmpty) ...[
                           Card(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20)),
@@ -1178,7 +1187,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                               padding: EdgeInsets.all(screenWidth * 0.02),
                                decoration: BoxDecoration(
                                 color: isDarkMode? DatingColors.black : DatingColors.white,
-                                border: Border.all(color: DatingColors.everqpidColor)
+                                // border: Border.all(color: DatingColors.everqpidColor)
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1200,10 +1209,12 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                               ),
                             ),
                           ),
+                           ],
 
                           SizedBox(height: screenHeight * 0.02),
 
                           // My Location Section
+                           if (user.location != null ) ...[
                           Card(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12)),
@@ -1213,7 +1224,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                               padding: EdgeInsets.all(screenWidth * 0.02),
                                decoration: BoxDecoration(
                                 color: isDarkMode? DatingColors.black : DatingColors.white,
-                                border: Border.all(color: DatingColors.everqpidColor)
+                                // border: Border.all(color: DatingColors.everqpidColor)
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1231,6 +1242,7 @@ class _MyHeartsyncPageState extends ConsumerState<MyHeartsyncPage>
                               ),
                             ),
                           ),
+                           ],
 
                           SizedBox(height: screenHeight * 0.03),
 

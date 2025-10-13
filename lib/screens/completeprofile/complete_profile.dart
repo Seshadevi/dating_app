@@ -73,29 +73,7 @@ class _BumbleDateProfileScreenState
   final bool _highlightBio = false;
 
   final ImagePicker _picker = ImagePicker();
-  // final TextEditingController _bioController = TextEditingController();
-  // String selectedGender = 'Man';
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-
-  //   final args = ModalRoute.of(context)?.settings.arguments;
-  //   if (args == 'work_section') {
-  //     WidgetsBinding.instance.addPostFrameCallback((_) {
-  //       final contextForSection = _workSectionKey.currentContext;
-  //       if (contextForSection != null) {
-  //         Scrollable.ensureVisible(
-  //           contextForSection,
-  //           duration: const Duration(milliseconds: 500),
-  //           curve: Curves.easeInOut,
-  //         );
-  //         debugPrint("✅ Scrolled to Work Section");
-  //       } else {
-  //         debugPrint("⚠ Work section not found in widget tree");
-  //       }
-  //     });
-  //   }
-  // }
+ 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -274,8 +252,8 @@ void initState() {
             ],
 
             // Prompts Section
-            _buildPromptsSection(context,isDarkMode), //=======================
-            SizedBox(height: 15),
+            // _buildPromptsSection(context,isDarkMode), //=======================
+            // SizedBox(height: 15),
 
             // Bio Section
             _buildBioSection(isDarkMode),
@@ -298,8 +276,8 @@ void initState() {
             SizedBox(height: 15),
 
             // Connected Accounts Section
-            _buildConnectedAccountsSection(isDarkMode), //=======================
-            SizedBox(height: 15),
+            // _buildConnectedAccountsSection(isDarkMode), //=======================
+            // SizedBox(height: 15),
           ],
         ),
       ),
@@ -919,9 +897,9 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData,required b
                           color: isDarkMode ? DatingColors.white: DatingColors.brown,
                         ),
                       ),
-                      Spacer(),
-                      Icon(Icons.arrow_forward_ios,
-                          size: 16, color: DatingColors.lightgrey),
+                      // Spacer(),
+                      // Icon(Icons.arrow_forward_ios,
+                      //     size: 16, color: DatingColors.lightgrey),
                     ],
                   ),
                 ),
@@ -1090,9 +1068,9 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData,required b
                           color: isDarkMode ? DatingColors.white : DatingColors.black,
                         ),
                       ),
-                      Spacer(),
-                      Icon(Icons.arrow_forward_ios,
-                          size: 16, color: DatingColors.lightgrey),
+                      // Spacer(),
+                      // Icon(Icons.arrow_forward_ios,
+                      //     size: 16, color: DatingColors.lightgrey),
                     ],
                   ),
                 ),
@@ -1255,9 +1233,9 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData,required b
                           color: isDarkMode ? DatingColors.white : DatingColors.black,
                         ),
                       ),
-                      Spacer(),
-                      Icon(Icons.arrow_forward_ios,
-                          size: 16, color: DatingColors.lightgrey),
+                      // Spacer(),
+                      // Icon(Icons.arrow_forward_ios,
+                      //     size: 16, color: DatingColors.lightgrey),
                     ],
                   ),
                 ),
@@ -1486,7 +1464,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData,required b
                       ),
                       const SizedBox(width: 8),
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async{
                           final updatedPrompts = _editPromptControllers
                               .map((c) => c.text.trim())
                               .where((text) => text.isNotEmpty)
@@ -1498,7 +1476,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData,required b
                             editingPromptIndex = null;
                           });
 
-                          ref.read(loginProvider.notifier).updateProfile(
+                          final response=await ref.read(loginProvider.notifier).updateProfile(
                                 image: null,
                                 modeid: null,
                                 bio: null,
@@ -1507,6 +1485,28 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData,required b
                                 qualityId: null,
                                 languagesId: null,
                               );
+                              print('✅ updateProfile completed');
+                              final statusCode = response['statusCode'] as int?;
+                            final message = response['message'] as String?;
+
+                            if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(message ?? 'prompts updated successfully!'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                              
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(message ?? 'Failed to update prompts.'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+
+                              
                         },
                         child: const Text('Save All'),
                       ),
@@ -1649,7 +1649,7 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData,required b
                       final updatedHeadline = _bioController.text.trim();
 
                       try {
-                        await ref.read(loginProvider.notifier).updateProfile(
+                        final response=await ref.read(loginProvider.notifier).updateProfile(
                               image: null,
                               modeid: null,
                               bio: updatedHeadline,
@@ -1658,10 +1658,24 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData,required b
                               qualityId: null,
                             );
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Headline updated successfully!')),
-                        );
+                         final statusCode = response['statusCode'] as int?;
+                          final message = response['message'] as String?;
+
+                          if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(message ?? 'bio updated successfully!'),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(message ?? 'Failed to update bio.'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -2265,53 +2279,6 @@ Widget _buildMoreAboutYouSection(bool isDarkMode) {
     );
   }
 
-  // void _showGenderDialog() {
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: Text('Select Gender'),
-  //         content: Column(
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             _buildGenderOption('Man'),
-  //             _buildGenderOption('Woman'),
-  //             _buildGenderOption('Non-binary'),
-  //             _buildGenderOption('Other'),
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-
-  // Widget _buildGenderOption(String gender) {
-  //   return RadioListTile<String>(
-  //     title: Text(gender),
-  //     value: gender,
-  //     groupValue: selectedGender,
-  //     onChanged: (String? value) {
-  //       setState(() {
-  //         selectedGender = value!;
-  //       });
-  //       Navigator.pop(context);
-  //     },
-  //   );
-  // }
+  
 }
 
-// Extension to add this screen to the original profile screen
-extension BumbleDateProfileScreenExtension on _BumbleDateProfileScreenState {
-  void navigateToProfileDetails() {
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => ProfileDetailsScreen(),
-    //   ),
-    // );
-  }
-}
-
-// Profile Strength Detail Screen
-
-// ID Verification Screen

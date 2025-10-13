@@ -133,7 +133,7 @@ class _FavoriteInterestsState extends ConsumerState<FavoriteInterests> {
     print("🎯 Sending Interest IDs: $interestIds");
 
     try {
-      await ref.read(loginProvider.notifier).updateProfile(
+      final response=await ref.read(loginProvider.notifier).updateProfile(
         interestId: interestIds,
         image: null,
         modeid: null,
@@ -144,11 +144,26 @@ class _FavoriteInterestsState extends ConsumerState<FavoriteInterests> {
       );
 
       print('✅ updateProfile completed');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Interests updated successfully!')),
-      );
+      final statusCode = response['statusCode'] as int?;
+    final message = response['message'] as String?;
 
+    if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message ?? 'interests updated successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
       Navigator.pop(context, visibleInterests);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message ?? 'Failed to update interests.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to upload interests: $e')),

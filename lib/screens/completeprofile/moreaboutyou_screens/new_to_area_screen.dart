@@ -31,7 +31,7 @@ class _NewToAreaScreenState extends ConsumerState<NewToAreaScreen> {
     print('Selected option: $option');
 
     try {
-      await ref.read(loginProvider.notifier).updateProfile(
+      final response=await ref.read(loginProvider.notifier).updateProfile(
             image: null,
             modeid: null,
             bio: null,
@@ -45,13 +45,25 @@ class _NewToAreaScreenState extends ConsumerState<NewToAreaScreen> {
       if (!mounted) return;
 
       // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('New area status updated successfully!'),
-          backgroundColor: DatingColors.everqpidColor,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      final statusCode = response['statusCode'] as int?;
+            final message = response['message'] as String?;
+
+            if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'new area updated successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'Failed to update new area.'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
 
       // Auto-navigate after successful update
       await Future.delayed(const Duration(milliseconds: 500));

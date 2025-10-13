@@ -162,7 +162,7 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
               selectedEducationId = value;
             });
             try {
-              await ref.read(loginProvider.notifier).updateProfile(
+              final response=await ref.read(loginProvider.notifier).updateProfile(
                     image: null,
                     modeid: null,
                     bio: null,
@@ -172,10 +172,25 @@ class _EducationScreenState extends ConsumerState<EducationScreen> {
                     jobId: null,
                     educationId: selectedEducationId,
                   );
+              final statusCode = response['statusCode'] as int?;
+            final message = response['message'] as String?;
+
+            if (statusCode != null && statusCode >= 200 && statusCode < 300) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content: Text('Education updated successfully!')),
+                SnackBar(
+                  content: Text(message ?? 'education updated successfully!'),
+                  backgroundColor: Colors.green,
+                ),
               );
+              
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'Failed to update education.'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
               Navigator.pop(context);
             } catch (e) {
               ScaffoldMessenger.of(context).showSnackBar(

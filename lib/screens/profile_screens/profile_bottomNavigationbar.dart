@@ -354,7 +354,7 @@ class _CustomBottomNavigationBarState
 
   final List<Widget> _pages = [
     ProfileScreen(),
-    DiscoverScreen(),
+    // DiscoverScreen(),
     MyHeartsyncPage(),
     LikedYouScreen(),
     MessagesScreen(),
@@ -406,10 +406,10 @@ class _CustomBottomNavigationBarState
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildNavItem(0, 'assets/Profile-.png', 50, 55,isDarkMode),
-              _buildNavItem(1, 'assets/good_logo.png', 40, 50,isDarkMode),
-              _buildNavItem(2, 'assets/peoples-.png', 50, 55,isDarkMode),
-              _buildNavItem(3, 'assets/Heart@3x.png', 40, 50,isDarkMode),
-              _buildNavItem(4, 'assets/chatnav.png', 40, 50,isDarkMode),
+              // _buildNavItem(1, 'assets/good_logo.png', 40, 50,isDarkMode),
+              _buildNavItem(1, 'assets/peoples-.png', 50, 55,isDarkMode),
+              _buildNavItem(2, 'assets/Heart@3x.png', 40, 50,isDarkMode),
+              _buildNavItem(3, 'assets/chatnav.png', 40, 50,isDarkMode),
             ],
           ),
         ),
@@ -418,29 +418,30 @@ class _CustomBottomNavigationBarState
   }
 
   Widget _buildNavItem( 
-      int index, String assetPath, double width, double height,bool isDarkMode,) {
-    final isSelected = index == _selectedIndex;
+    int index, String assetPath, double width, double height, bool isDarkMode) {
+  final isSelected = index == _selectedIndex;
 
-    return GestureDetector(
-      onTap: () => _onItemTapped(index),
-      child: SizedBox(
-        width: 60,
-        height: 60,
-        child: Center(
-          child: Image.asset(
-            assetPath,
-            width: width,
-            height: height,
-            fit: BoxFit.contain,
-            color: isDarkMode ? isSelected 
-                ? DatingColors.qpidColor // icon color selected
-                : DatingColors.lightgrey  : DatingColors.lightgrey,
-          ),
+  return GestureDetector(
+    onTap: () => _onItemTapped(index),
+    child: SizedBox(
+      width: 60,
+      height: 60,
+      child: Center(
+        child: Image.asset(
+          assetPath,
+          width: width,
+          height: height,
+          fit: BoxFit.contain,
+          color: isSelected
+              ? DatingColors.qpidColor  // Selected color (both light & dark mode)
+              : (isDarkMode 
+                  ? Colors.grey[600]    // Unselected color in dark mode
+                  : DatingColors.lightgrey),  // Unselected color in light mode
         ),
       ),
-    );
-  }
-
+    ),
+  );
+}
 //   Widget _buildNavItem(int index, String assetPath, double width, double height) {
 //   final isSelected = index == _selectedIndex;
 

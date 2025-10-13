@@ -438,7 +438,7 @@ class PhoneAuthNotifier extends StateNotifier<UserModel> {
   }
 
   
-Future<int> updateProfile({
+Future<Map<String, dynamic>> updateProfile({
   int? modeid,
   String? modename,
   List<int>? causeId,
@@ -541,17 +541,10 @@ Future<int> updateProfile({
      if (homelocation!= null) request.fields['hometown'] =homelocation.toString();
       if (sleeping!= null) request.fields['sleepingHabits'] =sleeping.toString();
        if (diet!= null) request.fields['dietaryPreference'] =diet.toString();
-//        Work workToUpdate = work != null ? Work(title: work) : Work();
 
-// if (workToUpdate.title != null && workToUpdate.title!.isNotEmpty) {
-//   request.fields['title'] = workToUpdate.title!;
-// }
        if (work!= null && work.isNotEmpty) {
-  request.fields['works'] = work;
-}
-// if (prompt!= null && prompt.isNotEmpty) {
-//   request.fields['prompts'] = prompt.toString();
-// }
+      request.fields['works'] = work;
+    }
 
       if (sportsId != null) request.fields['sportsId'] =sportsId.toString();
 
@@ -624,35 +617,41 @@ Future<int> updateProfile({
       }
     }
 
-    final response = await request.send();
-    final responseBody = await response.stream.bytesToString();
-    print("📨 API Responsebody: $responseBody");
-    print("Status code: ${response.statusCode}");
+   final response = await request.send();
+final responseBody = await response.stream.bytesToString();
+print("📨 API Responsebody: $responseBody");
+print("Status code: ${response.statusCode}");
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      print("✅ Updated data parsed successfully");
+final Map<String, dynamic> responseData = jsonDecode(responseBody);
 
-      final userDetails = jsonDecode(responseBody);
+if (response.statusCode == 200 || response.statusCode == 201) {
+  // Save user details
+  final userDetails = responseData;
+  try {
+    final userModel = UserModel.fromJson(userDetails);
+    state = userModel;
 
-      try {
-        final userModel = UserModel.fromJson(userDetails);
-        state = userModel;
-
-        final userData = json.encode(userDetails);
-        await prefs.setString('userData', userData);
-        print('User data saved in SharedPreferences.');
-      } catch (_) {
-        if (userDetails['data'] != null && userDetails['data'] is List) {
-          await prefs.setString('userData', responseBody);
-        } else {
-          throw Exception("Failed to parse updated profile data");
-        }
-      }
-
-      return response.statusCode;
+    final userData = json.encode(userDetails);
+    await prefs.setString('userData', userData);
+  } catch (_) {
+    if (userDetails['data'] != null && userDetails['data'] is List) {
+      await prefs.setString('userData', responseBody);
     } else {
-      throw Exception("Profile update failed with status: ${response.statusCode}");
+      throw Exception("Failed to parse updated profile data");
     }
+  }
+
+  return {
+    'statusCode': response.statusCode,
+    'message': responseData['message'] ?? 'Profile updated successfully',
+  };
+} else {
+  return {
+    'statusCode': response.statusCode,
+    'message': responseData['message'] ?? 'Profile update failed',
+  };
+}
+
   } catch (e) {
     print("❗ Exception during profile update: $e");
     throw Exception("Update failed: $e");

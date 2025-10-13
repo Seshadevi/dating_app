@@ -41,11 +41,27 @@ class _HometownScreenState extends ConsumerState<HometownScreen> {
 
     try {
       // ✅ Call API with just the work text
-      await ref.read(loginProvider.notifier).updateProfile(homelocation:hometownText);
+      final response=await ref.read(loginProvider.notifier).updateProfile(homelocation:hometownText);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('hometown updated successfully!')),
-      );
+       final statusCode = response['statusCode'] as int?;
+            final message = response['message'] as String?;
+
+            if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'education updated successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'Failed to update education.'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
       Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

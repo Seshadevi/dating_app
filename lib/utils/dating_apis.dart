@@ -42,6 +42,7 @@ class Dgapi {
   static const String categoryget="$baseUrl/categorys";
   static const String reportGet="$baseUrl/getreports";
   static const String sportsget="$baseUrl/admin/getSport";
+  static const String likedislike = "$baseUrl/admin/adminlikesordislikes";
   // static const String ="$baseUrl/";
   // static const String ="$baseUrl/";
   // static const String ="$baseUrl/";

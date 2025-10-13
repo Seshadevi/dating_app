@@ -28,7 +28,7 @@ class ContactandfaqState extends ConsumerState<Contactandfaq> {
           onPressed: () => Navigator.pop(context),
         ),
         title:  Text(
-          'Contact And FAQ',
+          'Contact email ',
           style: TextStyle(
             color: isDarkMode ? DatingColors.white : DatingColors.black,
             fontSize: 18,
@@ -52,7 +52,7 @@ class ContactandfaqState extends ConsumerState<Contactandfaq> {
 
             // Privacy Settings option
             _buildMenuOption(
-              title: 'Contact US',
+              title: 'Contact Email',
               onTap: () {},
             ),
             const SizedBox(height: 10),
@@ -62,23 +62,23 @@ class ContactandfaqState extends ConsumerState<Contactandfaq> {
               title: 'Terms Of Service',
               onTap: () {},
             ),
-            const SizedBox(height: 20),
+            // const SizedBox(height: 20),
 
             // Privacy Settings option
-            _buildMenuOption(
-              title: 'Privacy Policy',
-              onTap: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => Privacysetting()));
-              },
-            ),
-            const SizedBox(height: 20),
+            // _buildMenuOption(
+            //   title: 'Privacy Policy',
+            //   onTap: () {
+            //     Navigator.pushReplacement(context,
+            //         MaterialPageRoute(builder: (context) => Privacysetting()));
+            //   },
+            // ),
+            // const SizedBox(height: 20),
 
-            // Privacy Settings option
-            _buildMenuOption(
-              title: 'Advertising',
-              onTap: () {},
-            ),
+            // // Privacy Settings option
+            // _buildMenuOption(
+            //   title: 'Advertising',
+            //   onTap: () {},
+            // ),
           ],
         ),
       ),

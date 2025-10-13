@@ -68,7 +68,7 @@ class _HavekidsscreenState extends ConsumerState<Havekidsscreen> {
     });
 
     try {
-      await ref.read(loginProvider.notifier).updateProfile(
+      final response=await ref.read(loginProvider.notifier).updateProfile(
             image: null,
             modeid: null,
             bio: null,
@@ -85,12 +85,25 @@ class _HavekidsscreenState extends ConsumerState<Havekidsscreen> {
         isUpdating = false; // Stop updating state
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Kids preference updated successfully!'),
-          backgroundColor: Colors.green,
-        ),
-      );
+       final statusCode = response['statusCode'] as int?;
+            final message = response['message'] as String?;
+
+            if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'havekids updated successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'Failed to update havekids.'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
 
       Navigator.pop(context, selectedOption);
     } catch (e) {

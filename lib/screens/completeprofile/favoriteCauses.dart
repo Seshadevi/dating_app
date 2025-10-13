@@ -134,7 +134,7 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
     print("🎯 Sending Cause IDs: $causeIds");
 
     try {
-      await ref.read(loginProvider.notifier).updateProfile(
+      final response=await ref.read(loginProvider.notifier).updateProfile(
         causeId: causeIds,
         image: null,
         modeid: null,
@@ -144,12 +144,27 @@ class _FavoriteCauseScreenState extends ConsumerState<FavoriteCauseScreen> {
         qualityId: null,
       );
 
-      print('✅ updateProfile completed');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Causes updated successfully!')),
-      );
+     print('✅ updateProfile completed');
+      final statusCode = response['statusCode'] as int?;
+    final message = response['message'] as String?;
 
+    if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message ?? 'causes updated successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
       Navigator.pop(context, visibleCauses);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message ?? 'Failed to update causes.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to upload causes: $e')),
