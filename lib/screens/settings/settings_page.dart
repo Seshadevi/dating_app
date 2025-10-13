@@ -37,73 +37,77 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   double? _currentLng;
   bool _autoSpotlight = false;
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadUserLocationData();
-    });
-  }
+ @override
+void initState() {
+  super.initState();
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    // Automatically get and update current location on page entry
+    _updateCurrentLocation();
+  });
+}
+  
 
   void _loadUserLocationData() {
-    final userdata = ref.read(loginProvider);
-    final user =
-        userdata.data?.isNotEmpty == true ? userdata.data![0].user : null;
+  final userdata = ref.read(loginProvider);
+  final user =
+      userdata.data?.isNotEmpty == true ? userdata.data![0].user : null;
 
-    print('User location data: ${user?.location}');
+  print('User location data: ${user?.location}');
 
-    if (user?.location?.latitude != null && user?.location?.longitude != null) {
-      _currentLat = double.tryParse(user?.location?.latitude.toString() ?? '');
-      _currentLng = double.tryParse(user?.location?.longitude.toString() ?? '');
+  if (user?.location?.latitude != null && user?.location?.longitude != null) {
+    _currentLat = double.tryParse(user?.location?.latitude.toString() ?? '');
+    _currentLng = double.tryParse(user?.location?.longitude.toString() ?? '');
 
-      print('Parsed coordinates: lat: $_currentLat, lng: $_currentLng');
+    print('Parsed coordinates: lat: $_currentLat, lng: $_currentLng');
 
-      if (_currentLat != null && _currentLng != null) {
-        _getAddressFromCoordinates(_currentLat!, _currentLng!);
-      } else {
-        setState(() {
-          _currentLocationName = "Location not set";
-        });
-      }
+    if (_currentLat != null && _currentLng != null) {
+      _getAddressFromCoordinates(_currentLat!, _currentLng!);
     } else {
       setState(() {
         _currentLocationName = "Location not set";
       });
     }
+  } else {
+    setState(() {
+      _currentLocationName = "Location not set";
+    });
   }
+}
+
 
   Future<void> _getAddressFromCoordinates(double lat, double lng) async {
-    if (!mounted) return;
+  if (!mounted) return;
 
-    try {
+  try {
+    setState(() {
+      _isLoadingLocation = true;
+    });
+
+    List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng)
+        .timeout(const Duration(seconds: 10));
+
+    if (placemarks.isNotEmpty && mounted) {
+      String address = _formatAddress(placemarks.first);
       setState(() {
-        _isLoadingLocation = true;
+        _currentLocationName = address;
       });
-
-      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lng)
-          .timeout(const Duration(seconds: 10));
-
-      if (placemarks.isNotEmpty && mounted) {
-        String address = _formatAddress(placemarks.first);
-        setState(() {
-          _currentLocationName = address;
-        });
-      }
-    } catch (e) {
-      debugPrint('Error getting address: $e');
-      if (mounted) {
-        setState(() {
-          _currentLocationName = "Unable to get location name";
-        });
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoadingLocation = false;
-        });
-      }
+    }
+  } catch (e) {
+    debugPrint('Error getting address: $e');
+    if (mounted) {
+      setState(() {
+        _currentLocationName = "Unable to get location name";
+      });
+    }
+  } finally {
+    if (mounted) {
+      setState(() {
+        _isLoadingLocation = false;
+      });
     }
   }
+}
+
 
   String _formatAddress(Placemark placemark) {
     List<String?> addressComponents = [
@@ -117,96 +121,108 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         : "Selected location";
   }
 
-  Future<void> _updateCurrentLocation() async {
-    if (!mounted) return;
+  Future<void> _autoUpdateLocationOnEntry() async {
+  print('=== AUTO-UPDATING LOCATION ON PAGE ENTRY ===');
+  
+  // Small delay to let the saved location display first
+  await Future.delayed(const Duration(milliseconds: 500));
+  
+  if (!mounted) return;
 
-    setState(() {
-      _isLoadingLocation = true;
-      _currentLocationName = "Getting current location...";
-    });
+  // Silently update location in background
+  await _updateCurrentLocation();
+}
 
-    final loc.Location location = loc.Location();
+// Original update method - can be called manually or automatically
+Future<void> _updateCurrentLocation() async {
+  if (!mounted) return;
 
-    try {
-      // Check location service
-      bool serviceEnabled = await location.serviceEnabled();
+  setState(() {
+    _isLoadingLocation = true;
+    _currentLocationName = "Getting current location...";
+  });
+
+  final loc.Location location = loc.Location();
+
+  try {
+    // Check location service
+    bool serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
       if (!serviceEnabled) {
-        serviceEnabled = await location.requestService();
-        if (!serviceEnabled) {
-          if (mounted) {
-            _showErrorSnackBar("Location service is disabled");
-            setState(() {
-              _isLoadingLocation = false;
-              _currentLocationName = "Location service disabled";
-            });
-          }
-          return;
-        }
-      }
-
-      // Check permissions
-      loc.PermissionStatus permissionGranted = await location.hasPermission();
-      if (permissionGranted == loc.PermissionStatus.denied) {
-        permissionGranted = await location.requestPermission();
-        if (permissionGranted != loc.PermissionStatus.granted) {
-          if (mounted) {
-            _showErrorSnackBar("Location permission denied");
-            setState(() {
-              _isLoadingLocation = false;
-              _currentLocationName = "Location permission denied";
-            });
-          }
-          return;
-        }
-      }
-
-      // Get location
-      loc.LocationData locationData =
-          await location.getLocation().timeout(const Duration(seconds: 15));
-
-      if (locationData.latitude == null || locationData.longitude == null) {
         if (mounted) {
-          _showErrorSnackBar("Unable to get current location");
+          _showErrorSnackBar("Location service is disabled");
           setState(() {
             _isLoadingLocation = false;
-            _currentLocationName = "Unable to get location";
+            _currentLocationName = "Location service disabled";
           });
         }
         return;
       }
+    }
 
-      _currentLat = locationData.latitude?.toDouble();
-      _currentLng = locationData.longitude?.toDouble();
-
-      // Get address
-      await _getAddressFromCoordinates(_currentLat!, _currentLng!);
-
-      // Update user's location in backend/provider
-      // You can implement this method in your loginProvider
-      await ref
-          .read(loginProvider.notifier)
-          .updateProfile(currentLat: _currentLat, currentLng: _currentLng);
-
-      if (mounted) {
-        _showSuccessSnackBar("Location updated successfully");
-      }
-    } catch (e) {
-      debugPrint('Error getting current location: $e');
-      if (mounted) {
-        _showErrorSnackBar("Error getting location. Please try again.");
-        setState(() {
-          _currentLocationName = "Error getting location";
-        });
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoadingLocation = false;
-        });
+    // Check permissions
+    loc.PermissionStatus permissionGranted = await location.hasPermission();
+    if (permissionGranted == loc.PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != loc.PermissionStatus.granted) {
+        if (mounted) {
+          _showErrorSnackBar("Location permission denied");
+          setState(() {
+            _isLoadingLocation = false;
+            _currentLocationName = "Location permission denied";
+          });
+        }
+        return;
       }
     }
-  }
 
+    // Get location
+    loc.LocationData locationData =
+        await location.getLocation().timeout(const Duration(seconds: 15));
+
+    if (locationData.latitude == null || locationData.longitude == null) {
+      if (mounted) {
+        _showErrorSnackBar("Unable to get current location");
+        setState(() {
+          _isLoadingLocation = false;
+          _currentLocationName = "Unable to get location";
+        });
+      }
+      return;
+    }
+
+    _currentLat = locationData.latitude?.toDouble();
+    _currentLng = locationData.longitude?.toDouble();
+
+    // Get address
+    await _getAddressFromCoordinates(_currentLat!, _currentLng!);
+
+    // Update user's location in backend
+    print('Updating backend with current location...');
+    await ref
+        .read(loginProvider.notifier)
+        .updateProfile(currentLat: _currentLat, currentLng: _currentLng);
+
+    if (mounted) {
+      _showSuccessSnackBar("Location updated successfully");
+    }
+  } catch (e) {
+    debugPrint('Error getting current location: $e');
+    if (mounted) {
+      _showErrorSnackBar("Error getting location. Please try again.");
+      setState(() {
+        _currentLocationName = "Error getting location";
+      });
+    }
+  } finally {
+    if (mounted) {
+      setState(() {
+        _isLoadingLocation = false;
+      });
+    }
+  }
+}
   void _showErrorSnackBar(String message) {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

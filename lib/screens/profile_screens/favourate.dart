@@ -1,302 +1,7 @@
-// import 'package:dating/constants/dating_app_user.dart';
-// import 'package:flutter/material.dart';
-
-// class FavoritesScreen extends StatelessWidget {
-//   const FavoritesScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: DatingColors.white,
-//       appBar: AppBar(
-//         backgroundColor: DatingColors.white,
-//         elevation: 1,
-//         leading: IconButton(
-//           icon: const Icon(Icons.arrow_back_ios, color: DatingColors.black
-//           ),
-//           onPressed: () => Navigator.pop(context),
-//         ),
-//         title: const Text(
-//           'My Favourite',
-//           style: TextStyle(
-//             color: DatingColors.black,
-//             fontSize: 18,
-//             fontWeight: FontWeight.w600,
-//           ),
-//         ),
-//         centerTitle: true,
-//       ),
-//       body: LayoutBuilder(
-//         builder: (context, constraints) {
-//           // Determine cross axis count based on screen width
-//           int crossAxisCount;
-//           double crossAxisSpacing;
-//           double mainAxisSpacing;
-//           double padding;
-
-//           if (constraints.maxWidth < 600) {
-//             // Mobile - keep original settings
-//             crossAxisCount = 2;
-//             crossAxisSpacing = 16;
-//             mainAxisSpacing = 16;
-//             padding = 16;
-//           } else if (constraints.maxWidth < 900) {
-//             // Tablet
-//             crossAxisCount = 3;
-//             crossAxisSpacing = 20;
-//             mainAxisSpacing = 20;
-//             padding = 24;
-//           } else {
-//             // Desktop
-//             crossAxisCount = 4;
-//             crossAxisSpacing = 24;
-//             mainAxisSpacing = 24;
-//             padding = 32;
-//           }
-
-//           return Padding(
-//             padding: EdgeInsets.all(padding),
-//             child: GridView.builder(
-//               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//                 crossAxisCount: crossAxisCount,
-//                 crossAxisSpacing: crossAxisSpacing,
-//                 mainAxisSpacing: mainAxisSpacing,
-//                 childAspectRatio: 0.5, // Keep original aspect ratio
-//               ),
-//               itemCount: profiles.length,
-//               itemBuilder: (context, index) {
-//                 return ProfileCard(profile: profiles[index]);
-//               },
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
-
-// class ProfileCard extends StatelessWidget {
-//   final Profile profile;
-
-//   const ProfileCard({super.key, required this.profile});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: [
-//         // Profile Image with Gradient Border - Keep exact same sizes
-//         SizedBox(
-//           height: 250,
-//           child: Stack(
-//             children: [
-//               SizedBox(
-//                 height: 225,
-//                 width: double.infinity,
-//                 child: Container(
-//                   decoration: BoxDecoration(
-//                     borderRadius: BorderRadius.circular(30),
-//                     gradient: const LinearGradient(
-//                       colors: [DatingColors.primaryGreen, DatingColors.black],
-//                       begin: Alignment.topCenter,
-//                       end: Alignment.bottomCenter,
-//                     ),
-//                   ),
-//                   padding: const EdgeInsets.all(9),
-//                   child: Container(
-//                     decoration: BoxDecoration(
-//                       borderRadius: BorderRadius.circular(21),
-//                       image: DecorationImage(
-//                         image: NetworkImage(profile.imageUrl),
-//                         fit: BoxFit.cover,
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//               Align(
-//                   alignment: Alignment.bottomCenter,
-//                   child: Image.asset(
-//                     'assets/Red_Heart.png',
-//                     height: 50,
-//                     width: 50,
-//                   ))
-//             ],
-//           ),
-//         ),
-//         const SizedBox(height: 4),
-//         // Profile Info Card - Keep exact same sizes
-//         Container(
-//           height: 84,
-//           width: double.infinity,
-//           padding: const EdgeInsets.all(8), // Keep original padding
-//           decoration: BoxDecoration(
-//               borderRadius: BorderRadius.circular(25),
-//               color: DatingColors.lightGreen,
-//               border: Border.all(width: 2, color: DatingColors.primaryGreen)),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.center,
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: [
-//                   Flexible(
-//                     // Only added Flexible here to prevent overflow
-//                     child: Text(
-//                       profile.name,
-//                       style: const TextStyle(
-//                         fontSize: 14, // Keep original font size
-//                         fontWeight: FontWeight.w600,
-//                         color: DatingColors.black,
-//                       ),
-//                       overflow: TextOverflow.ellipsis,
-//                     ),
-//                   ),
-//                   if (profile.isVerified)
-//                     Row(
-//                       children: [
-//                         const SizedBox(
-//                           width: 10,
-//                         ),
-//                         Container(
-//                           padding: const EdgeInsets.all(2),
-//                           decoration: const BoxDecoration(
-//                             color: DatingColors.primaryGreen,
-//                             shape: BoxShape.circle,
-//                           ),
-//                           child: const Icon(
-//                             Icons.check,
-//                             color: DatingColors.white,
-//                             size: 10, // Keep original icon size
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                 ],
-//               ),
-//               const SizedBox(height: 2),
-//               Container(
-//                 padding: const EdgeInsets.all(3),
-//                 decoration: BoxDecoration(
-//                   borderRadius: BorderRadius.circular(10),
-//                   border: Border.all(
-//                     width: 1,
-//                     color: DatingColors.darkGreen,
-//                   ),
-//                 ),
-//                 child: Text(
-//                   profile.distance,
-//                   style: TextStyle(
-//                     fontSize: 12, // Keep original font size
-//                     color: DatingColors.middlegrey,
-//                   ),
-//                   overflow: TextOverflow.ellipsis,
-//                 ),
-//               ),
-//               const SizedBox(height: 1),
-//               Text(
-//                 profile.profession,
-//                 style: TextStyle(
-//                   fontSize: 10, // Keep original font size
-//                   color: DatingColors.middlegrey,
-//                   fontWeight: FontWeight.w500,
-//                 ),
-//                 overflow: TextOverflow.ellipsis,
-//               ),
-//             ],
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }
-
-// class Profile {
-//   final String name;
-//   final String distance;
-//   final String profession;
-//   final String imageUrl;
-//   final bool isVerified;
-
-//   Profile({
-//     required this.name,
-//     required this.distance,
-//     required this.profession,
-//     required this.imageUrl,
-//     required this.isVerified,
-//   });
-// }
-
-// // Sample data
-// final List<Profile> profiles = [
-//   Profile(
-//     name: 'Meera',
-//     distance: '5.2km away',
-//     profession: 'CIVIL ENGINEER',
-//     imageUrl:
-//         'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop&crop=face',
-//     isVerified: false,
-//   ),
-//   Profile(
-//     name: 'Halima',
-//     distance: '5.2km away',
-//     profession: 'MODEL, USA',
-//     imageUrl:
-//         'https://images.unsplash.com/photo-1534751516642-a1af1ef26a56?w=300&h=400&fit=crop&crop=face',
-//     isVerified: true,
-//   ),
-//   Profile(
-//     name: 'Halima',
-//     distance: '5.2km away',
-//     profession: 'MODEL, USA',
-//     imageUrl:
-//         'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&h=400&fit=crop&crop=face',
-//     isVerified: true,
-//   ),
-//   Profile(
-//     name: 'Halima',
-//     distance: '5.2km away',
-//     profession: 'MODEL, USA',
-//     imageUrl:
-//         'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop&crop=face',
-//     isVerified: true,
-//   ),
-//   Profile(
-//     name: 'Meera',
-//     distance: '5.2km away',
-//     profession: 'CIVIL ENGINEER',
-//     imageUrl:
-//         'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop&crop=face',
-//     isVerified: false,
-//   ),
-//   Profile(
-//     name: 'Halima',
-//     distance: '5.2km away',
-//     profession: 'MODEL, USA',
-//     imageUrl:
-//         'https://images.unsplash.com/photo-1534751516642-a1af1ef26a56?w=300&h=400&fit=crop&crop=face',
-//     isVerified: true,
-//   ),
-//   Profile(
-//     name: 'Halima',
-//     distance: '5.2km away',
-//     profession: 'MODEL, USA',
-//     imageUrl:
-//         'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&h=400&fit=crop&crop=face',
-//     isVerified: true,
-//   ),
-//   Profile(
-//     name: 'Halima',
-//     distance: '5.2km away',
-//     profession: 'MODEL, USA',
-//     imageUrl:
-//         'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop&crop=face',
-//     isVerified: true,
-//   ),
-// ];
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/model/likes/likeduser/likedusers.dart';
 import 'package:dating/provider/likes/liked/likedprovider.dart';
+import 'package:dating/provider/likes/likedislikeprovider.dart';
 import 'package:dating/provider/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -308,20 +13,29 @@ class FavoritesScreen extends ConsumerStatefulWidget {
   ConsumerState<FavoritesScreen> createState() => _FavoritesScreenState();
 }
 
-class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
+class _FavoritesScreenState extends ConsumerState<FavoritesScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(likedUsersprovider.notifier).getLikedUsers();
+      ref.read(likedDislikeProvider.notifier).getLikedDislike();
     });
   }
 
   @override
-  Widget build(BuildContext context) {
-    final likedUsers = ref.watch(likedUsersprovider);
-    final isLoading = ref.watch(loadingProvider);
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: DatingColors.white,
       appBar: AppBar(
@@ -332,7 +46,7 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          'My Favourite',
+          'My Favourites',
           style: TextStyle(
             color: DatingColors.black,
             fontSize: 18,
@@ -340,36 +54,114 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
           ),
         ),
         centerTitle: true,
-      ),
-      body: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(
-                color: DatingColors.primaryGreen,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(50),
+          child: Container(
+            decoration: BoxDecoration(
+              color: DatingColors.white,
+              border: Border(
+                bottom: BorderSide(
+                  color: DatingColors.middlegrey.withOpacity(0.2),
+                  width: 1,
+                ),
               ),
-            )
-          : (likedUsers.data == null || likedUsers.data?.isEmpty == true)
-              ? _buildEmptyState()
-              : _buildUsersList(likedUsers.data ?? []),
+            ),
+            child: TabBar(
+              controller: _tabController,
+              labelColor: DatingColors.primaryGreen,
+              unselectedLabelColor: DatingColors.middlegrey,
+              indicatorColor: DatingColors.primaryGreen,
+              indicatorWeight: 3,
+              labelStyle: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+              unselectedLabelStyle: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+              tabs: const [
+                Tab(text: 'Liked Me'),
+                Tab(text: 'I Liked'),
+              ],
+            ),
+          ),
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildLikedMeTab(),
+          _buildILikedTab(),
+        ],
+      ),
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildLikedMeTab() {
+    final likedUsers = ref.watch(likedUsersprovider);
+    final isLoading = ref.watch(loadingProvider);
+
+    if (isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(
+          color: DatingColors.primaryGreen,
+        ),
+      );
+    }
+
+    if (likedUsers.data == null || likedUsers.data?.isEmpty == true) {
+      return _buildEmptyState('No one has liked you yet');
+    }
+
+    return _buildUsersList(likedUsers.data ?? []);
+  }
+
+  Widget _buildILikedTab() {
+    final likeDislikeData = ref.watch(likedDislikeProvider);
+    final isLoading = ref.watch(loadingProvider);
+
+    if (isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(
+          color: DatingColors.primaryGreen,
+        ),
+      );
+    }
+
+    // Check if we have any data
+    // Note: Your current model has single Data object, not a list
+    // You need to update the model to support List<Data> for this to work properly
+    
+    return _buildEmptyState('You haven\'t liked anyone yet\n\nPlease update LikeDislikeModel to return a list of users');
+  }
+
+  Widget _buildEmptyState(String message) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             Icons.favorite_border,
-            size: 40,
-            color: DatingColors.middlegrey,
+            size: 80,
+            color: DatingColors.middlegrey.withOpacity(0.5),
           ),
           const SizedBox(height: 16),
           Text(
-            'No Favorites Yet',
+            message,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
               color: DatingColors.middlegrey,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Start swiping to find your match!',
+            style: TextStyle(
+              fontSize: 14,
+              color: DatingColors.middlegrey.withOpacity(0.7),
             ),
           ),
         ],
@@ -409,11 +201,66 @@ class _FavoritesScreenState extends ConsumerState<FavoritesScreen> {
               crossAxisCount: crossAxisCount,
               crossAxisSpacing: crossAxisSpacing,
               mainAxisSpacing: mainAxisSpacing,
-              childAspectRatio: 0.65, // Adjusted for better proportions
+              childAspectRatio: 0.65,
             ),
             itemCount: users.length,
             itemBuilder: (context, index) {
               return DynamicProfileCard(user: users[index]);
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  // Build list for "I Liked" tab using LikeDislikeData
+  Widget _buildILikedUsersList(List<dynamic> users) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        int crossAxisCount;
+        double crossAxisSpacing;
+        double mainAxisSpacing;
+        double padding;
+
+        if (constraints.maxWidth < 600) {
+          crossAxisCount = 2;
+          crossAxisSpacing = 16;
+          mainAxisSpacing = 16;
+          padding = 16;
+        } else if (constraints.maxWidth < 900) {
+          crossAxisCount = 3;
+          crossAxisSpacing = 20;
+          mainAxisSpacing = 20;
+          padding = 24;
+        } else {
+          crossAxisCount = 4;
+          crossAxisSpacing = 24;
+          mainAxisSpacing = 24;
+          padding = 32;
+        }
+
+        return Padding(
+          padding: EdgeInsets.all(padding),
+          child: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: crossAxisSpacing,
+              mainAxisSpacing: mainAxisSpacing,
+              childAspectRatio: 0.65,
+            ),
+            itemCount: users.length,
+            itemBuilder: (context, index) {
+              final likeData = users[index];
+              // Convert LikeDislikeData to Data format for card
+              final userData = Data(
+                userId: likeData.userId,
+                firstName: likeData.firstName,
+                lastName: likeData.lastName,
+                email: likeData.email,
+                image: likeData.image,
+                likedAt: likeData.createdAt,
+              );
+              return DynamicProfileCard(user: userData);
             },
           ),
         );
@@ -429,14 +276,13 @@ class DynamicProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageUrl = user.image?.isNotEmpty == true 
-        ? user.image! 
+    final imageUrl = user.image?.isNotEmpty == true
+        ? user.image!
         : 'https://via.placeholder.com/300x400';
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Image Section with Dynamic Height
         Flexible(
           flex: 3,
           child: Stack(
@@ -507,7 +353,6 @@ class DynamicProfileCard extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
-        // Info Section with Dynamic Height
         Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
@@ -581,11 +426,11 @@ class DynamicProfileCard extends StatelessWidget {
   String _getFullName() {
     final firstName = user.firstName ?? '';
     final lastName = user.lastName ?? '';
-    
+
     if (firstName.isEmpty && lastName.isEmpty) {
       return 'Unknown User';
     }
-    
+
     return '$firstName $lastName'.trim();
   }
 
@@ -593,12 +438,12 @@ class DynamicProfileCard extends StatelessWidget {
     if (user.likedAt == null || user.likedAt?.isEmpty == true) {
       return 'Recently liked';
     }
-    
+
     try {
       final likedDate = DateTime.parse(user.likedAt!);
       final now = DateTime.now();
       final difference = now.difference(likedDate);
-      
+
       if (difference.inDays > 0) {
         return '${difference.inDays} day${difference.inDays > 1 ? 's' : ''} ago';
       } else if (difference.inHours > 0) {
