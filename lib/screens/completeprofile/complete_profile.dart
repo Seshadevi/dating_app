@@ -27,6 +27,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import 'package:reorderables/reorderables.dart';
+
 class BumbleDateProfileScreen extends ConsumerStatefulWidget {
   const BumbleDateProfileScreen({super.key});
 
@@ -548,17 +550,37 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData,required b
           ),
         ),
         SizedBox(height: 16),
-        GridView.count(
-          crossAxisCount: 3,
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          crossAxisSpacing: 0,
-          mainAxisSpacing: 0,
-          childAspectRatio: 1,
+        // 🧩 Reorderable Grid
+      SizedBox(
+        height: 250,
+        
+        child: ReorderableWrap(
+          spacing: 8,
+          runSpacing: 8,
+          maxMainAxisCount: 3,
+          buildDraggableFeedback: (context, constraints, child) {
+            return Material(
+              color: Colors.transparent,
+              child: child,
+            );
+          },
+          needsLongPressDraggable: true,
+          onReorder: (oldIndex, newIndex) {
+            setState(() {
+              final item = selectedImages.removeAt(oldIndex);
+              selectedImages.insert(newIndex, item);
+            });
+            // optionally: re-upload order to backend
+           // _uploadProfileImagesOrder();
+          },
           children: List.generate(6, (index) {
-            return _buildPhotoSlot(index: index, isDarkMode: isDarkMode);
+            return SizedBox(
+              width: 100, // fixed width for each slot
+              height: 100, 
+              child: _buildPhotoSlot(index: index, isDarkMode: isDarkMode, key: ValueKey(index)));
           }),
         ),
+      ),
         SizedBox(height: 8),
         Text(
           'Drag And Release The Media In The Sequence',
@@ -571,10 +593,11 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData,required b
     );
   }
 
-  Widget _buildPhotoSlot({required int index ,required bool isDarkMode}) {
+  Widget _buildPhotoSlot({required int index ,required bool isDarkMode,required Key key}) {
     final image = selectedImages[index];
 
     return GestureDetector(
+      key: key,
       onTap: () => _showImageSourceDialog(index),
       child: Padding(
         padding: const EdgeInsets.all(6.0),
@@ -681,44 +704,53 @@ Widget _buildProfileStrengthSection({Map<String, dynamic>? socketData,required b
   }
 
   Future<void> _pickImage(ImageSource source, int index) async {
-    try {
-      if (source == ImageSource.gallery) {
-        // Pick multiple images from gallery
-        final List<XFile>? pickedFiles = await _picker.pickMultiImage();
-        if (pickedFiles != null && pickedFiles.isNotEmpty) {
-          final files =
-              pickedFiles.take(6).map((xfile) => File(xfile.path)).toList();
+  try {
+    if (source == ImageSource.gallery) {
+      // Pick multiple images
+      final List<XFile>? pickedFiles = await _picker.pickMultiImage();
 
-          setState(() {
-            for (int i = 0; i < files.length; i++) {
-              selectedImages[i] = FileImage(files[i]);
-            }
-            // Clear remaining slots if less than 6
-            for (int i = files.length; i < 6; i++) {
-              selectedImages[i] = null;
-            }
-          });
+      if (pickedFiles != null && pickedFiles.isNotEmpty) {
+        final files = pickedFiles.map((xfile) => File(xfile.path)).toList();
 
-          await _uploadProfileImages(files);
-        }
-        return;
-      }
-
-      // For camera pick, single image as before
-      final XFile? pickedFile = await _picker.pickImage(source: source);
-      if (pickedFile != null) {
-        final File imageFile = File(pickedFile.path);
         setState(() {
-          selectedImages[index] = FileImage(imageFile);
+          int slotIndex = index;
+          for (final file in files) {
+            // Find next available empty slot or use current index
+            while (slotIndex < selectedImages.length && selectedImages[slotIndex] != null) {
+              slotIndex++;
+            }
+            if (slotIndex < selectedImages.length) {
+              selectedImages[slotIndex] = FileImage(file);
+              slotIndex++;
+            } else {
+              break; // No more empty slots
+            }
+          }
         });
-        await _uploadProfileImages([imageFile]);
+
+        await _uploadProfileImages(
+          files,
+        );
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error picking image(s): $e')),
-      );
+      return;
     }
+
+    // 📸 For Camera (single image)
+    final XFile? pickedFile = await _picker.pickImage(source: source);
+    if (pickedFile != null) {
+      final File imageFile = File(pickedFile.path);
+      setState(() {
+        selectedImages[index] = FileImage(imageFile);
+      });
+      await _uploadProfileImages([imageFile]);
+    }
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error picking image(s): $e')),
+    );
   }
+}
+
 
   Future<void> _uploadProfileImages(List<File> imageFiles) async {
     try {

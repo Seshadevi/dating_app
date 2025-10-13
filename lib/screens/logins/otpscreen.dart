@@ -21,6 +21,8 @@ class OTPScreen extends ConsumerStatefulWidget {
 class _OTPScreenState extends ConsumerState<OTPScreen> {
   TextEditingController otpController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  bool _isLoading = false;
+
   int _start = 59;
   Timer? _timer;
 
@@ -109,98 +111,118 @@ class _OTPScreenState extends ConsumerState<OTPScreen> {
     final isDarkMode = ref.watch(darkModeProvider);
     return Scaffold(
       backgroundColor: DatingColors.white,
-      body: SafeArea(
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(), // hide keyboard on outside tap
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back_ios, size: 20),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                const SizedBox(height: 10),
-                const Text(
-                  "Enter the code we've sent to",
-                  style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  " ${widget.phoneNumber}",
-                  style: const TextStyle(fontSize: 18),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                  child: const Text(
-                    "Change Number",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      decoration: TextDecoration.underline,
-                    ),
+      body: Stack(
+        children: [
+        SafeArea(
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(), // hide keyboard on outside tap
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios, size: 20),
+                    onPressed: () => Navigator.pop(context),
                   ),
-                ),
-                const SizedBox(height: 20),
-                PinCodeTextField(
-                  appContext: context,
-                  length: 6,
-                  controller: otpController,
-                  focusNode: _focusNode,
-                  keyboardType: TextInputType.number,
-                  animationType: AnimationType.fade,
-                  pinTheme: PinTheme(
-                    shape: PinCodeFieldShape.box,
-                    borderRadius: BorderRadius.circular(8),
-                    fieldHeight: 50,
-                    fieldWidth: 45,
-                    activeColor: DatingColors.lightpinks,
-                    selectedColor:  DatingColors.lightpinks,
-                    inactiveColor: Colors.grey,
+                  const SizedBox(height: 10),
+                  const Text(
+                    "Enter the code we've sent to",
+                    style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
                   ),
-                  onChanged: (value) {},
-                  onCompleted: (value) {
-                    // Close the keyboard automatically when 6 digits entered
-                    FocusScope.of(context).unfocus();
-                  },
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Text(
-                      "This Code Should Arrive Within ${_start}s",
-                      style: const TextStyle(fontSize: 13, color: Colors.grey),
-                    ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () async {
-                        final otp = otpController.text.trim();
-                        if (otp.length == 6) {
-                          _timer?.cancel();
-                          await verifyOTP(otp);
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Enter 6-digit OTP")),
-                          );
-                        }
-                      },
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: DatingColors.black,
-                        ),
-                        padding: const EdgeInsets.all(8),
-                        child: const Icon(Icons.arrow_forward_ios,
-                            color: DatingColors.darkGrey, size: 18),
+                  Text(
+                    " ${widget.phoneNumber}",
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                    child: const Text(
+                      "Change Number",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
                       ),
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                  const SizedBox(height: 20),
+                  PinCodeTextField(
+                    appContext: context,
+                    length: 6,
+                    controller: otpController,
+                    focusNode: _focusNode,
+                    keyboardType: TextInputType.number,
+                    animationType: AnimationType.fade,
+                    pinTheme: PinTheme(
+                      shape: PinCodeFieldShape.box,
+                      borderRadius: BorderRadius.circular(8),
+                      fieldHeight: 50,
+                      fieldWidth: 45,
+                      activeColor: DatingColors.lightpinks,
+                      selectedColor:  DatingColors.lightpinks,
+                      inactiveColor: Colors.grey,
+                    ),
+                    onChanged: (value) {},
+                    onCompleted: (value) {
+                      // Close the keyboard automatically when 6 digits entered
+                      FocusScope.of(context).unfocus();
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Text(
+                        "This Code Should Arrive Within ${_start}s",
+                        style: const TextStyle(fontSize: 13, color: Colors.grey),
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () async {
+                          final otp = otpController.text.trim();
+                          if (otp.length == 6) {
+                            setState(() {
+                                _isLoading = true;
+                              });
+                            _timer?.cancel();
+                            await verifyOTP(otp);
+                            setState(() {
+                              _isLoading = false;
+                            });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text("Enter 6-digit OTP")),
+                            );
+                          }
+                        },
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: DatingColors.black,
+                          ),
+                          padding: const EdgeInsets.all(8),
+                          child: const Icon(Icons.arrow_forward_ios,
+                              color: DatingColors.everqpidColor, size: 18),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          
+        ),
+        if (_isLoading)
+        Container(
+          color: Colors.black.withOpacity(0.3),
+          child: const Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(DatingColors.everqpidColor),
             ),
           ),
         ),
+        ]
       ),
     );
   }

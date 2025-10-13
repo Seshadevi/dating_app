@@ -24,7 +24,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return Scaffold(
       backgroundColor: DatingColors.backgroundWhite,
       body: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(), // Hide keyboard on outside tap
+        onTap: () =>
+            FocusScope.of(context).unfocus(), // Hide keyboard on outside tap
         child: Stack(
           children: [
             SafeArea(
@@ -34,13 +35,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.arrow_back_ios,color: DatingColors.black, size: 25),
+                      icon: const Icon(Icons.arrow_back_ios,
+                          color: DatingColors.black, size: 25),
                       onPressed: () => Navigator.pop(context),
                     ),
                     const SizedBox(height: 10),
                     const Text(
                       "Please Enter Your Number",
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 15),
                     const Text(
@@ -49,44 +52,45 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     const SizedBox(height: 25),
                     IntlPhoneField(
-  controller: controller,
-  decoration: InputDecoration(
-    hintText: 'Phone Number',
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: const BorderSide(
-        color: Colors.grey, // 👈 Normal border color
-        width: 1.5,
-      ),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: const BorderSide(
-        color: DatingColors.everqpidColor, // 👈 Border color when focused
-        width: 2.0,
-      ),
-    ),
-    errorBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: const BorderSide(
-        color: Colors.redAccent, // 👈 Border color when error
-        width: 2.0,
-      ),
-    ),
-    focusedErrorBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: const BorderSide(
-        color: Colors.red, // 👈 When focused + error
-        width: 2.0,
-      ),
-    ),
-  ),
-  initialCountryCode: 'IN',
-  onChanged: (phone) {
-    phoneNumber = phone.completeNumber;
-  },
-),
-
+                      controller: controller,
+                      decoration: InputDecoration(
+                        hintText: 'Phone Number',
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                            color: Colors.grey, // 👈 Normal border color
+                            width: 1.5,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                            color: DatingColors
+                                .everqpidColor, // 👈 Border color when focused
+                            width: 2.0,
+                          ),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                            color:
+                                Colors.redAccent, // 👈 Border color when error
+                            width: 2.0,
+                          ),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                            color: Colors.red, // 👈 When focused + error
+                            width: 2.0,
+                          ),
+                        ),
+                      ),
+                      initialCountryCode: 'IN',
+                      onChanged: (phone) {
+                        phoneNumber = phone.completeNumber;
+                      },
+                    ),
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 12),
                       child: Row(
@@ -96,7 +100,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           Expanded(
                             child: Text(
                               "We Never Share This With Anyone And It Won't Be On Your Profile.",
-                              style: TextStyle(fontSize: 12, color: Colors.grey),
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.grey),
                             ),
                           ),
                         ],
@@ -112,57 +117,113 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               right: 0,
               child: Center(
                 child: GestureDetector(
-                  
-                  onTap: () async{
-                   
-                    // FocusScope.of(context).unfocus(); // ✅ Hide keyboard before showing dialog
-                    if (phoneNumber.isNotEmpty) {
-                      // Future.delayed(const Duration(milliseconds: 100), () {
-                      //   showDialog(
-                      //     context: context,
-                      //     builder: (_) => _buildVerifyDialog(context, phoneNumber),
-
-                      //   );
-                      // });
-                      // Show loading dialog
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false, // prevent closing by tapping outside
-                        builder: (context) {
-                          return const Center(
-                            child: CircularProgressIndicator(
-                               valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFD68F95)), // 💖 QPID color
-                            ),
-                          );
-                        },
+                  onTap: () async {
+                    FocusScope.of(context).unfocus(); // Hide keyboard
+                    if (phoneNumber.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Please enter your phone number."),
+                          backgroundColor: Colors.redAccent,
+                        ),
                       );
-                      final result = await ref.read(loginProvider.notifier).verifyPhoneNumber(phoneNumber, ref);
-                
-                  if (result['success'] == true) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => OTPScreen(phoneNumber: phoneNumber),
-                      ),
+                      return; // Don't proceed further
+                    }
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (context) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFD68F95)),
+                          ),
+                        );
+                      },
                     );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(result['message'] ?? "Failed to send OTP."),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  }
-                      
+
+                    final result = await ref
+                        .read(loginProvider.notifier)
+                        .verifyPhoneNumber(phoneNumber, ref);
+
+                    Navigator.pop(context); // Remove loading dialog
+
+                    if (result['success'] == true) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("OTP sent successfully!"),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => OTPScreen(phoneNumber: phoneNumber),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(result['message'] ?? "Failed to send OTP."),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
                     }
                   },
+
+                  // onTap: () async {
+                  //   // FocusScope.of(context).unfocus(); // ✅ Hide keyboard before showing dialog
+                  //   if (phoneNumber.isNotEmpty) {
+                  //     // Future.delayed(const Duration(milliseconds: 100), () {
+                  //     //   showDialog(
+                  //     //     context: context,
+                  //     //     builder: (_) => _buildVerifyDialog(context, phoneNumber),
+
+                  //     //   );
+                  //     // });
+                  //     // Show loading dialog
+                  //     showDialog(
+                  //       context: context,
+                  //       barrierDismissible:
+                  //           false, // prevent closing by tapping outside
+                  //       builder: (context) {
+                  //         return const Center(
+                  //           child: CircularProgressIndicator(
+                  //             valueColor: AlwaysStoppedAnimation<Color>(
+                  //                 Color(0xFFD68F95)), // 💖 QPID color
+                  //           ),
+                  //         );
+                  //       },
+                  //     );
+                  //     final result = await ref
+                  //         .read(loginProvider.notifier)
+                  //         .verifyPhoneNumber(phoneNumber, ref);
+
+                  //     if (result['success'] == true) {
+                        
+                  //       Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //           builder: (_) => OTPScreen(phoneNumber: phoneNumber),
+                  //         ),
+                  //       );
+                  //     } else {
+                  //       ScaffoldMessenger.of(context).showSnackBar(
+                  //         SnackBar(
+                  //           content: Text(
+                  //               result['message'] ?? "Failed to send OTP."),
+                  //           backgroundColor: Colors.red,
+                  //         ),
+                  //       );
+                  //     }
+                  //   }
+                  // },
                   child: Container(
                     padding: const EdgeInsets.all(22),
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: LinearGradient(
-                        colors: [DatingColors.lightpinks, 
-                        DatingColors.everqpidColor
+                        colors: [
+                          DatingColors.lightpinks,
+                          DatingColors.everqpidColor
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -237,30 +298,32 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 TextButton(
                   onPressed: () async {
-                  //   final FocusNode phoneFocusNode = FocusNode();
+                    //   final FocusNode phoneFocusNode = FocusNode();
 
-                  //  phoneFocusNode.unfocus(); // force close
-                  //   await Future.delayed(const Duration(milliseconds: 1)); // slight delay
-                  Navigator.pop(context); // Close popup regardless
+                    //  phoneFocusNode.unfocus(); // force close
+                    //   await Future.delayed(const Duration(milliseconds: 1)); // slight delay
+                    Navigator.pop(context); // Close popup regardless
 
-                  final result = await ref.read(loginProvider.notifier).verifyPhoneNumber(phoneNumber, ref);
-                
-                  if (result['success'] == true) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => OTPScreen(phoneNumber: phoneNumber),
-                      ),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(result['message'] ?? "Failed to send OTP."),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  }
+                    final result = await ref
+                        .read(loginProvider.notifier)
+                        .verifyPhoneNumber(phoneNumber, ref);
 
+                    if (result['success'] == true) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => OTPScreen(phoneNumber: phoneNumber),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content:
+                              Text(result['message'] ?? "Failed to send OTP."),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
                   },
                   child: const Text(
                     "Confirm",
