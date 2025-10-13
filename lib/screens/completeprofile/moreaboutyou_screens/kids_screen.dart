@@ -120,7 +120,7 @@ class _HaveKidsScreenState extends ConsumerState<HaveKidsScreen> {
                                 toggleOption(option);
 
                                 // Call API to update
-                                await ref.read(loginProvider.notifier).updateProfile(
+                                final response= await ref.read(loginProvider.notifier).updateProfile(
                                   
                                   interestId: null,
                                   image: null,
@@ -132,6 +132,25 @@ class _HaveKidsScreenState extends ConsumerState<HaveKidsScreen> {
                                   causeId: null,
                                   kidsId: optionId != null ? [optionId] : null, // wrap int? in a list
                                 );
+                                 final statusCode = response['statusCode'] as int?;
+                                final message = response['message'] as String?;
+
+                                if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(message ?? 'education updated successfully!'),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                  );
+                                  
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(message ?? 'Failed to update education.'),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
 
                                 Navigator.pop(context, option); // Go back with selected value
 

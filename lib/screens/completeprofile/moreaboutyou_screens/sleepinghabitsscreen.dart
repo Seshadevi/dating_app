@@ -58,7 +58,7 @@ class _SleepinghabitsscreenState extends ConsumerState<Sleepinghabitsscreen> {
       ref.read(selectedOptionProvider.notifier).state = option;
 
       // Update API
-      await loginNotifier.updateProfile(
+      final response=await loginNotifier.updateProfile(
         causeId: null,
         image: null,
         modeid: null,
@@ -70,16 +70,32 @@ class _SleepinghabitsscreenState extends ConsumerState<Sleepinghabitsscreen> {
       );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Smoking status updated successfully!')),
-        );
+        final statusCode = response['statusCode'] as int?;
+            final message = response['message'] as String?;
+
+            if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'sleeping updated successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'Failed to update sleeeping.'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
         await Future.delayed(const Duration(milliseconds: 300));
         Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update smoking status: $e')),
+          SnackBar(content: Text('Failed to update sleeping status: $e')),
         );
       }
     }

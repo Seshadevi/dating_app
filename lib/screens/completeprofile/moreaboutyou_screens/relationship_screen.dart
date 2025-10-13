@@ -1,8 +1,8 @@
 import 'package:dating/constants/dating_app_user.dart';
 import 'package:dating/provider/loginProvider.dart';
-import 'package:dating/provider/moreabout/educationprovider.dart';
+
 import 'package:dating/provider/moreabout/relationshipprovider.dart';
-import 'package:dating/provider/moreabout/relationshipprovider.dart';
+
 import 'package:dating/provider/settings/dark_mode_provider.dart';
 
 import 'package:flutter/material.dart';
@@ -55,7 +55,7 @@ class _RelationshipScreenState extends ConsumerState<RelationshipScreen> {
     });
 
     try {
-      await ref.read(loginProvider.notifier).updateProfile(
+      final response=await ref.read(loginProvider.notifier).updateProfile(
             causeId: null,
             image: null,
             modeid: null,
@@ -67,9 +67,25 @@ class _RelationshipScreenState extends ConsumerState<RelationshipScreen> {
           );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$name updated successfully!')),
-        );
+         final statusCode = response['statusCode'] as int?;
+            final message = response['message'] as String?;
+
+            if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'Relationship updated successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'Failed to update Relationship.'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
         Navigator.pop(context, selectedRelationshipName);
       }
     } catch (e) {

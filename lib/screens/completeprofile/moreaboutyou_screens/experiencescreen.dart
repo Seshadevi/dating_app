@@ -91,7 +91,7 @@ class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
     });
 
     try {
-      await ref.read(loginProvider.notifier).updateProfile(
+      final response=await ref.read(loginProvider.notifier).updateProfile(
         causeId: null,
         image: null,
         modeid: null,
@@ -103,12 +103,25 @@ class _ExperienceScreenState extends ConsumerState<ExperienceScreen> {
       );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('$name updated successfully!'),
-            backgroundColor: Colors.green,
-          ),
-        );
+         final statusCode = response['statusCode'] as int?;
+            final message = response['message'] as String?;
+
+            if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'experience updated successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'Failed to update experience.'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
         Navigator.pop(context, selectedExperienceName);
       }
     } catch (e) {

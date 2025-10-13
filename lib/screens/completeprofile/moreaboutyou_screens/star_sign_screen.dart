@@ -45,7 +45,7 @@ class _StarSignScreenState extends ConsumerState<StarSignScreen> {
     });
 
     try {
-      await ref.read(loginProvider.notifier).updateProfile(
+      final response=await ref.read(loginProvider.notifier).updateProfile(
         causeId: null,
         image: null,
         modeid: null,
@@ -57,9 +57,25 @@ class _StarSignScreenState extends ConsumerState<StarSignScreen> {
       );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$name updated successfully!')),
-        );
+        final statusCode = response['statusCode'] as int?;
+            final message = response['message'] as String?;
+
+            if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'starsign updated successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'Failed to update starsign.'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
         Navigator.pop(context, selectedOptionName);
       }
     } catch (e) {

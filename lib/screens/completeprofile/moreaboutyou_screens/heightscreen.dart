@@ -97,7 +97,7 @@ class _HeightScreenState extends ConsumerState<HeightScreen> {
                         selectHeight(option);
 
                         // Update profile with selected height (int)
-                        await ref.read(loginProvider.notifier).updateProfile(
+                        final response=await ref.read(loginProvider.notifier).updateProfile(
                               interestId: null,
                               image: null,
                               modeid: null,
@@ -109,6 +109,25 @@ class _HeightScreenState extends ConsumerState<HeightScreen> {
                               kidsId: null,
                               height: option, // pass int height
                             );
+                            final statusCode = response['statusCode'] as int?;
+                            final message = response['message'] as String?;
+
+                            if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(message ?? 'Height updated successfully!'),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                              
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(message ?? 'Failed to update height.'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
 
                         Navigator.pop(context, option); // Return selected height
                       },

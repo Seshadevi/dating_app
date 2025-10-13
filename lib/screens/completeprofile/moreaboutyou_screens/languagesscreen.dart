@@ -248,7 +248,7 @@ class _LanguageSelectionScreenState
               ? null
               : () async {
                   try {
-                    await ref.read(loginProvider.notifier).updateProfile(
+                    final response=await ref.read(loginProvider.notifier).updateProfile(
                           causeId: null,
                           image: null,
                           modeid: null,
@@ -259,10 +259,25 @@ class _LanguageSelectionScreenState
                           languagesId: selectedIds,
                         );
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Languages updated successfully!')),
-                    );
+                     final statusCode = response['statusCode'] as int?;
+                    final message = response['message'] as String?;
+
+                    if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(message ?? 'languages updated successfully!'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                      
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(message ?? 'Failed to update languages.'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
                     Navigator.pop(context, selectedIds);
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(

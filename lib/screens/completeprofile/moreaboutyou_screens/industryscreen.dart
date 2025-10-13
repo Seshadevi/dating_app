@@ -52,7 +52,7 @@ class _IndustryscreenState extends ConsumerState<Industryscreen> {
     });
 
     try {
-      await ref.read(loginProvider.notifier).updateProfile(
+      final response=await ref.read(loginProvider.notifier).updateProfile(
             causeId: null,
             image: null,
             modeid: null,
@@ -64,9 +64,25 @@ class _IndustryscreenState extends ConsumerState<Industryscreen> {
           );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$name updated successfully!')),
-        );
+         final statusCode = response['statusCode'] as int?;
+            final message = response['message'] as String?;
+
+            if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'industry updated successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'Failed to update industry.'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
         Navigator.pop(context, selectedIndustryName);
       }
     } catch (e) {

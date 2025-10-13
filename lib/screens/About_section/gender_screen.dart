@@ -45,15 +45,30 @@ class _UpdateGenderScreenState extends ConsumerState<UpdateGenderScreen> {
     setState(() => isLoading = true);
 
     try {
-      await ref.read(loginProvider.notifier).updateProfile(
+      final response=await ref.read(loginProvider.notifier).updateProfile(
             gender: selectedGender,
             showOnProfile: showOnProfile,
           );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Gender updated successfully')),
-      );
+       final statusCode = response['statusCode'] as int?;
+            final message = response['message'] as String?;
 
+            if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'gender updated successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'Failed to update gender.'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
       Navigator.pop(context); // Go back after save
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

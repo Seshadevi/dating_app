@@ -308,57 +308,58 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               const SizedBox(height: 16),
       
+              
               // Snooze Mode
-              // Snooze Mode
-              _tileWithSwitch("Snooze Mode", ref.watch(postSnoozeProvider),
-                  (val) async {
-                try {
-                  await ref.read(postSnoozeProvider.notifier).toggleSnooze(val);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text(
-                            val ? "Snooze Activated" : "Snooze Deactivated")),
-                  );
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Failed to update snooze")),
-                  );
-                }
-              }),
-      
-              const SizedBox(height: 8),
-              const Text(
-                'Hide Your Profile Temporarily, in All Modes You Wont Loss Any Connections And Chats',
-                style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
-              ),
-              const SizedBox(height: 16),
-      
-              _tileWithSwitch(
-                  "Incognito Mode For Date", ref.watch(postIncogintoeProvider),
-                  (val) async {
-                try {
-                  await ref
-                      .read(postIncogintoeProvider.notifier)
-                      .toggleIncognito(val);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text(val
-                            ? "Incognito Mode For Date Activated"
-                            : "Incognito Mode For Date Deactivated")),
-                  );
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content:
-                            Text("Failed to update Incognito Mode For Date")),
-                  );
-                }
-              }),
-      
-              // _tileWithSwitch("Incognito Mode For Date", _incognitoMode, (val) {
-              //   setState(() => _incognitoMode = val);
+              // _tileWithSwitch("Snooze Mode", ref.watch(postSnoozeProvider),
+              //     (val) async {
+              //   try {
+              //     await ref.read(postSnoozeProvider.notifier).toggleSnooze(val);
+              //     ScaffoldMessenger.of(context).showSnackBar(
+              //       SnackBar(
+              //           content: Text(
+              //               val ? "Snooze Activated" : "Snooze Deactivated")),
+              //     );
+              //   } catch (e) {
+              //     ScaffoldMessenger.of(context).showSnackBar(
+              //       const SnackBar(content: Text("Failed to update snooze")),
+              //     );
+              //   }
               // }),
-              const SizedBox(height: 8),
+      
+              // const SizedBox(height: 8),
+              
+              // const Text(
+              //   'Hide Your Profile Temporarily, in All Modes You Wont Loss Any Connections And Chats',
+              //   style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
+              // ),
+              // const SizedBox(height: 16),
+      
+              // _tileWithSwitch(
+              //     "Incognito Mode For Date", ref.watch(postIncogintoeProvider),
+              //     (val) async {
+              //   try {
+              //     await ref
+              //         .read(postIncogintoeProvider.notifier)
+              //         .toggleIncognito(val);
+              //     ScaffoldMessenger.of(context).showSnackBar(
+              //       SnackBar(
+              //           content: Text(val
+              //               ? "Incognito Mode For Date Activated"
+              //               : "Incognito Mode For Date Deactivated")),
+              //     );
+              //   } catch (e) {
+              //     ScaffoldMessenger.of(context).showSnackBar(
+              //       const SnackBar(
+              //           content:
+              //               Text("Failed to update Incognito Mode For Date")),
+              //     );
+              //   }
+              // }),
+      
+              // // _tileWithSwitch("Incognito Mode For Date", _incognitoMode, (val) {
+              // //   setState(() => _incognitoMode = val);
+              // // }),
+              // const SizedBox(height: 8),
               const Text(
                 'Only People Youve Swiped Right on Already Or Swipe Right On Later Will See You Profile. If You Turn On Incognito Mode For Date This Wont Apply Bizz or BFF',
                 style: TextStyle(fontSize: 12, color: DatingColors.mediumGrey),
@@ -486,19 +487,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 );
               }),
       
-              _simpleArrowTile("Contact to Email", () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => Contactandfaq()),
-                );
-              }),
+              // _simpleArrowTile("Contact to Email", () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (_) => Contactandfaq()),
+              //   );
+              // }),
       
-              _simpleArrowTile("Security And Privacy", () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => Privacysetting()),
-                );
-              }),
+              // _simpleArrowTile("Security And Privacy", () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (_) => Privacysetting()),
+              //   );
+              // }),
       
               const SizedBox(height: 16),
       

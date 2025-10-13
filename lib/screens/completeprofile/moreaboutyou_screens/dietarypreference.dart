@@ -70,7 +70,7 @@ class _DietarypreferenceState extends ConsumerState<Dietarypreference> {
       ref.read(selectedOptionProvider.notifier).state = option;
 
       // Update API
-      await loginNotifier.updateProfile(
+      final response=await loginNotifier.updateProfile(
         causeId: null,
         image: null,
         modeid: null,
@@ -82,9 +82,25 @@ class _DietarypreferenceState extends ConsumerState<Dietarypreference> {
       );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Dietary preference updated successfully!')),
-        );
+        final statusCode = response['statusCode'] as int?;
+            final message = response['message'] as String?;
+
+            if (statusCode != null && statusCode >= 200 && statusCode < 300) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'dietary updated successfully!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message ?? 'Failed to update dietry.'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
         await Future.delayed(const Duration(milliseconds: 300));
         Navigator.pop(context);
       }
